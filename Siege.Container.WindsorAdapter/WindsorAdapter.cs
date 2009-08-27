@@ -51,7 +51,7 @@ namespace Siege.Container.WindsorAdapter
     {
         public static void Bind<TBaseType>(this GenericUseCase<TBaseType> useCase, IKernel kernel)
         {
-            kernel.Register(Component.For(useCase.GetBinding()));
+            kernel.Register(Component.For(useCase.GetBinding()).Unless(Component.ServiceAlreadyRegistered));
         }
     }
 

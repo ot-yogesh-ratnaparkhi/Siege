@@ -41,6 +41,25 @@ namespace UnitTests
             Assert.IsTrue(locator.GetInstance<ITestInterface, Context<TestContext>>(CreateContext(TestEnum.Case2)) is TestCase2);
         }
 
+        [Test]
+        public void Should_Use_Correct_Rule_Given_Multiple_Rules()
+        {
+            locator.Register(Given<ITestInterface>.When<Context<TestContext>>(context => context.Value.TestCases == TestEnum.Case2).Then<TestCase2>());
+            locator.Register(Given<ITestInterface>.When<Context<TestContext>>(context => context.Value.TestCases == TestEnum.Case1).Then<TestCase1>());
+
+            Assert.IsTrue(locator.GetInstance<ITestInterface, Context<TestContext>>(CreateContext(TestEnum.Case1)) is TestCase1);
+        }
+
+
+        [Test]
+        public void Should_Use_Correct_Rule_Given_Multiple_Rules_And_Default()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>());
+            locator.Register(Given<ITestInterface>.When<Context<TestContext>>(context => context.Value.TestCases == TestEnum.Case2).Then<TestCase2>());
+            locator.Register(Given<ITestInterface>.When<Context<TestContext>>(context => context.Value.TestCases == TestEnum.Case1).Then<TestCase1>());
+
+            Assert.IsTrue(locator.GetInstance<ITestInterface, Context<TestContext>>(CreateContext(TestEnum.Case1)) is TestCase1);
+        }
 
         [Test]
         public void Should_Not_Use_Rule_When_Not_Satisfied()
