@@ -9,6 +9,7 @@ namespace UnitTests
     {
         protected IContextualServiceLocator locator;
         protected abstract IContextualServiceLocator GetAdapter();
+        protected abstract void RegisterWithoutSiege();
 
         [SetUp]
         public void SetUp()
@@ -70,6 +71,13 @@ namespace UnitTests
             Assert.IsTrue(locator.GetInstance<ITestInterface, Context<TestContext>>(CreateContext(TestEnum.Case3)) is TestCase1);
         }
 
+        [Test]
+        public void Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container()
+        {
+            RegisterWithoutSiege();
+            Assert.IsTrue(locator.GetInstance<IUnregisteredInterface>() is UnregisteredClass);
+        }
+
         private Context<TestContext> CreateContext(TestEnum types)
         {
             return new Context<TestContext> { Value = new TestContext { TestCases = types } };
@@ -88,7 +96,9 @@ namespace UnitTests
         Case3
     }
 
+    public interface IUnregisteredInterface {}
     public interface ITestInterface {}
     public class TestCase1 : ITestInterface {}
     public class TestCase2 : ITestInterface {}
+    public class UnregisteredClass : IUnregisteredInterface {}
 }

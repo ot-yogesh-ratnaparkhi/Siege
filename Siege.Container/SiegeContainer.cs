@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Siege.ServiceLocation;
-using Siege.ServiceLocation.Exceptions;
 
 namespace Siege.Container
 {
@@ -22,32 +21,30 @@ namespace Siege.Container
         public TOutput GetInstance<TOutput, TContext>(TContext context)
             where TContext : IContext
         {
-            if (!registeredTypes.ContainsKey(typeof(TOutput))) throw new TypeNotRegisteredException(typeof(TOutput));
-
             IList<IUseCase> selectedCase = (IList<IUseCase>)useCases[typeof(TOutput)];
 
             foreach(IUseCase<TOutput, Type> useCase in selectedCase)
             {
                 Type value = useCase.Resolve(context);
 
-                if (value != null) return this.serviceLocator.GetInstance<TOutput>(value);
+                if (value != null) return serviceLocator.GetInstance<TOutput>(value);
             }
+
             if (defaultCases.ContainsKey(typeof(TOutput)))
             {
                 DefaultUseCase<TOutput> useCase = (DefaultUseCase<TOutput>) defaultCases[typeof (TOutput)];
-                return this.serviceLocator.GetInstance<TOutput>(useCase.GetBinding());
+                return serviceLocator.GetInstance<TOutput>(useCase.GetBinding());
             }
 
-            return this.serviceLocator.GetInstance<TOutput, TContext>(context);
+            return serviceLocator.GetInstance<TOutput, TContext>(context);
         }
 
         public TOutput GetInstance<TOutput>()
         {
-            if (!registeredTypes.ContainsKey(typeof(TOutput))) throw new TypeNotRegisteredException(typeof(TOutput));
-
             DefaultUseCase<TOutput> defaultCase = (DefaultUseCase<TOutput>) defaultCases[typeof (TOutput)];
+            if(defaultCase != null) return serviceLocator.GetInstance<TOutput>(defaultCase.GetBinding());
 
-            return serviceLocator.GetInstance<TOutput>(defaultCase.GetBinding());
+            return serviceLocator.GetInstance<TOutput>();
         }
 
         public T GetInstance<T>(Type type)

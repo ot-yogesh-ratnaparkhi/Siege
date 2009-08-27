@@ -45,9 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Exceptions\ActivationRuleNotFoundException.cs" />
-    <Compile Include="Exceptions\TypeNotRegisteredException.cs" />
-    <Compile Include="Exceptions\UseCaseAlreadyRegisteredException.cs" />
     <Compile Include="Given.cs" />
     <Compile Include="IActivationRule.cs" />
     <Compile Include="IContext.cs" />
