@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocation", "Siege.ServiceLocation\Siege.ServiceLocation.csproj", "{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Container", "Siege.Container\Siege.Container.csproj", "{FF809718-BCE7-4C51-8C2D-CCBCFA346A40}"
@@ -13,16 +11,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Container.WindsorAdap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Container.StructureMapAdapter", "Siege.Container.StructureMapAdapter\Siege.Container.StructureMapAdapter.csproj", "{2360AD60-0D6D-4ECC-919A-2F64E4E295D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Workflow.Framework", "Siege.Workflow.Framework\Siege.Workflow.Framework.csproj", "{538EFCD6-FEC6-4495-8D07-EC95BD714AAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Workflow.Framework.UnitTests", "Siege.Workflow.Framework.UnitTests\Siege.Workflow.Framework.UnitTests.csproj", "{5BC2A2F5-7726-4DAC-8583-495E149724C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Container.UnitTests", "Siege.Container.UnitTests\Siege.Container.UnitTests.csproj", "{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -43,6 +43,18 @@ Global
 		{2360AD60-0D6D-4ECC-919A-2F64E4E295D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2360AD60-0D6D-4ECC-919A-2F64E4E295D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2360AD60-0D6D-4ECC-919A-2F64E4E295D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{538EFCD6-FEC6-4495-8D07-EC95BD714AAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{538EFCD6-FEC6-4495-8D07-EC95BD714AAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{538EFCD6-FEC6-4495-8D07-EC95BD714AAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{538EFCD6-FEC6-4495-8D07-EC95BD714AAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BC2A2F5-7726-4DAC-8583-495E149724C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BC2A2F5-7726-4DAC-8583-495E149724C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BC2A2F5-7726-4DAC-8583-495E149724C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BC2A2F5-7726-4DAC-8583-495E149724C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

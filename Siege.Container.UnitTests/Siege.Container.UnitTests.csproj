@@ -8,8 +8,8 @@
     <ProjectGuid>{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnitTests</RootNamespace>
-    <AssemblyName>UnitTests</AssemblyName>
+    <RootNamespace>Siege.Container.UnitTests</RootNamespace>
+    <AssemblyName>Siege.Container.UnitTests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -2,19 +2,18 @@
 using Ninject;
 using Ninject.Planning.Bindings;
 using NUnit.Framework;
-using Siege.Container.NinjectAdapter;
 using Siege.ServiceLocation;
 
-namespace UnitTests
+namespace Siege.Container.UnitTests
 {
     [TestFixture]
     public class NinjectAdapterTests : SiegeContainerTests
     {
-        IKernel kernel = new StandardKernel();
+        readonly IKernel kernel = new StandardKernel();
 
         protected override IContextualServiceLocator GetAdapter()
         {
-            return new NinjectAdapter(kernel);
+            return new NinjectAdapter.NinjectAdapter(kernel);
         }
 
         protected override void RegisterWithoutSiege()

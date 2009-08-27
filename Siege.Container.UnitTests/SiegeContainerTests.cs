@@ -1,8 +1,7 @@
 ﻿using NUnit.Framework;
-using Siege.Container;
 using Siege.ServiceLocation;
 
-namespace UnitTests
+namespace Siege.Container.UnitTests
 {
     [TestFixture]
     public abstract class SiegeContainerTests

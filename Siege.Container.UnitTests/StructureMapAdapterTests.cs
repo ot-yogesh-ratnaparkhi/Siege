@@ -1,17 +1,15 @@
-﻿using System;
-using NUnit.Framework;
-using Siege.Container.StructureMapAdapter;
+﻿using NUnit.Framework;
 using Siege.ServiceLocation;
 using StructureMap;
 
-namespace UnitTests
+namespace Siege.Container.UnitTests
 {
     [TestFixture]
     public class StructureMapAdapterTests : SiegeContainerTests
     {
         protected override IContextualServiceLocator GetAdapter()
         {
-            return new StructureMapAdapter();
+            return new StructureMapAdapter.StructureMapAdapter();
         }
 
         protected override void RegisterWithoutSiege()
