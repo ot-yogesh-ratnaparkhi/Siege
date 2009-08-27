@@ -4,15 +4,15 @@ namespace Siege.ServiceLocation
 {
     public class Given<TBaseType>
     {
-        public static ActivationRule<TBaseType, TContext> When<TContext>(Func<TContext, bool> evaluation)
+        public static ConditionalActivationRule<TBaseType, TContext> When<TContext>(Func<TContext, bool> evaluation)
             where TContext : IContext
         {
-            return new ActivationRule<TBaseType, TContext>(evaluation);
+            return new ConditionalActivationRule<TBaseType, TContext>(evaluation);
         }
 
-        public static IUseCase<TBaseType> Then<TImplementingType>() where TImplementingType : TBaseType
+        public static DefaultUseCase<TBaseType> Then<TImplementingType>() where TImplementingType : TBaseType
         {
-            GenericUseCase<TBaseType> useCase = new GenericUseCase<TBaseType>();
+            DefaultUseCase<TBaseType> useCase = new DefaultUseCase<TBaseType>();
 
             useCase.BindTo<TImplementingType>();
 

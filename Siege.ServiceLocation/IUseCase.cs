@@ -18,7 +18,7 @@ namespace Siege.ServiceLocation
     public abstract class UseCase<TBaseType, TOutput> : IUseCase<TBaseType, TOutput>
     {
         private List<IActivationRule> rules = new List<IActivationRule>();
-
+        private IActivationRule defaultRule;
         public abstract TOutput GetBinding();
 
         public void AddActivationRule(IActivationRule rule)
@@ -26,10 +26,15 @@ namespace Siege.ServiceLocation
             rules.Add(rule);
         }
 
+        public void SetDefaultActivationRule(IActivationRule rule)
+        {
+            defaultRule = rule;
+        }
+
         public TOutput Resolve<TContext>(TContext context)
             where TContext : IContext
         {
-            foreach (ActivationRule<TBaseType, TContext> rule in this.rules)
+            foreach (IActivationRule<TContext> rule in this.rules)
             {
                 if (rule.Evaluate(context)) return this.GetBinding();
             }
@@ -66,5 +71,10 @@ namespace Siege.ServiceLocation
         {
             return this.implementation;
         }
+    }
+
+    public class DefaultUseCase<TBaseType> : GenericUseCase<TBaseType>
+    {
+        
     }
 }

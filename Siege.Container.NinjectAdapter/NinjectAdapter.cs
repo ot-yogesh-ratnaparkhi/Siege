@@ -6,11 +6,11 @@ using Siege.ServiceLocation;
 
 namespace Siege.Container.NinjectAdapter
 {
-    public class NinjectServiceLocator : IContextualServiceLocator
+    public class NinjectAdapter : IContextualServiceLocator
     {
         private readonly IKernel kernel;
 
-        public NinjectServiceLocator(IKernel kernel)
+        public NinjectAdapter(IKernel kernel)
         {
             this.kernel = kernel;
         }
@@ -23,11 +23,6 @@ namespace Siege.Container.NinjectAdapter
         public T GetInstance<T>(Type type)
         {
             return (T)this.kernel.Get(type);
-        }
-
-        public T GetInstance<T>(string name)
-        {
-            return this.kernel.Get<T>(name);
         }
 
         public void Register<T>(IUseCase<T> useCase)

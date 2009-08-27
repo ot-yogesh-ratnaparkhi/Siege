@@ -11,16 +11,16 @@ namespace Siege.ServiceLocation
         bool Evaluate(TContext context);
     }
 
-    public class ActivationRule<TBaseType, TContext> : IActivationRule<TContext> where TContext :IContext
+    public class ConditionalActivationRule<TBaseType, TContext> : IActivationRule<TContext> where TContext :IContext
     {
         private readonly Func<TContext, bool> evaluation;
 
-        public ActivationRule(Func<TContext, bool> evaluation)
+        public ConditionalActivationRule(Func<TContext, bool> evaluation)
         {
             this.evaluation = evaluation;
         }
 
-        public IUseCase<TBaseType> Then<TImplementingType>() where TImplementingType : TBaseType
+        public GenericUseCase<TBaseType> Then<TImplementingType>() where TImplementingType : TBaseType
         {
             GenericUseCase<TBaseType> useCase = new GenericUseCase<TBaseType>();
 

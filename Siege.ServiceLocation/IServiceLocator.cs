@@ -11,7 +11,6 @@ namespace Siege.ServiceLocation
     {
         T GetInstance<T>();
         T GetInstance<T>(Type type);
-        T GetInstance<T>(string name);
         void Register<T>(IUseCase<T> useCase);
     }
 }

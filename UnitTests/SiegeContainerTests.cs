@@ -1,24 +1,21 @@
-﻿using Ninject;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Siege.Container;
-using Siege.Container.NinjectAdapter;
 using Siege.ServiceLocation;
 
 namespace UnitTests
 {
     [TestFixture]
-    public class SiegeContainerTests
+    public abstract class SiegeContainerTests
     {
-        protected IKernel kernel;
         protected IContextualServiceLocator locator;
+        protected abstract IContextualServiceLocator GetAdapter();
 
         [SetUp]
         public void SetUp()
         {
-            kernel = new StandardKernel();
-
-            locator = new SiegeContainer(new NinjectServiceLocator(kernel));
+            locator = new SiegeContainer(GetAdapter());
         }
+
         [Test]
         public void Should_Be_Able_To_Bind_An_Interface_To_A_Type()
         {

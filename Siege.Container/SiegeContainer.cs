@@ -12,6 +12,7 @@ namespace Siege.Container
         private readonly Hashtable useCases = new Hashtable();
         private readonly Hashtable registeredImplementors = new Hashtable();
         private readonly Hashtable registeredTypes = new Hashtable();
+        private Hashtable defaultCases = new Hashtable();
 
         public SiegeContainer(IContextualServiceLocator serviceLocator)
         {
@@ -31,6 +32,11 @@ namespace Siege.Container
 
                 if (value != null) return this.serviceLocator.GetInstance<TOutput>(value);
             }
+            if (defaultCases.ContainsKey(typeof(TOutput)))
+            {
+                DefaultUseCase<TOutput> useCase = (DefaultUseCase<TOutput>) defaultCases[typeof (TOutput)];
+                return this.serviceLocator.GetInstance<TOutput>(useCase.GetBinding());
+            }
 
             return this.serviceLocator.GetInstance<TOutput, TContext>(context);
         }
@@ -39,35 +45,42 @@ namespace Siege.Container
         {
             if (!registeredTypes.ContainsKey(typeof(TOutput))) throw new TypeNotRegisteredException(typeof(TOutput));
 
-            return serviceLocator.GetInstance<TOutput>();
+            DefaultUseCase<TOutput> defaultCase = (DefaultUseCase<TOutput>) defaultCases[typeof (TOutput)];
+
+            return serviceLocator.GetInstance<TOutput>(defaultCase.GetBinding());
         }
 
         public T GetInstance<T>(Type type)
         {
-            return serviceLocator.GetInstance<T>(type);
-        }
+            DefaultUseCase<T> defaultCase = (DefaultUseCase<T>)defaultCases[typeof(T)];
 
-        public TOutput GetInstance<TOutput>(string name)
-        {
-            return serviceLocator.GetInstance<TOutput>(name);
+            return serviceLocator.GetInstance<T>(defaultCase.GetBinding());
         }
 
         public void Register<T>(IUseCase<T> useCase)
         {
-            if(!useCases.ContainsKey(typeof(T)))
+            if (useCase is DefaultUseCase<T>)
             {
-                List<IUseCase> list = new List<IUseCase>();
+                defaultCases.Add(typeof(T), useCase);
+            }
+            else
+            {
 
-                useCases.Add(typeof(T), list);
+                if (!useCases.ContainsKey(typeof (T)))
+                {
+                    List<IUseCase> list = new List<IUseCase>();
+
+                    useCases.Add(typeof (T), list);
+                }
+
+                IList<IUseCase> selectedCase = (IList<IUseCase>) useCases[typeof (T)];
+
+                selectedCase.Add(useCase);
             }
 
-            IList<IUseCase> selectedCase = (IList<IUseCase>) useCases[typeof(T)];
-
-            selectedCase.Add(useCase);
-
-            if(!registeredTypes.ContainsKey(typeof(T))) registeredTypes.Add(typeof(T), typeof(T));
-            if(!registeredImplementors.ContainsKey(useCase.GetType())) registeredImplementors.Add(useCase.GetType(), useCase.GetType());
-
+            if (!registeredTypes.ContainsKey(typeof (T))) registeredTypes.Add(typeof (T), typeof (T));
+            if (!registeredImplementors.ContainsKey(useCase.GetType())) registeredImplementors.Add(useCase.GetType(), useCase.GetType());
+            
             serviceLocator.Register(useCase);
         }
     }
