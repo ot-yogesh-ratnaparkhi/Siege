@@ -9,8 +9,8 @@ namespace Siege.Workflow.Framework.Activities
         protected T parentActivity;
         protected Action<T> outcome;
 
-        public CaptureResultActivity(IContextualServiceLocator serviceLocator, IContract request)
-            : base(serviceLocator, request)
+        public CaptureResultActivity(IContextualServiceLocator serviceLocator, IContract contract)
+            : base(serviceLocator, contract)
         {
         }
 
@@ -20,7 +20,7 @@ namespace Siege.Workflow.Framework.Activities
             this.outcome = action;
         }
 
-        protected override void Invoke(IContract request)
+        protected override void Invoke(IContract contract)
         {
             outcome(parentActivity);
         }

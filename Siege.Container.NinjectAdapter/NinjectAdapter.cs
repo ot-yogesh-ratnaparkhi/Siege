@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Ninject;
 using Ninject.Parameters;
 using Ninject.Planning.Bindings;
@@ -6,7 +8,7 @@ using Siege.ServiceLocation;
 
 namespace Siege.Container.NinjectAdapter
 {
-    public class NinjectAdapter : IContextualServiceLocator
+    public class NinjectAdapter : IServiceLocator
     {
         private readonly IKernel kernel;
 
@@ -20,9 +22,29 @@ namespace Siege.Container.NinjectAdapter
             return this.kernel.Get<T>();
         }
 
+        public T GetInstance<T>(IDictionary constructorArguments)
+        {
+            return GetInstance<T>(typeof (T), constructorArguments);
+        }
+
         public T GetInstance<T>(Type type)
         {
             return (T)this.kernel.Get(type);
+        }
+
+        public T GetInstance<T>(Type type, IDictionary constructorArguments)
+        {
+            if (constructorArguments == null || constructorArguments.Count == 0) return (T)kernel.Get(type);
+            
+            List<ConstructorArgument> args = new List<ConstructorArgument>();
+            
+            foreach (string key in constructorArguments.Keys)
+            {
+                ConstructorArgument argument = new ConstructorArgument(key, constructorArguments[key]);
+                args.Add(argument);
+            }
+
+            return this.kernel.Get<T>(args.ToArray());
         }
 
         public void Register<T>(IUseCase<T> useCase)
@@ -42,11 +64,6 @@ namespace Siege.Container.NinjectAdapter
 
                 implementation.Bind(this.kernel, builder);
             }
-        }
-
-        public T GetInstance<T, TContext>(TContext context) where TContext : IContext
-        {
-            return this.kernel.Get<T>(new ConstructorArgument("", context.GetValue()));
         }
     }
 

@@ -10,8 +10,8 @@ namespace Siege.Workflow.Framework
 
     public abstract class AbstractWorkflowActivity : AbstractWorkflowActivity<IContract>
     {
-        protected AbstractWorkflowActivity(IContextualServiceLocator kernel, IContract request)
-            : base(kernel, request)
+        protected AbstractWorkflowActivity(IContextualServiceLocator kernel, IContract contract)
+            : base(kernel, contract)
         {
         }
     }
@@ -19,16 +19,16 @@ namespace Siege.Workflow.Framework
     public abstract class AbstractWorkflowActivity<T> : Workflow, IWorkflowActivity
         where T : class, IContract
     {
-        protected abstract void Invoke(T request);
+        protected abstract void Invoke(T contract);
 
-        protected AbstractWorkflowActivity(IContextualServiceLocator kernel, IContract request)
-            : base(kernel, request)
+        protected AbstractWorkflowActivity(IContextualServiceLocator kernel, IContract contract)
+            : base(kernel, contract)
         {
         }
 
-        public virtual void Process(T request)
+        public virtual void Process(T contract)
         {
-            Invoke(request);
+            Invoke(contract);
 
             if (shouldBreak) return;
 
@@ -40,7 +40,7 @@ namespace Siege.Workflow.Framework
 
         public override void Process()
         {
-            Process(request as T);
+            Process(contract as T);
         }
     }
 }

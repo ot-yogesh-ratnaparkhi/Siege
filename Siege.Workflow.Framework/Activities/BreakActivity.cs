@@ -4,12 +4,12 @@ namespace Siege.Workflow.Framework.Activities
 {
     public class BreakActivity : AbstractWorkflowActivity
     {
-        public BreakActivity(IContextualServiceLocator serviceLocator, IContract request)
-            : base(serviceLocator, request)
+        public BreakActivity(IContextualServiceLocator serviceLocator, IContract contract)
+            : base(serviceLocator, contract)
         {
         }
 
-        protected override void Invoke(IContract request)
+        protected override void Invoke(IContract contract)
         {
             Break();
         }

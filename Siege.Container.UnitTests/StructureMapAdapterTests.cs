@@ -7,7 +7,7 @@ namespace Siege.Container.UnitTests
     [TestFixture]
     public class StructureMapAdapterTests : SiegeContainerTests
     {
-        protected override IContextualServiceLocator GetAdapter()
+        protected override IServiceLocator GetAdapter()
         {
             return new StructureMapAdapter.StructureMapAdapter();
         }

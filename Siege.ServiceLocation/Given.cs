@@ -5,7 +5,6 @@ namespace Siege.ServiceLocation
     public class Given<TBaseType>
     {
         public static ConditionalActivationRule<TBaseType, TContext> When<TContext>(Func<TContext, bool> evaluation)
-            where TContext : IContext
         {
             return new ConditionalActivationRule<TBaseType, TContext>(evaluation);
         }

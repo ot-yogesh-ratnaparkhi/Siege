@@ -1,19 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using Siege.ServiceLocation;
 
 namespace Siege.Workflow.Framework.Activities
 {
     public class ExceptionActivity : AbstractWorkflowActivity
     {
-        public ExceptionActivity(IContextualServiceLocator serviceLocator, IContract request)
-            : base(serviceLocator, request)
+        public ExceptionActivity(IContextualServiceLocator serviceLocator, IContract contract)
+            : base(serviceLocator, contract)
         {
         }
 
         public ExceptionActivity Do<TActivity>()
             where TActivity : IWorkflowActivity
         {
-            TActivity activity = serviceLocator.GetInstance<TActivity, Context<IContract>>(With.Context(request));
+            TActivity activity = serviceLocator.GetInstance<TActivity, IContract>(contract, new Dictionary<string, IContract> { { "contract", contract } });
 
             activity.SetWorkflow(this);
 
@@ -37,7 +38,7 @@ namespace Siege.Workflow.Framework.Activities
         {
             Do(subWorkflow);
 
-            BreakActivity activity = serviceLocator.GetInstance<BreakActivity, Context<IContract>>(With.Context(request));
+            BreakActivity activity = serviceLocator.GetInstance<BreakActivity, IContract>(contract, new Dictionary<string, IContract> { { "contract", contract } });
             activity.SetWorkflow(this);
 
             return this.parentWorkflow;
@@ -47,7 +48,7 @@ namespace Siege.Workflow.Framework.Activities
         {
             Do(action);
 
-            BreakActivity activity = serviceLocator.GetInstance<BreakActivity, Context<IContract>>(With.Context(request));
+            BreakActivity activity = serviceLocator.GetInstance<BreakActivity, IContract>(contract, new Dictionary<string, IContract> { { "contract", contract } });
             activity.SetWorkflow(this);
 
             return this.parentWorkflow;

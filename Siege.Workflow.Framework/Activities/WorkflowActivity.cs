@@ -1,18 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using Siege.ServiceLocation;
 
 namespace Siege.Workflow.Framework.Activities
 {
     public class WorkflowActivity : WorkflowActivity<ActionActivity>
     {
-        public WorkflowActivity(IContextualServiceLocator serviceLocator, IContract request)
-            : base(serviceLocator, request)
+        public WorkflowActivity(IContextualServiceLocator serviceLocator, IContract contract)
+            : base(serviceLocator, contract)
         {
         }
 
         public Workflow For(Action action)
         {
-            activity = serviceLocator.GetInstance<ActionActivity, Context<IContract>>(With.Context(request));
+            activity = serviceLocator.GetInstance<ActionActivity, IContract>(contract, new Dictionary<string, IContract> { { "contract", contract } });
 
             activity.SetWorkflow(this);
             activity.With(action);
@@ -26,10 +27,10 @@ namespace Siege.Workflow.Framework.Activities
     {
         protected TActivityType activity;
 
-        public WorkflowActivity(IContextualServiceLocator locator, IContract request)
-            : base(locator, request)
+        public WorkflowActivity(IContextualServiceLocator locator, IContract contract)
+            : base(locator, contract)
         {
-            activity = locator.GetInstance<TActivityType, Context<IContract>>(With.Context(request));
+            activity = locator.GetInstance<TActivityType, IContract>(contract, new Dictionary<string, IContract> { { "contract", contract } });
         }
 
         public Workflow Then()
@@ -41,7 +42,7 @@ namespace Siege.Workflow.Framework.Activities
 
         public Workflow CaptureResult(Action<TActivityType> action)
         {
-            CaptureResultActivity<TActivityType> captureResult = serviceLocator.GetInstance<CaptureResultActivity<TActivityType>, Context<IContract>>(With.Context(request));
+            CaptureResultActivity<TActivityType> captureResult = serviceLocator.GetInstance<CaptureResultActivity<TActivityType>, IContract>(contract, new Dictionary<string, IContract> { { "contract", contract } });
 
             captureResult.For(activity, action);
             captureResult.SetWorkflow(this);

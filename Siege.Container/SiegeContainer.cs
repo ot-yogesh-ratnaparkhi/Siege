@@ -7,51 +7,76 @@ namespace Siege.Container
 {
     public class SiegeContainer : IContextualServiceLocator
     {
-        private readonly IContextualServiceLocator serviceLocator;
+        private readonly IServiceLocator serviceLocator;
         private readonly Hashtable useCases = new Hashtable();
         private readonly Hashtable registeredImplementors = new Hashtable();
         private readonly Hashtable registeredTypes = new Hashtable();
-        private Hashtable defaultCases = new Hashtable();
+        private readonly Hashtable defaultCases = new Hashtable();
 
-        public SiegeContainer(IContextualServiceLocator serviceLocator)
+        public SiegeContainer(IServiceLocator serviceLocator)
         {
             this.serviceLocator = serviceLocator;
         }
 
         public TOutput GetInstance<TOutput, TContext>(TContext context)
-            where TContext : IContext
         {
-            IList<IUseCase> selectedCase = (IList<IUseCase>)useCases[typeof(TOutput)];
+            return GetInstance<TOutput, TContext>(typeof (TOutput), context, null);
+        }
 
-            foreach(IUseCase<TOutput, Type> useCase in selectedCase)
-            {
-                Type value = useCase.Resolve(context);
-
-                if (value != null) return serviceLocator.GetInstance<TOutput>(value);
-            }
-
-            if (defaultCases.ContainsKey(typeof(TOutput)))
-            {
-                DefaultUseCase<TOutput> useCase = (DefaultUseCase<TOutput>) defaultCases[typeof (TOutput)];
-                return serviceLocator.GetInstance<TOutput>(useCase.GetBinding());
-            }
-
-            return serviceLocator.GetInstance<TOutput, TContext>(context);
+        public TOutput GetInstance<TOutput, TContext>(TContext context, IDictionary constructorArguments)
+        {
+            return GetInstance<TOutput, TContext>(typeof(TOutput), context, constructorArguments);
         }
 
         public TOutput GetInstance<TOutput>()
         {
-            DefaultUseCase<TOutput> defaultCase = (DefaultUseCase<TOutput>) defaultCases[typeof (TOutput)];
-            if(defaultCase != null) return serviceLocator.GetInstance<TOutput>(defaultCase.GetBinding());
-
-            return serviceLocator.GetInstance<TOutput>();
+            return GetInstance<TOutput>(typeof(TOutput));
         }
 
-        public T GetInstance<T>(Type type)
+        public TOutput GetInstance<TOutput>(Type type)
         {
-            DefaultUseCase<T> defaultCase = (DefaultUseCase<T>)defaultCases[typeof(T)];
+            return GetInstance<TOutput>(type, null);
+        }
 
-            return serviceLocator.GetInstance<T>(defaultCase.GetBinding());
+        public TOutput GetInstance<TOutput, TContext>(Type type, TContext context)
+        {
+            return GetInstance<TOutput, TContext>(type, context, null);
+        }
+
+        public TOutput GetInstance<TOutput>(IDictionary constructorArguments)
+        {
+            return GetInstance<TOutput>(typeof(TOutput), constructorArguments);
+        }
+
+        public TOutput GetInstance<TOutput, TContext>(Type type, TContext context, IDictionary constructorArguments)
+        {
+            IList<IUseCase> selectedCase = (IList<IUseCase>)useCases[type];
+
+            if (selectedCase != null)
+            {
+                foreach (IUseCase<TOutput, Type> useCase in selectedCase)
+                {
+                    Type value = useCase.Resolve(context);
+
+                    if (value != null) return serviceLocator.GetInstance<TOutput>(value, constructorArguments);
+                }
+            }
+
+            if (defaultCases.ContainsKey(type))
+            {
+                DefaultUseCase<TOutput> useCase = (DefaultUseCase<TOutput>)defaultCases[type];
+                return serviceLocator.GetInstance<TOutput>(useCase.GetBinding(), constructorArguments);
+            }
+
+            return serviceLocator.GetInstance<TOutput>(constructorArguments);
+        }
+
+        public TOutput GetInstance<TOutput>(Type type, IDictionary constructorArguments)
+        {
+            DefaultUseCase<TOutput> defaultCase = (DefaultUseCase<TOutput>)defaultCases[typeof(TOutput)];
+            if (defaultCase != null) return serviceLocator.GetInstance<TOutput>(defaultCase.GetBinding(), constructorArguments);
+
+            return serviceLocator.GetInstance<TOutput>(constructorArguments);
         }
 
         public void Register<T>(IUseCase<T> useCase)

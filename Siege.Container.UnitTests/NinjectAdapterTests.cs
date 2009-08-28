@@ -11,7 +11,7 @@ namespace Siege.Container.UnitTests
     {
         readonly IKernel kernel = new StandardKernel();
 
-        protected override IContextualServiceLocator GetAdapter()
+        protected override IServiceLocator GetAdapter()
         {
             return new NinjectAdapter.NinjectAdapter(kernel);
         }

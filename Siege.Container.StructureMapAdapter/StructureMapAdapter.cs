@@ -1,20 +1,45 @@
 ﻿using System;
+using System.Collections;
 using Siege.ServiceLocation;
 using StructureMap;
-using IContext=Siege.ServiceLocation.IContext;
 
 namespace Siege.Container.StructureMapAdapter
 {
-    public class StructureMapAdapter : IContextualServiceLocator
+    public class StructureMapAdapter : IServiceLocator
     {
         public T GetInstance<T>()
         {
             return ObjectFactory.GetInstance<T>();
         }
 
+        public T GetInstance<T>(IDictionary constructorArguments)
+        {
+            return GetInstance<T>(typeof (T), constructorArguments);
+        }
+
         public T GetInstance<T>(Type type)
         {
             return (T)ObjectFactory.GetInstance(type);
+        }
+
+        public T GetInstance<T>(Type type, IDictionary constructorArguments)
+        {
+            if (constructorArguments == null || constructorArguments.Count == 0) return (T)ObjectFactory.GetInstance(type);
+
+            ExplicitArgsExpression expression = null;
+
+            foreach (string key in constructorArguments.Keys)
+            {
+                if (expression == null)
+                {
+                    expression = ObjectFactory.With(key).EqualTo(constructorArguments[key]);
+                    continue;
+                }
+
+                expression.With(key).EqualTo(constructorArguments[key]);
+            }
+
+            return (T)expression.GetInstance(type);
         }
 
         public void Register<T>(IUseCase<T> useCase)
@@ -32,11 +57,6 @@ namespace Siege.Container.StructureMapAdapter
 
                 implementation.Bind();
             }
-        }
-
-        public T GetInstance<T, TContext>(TContext context) where TContext : IContext
-        {
-            return ObjectFactory.With(context).GetInstance<T>();
         }
     }
 

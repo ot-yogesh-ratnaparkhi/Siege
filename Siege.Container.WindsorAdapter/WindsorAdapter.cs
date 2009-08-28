@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Siege.ServiceLocation;
 
 namespace Siege.Container.WindsorAdapter
 {
-    public class WindsorAdapter : IContextualServiceLocator
+    public class WindsorAdapter : IServiceLocator
     {
         private readonly IKernel kernel;
 
@@ -19,9 +20,20 @@ namespace Siege.Container.WindsorAdapter
             return kernel.Resolve<T>();
         }
 
+        public T GetInstance<T>(IDictionary constructorArguments)
+        {
+            return GetInstance<T>(typeof (T), constructorArguments);
+        }
+
         public T GetInstance<T>(Type type)
         {
             return (T)kernel.Resolve(type);
+        }
+
+        public T GetInstance<T>(Type type, IDictionary constructorArguments)
+        {
+            if (constructorArguments == null) return (T) kernel.Resolve(type);
+            return (T)kernel.Resolve(type, constructorArguments);
         }
 
         public void Register<T>(IUseCase<T> useCase)
@@ -40,18 +52,13 @@ namespace Siege.Container.WindsorAdapter
                 implementation.Bind(kernel);
             }
         }
-
-        public T GetInstance<T, TContext>(TContext context) where TContext : IContext
-        {
-            return kernel.Resolve<T>(context.GetValue());
-        }
     }
 
     public static class GenericUseCaseExtensions
     {
         public static void Bind<TBaseType>(this GenericUseCase<TBaseType> useCase, IKernel kernel)
         {
-            kernel.Register(Component.For(useCase.GetBinding()).Unless(Component.ServiceAlreadyRegistered));
+            kernel.Register(Component.For(useCase.GetBinding()).Unless(Component.ServiceAlreadyRegistered).LifeStyle.Transient);
         }
     }
 

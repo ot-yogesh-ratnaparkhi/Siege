@@ -7,7 +7,7 @@ namespace Siege.Container.UnitTests
     public abstract class SiegeContainerTests
     {
         protected IContextualServiceLocator locator;
-        protected abstract IContextualServiceLocator GetAdapter();
+        protected abstract IServiceLocator GetAdapter();
         protected abstract void RegisterWithoutSiege();
 
         [SetUp]
@@ -27,27 +27,27 @@ namespace Siege.Container.UnitTests
         [Test]
         public void Should_Be_Able_To_Bind_An_Interface_To_A_Type_Based_On_Rule()
         {
-            locator.Register(Given<ITestInterface>.When<Context<TestContext>>(context => context.Value.TestCases == TestEnum.Case2).Then<TestCase2>());
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface, Context<TestContext>>(CreateContext(TestEnum.Case2)) is TestCase2);
+            Assert.IsTrue(locator.GetInstance<ITestInterface, TestContext>(CreateContext(TestEnum.Case2)) is TestCase2);
         }
 
         [Test]
         public void Should_Use_Rule_When_Satisfied()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<ITestInterface>.When<Context<TestContext>>(context => context.Value.TestCases == TestEnum.Case2).Then<TestCase2>());
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface, Context<TestContext>>(CreateContext(TestEnum.Case2)) is TestCase2);
+            Assert.IsTrue(locator.GetInstance<ITestInterface, TestContext>(CreateContext(TestEnum.Case2)) is TestCase2);
         }
 
         [Test]
         public void Should_Use_Correct_Rule_Given_Multiple_Rules()
         {
-            locator.Register(Given<ITestInterface>.When<Context<TestContext>>(context => context.Value.TestCases == TestEnum.Case2).Then<TestCase2>());
-            locator.Register(Given<ITestInterface>.When<Context<TestContext>>(context => context.Value.TestCases == TestEnum.Case1).Then<TestCase1>());
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case1).Then<TestCase1>());
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface, Context<TestContext>>(CreateContext(TestEnum.Case1)) is TestCase1);
+            Assert.IsTrue(locator.GetInstance<ITestInterface, TestContext>(CreateContext(TestEnum.Case1)) is TestCase1);
         }
 
 
@@ -55,19 +55,19 @@ namespace Siege.Container.UnitTests
         public void Should_Use_Correct_Rule_Given_Multiple_Rules_And_Default()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<ITestInterface>.When<Context<TestContext>>(context => context.Value.TestCases == TestEnum.Case2).Then<TestCase2>());
-            locator.Register(Given<ITestInterface>.When<Context<TestContext>>(context => context.Value.TestCases == TestEnum.Case1).Then<TestCase1>());
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case1).Then<TestCase1>());
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface, Context<TestContext>>(CreateContext(TestEnum.Case1)) is TestCase1);
+            Assert.IsTrue(locator.GetInstance<ITestInterface, TestContext>(CreateContext(TestEnum.Case1)) is TestCase1);
         }
 
         [Test]
         public void Should_Not_Use_Rule_When_Not_Satisfied()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<ITestInterface>.When<Context<TestContext>>(context => context.Value.TestCases == TestEnum.Case2).Then<TestCase2>());
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface, Context<TestContext>>(CreateContext(TestEnum.Case3)) is TestCase1);
+            Assert.IsTrue(locator.GetInstance<ITestInterface, TestContext>(CreateContext(TestEnum.Case3)) is TestCase1);
         }
 
         [Test]
@@ -77,9 +77,9 @@ namespace Siege.Container.UnitTests
             Assert.IsTrue(locator.GetInstance<IUnregisteredInterface>() is UnregisteredClass);
         }
 
-        private Context<TestContext> CreateContext(TestEnum types)
+        private TestContext CreateContext(TestEnum types)
         {
-            return new Context<TestContext> { Value = new TestContext { TestCases = types } };
+            return new TestContext { TestCases = types };
         }
     }
 

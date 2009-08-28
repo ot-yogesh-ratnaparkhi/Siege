@@ -12,7 +12,7 @@ namespace Siege.ServiceLocation
 
     public interface IUseCase<TBaseType, TOutput> : IUseCase<TBaseType>
     {
-        TOutput Resolve<TContext>(TContext context) where TContext : IContext;
+        TOutput Resolve<TContext>(TContext context);
     }
 
     public abstract class UseCase<TBaseType, TOutput> : IUseCase<TBaseType, TOutput>
@@ -32,7 +32,6 @@ namespace Siege.ServiceLocation
         }
 
         public TOutput Resolve<TContext>(TContext context)
-            where TContext : IContext
         {
             foreach (IActivationRule<TContext> rule in this.rules)
             {

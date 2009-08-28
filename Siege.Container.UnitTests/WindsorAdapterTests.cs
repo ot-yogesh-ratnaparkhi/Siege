@@ -10,7 +10,7 @@ namespace Siege.Container.UnitTests
     {
         readonly IKernel kernel = new DefaultKernel();
 
-        protected override IContextualServiceLocator GetAdapter()
+        protected override IServiceLocator GetAdapter()
         {
             return new WindsorAdapter.WindsorAdapter(kernel);
         }

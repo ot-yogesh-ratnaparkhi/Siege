@@ -7,12 +7,12 @@ namespace Siege.Workflow.Framework.Activities
     {
         private Action action;
 
-        public ActionActivity(IContextualServiceLocator serviceLocator, IContract request)
-            : base(serviceLocator, request)
+        public ActionActivity(IContextualServiceLocator serviceLocator, IContract contract)
+            : base(serviceLocator, contract)
         {
         }
 
-        protected override void Invoke(IContract request)
+        protected override void Invoke(IContract contract)
         {
             action.Invoke();
         }

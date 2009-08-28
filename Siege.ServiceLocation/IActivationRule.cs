@@ -11,7 +11,7 @@ namespace Siege.ServiceLocation
         bool Evaluate(TContext context);
     }
 
-    public class ConditionalActivationRule<TBaseType, TContext> : IActivationRule<TContext> where TContext :IContext
+    public class ConditionalActivationRule<TBaseType, TContext> : IActivationRule<TContext>
     {
         private readonly Func<TContext, bool> evaluation;
 

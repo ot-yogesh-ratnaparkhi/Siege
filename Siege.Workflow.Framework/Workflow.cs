@@ -9,7 +9,7 @@ namespace Siege.Workflow.Framework
     public class Workflow
     {
         protected IContextualServiceLocator serviceLocator;
-        protected readonly IContract request;
+        protected readonly IContract contract;
         protected readonly IList<Workflow> sequence = new List<Workflow>();
         protected readonly Hashtable exceptionCases = new Hashtable();
         protected Workflow rootWorkflow;
@@ -21,15 +21,15 @@ namespace Siege.Workflow.Framework
             get { return this.rootWorkflow; }
         }
 
-        protected Workflow(IContextualServiceLocator serviceLocator, IContract request)
+        protected Workflow(IContextualServiceLocator serviceLocator, IContract contract)
         {
             this.serviceLocator = serviceLocator;
-            this.request = request;
+            this.contract = contract;
         }
 
         public Workflow Create(Func<Workflow, Workflow> onCreate)
         {
-            Workflow newWorkflow = new Workflow(serviceLocator, request);
+            Workflow newWorkflow = new Workflow(serviceLocator, contract);
 
             onCreate(newWorkflow);
 
@@ -38,7 +38,10 @@ namespace Siege.Workflow.Framework
 
         public WorkflowActivity First(Action action)
         {
-            WorkflowActivity activity = serviceLocator.GetInstance<WorkflowActivity, Context<IContract>>(With.Context(request));
+            IDictionary dictionary = new Dictionary<string, IContract>();
+            dictionary.Add("contract", contract);
+
+            WorkflowActivity activity = serviceLocator.GetInstance<WorkflowActivity, IContract>(contract, new Dictionary<string, IContract> { { "contract", contract } });
 
             activity.For(action);
             this.rootWorkflow = this;
@@ -50,7 +53,7 @@ namespace Siege.Workflow.Framework
         public virtual WorkflowActivity<TActivity> First<TActivity>()
             where TActivity : IWorkflowActivity
         {
-            WorkflowActivity<TActivity> activity = serviceLocator.GetInstance<WorkflowActivity<TActivity>, Context<IContract>>(With.Context(request));
+            WorkflowActivity<TActivity> activity = serviceLocator.GetInstance<WorkflowActivity<TActivity>, IContract>(contract, new Dictionary<string, IContract> { { "contract", contract } });
 
             this.rootWorkflow = this;
             activity.SetWorkflow(this);
@@ -61,7 +64,7 @@ namespace Siege.Workflow.Framework
         public virtual WorkflowActivity<TActivityType> Then<TActivityType>()
             where TActivityType : IWorkflowActivity
         {
-            WorkflowActivity<TActivityType> workflowActivity = serviceLocator.GetInstance<WorkflowActivity<TActivityType>, Context<IContract>>(With.Context(request));
+            WorkflowActivity<TActivityType> workflowActivity = serviceLocator.GetInstance<WorkflowActivity<TActivityType>, IContract>(contract, new Dictionary<string, IContract> { { "contract", contract } });
 
             workflowActivity.SetWorkflow(this.rootWorkflow);
 
@@ -70,7 +73,7 @@ namespace Siege.Workflow.Framework
 
         public WorkflowActivity Then(Action action)
         {
-            WorkflowActivity workflowActivity = serviceLocator.GetInstance<WorkflowActivity, Context<IContract>>(With.Context(request));
+            WorkflowActivity workflowActivity = serviceLocator.GetInstance<WorkflowActivity, IContract>(contract, new Dictionary<string, IContract> { { "contract", contract } });
 
             workflowActivity.SetWorkflow(this.rootWorkflow);
             workflowActivity.For(action);
@@ -81,7 +84,7 @@ namespace Siege.Workflow.Framework
         public ExceptionActivity OnException<TExceptionType>()
             where TExceptionType : Exception
         {
-            ExceptionActivity activity = serviceLocator.GetInstance<ExceptionActivity, Context<IContract>>(With.Context(request));
+            ExceptionActivity activity = serviceLocator.GetInstance<ExceptionActivity, IContract>(contract, new Dictionary<string, IContract> { { "contract", contract } });
 
             exceptionCases.Add(typeof (TExceptionType), activity);
             activity.SetWorkflow(this);
@@ -91,7 +94,7 @@ namespace Siege.Workflow.Framework
 
         public ConditionalActivity If(Func<bool> evaluation)
         {
-            ConditionalActivity activity = serviceLocator.GetInstance<ConditionalActivity, Context<IContract>>(With.Context(request));
+            ConditionalActivity activity = serviceLocator.GetInstance<ConditionalActivity, IContract>(contract, new Dictionary<string, IContract> { { "contract", contract } });
 
             activity.SetWorkflow(this);
             activity.ForCondition(evaluation);
