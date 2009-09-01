@@ -35,6 +35,22 @@ namespace Siege.Container.UnitTests
         }
 
         [Test]
+        public void Should_Be_Able_To_Bind_An_Interface_To_An_Implementation()
+        {
+            locator.Register(Given<ITestInterface>.Then(new TestCase1()));
+
+            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
+        }
+
+        [Test]
+        public void Should_Be_Able_To_Bind_An_Interface_To_An_Implementation_Based_On_Rule()
+        {
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then(new TestCase2()));
+
+            Assert.IsTrue(locator.GetInstance<ITestInterface, TestContext>(CreateContext(TestEnum.Case2)) is TestCase2);
+        }
+
+        [Test]
         public void Should_Use_Rule_When_Satisfied()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>());

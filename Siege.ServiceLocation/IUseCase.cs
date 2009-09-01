@@ -1,44 +1,40 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Siege.ServiceLocation
 {
-    public interface IUseCase {}
+    public interface IUseCase { }
 
     public interface IUseCase<TBaseType> : IUseCase
     {
-        
+        TBaseType Resolve<TContext>(IServiceLocator locator, TContext context, IDictionary dictionary);
     }
 
-    public interface IUseCase<TBaseType, TOutput> : IUseCase<TBaseType>
+    public abstract class UseCase<TBaseType, TOutput> : IUseCase<TBaseType>
     {
-        TOutput Resolve<TContext>(TContext context);
-    }
-
-    public abstract class UseCase<TBaseType, TOutput> : IUseCase<TBaseType, TOutput>
-    {
-        private List<IActivationRule> rules = new List<IActivationRule>();
-        private IActivationRule defaultRule;
+        private readonly List<IActivationRule> rules = new List<IActivationRule>();
         public abstract TOutput GetBinding();
+        protected abstract IActivationStrategy GetActivationStrategy();
 
         public void AddActivationRule(IActivationRule rule)
         {
             rules.Add(rule);
         }
 
-        public void SetDefaultActivationRule(IActivationRule rule)
-        {
-            defaultRule = rule;
-        }
-
-        public TOutput Resolve<TContext>(TContext context)
+        public TBaseType Resolve<TContext>(IServiceLocator locator, TContext context, IDictionary constructorArguments)
         {
             foreach (IActivationRule<TContext> rule in this.rules)
             {
-                if (rule.Evaluate(context)) return this.GetBinding();
+                if (rule.Evaluate(context)) return GetActivationStrategy().Resolve(locator, constructorArguments);
             }
 
-            return default(TOutput);
+            return default(TBaseType);
+        }
+
+        protected interface IActivationStrategy
+        {
+            TBaseType Resolve(IServiceLocator locator, IDictionary constructorArguments);
         }
     }
 
@@ -55,6 +51,26 @@ namespace Siege.ServiceLocation
         {
             return boundType;
         }
+
+        protected override IActivationStrategy GetActivationStrategy()
+        {
+            return new GenericActivationStrategy(boundType);
+        }
+
+        public class GenericActivationStrategy : IActivationStrategy
+        {
+            private readonly Type boundType;
+
+            public GenericActivationStrategy(Type boundType)
+            {
+                this.boundType = boundType;
+            }
+
+            public TBaseType Resolve(IServiceLocator locator, IDictionary constructorArguments)
+            {
+                return locator.GetInstance<TBaseType>(boundType, constructorArguments);
+            }
+        }
     }
 
     public class ImplementationUseCase<TBaseType> : UseCase<TBaseType, TBaseType>
@@ -70,10 +86,30 @@ namespace Siege.ServiceLocation
         {
             return this.implementation;
         }
+
+        protected override IActivationStrategy GetActivationStrategy()
+        {
+            return new ImplementationActivationStrategy(implementation);
+        }
+
+        public class ImplementationActivationStrategy : IActivationStrategy
+        {
+            private readonly TBaseType implementation;
+
+            public ImplementationActivationStrategy(TBaseType implementation)
+            {
+                this.implementation = implementation;
+            }
+
+            public TBaseType Resolve(IServiceLocator locator, IDictionary constructorArguments)
+            {
+                return implementation;
+            }
+        }
     }
 
     public class DefaultUseCase<TBaseType> : GenericUseCase<TBaseType>
     {
-        
+
     }
 }

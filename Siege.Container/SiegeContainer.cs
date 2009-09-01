@@ -20,7 +20,7 @@ namespace Siege.Container
 
         public TOutput GetInstance<TOutput, TContext>(TContext context)
         {
-            return GetInstance<TOutput, TContext>(typeof (TOutput), context, null);
+            return GetInstance<TOutput, TContext>(typeof(TOutput), context, null);
         }
 
         public TOutput GetInstance<TOutput, TContext>(TContext context, IDictionary constructorArguments)
@@ -31,11 +31,6 @@ namespace Siege.Container
         public TOutput GetInstance<TOutput>()
         {
             return GetInstance<TOutput>(typeof(TOutput));
-        }
-
-        public T GetInstance<T>(object anonymousConstructorArguments)
-        {
-            return GetInstance<T>(anonymousConstructorArguments.AnonymousTypeToDictionary());
         }
 
         public TOutput GetInstance<TOutput>(Type type)
@@ -53,27 +48,9 @@ namespace Siege.Container
             return GetInstance<TOutput>(typeof(TOutput), constructorArguments);
         }
 
-        public TOutput GetInstance<TOutput, TContext>(Type type, TContext context, IDictionary constructorArguments)
+        public T GetInstance<T>(object anonymousConstructorArguments)
         {
-            IList<IUseCase> selectedCase = (IList<IUseCase>)useCases[type];
-
-            if (selectedCase != null)
-            {
-                foreach (IUseCase<TOutput, Type> useCase in selectedCase)
-                {
-                    Type value = useCase.Resolve(context);
-
-                    if (value != null) return serviceLocator.GetInstance<TOutput>(value, constructorArguments);
-                }
-            }
-
-            if (defaultCases.ContainsKey(type))
-            {
-                DefaultUseCase<TOutput> useCase = (DefaultUseCase<TOutput>)defaultCases[type];
-                return serviceLocator.GetInstance<TOutput>(useCase.GetBinding(), constructorArguments);
-            }
-
-            return serviceLocator.GetInstance<TOutput>(constructorArguments);
+            return GetInstance<T>(anonymousConstructorArguments.AnonymousTypeToDictionary());
         }
 
         public T GetInstance<T, TContext>(TContext context, object anonymousConstructorArguments)
@@ -84,6 +61,29 @@ namespace Siege.Container
         public T GetInstance<T, TContext>(Type type, TContext context, object anonymousConstructorArguments)
         {
             return this.GetInstance<T, TContext>(type, context, anonymousConstructorArguments.AnonymousTypeToDictionary());
+        }
+
+        public TOutput GetInstance<TOutput, TContext>(Type type, TContext context, IDictionary constructorArguments)
+        {
+            IList<IUseCase> selectedCase = (IList<IUseCase>)useCases[type];
+
+            if (selectedCase != null)
+            {
+                foreach (IUseCase<TOutput> useCase in selectedCase)
+                {
+                    TOutput value = useCase.Resolve(serviceLocator, context, constructorArguments);
+
+                    if (!Equals(value, default(TOutput))) return value;
+                }
+            }
+
+            if (defaultCases.ContainsKey(type))
+            {
+                DefaultUseCase<TOutput> useCase = (DefaultUseCase<TOutput>)defaultCases[type];
+                return serviceLocator.GetInstance<TOutput>(useCase.GetBinding(), constructorArguments);
+            }
+
+            return serviceLocator.GetInstance<TOutput>(constructorArguments);
         }
 
         public TOutput GetInstance<TOutput>(Type type, IDictionary constructorArguments)
@@ -103,21 +103,21 @@ namespace Siege.Container
             else
             {
 
-                if (!useCases.ContainsKey(typeof (T)))
+                if (!useCases.ContainsKey(typeof(T)))
                 {
                     List<IUseCase> list = new List<IUseCase>();
 
-                    useCases.Add(typeof (T), list);
+                    useCases.Add(typeof(T), list);
                 }
 
-                IList<IUseCase> selectedCase = (IList<IUseCase>) useCases[typeof (T)];
+                IList<IUseCase> selectedCase = (IList<IUseCase>)useCases[typeof(T)];
 
                 selectedCase.Add(useCase);
             }
 
-            if (!registeredTypes.ContainsKey(typeof (T))) registeredTypes.Add(typeof (T), typeof (T));
+            if (!registeredTypes.ContainsKey(typeof(T))) registeredTypes.Add(typeof(T), typeof(T));
             if (!registeredImplementors.ContainsKey(useCase.GetType())) registeredImplementors.Add(useCase.GetType(), useCase.GetType());
-            
+
             serviceLocator.Register(useCase);
 
             return this;

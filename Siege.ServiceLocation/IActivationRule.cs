@@ -30,6 +30,16 @@ namespace Siege.ServiceLocation
             return useCase;
         }
 
+        public IUseCase<TBaseType> Then(TBaseType implementation)
+        {
+            ImplementationUseCase<TBaseType> useCase = new ImplementationUseCase<TBaseType>();
+
+            useCase.AddActivationRule(this);
+            useCase.BindTo(implementation);
+
+            return useCase;
+        }
+
         public bool Evaluate(TContext context)
         {
             return evaluation.Invoke(context);

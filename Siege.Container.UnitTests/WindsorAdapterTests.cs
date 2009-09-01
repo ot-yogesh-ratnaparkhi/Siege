@@ -8,7 +8,13 @@ namespace Siege.Container.UnitTests
     [TestFixture]
     public class WindsorAdapterTests : SiegeContainerTests
     {
-        readonly IKernel kernel = new DefaultKernel();
+        private IKernel kernel;
+
+        public override void SetUp()
+        {
+            kernel = new DefaultKernel();
+            base.SetUp();
+        }
 
         protected override IServiceLocator GetAdapter()
         {
