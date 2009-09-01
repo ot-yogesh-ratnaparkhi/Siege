@@ -9,14 +9,17 @@ namespace Siege.ServiceLocation
         T GetInstance<T, TContext>(Type type, TContext context);
         T GetInstance<T, TContext>(TContext context, IDictionary constructorArguments);
         T GetInstance<T, TContext>(Type type, TContext context, IDictionary constructorArguments);
+        T GetInstance<T, TContext>(TContext context, object anonymousConstructorArguments);
+        T GetInstance<T, TContext>(Type type, TContext context, object anonymousConstructorArguments);
     }
 
     public interface IServiceLocator
     {
         T GetInstance<T>();
         T GetInstance<T>(IDictionary constructorArguments);
+        T GetInstance<T>(object anonymousConstructorArguments);
         T GetInstance<T>(Type type);
         T GetInstance<T>(Type type, IDictionary constructorArguments);
-        void Register<T>(IUseCase<T> useCase);
+        IServiceLocator Register<T>(IUseCase<T> useCase);
     }
 }

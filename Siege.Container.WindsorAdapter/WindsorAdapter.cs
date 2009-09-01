@@ -25,6 +25,11 @@ namespace Siege.Container.WindsorAdapter
             return GetInstance<T>(typeof (T), constructorArguments);
         }
 
+        public T GetInstance<T>(object anonymousConstructorArguments)
+        {
+            return GetInstance<T>(anonymousConstructorArguments.AnonymousTypeToDictionary());
+        }
+
         public T GetInstance<T>(Type type)
         {
             return (T)kernel.Resolve(type);
@@ -36,7 +41,7 @@ namespace Siege.Container.WindsorAdapter
             return (T)kernel.Resolve(type, constructorArguments);
         }
 
-        public void Register<T>(IUseCase<T> useCase)
+        public IServiceLocator Register<T>(IUseCase<T> useCase)
         {
             if (useCase is GenericUseCase<T>)
             {
@@ -51,6 +56,8 @@ namespace Siege.Container.WindsorAdapter
 
                 implementation.Bind(kernel);
             }
+
+            return this;
         }
     }
 

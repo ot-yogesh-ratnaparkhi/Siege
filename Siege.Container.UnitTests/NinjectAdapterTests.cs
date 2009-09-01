@@ -9,7 +9,13 @@ namespace Siege.Container.UnitTests
     [TestFixture]
     public class NinjectAdapterTests : SiegeContainerTests
     {
-        readonly IKernel kernel = new StandardKernel();
+        private IKernel kernel;
+
+        public override void SetUp()
+        {
+            kernel = new StandardKernel();
+            base.SetUp();
+        }
 
         protected override IServiceLocator GetAdapter()
         {

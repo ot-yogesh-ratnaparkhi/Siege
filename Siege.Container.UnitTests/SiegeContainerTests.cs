@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System.Collections;
+using System.Collections.Generic;
+using NUnit.Framework;
 using Siege.ServiceLocation;
 
 namespace Siege.Container.UnitTests
@@ -11,7 +13,7 @@ namespace Siege.Container.UnitTests
         protected abstract void RegisterWithoutSiege();
 
         [SetUp]
-        public void SetUp()
+        public virtual void SetUp()
         {
             locator = new SiegeContainer(GetAdapter());
         }
@@ -77,6 +79,23 @@ namespace Siege.Container.UnitTests
             Assert.IsTrue(locator.GetInstance<IUnregisteredInterface>() is UnregisteredClass);
         }
 
+        [Test]
+        public void Should_Pass_Dictionary_As_A_Constructor_Argument()
+        {
+            IDictionary dictionary = new Dictionary<string, IConstructorArgument>();
+            dictionary.Add("argument", new ConstructorArgument());
+
+            locator.Register(Given<ITestInterface>.Then<TestCase4>());
+            Assert.IsTrue(locator.GetInstance<ITestInterface>(dictionary) is TestCase4);
+        }
+
+        [Test]
+        public void Should_Pass_Anonymous_Type_As_A_Constructor_Argument()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase4>());
+            Assert.IsTrue(locator.GetInstance<ITestInterface>(new { argument = new ConstructorArgument() }) is TestCase4);
+        }
+
         private TestContext CreateContext(TestEnum types)
         {
             return new TestContext { TestCases = types };
@@ -97,7 +116,13 @@ namespace Siege.Container.UnitTests
 
     public interface IUnregisteredInterface {}
     public interface ITestInterface {}
+    public interface IConstructorArgument {}
     public class TestCase1 : ITestInterface {}
     public class TestCase2 : ITestInterface {}
     public class UnregisteredClass : IUnregisteredInterface {}
+    public class ConstructorArgument : IConstructorArgument {}
+    public class TestCase4 : ITestInterface
+    {
+        public TestCase4(IConstructorArgument argument) {}
+    }
 }

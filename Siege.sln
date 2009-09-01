@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Workflow.Framework.Un
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Container.UnitTests", "Siege.Container.UnitTests\Siege.Container.UnitTests.csproj", "{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Persistence", "Siege.Persistence\Siege.Persistence.csproj", "{D415D6E8-6D19-4665-BBB5-6A45DFED48F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D415D6E8-6D19-4665-BBB5-6A45DFED48F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D415D6E8-6D19-4665-BBB5-6A45DFED48F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D415D6E8-6D19-4665-BBB5-6A45DFED48F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D415D6E8-6D19-4665-BBB5-6A45DFED48F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

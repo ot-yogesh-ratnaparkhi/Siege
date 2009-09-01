@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{538EFCD6-FEC6-4495-8D07-EC95BD714AAC}</ProjectGuid>
+    <ProjectGuid>{D415D6E8-6D19-4665-BBB5-6A45DFED48F1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Siege.Workflow.Framework</RootNamespace>
-    <AssemblyName>Siege.Workflow.Framework</AssemblyName>
+    <RootNamespace>Siege.Persistence</RootNamespace>
+    <AssemblyName>Siege.Persistence</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,6 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentNHibernate, Version=1.0.0.593, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Fluent NHibernate\FluentNHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate, Version=2.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\NHibernate\Required_Bins\NHibernate.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -45,27 +53,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractWorkflowActivity.cs" />
-    <Compile Include="Activities\ActionActivity.cs" />
-    <Compile Include="Activities\BreakActivity.cs" />
-    <Compile Include="Activities\CaptureResultActivity.cs" />
-    <Compile Include="Activities\ConditionalActivity.cs" />
-    <Compile Include="Activities\ExceptionActivity.cs" />
-    <Compile Include="Activities\WorkflowActivity.cs" />
-    <Compile Include="IContract.cs" />
+    <Compile Include="IFinder.cs" />
+    <Compile Include="IPersistenceManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Request.cs" />
-    <Compile Include="Workflow.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Siege.Container\Siege.Container.csproj">
-      <Project>{FF809718-BCE7-4C51-8C2D-CCBCFA346A40}</Project>
-      <Name>Siege.Container</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Siege.ServiceLocation\Siege.ServiceLocation.csproj">
-      <Project>{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}</Project>
-      <Name>Siege.ServiceLocation</Name>
-    </ProjectReference>
+    <Compile Include="SQLServerPersistenceManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

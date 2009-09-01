@@ -17,6 +17,11 @@ namespace Siege.Container.StructureMapAdapter
             return GetInstance<T>(typeof (T), constructorArguments);
         }
 
+        public T GetInstance<T>(object anonymousConstructorArguments)
+        {
+            return GetInstance<T>(anonymousConstructorArguments.AnonymousTypeToDictionary());
+        }
+
         public T GetInstance<T>(Type type)
         {
             return (T)ObjectFactory.GetInstance(type);
@@ -42,7 +47,7 @@ namespace Siege.Container.StructureMapAdapter
             return (T)expression.GetInstance(type);
         }
 
-        public void Register<T>(IUseCase<T> useCase)
+        public IServiceLocator Register<T>(IUseCase<T> useCase)
         {
             if (useCase is GenericUseCase<T>)
             {
@@ -57,6 +62,8 @@ namespace Siege.Container.StructureMapAdapter
 
                 implementation.Bind();
             }
+
+            return this;
         }
     }
 

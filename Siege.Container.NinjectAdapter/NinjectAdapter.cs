@@ -27,6 +27,11 @@ namespace Siege.Container.NinjectAdapter
             return GetInstance<T>(typeof (T), constructorArguments);
         }
 
+        public T GetInstance<T>(object anonymousConstructorArguments)
+        {
+            return GetInstance<T>(anonymousConstructorArguments.AnonymousTypeToDictionary());
+        }
+
         public T GetInstance<T>(Type type)
         {
             return (T)this.kernel.Get(type);
@@ -47,7 +52,7 @@ namespace Siege.Container.NinjectAdapter
             return this.kernel.Get<T>(args.ToArray());
         }
 
-        public void Register<T>(IUseCase<T> useCase)
+        public IServiceLocator Register<T>(IUseCase<T> useCase)
         {
             BindingBuilder<T> builder = new BindingBuilder<T>(new Binding(typeof(T)));
 
@@ -64,6 +69,8 @@ namespace Siege.Container.NinjectAdapter
 
                 implementation.Bind(this.kernel, builder);
             }
+
+            return this;
         }
     }
 

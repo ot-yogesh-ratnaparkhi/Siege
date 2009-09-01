@@ -49,6 +49,7 @@
     <Compile Include="IActivationRule.cs" />
     <Compile Include="IServiceLocator.cs" />
     <Compile Include="IUseCase.cs" />
+    <Compile Include="ObjectToDictionaryRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
