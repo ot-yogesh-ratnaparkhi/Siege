@@ -16,7 +16,7 @@ namespace Siege.Container.UnitTests
             base.SetUp();
         }
 
-        protected override IServiceLocator GetAdapter()
+        protected override IServiceLocatorAdapter GetAdapter()
         {
             return new WindsorAdapter.WindsorAdapter(kernel);
         }

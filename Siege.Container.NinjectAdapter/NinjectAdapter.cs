@@ -8,9 +8,9 @@ using Siege.ServiceLocation;
 
 namespace Siege.Container.NinjectAdapter
 {
-    public class NinjectAdapter : IServiceLocator
+    public class NinjectAdapter : IServiceLocatorAdapter
     {
-        private readonly IKernel kernel;
+        private IKernel kernel;
 
         public NinjectAdapter(IKernel kernel)
         {
@@ -76,28 +76,32 @@ namespace Siege.Container.NinjectAdapter
         {
             BindingBuilder<T> builder = new BindingBuilder<T>(new Binding(typeof(T)));
 
-            if (useCase is GenericUseCase<T>)
-            {
-                GenericUseCase<T> genericCase = useCase as GenericUseCase<T>;
-
-                genericCase.Bind(this.kernel, builder);
-            }
-
-            if (useCase is ImplementationUseCase<T>)
-            {
-                var implementation = useCase as ImplementationUseCase<T>;
-
-                implementation.Bind(this.kernel, builder);
-            }
-
             if (useCase is KeyBasedUseCase<T>)
             {
                 var keyCase = useCase as KeyBasedUseCase<T>;
 
                 keyCase.Bind(this.kernel, builder);
             }
+            else if (useCase is GenericUseCase<T>)
+            {
+                GenericUseCase<T> genericCase = useCase as GenericUseCase<T>;
+
+                genericCase.Bind(this.kernel, builder);
+            }
+            else if (useCase is ImplementationUseCase<T>)
+            {
+                var implementation = useCase as ImplementationUseCase<T>;
+
+                implementation.Bind(this.kernel, builder);
+            }
 
             return this;
+        }
+
+        public void RegisterParentLocator(IContextualServiceLocator locator)
+        {
+            Register(Given<IServiceLocator>.Then(locator));
+            Register(Given<IContextualServiceLocator>.Then(locator));
         }
     }
 

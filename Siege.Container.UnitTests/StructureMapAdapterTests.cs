@@ -7,13 +7,7 @@ namespace Siege.Container.UnitTests
     [TestFixture]
     public class StructureMapAdapterTests : SiegeContainerTests
     {
-        public override void SetUp()
-        {
-            ObjectFactory.ResetDefaults();
-            base.SetUp();
-        }
-
-        protected override IServiceLocator GetAdapter()
+        protected override IServiceLocatorAdapter GetAdapter()
         {
             return new StructureMapAdapter.StructureMapAdapter();
         }

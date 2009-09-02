@@ -9,7 +9,10 @@ namespace Siege.ServiceLocation
     public interface IUseCase<TBaseType> : IUseCase
     {
         TBaseType Resolve<TContext>(IServiceLocator locator, TContext context, IDictionary dictionary);
+        Type GetBoundType();
     }
+
+    public interface IDefaultUseCase<TBaseType> : IUseCase<TBaseType> {}
 
     public abstract class UseCase<TBaseType, TOutput> : IUseCase<TBaseType>
     {
@@ -31,6 +34,8 @@ namespace Siege.ServiceLocation
 
             return default(TBaseType);
         }
+
+        public abstract Type GetBoundType();
 
         protected interface IActivationStrategy
         {
@@ -55,6 +60,11 @@ namespace Siege.ServiceLocation
         protected override IActivationStrategy GetActivationStrategy()
         {
             return new GenericActivationStrategy(boundType);
+        }
+
+        public override Type GetBoundType()
+        {
+            return boundType;
         }
 
         public class GenericActivationStrategy : IActivationStrategy
@@ -90,6 +100,11 @@ namespace Siege.ServiceLocation
         protected override IActivationStrategy GetActivationStrategy()
         {
             return new ImplementationActivationStrategy(implementation);
+        }
+
+        public override Type GetBoundType()
+        {
+            return this.implementation.GetType();
         }
 
         public class ImplementationActivationStrategy : IActivationStrategy
@@ -143,7 +158,12 @@ namespace Siege.ServiceLocation
         }
     }
 
-    public class DefaultUseCase<TBaseType> : GenericUseCase<TBaseType>
+    public class DefaultImplementationUseCase<TBaseType> : ImplementationUseCase<TBaseType>, IDefaultUseCase<TBaseType>
+    {
+        
+    }
+
+    public class DefaultUseCase<TBaseType> : GenericUseCase<TBaseType>, IDefaultUseCase<TBaseType>
     {
 
     }

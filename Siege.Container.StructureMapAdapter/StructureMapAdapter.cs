@@ -2,10 +2,11 @@
 using System.Collections;
 using Siege.ServiceLocation;
 using StructureMap;
+using StructureMap.Configuration.DSL;
 
 namespace Siege.Container.StructureMapAdapter
 {
-    public class StructureMapAdapter : IServiceLocator
+    public class StructureMapAdapter : IServiceLocatorAdapter
     {
         public T GetInstance<T>()
         {
@@ -74,28 +75,32 @@ namespace Siege.Container.StructureMapAdapter
 
         public IServiceLocator Register<T>(IUseCase<T> useCase)
         {
-            if (useCase is GenericUseCase<T>)
-            {
-                GenericUseCase<T> genericCase = useCase as GenericUseCase<T>;
-
-                genericCase.Bind();
-            }
-
-            if (useCase is ImplementationUseCase<T>)
-            {
-                var implementation = useCase as ImplementationUseCase<T>;
-
-                implementation.Bind();
-            }
-
             if (useCase is KeyBasedUseCase<T>)
             {
                 var keyCase = useCase as KeyBasedUseCase<T>;
 
                 keyCase.Bind();
             }
+            else if (useCase is GenericUseCase<T>)
+            {
+                GenericUseCase<T> genericCase = useCase as GenericUseCase<T>;
+
+                genericCase.Bind();
+            }
+            else if (useCase is ImplementationUseCase<T>)
+            {
+                var implementation = useCase as ImplementationUseCase<T>;
+
+                implementation.Bind();
+            }
 
             return this;
+        }
+
+        public void RegisterParentLocator(IContextualServiceLocator locator)
+        {
+            Register(Given<IServiceLocator>.Then(locator));
+            Register(Given<IContextualServiceLocator>.Then(locator));
         }
     }
 
@@ -103,7 +108,9 @@ namespace Siege.Container.StructureMapAdapter
     {
         public static void Bind<TBaseType>(this GenericUseCase<TBaseType> useCase)
         {
-            ObjectFactory.Initialize(registry => registry.ForRequestedType<TBaseType>().TheDefault.Is.OfConcreteType(useCase.GetBinding()));
+            Registry registry = new Registry();
+            registry.ForRequestedType<TBaseType>().TheDefault.Is.OfConcreteType(useCase.GetBinding());
+            ObjectFactory.Configure(configure => configure.AddRegistry(registry));
         }
     }
 
@@ -111,7 +118,9 @@ namespace Siege.Container.StructureMapAdapter
     {
         public static void Bind<TBaseType>(this ImplementationUseCase<TBaseType> useCase)
         {
-            ObjectFactory.Initialize(registry => registry.ForRequestedType<TBaseType>().TheDefault.IsThis(useCase.GetBinding()));
+            Registry registry = new Registry();
+            registry.ForRequestedType<TBaseType>().TheDefault.IsThis(useCase.GetBinding());
+            ObjectFactory.Configure(configure => configure.AddRegistry(registry));
         }
     }
 
@@ -119,10 +128,12 @@ namespace Siege.Container.StructureMapAdapter
     {
         public static void Bind<TBaseType>(this KeyBasedUseCase<TBaseType> useCase)
         {
-            ObjectFactory.Initialize(registry => registry
-                                                    .ForRequestedType<TBaseType>()
-                                                    .AddInstances(x => x.OfConcreteType(useCase.GetBinding())
-                                                    .WithName(useCase.Key)));
+            Registry registry = new Registry();
+            registry
+                .ForRequestedType<TBaseType>()
+                .AddInstances(x => x.OfConcreteType(useCase.GetBinding())
+                                       .WithName(useCase.Key));
+            ObjectFactory.Configure(configure => configure.AddRegistry(registry));
         }
     }
 }

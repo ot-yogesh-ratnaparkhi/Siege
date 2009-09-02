@@ -9,7 +9,7 @@ namespace Siege.ServiceLocation
             return new ConditionalActivationRule<TBaseType, TContext>(evaluation);
         }
 
-        public static DefaultUseCase<TBaseType> Then<TImplementingType>() where TImplementingType : TBaseType
+        public static IDefaultUseCase<TBaseType> Then<TImplementingType>() where TImplementingType : TBaseType
         {
             DefaultUseCase<TBaseType> useCase = new DefaultUseCase<TBaseType>();
 
@@ -27,9 +27,9 @@ namespace Siege.ServiceLocation
             return useCase;
         }
 
-        public static IUseCase<TBaseType> Then(TBaseType implementation)
+        public static IDefaultUseCase<TBaseType> Then(TBaseType implementation)
         {
-            ImplementationUseCase<TBaseType> useCase = new ImplementationUseCase<TBaseType>();
+            DefaultImplementationUseCase<TBaseType> useCase = new DefaultImplementationUseCase<TBaseType>();
 
             useCase.BindTo(implementation);
 

@@ -6,9 +6,9 @@ using Siege.ServiceLocation;
 
 namespace Siege.Container.WindsorAdapter
 {
-    public class WindsorAdapter : IServiceLocator
+    public class WindsorAdapter : IServiceLocatorAdapter
     {
-        private readonly IKernel kernel;
+        private IKernel kernel;
 
         public WindsorAdapter(IKernel kernel)
         {
@@ -55,28 +55,31 @@ namespace Siege.Container.WindsorAdapter
 
         public IServiceLocator Register<T>(IUseCase<T> useCase)
         {
-            if (useCase is GenericUseCase<T>)
-            {
-                GenericUseCase<T> genericCase = useCase as GenericUseCase<T>;
-
-                genericCase.Bind(kernel);
-            }
-
-            if (useCase is ImplementationUseCase<T>)
-            {
-                var implementation = useCase as ImplementationUseCase<T>;
-
-                implementation.Bind(kernel);
-            }
-
             if (useCase is KeyBasedUseCase<T>)
             {
                 var keyCase = useCase as KeyBasedUseCase<T>;
 
                 keyCase.Bind(this.kernel);
             }
+            else if (useCase is GenericUseCase<T>)
+            {
+                GenericUseCase<T> genericCase = useCase as GenericUseCase<T>;
+
+                genericCase.Bind(kernel);
+            }
+            else if (useCase is ImplementationUseCase<T>)
+            {
+                var implementation = useCase as ImplementationUseCase<T>;
+
+                implementation.Bind(kernel);
+            }
 
             return this;
+        }
+
+        public void RegisterParentLocator(IContextualServiceLocator locator)
+        {
+            kernel.Register(Component.For<IServiceLocator, IContextualServiceLocator>().Instance(locator));
         }
     }
 
@@ -84,7 +87,7 @@ namespace Siege.Container.WindsorAdapter
     {
         public static void Bind<TBaseType>(this GenericUseCase<TBaseType> useCase, IKernel kernel)
         {
-            kernel.Register(Component.For(useCase.GetBinding()).Unless(Component.ServiceAlreadyRegistered).LifeStyle.Transient);
+            kernel.Register(Component.For(useCase.GetBoundType()).ImplementedBy(useCase.GetBinding()).Unless(Component.ServiceAlreadyRegistered).LifeStyle.Transient);
         }
     }
 
@@ -92,7 +95,7 @@ namespace Siege.Container.WindsorAdapter
     {
         public static void Bind<TBaseType>(this ImplementationUseCase<TBaseType> useCase, IKernel kernel)
         {
-            kernel.Register(Component.For<TBaseType>().Instance(useCase.GetBinding()));
+            kernel.Register(Component.For(useCase.GetBoundType()).Instance(useCase.GetBinding()).Unless(Component.ServiceAlreadyRegistered));
         }
     }
 
@@ -100,7 +103,7 @@ namespace Siege.Container.WindsorAdapter
     {
         public static void Bind<TBaseType>(this KeyBasedUseCase<TBaseType> useCase, IKernel kernel)
         {
-            kernel.Register(Component.For(useCase.GetBinding()).Named(useCase.Key));
+            kernel.Register(Component.For(useCase.GetBoundType()).ImplementedBy(useCase.GetBinding()).Named(useCase.Key).Unless(Component.ServiceAlreadyRegistered).LifeStyle.Transient);
         }
     }
 }

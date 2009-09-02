@@ -24,4 +24,9 @@ namespace Siege.ServiceLocation
         T GetInstance<T>(string key, IDictionary constructorArguments);
         IServiceLocator Register<T>(IUseCase<T> useCase);
     }
+
+    public interface IServiceLocatorAdapter : IServiceLocator
+    {
+        void RegisterParentLocator(IContextualServiceLocator locator);
+    }
 }

@@ -7,15 +7,16 @@ namespace Siege.Container
 {
     public class SiegeContainer : IContextualServiceLocator
     {
-        private readonly IServiceLocator serviceLocator;
+        private IServiceLocatorAdapter serviceLocator;
         private readonly Hashtable useCases = new Hashtable();
         private readonly Hashtable registeredImplementors = new Hashtable();
         private readonly Hashtable registeredTypes = new Hashtable();
         private readonly Hashtable defaultCases = new Hashtable();
 
-        public SiegeContainer(IServiceLocator serviceLocator)
+        public SiegeContainer(IServiceLocatorAdapter serviceLocator)
         {
             this.serviceLocator = serviceLocator;
+            this.serviceLocator.RegisterParentLocator(this);
         }
 
         public TOutput GetInstance<TOutput, TContext>(TContext context)
@@ -79,8 +80,8 @@ namespace Siege.Container
 
             if (defaultCases.ContainsKey(type))
             {
-                DefaultUseCase<TOutput> useCase = (DefaultUseCase<TOutput>)defaultCases[type];
-                return serviceLocator.GetInstance<TOutput>(useCase.GetBinding(), constructorArguments);
+                IDefaultUseCase<TOutput> useCase = (DefaultUseCase<TOutput>)defaultCases[type];
+                return serviceLocator.GetInstance<TOutput>(useCase.GetBoundType(), constructorArguments);
             }
 
             return serviceLocator.GetInstance<TOutput>(constructorArguments);
@@ -88,8 +89,8 @@ namespace Siege.Container
 
         public TOutput GetInstance<TOutput>(Type type, IDictionary constructorArguments)
         {
-            DefaultUseCase<TOutput> defaultCase = (DefaultUseCase<TOutput>)defaultCases[typeof(TOutput)];
-            if (defaultCase != null) return serviceLocator.GetInstance<TOutput>(defaultCase.GetBinding(), constructorArguments);
+            IDefaultUseCase<TOutput> defaultCase = (IDefaultUseCase<TOutput>)defaultCases[typeof(TOutput)];
+            if (defaultCase != null) return serviceLocator.GetInstance<TOutput>(defaultCase.GetBoundType(), constructorArguments);
 
             return serviceLocator.GetInstance<TOutput>(constructorArguments);
         }
@@ -106,7 +107,7 @@ namespace Siege.Container
 
         public IServiceLocator Register<T>(IUseCase<T> useCase)
         {
-            if (useCase is DefaultUseCase<T>)
+            if (useCase is IDefaultUseCase<T>)
             {
                 defaultCases.Add(typeof(T), useCase);
             }

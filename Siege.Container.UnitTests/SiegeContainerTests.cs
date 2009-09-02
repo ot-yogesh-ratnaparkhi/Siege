@@ -9,7 +9,7 @@ namespace Siege.Container.UnitTests
     public abstract class SiegeContainerTests
     {
         protected IContextualServiceLocator locator;
-        protected abstract IServiceLocator GetAdapter();
+        protected abstract IServiceLocatorAdapter GetAdapter();
         protected abstract void RegisterWithoutSiege();
 
         [SetUp]
@@ -134,6 +134,13 @@ namespace Siege.Container.UnitTests
             Assert.IsTrue(locator.GetInstance<ITestInterface>(new { argument = new ConstructorArgument() }) is TestCase4);
         }
 
+        [Test]
+        public void Should_Resolve_If_Depends_On_IServiceLocator()
+        {
+            locator.Register(Given<ITestInterface>.Then<DependsOnIServiceLocator>());
+            Assert.IsTrue(locator.GetInstance<ITestInterface>() is DependsOnIServiceLocator);
+        }
+
         private TestContext CreateContext(TestEnum types)
         {
             return new TestContext { TestCases = types };
@@ -162,5 +169,12 @@ namespace Siege.Container.UnitTests
     public class TestCase4 : ITestInterface
     {
         public TestCase4(IConstructorArgument argument) {}
+    }
+
+    public class DependsOnIServiceLocator : ITestInterface
+    {
+        public DependsOnIServiceLocator(IServiceLocator locator)
+        {
+        }
     }
 }
