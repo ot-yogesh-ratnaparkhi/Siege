@@ -41,6 +41,18 @@ namespace Siege.Container.WindsorAdapter
             return (T)kernel.Resolve(type, constructorArguments);
         }
 
+        public T GetInstance<T>(string key)
+        {
+            return GetInstance<T>(key, null);
+        }
+
+        public T GetInstance<T>(string key, IDictionary constructorArguments)
+        {
+            if (constructorArguments == null) return kernel.Resolve<T>(key);
+
+            return (T)kernel.Resolve(key, constructorArguments);
+        }
+
         public IServiceLocator Register<T>(IUseCase<T> useCase)
         {
             if (useCase is GenericUseCase<T>)
@@ -55,6 +67,13 @@ namespace Siege.Container.WindsorAdapter
                 var implementation = useCase as ImplementationUseCase<T>;
 
                 implementation.Bind(kernel);
+            }
+
+            if (useCase is KeyBasedUseCase<T>)
+            {
+                var keyCase = useCase as KeyBasedUseCase<T>;
+
+                keyCase.Bind(this.kernel);
             }
 
             return this;
@@ -74,6 +93,14 @@ namespace Siege.Container.WindsorAdapter
         public static void Bind<TBaseType>(this ImplementationUseCase<TBaseType> useCase, IKernel kernel)
         {
             kernel.Register(Component.For<TBaseType>().Instance(useCase.GetBinding()));
+        }
+    }
+
+    public static class KeyBasedUseCaseExtensions
+    {
+        public static void Bind<TBaseType>(this KeyBasedUseCase<TBaseType> useCase, IKernel kernel)
+        {
+            kernel.Register(Component.For(useCase.GetBinding()).Named(useCase.Key));
         }
     }
 }

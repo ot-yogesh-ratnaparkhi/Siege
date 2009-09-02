@@ -27,6 +27,28 @@ namespace Siege.Container.UnitTests
         }
 
         [Test]
+        public void Should_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>("test"));
+
+            Assert.IsTrue(locator.GetInstance<ITestInterface>("test") is TestCase1);
+        }
+
+        [Test]
+        public virtual void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>("test"));
+            locator.GetInstance<ITestInterface>();
+        }
+
+        [Test]
+        public virtual void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>("test"));
+            locator.GetInstance<ITestInterface>("test15");
+        }
+
+        [Test]
         public void Should_Be_Able_To_Bind_An_Interface_To_A_Type_Based_On_Rule()
         {
             locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());

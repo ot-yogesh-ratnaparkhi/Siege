@@ -94,6 +94,16 @@ namespace Siege.Container
             return serviceLocator.GetInstance<TOutput>(constructorArguments);
         }
 
+        public T GetInstance<T>(string key)
+        {
+            return GetInstance<T>(key, null);
+        }
+
+        public T GetInstance<T>(string key, IDictionary constructorArguments)
+        {
+            return serviceLocator.GetInstance<T>(key, constructorArguments);
+        }
+
         public IServiceLocator Register<T>(IUseCase<T> useCase)
         {
             if (useCase is DefaultUseCase<T>)
@@ -102,7 +112,6 @@ namespace Siege.Container
             }
             else
             {
-
                 if (!useCases.ContainsKey(typeof(T)))
                 {
                     List<IUseCase> list = new List<IUseCase>();

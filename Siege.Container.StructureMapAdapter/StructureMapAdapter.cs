@@ -47,6 +47,31 @@ namespace Siege.Container.StructureMapAdapter
             return (T)expression.GetInstance(type);
         }
 
+        public T GetInstance<T>(string key)
+        {
+            return GetInstance<T>(key, null);
+        }
+
+        public T GetInstance<T>(string name, IDictionary constructorArguments)
+        {
+            if (constructorArguments == null || constructorArguments.Count == 0) return ObjectFactory.GetNamedInstance<T>(name);
+
+            ExplicitArgsExpression expression = null;
+
+            foreach (string key in constructorArguments.Keys)
+            {
+                if (expression == null)
+                {
+                    expression = ObjectFactory.With(key).EqualTo(constructorArguments[key]);
+                    continue;
+                }
+
+                expression.With(key).EqualTo(constructorArguments[key]);
+            }
+
+            return expression.GetInstance<T>(name);
+        }
+
         public IServiceLocator Register<T>(IUseCase<T> useCase)
         {
             if (useCase is GenericUseCase<T>)
@@ -61,6 +86,13 @@ namespace Siege.Container.StructureMapAdapter
                 var implementation = useCase as ImplementationUseCase<T>;
 
                 implementation.Bind();
+            }
+
+            if (useCase is KeyBasedUseCase<T>)
+            {
+                var keyCase = useCase as KeyBasedUseCase<T>;
+
+                keyCase.Bind();
             }
 
             return this;
@@ -80,6 +112,17 @@ namespace Siege.Container.StructureMapAdapter
         public static void Bind<TBaseType>(this ImplementationUseCase<TBaseType> useCase)
         {
             ObjectFactory.Initialize(registry => registry.ForRequestedType<TBaseType>().TheDefault.IsThis(useCase.GetBinding()));
+        }
+    }
+
+    public static class KeyBasedUseCaseExtensions
+    {
+        public static void Bind<TBaseType>(this KeyBasedUseCase<TBaseType> useCase)
+        {
+            ObjectFactory.Initialize(registry => registry
+                                                    .ForRequestedType<TBaseType>()
+                                                    .AddInstances(x => x.OfConcreteType(useCase.GetBinding())
+                                                    .WithName(useCase.Key)));
         }
     }
 }

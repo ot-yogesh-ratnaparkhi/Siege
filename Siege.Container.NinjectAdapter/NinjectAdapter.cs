@@ -52,6 +52,26 @@ namespace Siege.Container.NinjectAdapter
             return this.kernel.Get<T>(args.ToArray());
         }
 
+        public T GetInstance<T>(string key)
+        {
+            return this.kernel.Get<T>(key);
+        }
+
+        public T GetInstance<T>(string name, IDictionary constructorArguments)
+        {
+            if (constructorArguments == null || constructorArguments.Count == 0) return kernel.Get<T>(name);
+
+            List<ConstructorArgument> args = new List<ConstructorArgument>();
+
+            foreach (string key in constructorArguments.Keys)
+            {
+                ConstructorArgument argument = new ConstructorArgument(key, constructorArguments[key]);
+                args.Add(argument);
+            }
+
+            return this.kernel.Get<T>(name, args.ToArray());
+        }
+
         public IServiceLocator Register<T>(IUseCase<T> useCase)
         {
             BindingBuilder<T> builder = new BindingBuilder<T>(new Binding(typeof(T)));
@@ -68,6 +88,13 @@ namespace Siege.Container.NinjectAdapter
                 var implementation = useCase as ImplementationUseCase<T>;
 
                 implementation.Bind(this.kernel, builder);
+            }
+
+            if (useCase is KeyBasedUseCase<T>)
+            {
+                var keyCase = useCase as KeyBasedUseCase<T>;
+
+                keyCase.Bind(this.kernel, builder);
             }
 
             return this;
@@ -90,6 +117,16 @@ namespace Siege.Container.NinjectAdapter
         public static void Bind<TBaseType>(this ImplementationUseCase<TBaseType> useCase, IKernel kernel, BindingBuilder<TBaseType> builder)
         {
             builder.ToConstant(useCase.GetBinding()).InTransientScope();
+            kernel.AddBinding(builder.Binding);
+        }
+    }
+
+    public static class KeyBasedUseCaseExtensions
+    {
+        public static void Bind<TBaseType>(this KeyBasedUseCase<TBaseType> useCase, IKernel kernel, BindingBuilder<TBaseType> builder)
+        {
+            builder.To(useCase.GetBinding()).InTransientScope();
+            builder.Named(useCase.Key);
             kernel.AddBinding(builder.Binding);
         }
     }

@@ -25,5 +25,17 @@ namespace Siege.Container.UnitTests
         {
             kernel.Register(Component.For<IUnregisteredInterface>().ImplementedBy<UnregisteredClass>());
         }
+
+        [ExpectedException(typeof(ComponentNotFoundException))]
+        public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided()
+        {
+            base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided();
+        }
+
+        [ExpectedException(typeof(ComponentNotFoundException))]
+        public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
+        {
+            base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
+        }
     }
 }
