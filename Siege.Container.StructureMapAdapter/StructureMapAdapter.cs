@@ -2,12 +2,13 @@
 using System.Collections;
 using Siege.ServiceLocation;
 using StructureMap;
-using StructureMap.Configuration.DSL;
 
 namespace Siege.Container.StructureMapAdapter
 {
     public class StructureMapAdapter : IServiceLocatorAdapter
     {
+        private IContextualServiceLocator locator;
+
         public T GetInstance<T>()
         {
             return ObjectFactory.GetInstance<T>();
@@ -75,7 +76,16 @@ namespace Siege.Container.StructureMapAdapter
 
         public IServiceLocator Register<T>(IUseCase<T> useCase)
         {
-            if (useCase is KeyBasedUseCase<T>)
+            if(useCase is IConditionalUseCase<T>)
+            {
+                var conditionalCase = useCase as IConditionalUseCase<T>;
+
+                var factory = locator.GetConditionalFactory<T>();
+                factory.AddCase(conditionalCase);
+
+                conditionalCase.Bind(locator);
+            }
+            else if (useCase is KeyBasedUseCase<T>)
             {
                 var keyCase = useCase as KeyBasedUseCase<T>;
 
@@ -99,41 +109,10 @@ namespace Siege.Container.StructureMapAdapter
 
         public void RegisterParentLocator(IContextualServiceLocator locator)
         {
+            this.locator = locator;
+
             Register(Given<IServiceLocator>.Then(locator));
             Register(Given<IContextualServiceLocator>.Then(locator));
-        }
-    }
-
-    public static class GenericUseCaseExtensions
-    {
-        public static void Bind<TBaseType>(this GenericUseCase<TBaseType> useCase)
-        {
-            Registry registry = new Registry();
-            registry.ForRequestedType<TBaseType>().TheDefault.Is.OfConcreteType(useCase.GetBinding());
-            ObjectFactory.Configure(configure => configure.AddRegistry(registry));
-        }
-    }
-
-    public static class ImplementationUseCaseExtensions
-    {
-        public static void Bind<TBaseType>(this ImplementationUseCase<TBaseType> useCase)
-        {
-            Registry registry = new Registry();
-            registry.ForRequestedType<TBaseType>().TheDefault.IsThis(useCase.GetBinding());
-            ObjectFactory.Configure(configure => configure.AddRegistry(registry));
-        }
-    }
-
-    public static class KeyBasedUseCaseExtensions
-    {
-        public static void Bind<TBaseType>(this KeyBasedUseCase<TBaseType> useCase)
-        {
-            Registry registry = new Registry();
-            registry
-                .ForRequestedType<TBaseType>()
-                .AddInstances(x => x.OfConcreteType(useCase.GetBinding())
-                                       .WithName(useCase.Key));
-            ObjectFactory.Configure(configure => configure.AddRegistry(registry));
         }
     }
 }

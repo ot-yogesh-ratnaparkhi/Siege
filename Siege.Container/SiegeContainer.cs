@@ -7,11 +7,13 @@ namespace Siege.Container
 {
     public class SiegeContainer : IContextualServiceLocator
     {
-        private IServiceLocatorAdapter serviceLocator;
+        private readonly IServiceLocatorAdapter serviceLocator;
         private readonly Hashtable useCases = new Hashtable();
         private readonly Hashtable registeredImplementors = new Hashtable();
         private readonly Hashtable registeredTypes = new Hashtable();
         private readonly Hashtable defaultCases = new Hashtable();
+        private readonly List<object> context = new List<object>();
+        private readonly Hashtable conditionalFactories = new Hashtable();
 
         public SiegeContainer(IServiceLocatorAdapter serviceLocator)
         {
@@ -19,14 +21,28 @@ namespace Siege.Container
             this.serviceLocator.RegisterParentLocator(this);
         }
 
-        public TOutput GetInstance<TOutput, TContext>(TContext context)
+        public void AddContext(object contextItem)
         {
-            return GetInstance<TOutput, TContext>(typeof(TOutput), context, null);
+            this.context.Add(contextItem);
         }
 
-        public TOutput GetInstance<TOutput, TContext>(TContext context, IDictionary constructorArguments)
+        public ConditionalFactory<TBaseType> GetConditionalFactory<TBaseType>()
         {
-            return GetInstance<TOutput, TContext>(typeof(TOutput), context, constructorArguments);
+            if(!conditionalFactories.ContainsKey(typeof(TBaseType)))
+            {
+                lock(conditionalFactories.SyncRoot)
+                {
+                    if(!conditionalFactories.ContainsKey(typeof(TBaseType)))
+                    {
+                        ConditionalFactory<TBaseType> factory = new ConditionalFactory<TBaseType>(this);
+                        Register(Given<ConditionalFactory<TBaseType>>.Then("conditionalFactory"+typeof(TBaseType), factory));
+
+                        conditionalFactories.Add(typeof(TBaseType), factory);
+                    }
+                }
+            }
+
+            return (ConditionalFactory<TBaseType>) conditionalFactories[typeof (TBaseType)];
         }
 
         public TOutput GetInstance<TOutput>()
@@ -39,11 +55,6 @@ namespace Siege.Container
             return GetInstance<TOutput>(type, null);
         }
 
-        public TOutput GetInstance<TOutput, TContext>(Type type, TContext context)
-        {
-            return GetInstance<TOutput, TContext>(type, context, null);
-        }
-
         public TOutput GetInstance<TOutput>(IDictionary constructorArguments)
         {
             return GetInstance<TOutput>(typeof(TOutput), constructorArguments);
@@ -54,17 +65,7 @@ namespace Siege.Container
             return GetInstance<T>(anonymousConstructorArguments.AnonymousTypeToDictionary());
         }
 
-        public T GetInstance<T, TContext>(TContext context, object anonymousConstructorArguments)
-        {
-            return this.GetInstance<T, TContext>(context, anonymousConstructorArguments.AnonymousTypeToDictionary());
-        }
-
-        public T GetInstance<T, TContext>(Type type, TContext context, object anonymousConstructorArguments)
-        {
-            return this.GetInstance<T, TContext>(type, context, anonymousConstructorArguments.AnonymousTypeToDictionary());
-        }
-
-        public TOutput GetInstance<TOutput, TContext>(Type type, TContext context, IDictionary constructorArguments)
+        public TOutput GetInstance<TOutput>(Type type, IDictionary constructorArguments)
         {
             IList<IUseCase> selectedCase = (IList<IUseCase>)useCases[type];
 
@@ -72,7 +73,7 @@ namespace Siege.Container
             {
                 foreach (IUseCase<TOutput> useCase in selectedCase)
                 {
-                    TOutput value = useCase.Resolve(serviceLocator, context, constructorArguments);
+                    TOutput value = useCase.Resolve(serviceLocator, this.Context, constructorArguments);
 
                     if (!Equals(value, default(TOutput))) return value;
                 }
@@ -80,19 +81,11 @@ namespace Siege.Container
 
             if (defaultCases.ContainsKey(type))
             {
-                IDefaultUseCase<TOutput> useCase = (DefaultUseCase<TOutput>)defaultCases[type];
+                IDefaultUseCase<TOutput> useCase = (IDefaultUseCase<TOutput>)defaultCases[type];
                 return serviceLocator.GetInstance<TOutput>(useCase.GetBoundType(), constructorArguments);
             }
 
-            return serviceLocator.GetInstance<TOutput>(constructorArguments);
-        }
-
-        public TOutput GetInstance<TOutput>(Type type, IDictionary constructorArguments)
-        {
-            IDefaultUseCase<TOutput> defaultCase = (IDefaultUseCase<TOutput>)defaultCases[typeof(TOutput)];
-            if (defaultCase != null) return serviceLocator.GetInstance<TOutput>(defaultCase.GetBoundType(), constructorArguments);
-
-            return serviceLocator.GetInstance<TOutput>(constructorArguments);
+            return serviceLocator.GetInstance<TOutput>(type, constructorArguments);
         }
 
         public T GetInstance<T>(string key)
@@ -131,6 +124,11 @@ namespace Siege.Container
             serviceLocator.Register(useCase);
 
             return this;
+        }
+
+        public IList<object> Context
+        {
+            get { return this.context; }
         }
     }
 }

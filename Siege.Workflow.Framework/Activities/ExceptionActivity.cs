@@ -14,7 +14,7 @@ namespace Siege.Workflow.Framework.Activities
         public ExceptionActivity Do<TActivity>()
             where TActivity : IWorkflowActivity
         {
-            TActivity activity = serviceLocator.GetInstance<TActivity, IContract>(contract, new { contract });
+            TActivity activity = serviceLocator.GetInstance<TActivity>(new { contract });
 
             activity.SetWorkflow(this);
 
@@ -38,7 +38,7 @@ namespace Siege.Workflow.Framework.Activities
         {
             Do(subWorkflow);
 
-            BreakActivity activity = serviceLocator.GetInstance<BreakActivity, IContract>(contract, new { contract });
+            BreakActivity activity = serviceLocator.GetInstance<BreakActivity>(new { contract });
             activity.SetWorkflow(this);
 
             return this.parentWorkflow;
@@ -48,7 +48,7 @@ namespace Siege.Workflow.Framework.Activities
         {
             Do(action);
 
-            BreakActivity activity = serviceLocator.GetInstance<BreakActivity, IContract>(contract, new { contract });
+            BreakActivity activity = serviceLocator.GetInstance<BreakActivity>(new { contract });
             activity.SetWorkflow(this);
 
             return this.parentWorkflow;

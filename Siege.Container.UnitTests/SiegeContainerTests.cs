@@ -52,8 +52,9 @@ namespace Siege.Container.UnitTests
         public void Should_Be_Able_To_Bind_An_Interface_To_A_Type_Based_On_Rule()
         {
             locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
+            locator.AddContext(CreateContext(TestEnum.Case2));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface, TestContext>(CreateContext(TestEnum.Case2)) is TestCase2);
+            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase2);
         }
 
         [Test]
@@ -68,8 +69,9 @@ namespace Siege.Container.UnitTests
         public void Should_Be_Able_To_Bind_An_Interface_To_An_Implementation_Based_On_Rule()
         {
             locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then(new TestCase2()));
+            locator.AddContext(CreateContext(TestEnum.Case2));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface, TestContext>(CreateContext(TestEnum.Case2)) is TestCase2);
+            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase2);
         }
 
         [Test]
@@ -77,8 +79,9 @@ namespace Siege.Container.UnitTests
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
             locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
+            locator.AddContext(CreateContext(TestEnum.Case2));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface, TestContext>(CreateContext(TestEnum.Case2)) is TestCase2);
+            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase2);
         }
 
         [Test]
@@ -86,8 +89,9 @@ namespace Siege.Container.UnitTests
         {
             locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
             locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case1).Then<TestCase1>());
+            locator.AddContext(CreateContext(TestEnum.Case1));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface, TestContext>(CreateContext(TestEnum.Case1)) is TestCase1);
+            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
         }
 
 
@@ -97,8 +101,9 @@ namespace Siege.Container.UnitTests
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
             locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
             locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case1).Then<TestCase1>());
+            locator.AddContext(CreateContext(TestEnum.Case1));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface, TestContext>(CreateContext(TestEnum.Case1)) is TestCase1);
+            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
         }
 
         [Test]
@@ -106,8 +111,9 @@ namespace Siege.Container.UnitTests
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
             locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
+            locator.AddContext(CreateContext(TestEnum.Case3));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface, TestContext>(CreateContext(TestEnum.Case3)) is TestCase1);
+            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
         }
 
         [Test]
@@ -143,12 +149,17 @@ namespace Siege.Container.UnitTests
 
         private TestContext CreateContext(TestEnum types)
         {
-            return new TestContext { TestCases = types };
+            return new TestContext(types);
         }
     }
 
     public class TestContext
     {
+        public TestContext(TestEnum context)
+        {
+            TestCases = context;
+        }
+
         public TestEnum TestCases { get; set; }
     }
 

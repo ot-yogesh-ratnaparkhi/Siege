@@ -11,6 +11,7 @@ namespace Siege.Container.NinjectAdapter
     public class NinjectAdapter : IServiceLocatorAdapter
     {
         private IKernel kernel;
+        private IContextualServiceLocator locator;
 
         public NinjectAdapter(IKernel kernel)
         {
@@ -76,7 +77,16 @@ namespace Siege.Container.NinjectAdapter
         {
             BindingBuilder<T> builder = new BindingBuilder<T>(new Binding(typeof(T)));
 
-            if (useCase is KeyBasedUseCase<T>)
+            if(useCase is IConditionalUseCase<T>)
+            {
+                var conditionalCase = useCase as IConditionalUseCase<T>;
+
+                var factory = locator.GetConditionalFactory<T>();
+                factory.AddCase(conditionalCase);
+
+                conditionalCase.Bind(this.kernel, this.locator, builder);
+            }
+            else if (useCase is KeyBasedUseCase<T>)
             {
                 var keyCase = useCase as KeyBasedUseCase<T>;
 
@@ -100,38 +110,10 @@ namespace Siege.Container.NinjectAdapter
 
         public void RegisterParentLocator(IContextualServiceLocator locator)
         {
+            this.locator = locator;
+
             Register(Given<IServiceLocator>.Then(locator));
             Register(Given<IContextualServiceLocator>.Then(locator));
-        }
-    }
-
-    public static class GenericUseCaseExtensions
-    {
-        public static void Bind<TBaseType>(this GenericUseCase<TBaseType> useCase, IKernel kernel, BindingBuilder<TBaseType> builder)
-        {
-            Type type = useCase.GetBinding();
-
-            builder.To(type).InTransientScope();
-            kernel.AddBinding(builder.Binding);
-        }
-    }
-
-    public static class ImplementationUseCaseExtensions
-    {
-        public static void Bind<TBaseType>(this ImplementationUseCase<TBaseType> useCase, IKernel kernel, BindingBuilder<TBaseType> builder)
-        {
-            builder.ToConstant(useCase.GetBinding()).InTransientScope();
-            kernel.AddBinding(builder.Binding);
-        }
-    }
-
-    public static class KeyBasedUseCaseExtensions
-    {
-        public static void Bind<TBaseType>(this KeyBasedUseCase<TBaseType> useCase, IKernel kernel, BindingBuilder<TBaseType> builder)
-        {
-            builder.To(useCase.GetBinding()).InTransientScope();
-            builder.Named(useCase.Key);
-            kernel.AddBinding(builder.Binding);
         }
     }
 }

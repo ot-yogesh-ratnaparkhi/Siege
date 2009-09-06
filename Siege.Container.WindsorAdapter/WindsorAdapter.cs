@@ -9,6 +9,7 @@ namespace Siege.Container.WindsorAdapter
     public class WindsorAdapter : IServiceLocatorAdapter
     {
         private IKernel kernel;
+        private IContextualServiceLocator locator;
 
         public WindsorAdapter(IKernel kernel)
         {
@@ -55,7 +56,22 @@ namespace Siege.Container.WindsorAdapter
 
         public IServiceLocator Register<T>(IUseCase<T> useCase)
         {
-            if (useCase is KeyBasedUseCase<T>)
+            if(useCase is IConditionalUseCase<T>)
+            {
+                var conditionalCase = useCase as IConditionalUseCase<T>;
+
+                var factory = locator.GetConditionalFactory<T>();
+                factory.AddCase(conditionalCase);
+
+                conditionalCase.Bind(this.kernel, this.locator);
+            }
+            else if (useCase is KeyBasedImplementationUseCase<T>)
+            {
+                var keyCase = useCase as KeyBasedImplementationUseCase<T>;
+
+                keyCase.Bind(this.kernel);
+            }
+            else if (useCase is KeyBasedUseCase<T>)
             {
                 var keyCase = useCase as KeyBasedUseCase<T>;
 
@@ -79,31 +95,8 @@ namespace Siege.Container.WindsorAdapter
 
         public void RegisterParentLocator(IContextualServiceLocator locator)
         {
+            this.locator = locator;
             kernel.Register(Component.For<IServiceLocator, IContextualServiceLocator>().Instance(locator));
-        }
-    }
-
-    public static class GenericUseCaseExtensions
-    {
-        public static void Bind<TBaseType>(this GenericUseCase<TBaseType> useCase, IKernel kernel)
-        {
-            kernel.Register(Component.For(useCase.GetBoundType()).ImplementedBy(useCase.GetBinding()).Unless(Component.ServiceAlreadyRegistered).LifeStyle.Transient);
-        }
-    }
-
-    public static class ImplementationUseCaseExtensions
-    {
-        public static void Bind<TBaseType>(this ImplementationUseCase<TBaseType> useCase, IKernel kernel)
-        {
-            kernel.Register(Component.For(useCase.GetBoundType()).Instance(useCase.GetBinding()).Unless(Component.ServiceAlreadyRegistered));
-        }
-    }
-
-    public static class KeyBasedUseCaseExtensions
-    {
-        public static void Bind<TBaseType>(this KeyBasedUseCase<TBaseType> useCase, IKernel kernel)
-        {
-            kernel.Register(Component.For(useCase.GetBoundType()).ImplementedBy(useCase.GetBinding()).Named(useCase.Key).Unless(Component.ServiceAlreadyRegistered).LifeStyle.Transient);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Siege.Workflow.Framework.Activities
 
         public Workflow For(Action action)
         {
-            activity = serviceLocator.GetInstance<ActionActivity, IContract>(contract, new { contract });
+            activity = serviceLocator.GetInstance<ActionActivity>(new { contract });
 
             activity.SetWorkflow(this);
             activity.With(action);
@@ -30,7 +30,7 @@ namespace Siege.Workflow.Framework.Activities
         public WorkflowActivity(IContextualServiceLocator locator, IContract contract)
             : base(locator, contract)
         {
-            activity = locator.GetInstance<TActivityType, IContract>(contract, new { contract });
+            activity = locator.GetInstance<TActivityType>(new { contract });
         }
 
         public Workflow Then()
@@ -42,7 +42,7 @@ namespace Siege.Workflow.Framework.Activities
 
         public Workflow CaptureResult(Action<TActivityType> action)
         {
-            CaptureResultActivity<TActivityType> captureResult = serviceLocator.GetInstance<CaptureResultActivity<TActivityType>, IContract>(contract, new { contract });
+            CaptureResultActivity<TActivityType> captureResult = serviceLocator.GetInstance<CaptureResultActivity<TActivityType>>(new { contract });
 
             captureResult.For(activity, action);
             captureResult.SetWorkflow(this);

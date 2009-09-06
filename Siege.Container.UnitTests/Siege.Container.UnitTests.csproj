@@ -73,6 +73,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContextualTests\BaseContextTests.cs" />
+    <Compile Include="ContextualTests\Classes\IBaseService.cs" />
+    <Compile Include="ContextualTests\Classes\ITestCondition.cs" />
+    <Compile Include="ContextualTests\Classes\ITestController.cs" />
+    <Compile Include="ContextualTests\Classes\TestCondition.cs" />
+    <Compile Include="ContextualTests\Classes\TestController.cs" />
+    <Compile Include="ContextualTests\Classes\TestService1.cs" />
+    <Compile Include="ContextualTests\Classes\TestService2.cs" />
+    <Compile Include="ContextualTests\NinjectContextTests.cs" />
+    <Compile Include="ContextualTests\StructureMapContextTests.cs" />
+    <Compile Include="ContextualTests\WindsorContextTests.cs" />
     <Compile Include="NinjectAdapterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiegeContainerTests.cs" />
