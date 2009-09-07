@@ -10,6 +10,7 @@ namespace Siege.Container.WindsorAdapter
         {
             var factory = locator.GetConditionalFactory<TBaseType>();
             factory.AddCase(useCase);
+
             kernel.Register(Component.For<TBaseType>().UsingFactoryMethod(() => factory.Build()).Unless(Component.ServiceAlreadyRegistered));
             kernel.Register(Component.For(useCase.GetBoundType()).Unless(Component.ServiceAlreadyRegistered));
         }

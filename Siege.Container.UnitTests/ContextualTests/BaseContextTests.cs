@@ -41,6 +41,7 @@ namespace Siege.Container.UnitTests.ContextualTests
 
             ITestController controller = locator.GetInstance<ITestController>();
             Assert.IsInstanceOfType(typeof(TestService1), controller.Service);
+            Assert.IsInstanceOfType(typeof(TestRepository1), controller.Service.Repository);
         }
 
         [Test]
