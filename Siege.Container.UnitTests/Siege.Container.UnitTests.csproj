@@ -78,6 +78,8 @@
     <Compile Include="BenchmarkTests\StructureMapBenchmarkTests.cs" />
     <Compile Include="BenchmarkTests\WindsorBenchmarkTests.cs" />
     <Compile Include="ContextualTests\BaseContextTests.cs" />
+    <Compile Include="ContextualTests\Classes\DefaultTestRepository.cs" />
+    <Compile Include="ContextualTests\Classes\DefaultTestService.cs" />
     <Compile Include="ContextualTests\Classes\IBaseService.cs" />
     <Compile Include="ContextualTests\Classes\IRepositoryCondition.cs" />
     <Compile Include="ContextualTests\Classes\ITestCondition.cs" />

@@ -7,6 +7,7 @@
     public enum Conditions
     {
         ConditionA,
-        ConditionB
+        ConditionB,
+        ConditionC
     }
 }
