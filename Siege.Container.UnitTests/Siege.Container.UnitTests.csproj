@@ -75,10 +75,15 @@
   <ItemGroup>
     <Compile Include="ContextualTests\BaseContextTests.cs" />
     <Compile Include="ContextualTests\Classes\IBaseService.cs" />
+    <Compile Include="ContextualTests\Classes\IRepositoryCondition.cs" />
     <Compile Include="ContextualTests\Classes\ITestCondition.cs" />
     <Compile Include="ContextualTests\Classes\ITestController.cs" />
+    <Compile Include="ContextualTests\Classes\ITestRepository.cs" />
+    <Compile Include="ContextualTests\Classes\RepositoryCondition.cs" />
     <Compile Include="ContextualTests\Classes\TestCondition.cs" />
     <Compile Include="ContextualTests\Classes\TestController.cs" />
+    <Compile Include="ContextualTests\Classes\TestRepository1.cs" />
+    <Compile Include="ContextualTests\Classes\TestRepository2.cs" />
     <Compile Include="ContextualTests\Classes\TestService1.cs" />
     <Compile Include="ContextualTests\Classes\TestService2.cs" />
     <Compile Include="ContextualTests\NinjectContextTests.cs" />

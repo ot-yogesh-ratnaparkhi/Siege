@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Siege.ServiceLocation
 {
@@ -32,7 +31,7 @@ namespace Siege.ServiceLocation
                 if(!Equals(result, default(TBaseType))) return result;
             }
 
-            throw new NotImplementedException();
+            return serviceLocator.GetInstance<TBaseType>();
         }
     }
 }

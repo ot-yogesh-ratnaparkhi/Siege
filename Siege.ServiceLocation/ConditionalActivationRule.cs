@@ -8,7 +8,7 @@ namespace Siege.ServiceLocation
 
         public ConditionalActivationRule(Func<TContext, bool> evaluation)
         {
-            this.evaluation = x => evaluation.Invoke((TContext)x);
+            this.evaluation = x => (x is TContext) ? evaluation.Invoke((TContext)x) : false;
         }
 
         public IConditionalUseCase<TBaseType> Then<TImplementingType>() where TImplementingType : TBaseType

@@ -9,7 +9,7 @@ namespace Siege.Container.WindsorAdapter
         public static ComponentRegistration<T> ToMethod<T, TS>(this ComponentRegistration<T> reg, IKernel kernel, Func<TS> factory) where TS: T 
         {  
             var factoryName = typeof(GenericFactory<TS>).FullName + Guid.NewGuid();  
-            kernel.Register(Component.For<GenericFactory<TS>>().Named(factoryName).Instance(new GenericFactory<TS>(factory)));  
+            kernel.Register(Component.For<GenericFactory<TS>>().Named(factoryName).Instance(new GenericFactory<TS>(factory)).LifeStyle.Singleton);  
             reg.Configuration(Attrib.ForName("factoryId").Eq(factoryName), Attrib.ForName("factoryCreate").Eq("Create"));  
             
             return reg;  

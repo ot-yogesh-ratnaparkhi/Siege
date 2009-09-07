@@ -7,9 +7,9 @@ namespace Siege.Container.NinjectAdapter
 {
     public static class UseCaseExtensions
     {
-        public static void Bind<TBaseType>(this IConditionalUseCase<TBaseType> useCase, IKernel kernel, IServiceLocator locator, BindingBuilder<TBaseType> builder)
+        public static void Bind<TBaseType>(this IConditionalUseCase<TBaseType> useCase, IKernel kernel, IContextualServiceLocator locator, BindingBuilder<TBaseType> builder)
         {
-            var factory = locator.GetInstance<ConditionalFactory<TBaseType>>();
+            var factory = locator.GetConditionalFactory<TBaseType>();
             factory.AddCase(useCase);
 
             builder.ToMethod(context => factory.Build());

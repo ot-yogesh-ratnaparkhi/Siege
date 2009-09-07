@@ -9,13 +9,14 @@ namespace Siege.Container.WindsorAdapter
         public static void Bind<TBaseType>(this IConditionalUseCase<TBaseType> useCase, IKernel kernel, IContextualServiceLocator locator)
         {
             var factory = locator.GetConditionalFactory<TBaseType>();
-            kernel.Register(Component.For(useCase.GetBoundType()).ToMethod(kernel, () => factory.Build()).Unless(Component.ServiceAlreadyRegistered));
-
+            factory.AddCase(useCase);
+            kernel.Register(Component.For<TBaseType>().UsingFactoryMethod(() => factory.Build()).Unless(Component.ServiceAlreadyRegistered));
+            kernel.Register(Component.For(useCase.GetBoundType()).Unless(Component.ServiceAlreadyRegistered));
         }
 
         public static void Bind<TBaseType>(this GenericUseCase<TBaseType> useCase, IKernel kernel)
         {
-            kernel.Register(Component.For(useCase.GetBoundType()).ImplementedBy(useCase.GetBinding()).Unless(Component.ServiceAlreadyRegistered).LifeStyle.Transient);
+            kernel.Register(Component.For(useCase.GetBoundType(), typeof(TBaseType)).ImplementedBy(useCase.GetBinding()).LifeStyle.Transient);
         }
 
         public static void Bind<TBaseType>(this KeyBasedImplementationUseCase<TBaseType> useCase, IKernel kernel)

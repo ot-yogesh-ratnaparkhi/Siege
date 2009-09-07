@@ -11,9 +11,10 @@ namespace Siege.Container.StructureMapAdapter
         {
             Registry registry = new Registry();
 
-            var factory = locator.GetInstance<ConditionalFactory<TBaseType>>();
+            var factory = locator.GetConditionalFactory<TBaseType>();
+            factory.AddCase(useCase);
 
-            registry.ForRequestedType<TBaseType>().TheDefault.Is.ConstructedBy(factory.Build);
+            registry.ForRequestedType<TBaseType>().CacheBy(InstanceScope.Singleton).TheDefault.Is.ConstructedBy(factory.Build);
             ObjectFactory.Configure(configure => configure.AddRegistry(registry));
         }
 

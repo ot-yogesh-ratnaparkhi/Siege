@@ -81,9 +81,6 @@ namespace Siege.Container.NinjectAdapter
             {
                 var conditionalCase = useCase as IConditionalUseCase<T>;
 
-                var factory = locator.GetConditionalFactory<T>();
-                factory.AddCase(conditionalCase);
-
                 conditionalCase.Bind(this.kernel, this.locator, builder);
             }
             else if (useCase is KeyBasedUseCase<T>)

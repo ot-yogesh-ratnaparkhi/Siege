@@ -1,4 +1,5 @@
 ﻿using Siege.ServiceLocation;
+using StructureMap;
 
 namespace Siege.Container.UnitTests.ContextualTests
 {
@@ -7,6 +8,12 @@ namespace Siege.Container.UnitTests.ContextualTests
         protected override IServiceLocatorAdapter GetAdapter()
         {
             return new StructureMapAdapter.StructureMapAdapter();
+        }
+
+        public override void SetUp()
+        {
+            ObjectFactory.ResetDefaults();
+            base.SetUp();
         }
     }
 }

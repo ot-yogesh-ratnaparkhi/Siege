@@ -80,9 +80,6 @@ namespace Siege.Container.StructureMapAdapter
             {
                 var conditionalCase = useCase as IConditionalUseCase<T>;
 
-                var factory = locator.GetConditionalFactory<T>();
-                factory.AddCase(conditionalCase);
-
                 conditionalCase.Bind(locator);
             }
             else if (useCase is KeyBasedUseCase<T>)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Castle.Facilities.FactorySupport;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Siege.ServiceLocation;
@@ -14,6 +15,7 @@ namespace Siege.Container.WindsorAdapter
         public WindsorAdapter(IKernel kernel)
         {
             this.kernel = kernel;
+            this.kernel.AddFacility<FactorySupportFacility>();
         }
 
         public T GetInstance<T>()
@@ -59,9 +61,6 @@ namespace Siege.Container.WindsorAdapter
             if(useCase is IConditionalUseCase<T>)
             {
                 var conditionalCase = useCase as IConditionalUseCase<T>;
-
-                var factory = locator.GetConditionalFactory<T>();
-                factory.AddCase(conditionalCase);
 
                 conditionalCase.Bind(this.kernel, this.locator);
             }
