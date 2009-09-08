@@ -8,22 +8,28 @@ namespace Siege.Container
     public class SiegeContainer : IContextualServiceLocator
     {
         private readonly IServiceLocatorAdapter serviceLocator;
+        private readonly IContextStore contextStore;
         private readonly Hashtable useCases = new Hashtable();
         private readonly Hashtable registeredImplementors = new Hashtable();
         private readonly Hashtable registeredTypes = new Hashtable();
         private readonly Hashtable defaultCases = new Hashtable();
-        private readonly List<object> context = new List<object>();
         private readonly Hashtable conditionalFactories = new Hashtable();
 
-        public SiegeContainer(IServiceLocatorAdapter serviceLocator)
+        public SiegeContainer(IServiceLocatorAdapter serviceLocator, IContextStore contextStore)
         {
             this.serviceLocator = serviceLocator;
+            this.contextStore = contextStore;
             this.serviceLocator.RegisterParentLocator(this);
+        }
+
+        public SiegeContainer(IServiceLocatorAdapter serviceLocator) : this(serviceLocator, new GlobalContextStore())
+        {
+            
         }
 
         public void AddContext(object contextItem)
         {
-            this.context.Add(contextItem);
+            this.contextStore.Add(contextItem);
         }
 
         public ConditionalFactory<TBaseType> GetConditionalFactory<TBaseType>()
@@ -128,7 +134,7 @@ namespace Siege.Container
 
         public IList<object> Context
         {
-            get { return this.context; }
+            get { return this.contextStore.Items; }
         }
     }
 }

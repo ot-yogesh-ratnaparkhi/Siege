@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GlobalContextStore.cs" />
+    <Compile Include="IContextStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiegeContainer.cs" />
   </ItemGroup>
