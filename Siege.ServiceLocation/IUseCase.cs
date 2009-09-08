@@ -26,11 +26,13 @@ namespace Siege.ServiceLocation
         public new T Value { get; set; }
     }
 
-    public interface IUseCase { }
+    public interface IUseCase
+    {
+        Type GetBoundType();
+    }
 
     public interface IUseCase<TBaseType> : IUseCase
     {
         TBaseType Resolve(IServiceLocator locator, IList<object> context, IDictionary dictionary);
-        Type GetBoundType();
     }
 }

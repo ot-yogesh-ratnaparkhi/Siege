@@ -87,7 +87,7 @@ namespace Siege.Container
 
             if (defaultCases.ContainsKey(type))
             {
-                IDefaultUseCase<TOutput> useCase = (IDefaultUseCase<TOutput>)defaultCases[type];
+                IDefaultUseCase useCase = (IDefaultUseCase)defaultCases[type];
                 return serviceLocator.GetInstance<TOutput>(useCase.GetBoundType(), constructorArguments);
             }
 

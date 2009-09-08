@@ -13,6 +13,7 @@ namespace Siege.Container.NinjectAdapter
         private IKernel kernel;
         private IContextualServiceLocator locator;
 
+        public NinjectAdapter() : this(new StandardKernel()) {}
         public NinjectAdapter(IKernel kernel)
         {
             this.kernel = kernel;

@@ -12,6 +12,8 @@ namespace Siege.Container.WindsorAdapter
         private IKernel kernel;
         private IContextualServiceLocator locator;
 
+        public WindsorAdapter() : this(new DefaultKernel()) {}
+
         public WindsorAdapter(IKernel kernel)
         {
             this.kernel = kernel;
