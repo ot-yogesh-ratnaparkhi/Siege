@@ -11,6 +11,7 @@ namespace Siege.Container.WindsorAdapter
     {
         private IKernel kernel;
         private IContextualServiceLocator locator;
+        private readonly Hashtable factories = new Hashtable();
 
         public WindsorAdapter() : this(new DefaultKernel()) {}
 
@@ -64,7 +65,7 @@ namespace Siege.Container.WindsorAdapter
             {
                 var conditionalCase = useCase as IConditionalUseCase<T>;
 
-                conditionalCase.Bind(this.kernel, this.locator);
+                conditionalCase.Bind(this.kernel, this);
             }
             else if (useCase is KeyBasedImplementationUseCase<T>)
             {
@@ -78,11 +79,11 @@ namespace Siege.Container.WindsorAdapter
 
                 keyCase.Bind(this.kernel);
             }
-            else if (useCase is GenericUseCase<T>)
+            else if (useCase is IDefaultUseCase<T>)
             {
-                GenericUseCase<T> genericCase = useCase as GenericUseCase<T>;
+                IDefaultUseCase<T> genericCase = useCase as IDefaultUseCase<T>;
 
-                genericCase.Bind(kernel);
+                genericCase.Bind(kernel, this);
             }
             else if (useCase is ImplementationUseCase<T>)
             {
@@ -98,6 +99,30 @@ namespace Siege.Container.WindsorAdapter
         {
             this.locator = locator;
             kernel.Register(Component.For<IServiceLocator, IContextualServiceLocator>().Instance(locator));
+        }
+
+        public IGenericFactory<TBaseType> GetFactory<TBaseType>()
+        {
+            if (!factories.ContainsKey(typeof(TBaseType)))
+            {
+                lock (factories.SyncRoot)
+                {
+                    if (!factories.ContainsKey(typeof(TBaseType)))
+                    {
+                        WindsorFactory<TBaseType> factory = new WindsorFactory<TBaseType>(this.locator);
+                        Register(Given<WindsorFactory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
+
+                        factories.Add(typeof(TBaseType), factory);
+                    }
+                }
+            }
+
+            return (WindsorFactory<TBaseType>)factories[typeof(TBaseType)];
+        }
+
+        public void Dispose()
+        {
+            this.kernel.Dispose();
         }
     }
 }

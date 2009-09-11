@@ -1,19 +1,20 @@
 ﻿using NUnit.Framework;
 using Siege.ServiceLocation;
-using StructureMap;
 
 namespace Siege.Container.UnitTests.BenchmarkTests
 {
+    [TestFixture, Ignore]
     public class StructureMapBenchmarkTests : BaseBenchmarkTests
     {
+        private StructureMap.Container container;
         [SetUp]
         public void SetUp()
         {
-            ObjectFactory.ResetDefaults();
+            container = new StructureMap.Container();
         }
         protected override IServiceLocatorAdapter GetAdapter()
         {
-            return new StructureMapAdapter.StructureMapAdapter();
+            return new StructureMapAdapter.StructureMapAdapter(container);
         }
 
         [Test]
@@ -21,9 +22,9 @@ namespace Siege.Container.UnitTests.BenchmarkTests
         {
             Execute("Without Siege", delegate
             {
-                ObjectFactory.Initialize(registry => registry.ForRequestedType<ITestInterface>().TheDefaultIsConcreteType<TestCase1>());
+                container.Configure(registry => registry.ForRequestedType<ITestInterface>().TheDefaultIsConcreteType<TestCase1>());
 
-                ObjectFactory.GetInstance<ITestInterface>();
+                container.GetInstance<ITestInterface>();
             });
         }
     }

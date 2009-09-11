@@ -7,11 +7,20 @@ namespace Siege.Container.StructureMapAdapter
 {
     public class StructureMapAdapter : IServiceLocatorAdapter
     {
+        private readonly StructureMap.Container container;
+
+        private readonly Hashtable factories = new Hashtable();
+        public StructureMapAdapter() : this(new StructureMap.Container()) {}
+        public StructureMapAdapter(StructureMap.Container container)
+        {
+            this.container = container;
+        }
+
         private IContextualServiceLocator locator;
 
         public T GetInstance<T>()
         {
-            return ObjectFactory.GetInstance<T>();
+            return container.GetInstance<T>();
         }
 
         public T GetInstance<T>(IDictionary constructorArguments)
@@ -26,12 +35,12 @@ namespace Siege.Container.StructureMapAdapter
 
         public T GetInstance<T>(Type type)
         {
-            return (T)ObjectFactory.GetInstance(type);
+            return (T)container.GetInstance(type);
         }
 
         public T GetInstance<T>(Type type, IDictionary constructorArguments)
         {
-            if (constructorArguments == null || constructorArguments.Count == 0) return (T)ObjectFactory.GetInstance(type);
+            if (constructorArguments == null || constructorArguments.Count == 0) return (T)container.GetInstance(type);
 
             ExplicitArgsExpression expression = null;
 
@@ -39,7 +48,7 @@ namespace Siege.Container.StructureMapAdapter
             {
                 if (expression == null)
                 {
-                    expression = ObjectFactory.With(key).EqualTo(constructorArguments[key]);
+                    expression = container.With(key).EqualTo(constructorArguments[key]);
                     continue;
                 }
 
@@ -56,7 +65,7 @@ namespace Siege.Container.StructureMapAdapter
 
         public T GetInstance<T>(string name, IDictionary constructorArguments)
         {
-            if (constructorArguments == null || constructorArguments.Count == 0) return ObjectFactory.GetNamedInstance<T>(name);
+            if (constructorArguments == null || constructorArguments.Count == 0) return container.GetInstance<T>(name);
 
             ExplicitArgsExpression expression = null;
 
@@ -64,7 +73,7 @@ namespace Siege.Container.StructureMapAdapter
             {
                 if (expression == null)
                 {
-                    expression = ObjectFactory.With(key).EqualTo(constructorArguments[key]);
+                    expression = container.With(key).EqualTo(constructorArguments[key]);
                     continue;
                 }
 
@@ -80,25 +89,25 @@ namespace Siege.Container.StructureMapAdapter
             {
                 var conditionalCase = useCase as IConditionalUseCase<T>;
 
-                conditionalCase.Bind(locator);
+                conditionalCase.Bind(container, this);
             }
-            else if (useCase is KeyBasedUseCase<T>)
+            else if (useCase is IKeyBasedUseCase<T>)
             {
-                var keyCase = useCase as KeyBasedUseCase<T>;
+                var keyCase = useCase as IKeyBasedUseCase<T>;
 
-                keyCase.Bind();
-            }
-            else if (useCase is GenericUseCase<T>)
-            {
-                GenericUseCase<T> genericCase = useCase as GenericUseCase<T>;
-
-                genericCase.Bind();
+                keyCase.Bind(container);
             }
             else if (useCase is ImplementationUseCase<T>)
             {
                 var implementation = useCase as ImplementationUseCase<T>;
 
-                implementation.Bind();
+                implementation.Bind(container);
+            }
+            else if (useCase is IDefaultUseCase<T>)
+            {
+                var genericCase = useCase as IDefaultUseCase<T>;
+
+                genericCase.Bind(container, this);
             }
 
             return this;
@@ -110,6 +119,29 @@ namespace Siege.Container.StructureMapAdapter
 
             Register(Given<IServiceLocator>.Then(locator));
             Register(Given<IContextualServiceLocator>.Then(locator));
+        }
+
+        public IGenericFactory<TBaseType> GetFactory<TBaseType>()
+        {
+            if (!factories.ContainsKey(typeof(TBaseType)))
+            {
+                lock (factories.SyncRoot)
+                {
+                    if (!factories.ContainsKey(typeof(TBaseType)))
+                    {
+                        StructureMapFactory<TBaseType> factory = new StructureMapFactory<TBaseType>(this.locator);
+                        Register(Given<StructureMapFactory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
+
+                        factories.Add(typeof(TBaseType), factory);
+                    }
+                }
+            }
+
+            return (StructureMapFactory<TBaseType>)factories[typeof(TBaseType)];
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

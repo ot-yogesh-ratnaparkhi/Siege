@@ -6,6 +6,5 @@ namespace Siege.ServiceLocation
     {
         IList<object> Context { get; }
         void AddContext(object contextItem);
-        ConditionalFactory<TBaseType> GetConditionalFactory<TBaseType>();
     }
 }

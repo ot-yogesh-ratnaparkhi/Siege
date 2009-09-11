@@ -50,10 +50,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NinjectAdapter.cs" />
+    <Compile Include="NinjectFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UseCaseExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Siege.Container\Siege.Container.csproj">
+      <Project>{FF809718-BCE7-4C51-8C2D-CCBCFA346A40}</Project>
+      <Name>Siege.Container</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Siege.ServiceLocation\Siege.ServiceLocation.csproj">
       <Project>{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}</Project>
       <Name>Siege.ServiceLocation</Name>

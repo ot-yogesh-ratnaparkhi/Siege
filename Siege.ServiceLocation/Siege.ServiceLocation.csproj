@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConditionalActivationRule.cs" />
-    <Compile Include="ConditionalFactory.cs" />
+    <Compile Include="IGenericFactory.cs" />
     <Compile Include="ConditionalGenericUseCase.cs" />
     <Compile Include="ConditionalImplementationUseCase.cs" />
     <Compile Include="DefaultImplementationUseCase.cs" />
@@ -57,6 +57,7 @@
     <Compile Include="IConditionalUseCase.cs" />
     <Compile Include="IContextualServiceLocator.cs" />
     <Compile Include="IDefaultUseCase.cs" />
+    <Compile Include="IKeyBasedUseCase.cs" />
     <Compile Include="ImplementationUseCase.cs" />
     <Compile Include="IServiceLocator.cs" />
     <Compile Include="IServiceLocatorAdapter.cs" />

@@ -6,7 +6,7 @@ namespace Siege.ServiceLocation
 {
     public abstract class UseCase<TBaseType, TOutput> : IUseCase<TBaseType>
     {
-        private readonly List<IActivationRule> rules = new List<IActivationRule>();
+        protected readonly List<IActivationRule> rules = new List<IActivationRule>();
         public abstract TOutput GetBinding();
         protected abstract IActivationStrategy GetActivationStrategy();
 
@@ -15,7 +15,7 @@ namespace Siege.ServiceLocation
             rules.Add(rule);
         }
 
-        public virtual TBaseType Resolve(IServiceLocator locator, IList<object> context, IDictionary constructorArguments) 
+        public TBaseType Resolve(IServiceLocator locator, IList<object> context, IDictionary constructorArguments) 
         {
             foreach (IActivationRule rule in this.rules)
             {
@@ -26,6 +26,11 @@ namespace Siege.ServiceLocation
             }
 
             return default(TBaseType);
+        }
+
+        public TBaseType Resolve(IServiceLocator locator, IDictionary constructorArguments)
+        {
+            return GetActivationStrategy().Resolve(locator, constructorArguments);
         }
 
         public abstract Type GetBoundType();

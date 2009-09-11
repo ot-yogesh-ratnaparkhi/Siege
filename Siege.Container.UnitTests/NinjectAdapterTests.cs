@@ -1,6 +1,5 @@
 ﻿using System;
 using Ninject;
-using Ninject.Planning.Bindings;
 using NUnit.Framework;
 using Siege.ServiceLocation;
 
@@ -25,10 +24,8 @@ namespace Siege.Container.UnitTests
         protected override void RegisterWithoutSiege()
         {
             Type type = typeof(UnregisteredClass);
-            BindingBuilder<IUnregisteredInterface> builder = new BindingBuilder<IUnregisteredInterface>(new Binding(typeof(IUnregisteredInterface)));
 
-            builder.To(type).InTransientScope();
-            kernel.AddBinding(builder.Binding);
+            kernel.Bind<IUnregisteredInterface>().To(type);
         }
 
         public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()

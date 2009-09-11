@@ -1,9 +1,8 @@
-using System;
 using System.Collections;
 
 namespace Siege.ServiceLocation
 {
-    public class KeyBasedUseCase<TBaseType> : GenericUseCase<TBaseType>
+    public class KeyBasedUseCase<TBaseType> : GenericUseCase<TBaseType>, IKeyBasedUseCase<TBaseType>
     {
         private readonly string key;
 

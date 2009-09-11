@@ -4,7 +4,6 @@ using Siege.ServiceLocation;
 
 namespace Siege.Container.UnitTests.BenchmarkTests
 {
-    [TestFixture]
     public abstract class BaseBenchmarkTests
     {
         protected IContextualServiceLocator locator;

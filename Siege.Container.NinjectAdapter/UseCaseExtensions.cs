@@ -1,40 +1,60 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using Ninject;
-using Ninject.Planning.Bindings;
+using Ninject.Parameters;
 using Siege.ServiceLocation;
+using IContext=Ninject.Activation.IContext;
 
 namespace Siege.Container.NinjectAdapter
 {
     public static class UseCaseExtensions
     {
-        public static void Bind<TBaseType>(this IConditionalUseCase<TBaseType> useCase, IKernel kernel, IContextualServiceLocator locator, BindingBuilder<TBaseType> builder)
+        public static void Bind<TBaseType>(this IConditionalUseCase<TBaseType> useCase, IKernel kernel, NinjectAdapter locator)
         {
-            var factory = locator.GetConditionalFactory<TBaseType>();
+            var factory = (NinjectFactory<TBaseType>)locator.GetFactory<TBaseType>();
             factory.AddCase(useCase);
 
-            builder.ToMethod(context => factory.Build());
-            kernel.AddBinding(builder.Binding);
+            kernel.Bind<TBaseType>().ToMethod(context => factory.Build(new ParameterAdapter(context).Dictionary));
+            kernel.Bind(useCase.GetBoundType()).ToSelf();
         }
 
-        public static void Bind<TBaseType>(this GenericUseCase<TBaseType> useCase, IKernel kernel, BindingBuilder<TBaseType> builder)
+        public static void Bind<TBaseType>(this IDefaultUseCase<TBaseType> useCase, IKernel kernel, NinjectAdapter locator)
         {
-            Type type = useCase.GetBinding();
+            var factory = (NinjectFactory<TBaseType>)locator.GetFactory<TBaseType>();
+            factory.AddCase(useCase);
 
-            builder.To(type).InTransientScope();
-            kernel.AddBinding(builder.Binding);
+            if (typeof(TBaseType) != useCase.GetBoundType()) kernel.Bind<TBaseType>().ToMethod(context => factory.Build(new ParameterAdapter(context).Dictionary));
+            kernel.Bind(useCase.GetBoundType()).ToSelf();
         }
         
-        public static void Bind<TBaseType>(this ImplementationUseCase<TBaseType> useCase, IKernel kernel, BindingBuilder<TBaseType> builder)
+        public static void Bind<TBaseType>(this DefaultImplementationUseCase<TBaseType> useCase, IKernel kernel, NinjectAdapter locator)
         {
-            builder.ToConstant(useCase.GetBinding()).InTransientScope();
-            kernel.AddBinding(builder.Binding);
+            var factory = (NinjectFactory<TBaseType>)locator.GetFactory<TBaseType>();
+            factory.AddCase(useCase);
+
+            kernel.Bind<TBaseType>().ToConstant(useCase.GetBinding());
         }
         
-        public static void Bind<TBaseType>(this KeyBasedUseCase<TBaseType> useCase, IKernel kernel, BindingBuilder<TBaseType> builder)
+        public static void Bind<TBaseType>(this IKeyBasedUseCase<TBaseType> useCase, IKernel kernel)
         {
-            builder.To(useCase.GetBinding()).InTransientScope();
-            builder.Named(useCase.Key);
-            kernel.AddBinding(builder.Binding);
+            kernel.Bind<TBaseType>().To(useCase.GetBoundType()).Named(useCase.Key);
         }
+    }
+
+    public class ParameterAdapter
+    {
+        public ParameterAdapter(IContext context)
+        {
+            Dictionary = new Dictionary<string, object>();
+            if (context.Parameters == null) return;
+            foreach (IParameter parameter in context.Parameters)
+            {
+                var value = parameter.GetValue(context);
+                if (value == null) continue;
+                Dictionary.Add(parameter.Name, value);
+            }
+        }
+
+        public IDictionary Dictionary { get; set; }
     }
 }

@@ -36,7 +36,7 @@ namespace Siege.ServiceLocation
             return useCase;
         }
 
-        public static IDefaultUseCase<TBaseType> Then(string key, TBaseType implementation)
+        public static IKeyBasedUseCase<TBaseType> Then(string key, TBaseType implementation)
         {
             KeyBasedImplementationUseCase<TBaseType> useCase = new KeyBasedImplementationUseCase<TBaseType>(key);
 

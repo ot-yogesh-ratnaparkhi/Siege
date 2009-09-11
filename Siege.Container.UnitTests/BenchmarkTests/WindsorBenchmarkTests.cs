@@ -5,6 +5,7 @@ using Siege.ServiceLocation;
 
 namespace Siege.Container.UnitTests.BenchmarkTests
 {
+    [TestFixture, Ignore]
     public class WindsorBenchmarkTests : BaseBenchmarkTests
     {
         protected override IServiceLocatorAdapter GetAdapter()

@@ -1,11 +1,11 @@
-﻿using System;
-using Ninject;
+﻿using Ninject;
 using Ninject.Modules;
 using NUnit.Framework;
 using Siege.ServiceLocation;
 
 namespace Siege.Container.UnitTests.BenchmarkTests
 {
+    [TestFixture, Ignore]
     public class NinjectBenchmarkTests : BaseBenchmarkTests
     {
         protected override IServiceLocatorAdapter GetAdapter()
@@ -25,7 +25,8 @@ namespace Siege.Container.UnitTests.BenchmarkTests
         }
     }
 
-    public class SimpleTestModule : Module
+
+    public class SimpleTestModule : NinjectModule
     {
         public override void Load()
         {

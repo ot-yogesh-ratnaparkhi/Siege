@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Siege.ServiceLocation
 {
-    public interface IServiceLocator
+    public interface IServiceLocator : IDisposable
     {
         T GetInstance<T>();
         T GetInstance<T>(IDictionary constructorArguments);

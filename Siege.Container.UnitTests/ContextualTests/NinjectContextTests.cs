@@ -1,4 +1,5 @@
 ﻿using Ninject;
+using NUnit.Framework;
 using Siege.ServiceLocation;
 
 namespace Siege.Container.UnitTests.ContextualTests

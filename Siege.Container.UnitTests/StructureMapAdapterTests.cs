@@ -7,14 +7,16 @@ namespace Siege.Container.UnitTests
     [TestFixture]
     public class StructureMapAdapterTests : SiegeContainerTests
     {
+        private StructureMap.Container container;
         protected override IServiceLocatorAdapter GetAdapter()
         {
-            return new StructureMapAdapter.StructureMapAdapter();
+            container = new StructureMap.Container();
+            return new StructureMapAdapter.StructureMapAdapter(container);
         }
 
         protected override void RegisterWithoutSiege()
         {
-            ObjectFactory.Initialize(registry => registry.ForRequestedType<IUnregisteredInterface>().TheDefaultIsConcreteType<UnregisteredClass>());
+            container.Configure(registry => registry.ForRequestedType<IUnregisteredInterface>().TheDefaultIsConcreteType<UnregisteredClass>());
         }
 
         [ExpectedException(typeof(StructureMapException))]
@@ -26,7 +28,6 @@ namespace Siege.Container.UnitTests
         public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
         {
             base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
-
             Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
         }
     }

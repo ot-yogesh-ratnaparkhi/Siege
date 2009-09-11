@@ -13,7 +13,6 @@ namespace Siege.Container
         private readonly Hashtable registeredImplementors = new Hashtable();
         private readonly Hashtable registeredTypes = new Hashtable();
         private readonly Hashtable defaultCases = new Hashtable();
-        private readonly Hashtable conditionalFactories = new Hashtable();
 
         public SiegeContainer(IServiceLocatorAdapter serviceLocator, IContextStore contextStore)
         {
@@ -30,25 +29,6 @@ namespace Siege.Container
         public void AddContext(object contextItem)
         {
             this.contextStore.Add(contextItem);
-        }
-
-        public ConditionalFactory<TBaseType> GetConditionalFactory<TBaseType>()
-        {
-            if(!conditionalFactories.ContainsKey(typeof(TBaseType)))
-            {
-                lock(conditionalFactories.SyncRoot)
-                {
-                    if(!conditionalFactories.ContainsKey(typeof(TBaseType)))
-                    {
-                        ConditionalFactory<TBaseType> factory = new ConditionalFactory<TBaseType>(this);
-                        Register(Given<ConditionalFactory<TBaseType>>.Then("conditionalFactory"+typeof(TBaseType), factory));
-
-                        conditionalFactories.Add(typeof(TBaseType), factory);
-                    }
-                }
-            }
-
-            return (ConditionalFactory<TBaseType>) conditionalFactories[typeof (TBaseType)];
         }
 
         public TOutput GetInstance<TOutput>()
@@ -135,6 +115,11 @@ namespace Siege.Container
         public IList<object> Context
         {
             get { return this.contextStore.Items; }
+        }
+
+        public void Dispose()
+        {
+            this.serviceLocator.Dispose();
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Ninject;
 using Ninject.Parameters;
-using Ninject.Planning.Bindings;
 using Siege.ServiceLocation;
 
 namespace Siege.Container.NinjectAdapter
@@ -12,16 +11,17 @@ namespace Siege.Container.NinjectAdapter
     {
         private IKernel kernel;
         private IContextualServiceLocator locator;
+        private readonly Hashtable factories = new Hashtable();
 
         public NinjectAdapter() : this(new StandardKernel()) {}
-        public NinjectAdapter(IKernel kernel)
+        public NinjectAdapter(IKernel iKernel)
         {
-            this.kernel = kernel;
+            kernel = iKernel;
         }
 
         public T GetInstance<T>()
         {
-            return this.kernel.Get<T>();
+            return kernel.Get<T>();
         }
 
         public T GetInstance<T>(IDictionary constructorArguments)
@@ -36,7 +36,7 @@ namespace Siege.Container.NinjectAdapter
 
         public T GetInstance<T>(Type type)
         {
-            return (T)this.kernel.Get(type);
+            return (T)kernel.Get(type);
         }
 
         public T GetInstance<T>(Type type, IDictionary constructorArguments)
@@ -51,12 +51,12 @@ namespace Siege.Container.NinjectAdapter
                 args.Add(argument);
             }
 
-            return this.kernel.Get<T>(args.ToArray());
+            return kernel.Get<T>(args.ToArray());
         }
 
         public T GetInstance<T>(string key)
         {
-            return this.kernel.Get<T>(key);
+            return kernel.Get<T>(key);
         }
 
         public T GetInstance<T>(string name, IDictionary constructorArguments)
@@ -71,36 +71,34 @@ namespace Siege.Container.NinjectAdapter
                 args.Add(argument);
             }
 
-            return this.kernel.Get<T>(name, args.ToArray());
+            return kernel.Get<T>(name, args.ToArray());
         }
 
         public IServiceLocator Register<T>(IUseCase<T> useCase)
         {
-            BindingBuilder<T> builder = new BindingBuilder<T>(new Binding(typeof(T)));
-
             if(useCase is IConditionalUseCase<T>)
             {
                 var conditionalCase = useCase as IConditionalUseCase<T>;
 
-                conditionalCase.Bind(this.kernel, this.locator, builder);
+                conditionalCase.Bind(kernel, this);
             }
-            else if (useCase is KeyBasedUseCase<T>)
+            else if (useCase is IKeyBasedUseCase<T>)
             {
-                var keyCase = useCase as KeyBasedUseCase<T>;
+                var keyCase = useCase as IKeyBasedUseCase<T>;
 
-                keyCase.Bind(this.kernel, builder);
+                keyCase.Bind(kernel);
             }
-            else if (useCase is GenericUseCase<T>)
+            else if (useCase is DefaultImplementationUseCase<T>)
             {
-                GenericUseCase<T> genericCase = useCase as GenericUseCase<T>;
+                var implementation = useCase as DefaultImplementationUseCase<T>;
 
-                genericCase.Bind(this.kernel, builder);
+                implementation.Bind(kernel, this);
             }
-            else if (useCase is ImplementationUseCase<T>)
+            else if (useCase is IDefaultUseCase<T>)
             {
-                var implementation = useCase as ImplementationUseCase<T>;
+                IDefaultUseCase<T> genericCase = useCase as IDefaultUseCase<T>;
 
-                implementation.Bind(this.kernel, builder);
+                genericCase.Bind(kernel, this);
             }
 
             return this;
@@ -112,6 +110,30 @@ namespace Siege.Container.NinjectAdapter
 
             Register(Given<IServiceLocator>.Then(locator));
             Register(Given<IContextualServiceLocator>.Then(locator));
+        }
+
+        public IGenericFactory<TBaseType> GetFactory<TBaseType>()
+        {
+            if (!factories.ContainsKey(typeof(TBaseType)))
+            {
+                lock (factories.SyncRoot)
+                {
+                    if (!factories.ContainsKey(typeof(TBaseType)))
+                    {
+                        NinjectFactory<TBaseType> factory = new NinjectFactory<TBaseType>(locator, kernel);
+                        Register(Given<NinjectFactory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
+
+                        factories.Add(typeof(TBaseType), factory);
+                    }
+                }
+            }
+
+            return (NinjectFactory<TBaseType>)factories[typeof(TBaseType)];
+        }
+
+        public void Dispose()
+        {
+            this.kernel.Dispose();
         }
     }
 }

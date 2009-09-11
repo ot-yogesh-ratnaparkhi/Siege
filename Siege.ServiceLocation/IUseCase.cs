@@ -34,5 +34,6 @@ namespace Siege.ServiceLocation
     public interface IUseCase<TBaseType> : IUseCase
     {
         TBaseType Resolve(IServiceLocator locator, IList<object> context, IDictionary dictionary);
+        TBaseType Resolve(IServiceLocator locator, IDictionary dictionary);
     }
 }

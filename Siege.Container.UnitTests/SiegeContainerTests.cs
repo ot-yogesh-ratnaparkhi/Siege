@@ -94,6 +94,19 @@ namespace Siege.Container.UnitTests
             Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
         }
 
+        [Test]
+        public void Should_Change_Implementation_When_Context_Is_Added()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>());
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case1).Then<TestCase1>());
+
+            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
+
+            locator.AddContext(CreateContext(TestEnum.Case2));
+
+            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase2);
+        }
 
         [Test]
         public void Should_Use_Correct_Rule_Given_Multiple_Rules_And_Default()
