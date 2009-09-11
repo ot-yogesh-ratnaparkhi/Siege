@@ -79,17 +79,17 @@ namespace Siege.Container.WindsorAdapter
 
                 keyCase.Bind(this.kernel);
             }
-            else if (useCase is IDefaultUseCase<T>)
-            {
-                IDefaultUseCase<T> genericCase = useCase as IDefaultUseCase<T>;
-
-                genericCase.Bind(kernel, this);
-            }
             else if (useCase is ImplementationUseCase<T>)
             {
                 var implementation = useCase as ImplementationUseCase<T>;
 
                 implementation.Bind(kernel);
+            }
+            else if (useCase is IDefaultUseCase<T>)
+            {
+                IDefaultUseCase<T> genericCase = useCase as IDefaultUseCase<T>;
+
+                genericCase.Bind(kernel, this);
             }
 
             return this;
