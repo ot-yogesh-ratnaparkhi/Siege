@@ -11,7 +11,7 @@ namespace Siege.Container.NinjectAdapter
     {
         public static void Bind<TBaseType>(this IConditionalUseCase<TBaseType> useCase, IKernel kernel, NinjectAdapter locator)
         {
-            var factory = (NinjectFactory<TBaseType>)locator.GetFactory<TBaseType>();
+            var factory = (Factory<TBaseType>)locator.GetFactory<TBaseType>();
             factory.AddCase(useCase);
 
             kernel.Bind<TBaseType>().ToMethod(context => factory.Build(new ParameterAdapter(context).Dictionary));
@@ -20,7 +20,7 @@ namespace Siege.Container.NinjectAdapter
 
         public static void Bind<TBaseType>(this IDefaultUseCase<TBaseType> useCase, IKernel kernel, NinjectAdapter locator)
         {
-            var factory = (NinjectFactory<TBaseType>)locator.GetFactory<TBaseType>();
+            var factory = (Factory<TBaseType>)locator.GetFactory<TBaseType>();
             factory.AddCase(useCase);
 
             if (typeof(TBaseType) != useCase.GetBoundType()) kernel.Bind<TBaseType>().ToMethod(context => factory.Build(new ParameterAdapter(context).Dictionary));
@@ -29,7 +29,7 @@ namespace Siege.Container.NinjectAdapter
         
         public static void Bind<TBaseType>(this DefaultImplementationUseCase<TBaseType> useCase, IKernel kernel, NinjectAdapter locator)
         {
-            var factory = (NinjectFactory<TBaseType>)locator.GetFactory<TBaseType>();
+            var factory = (Factory<TBaseType>)locator.GetFactory<TBaseType>();
             factory.AddCase(useCase);
 
             kernel.Bind<TBaseType>().ToConstant(useCase.GetBinding());

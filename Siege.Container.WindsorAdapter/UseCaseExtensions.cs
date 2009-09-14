@@ -8,7 +8,7 @@ namespace Siege.Container.WindsorAdapter
     {
         public static void Bind<TBaseType>(this IConditionalUseCase<TBaseType> useCase, IKernel kernel, WindsorAdapter locator)
         {
-            var factory = (WindsorFactory<TBaseType>)locator.GetFactory<TBaseType>();
+            var factory = (Factory<TBaseType>)locator.GetFactory<TBaseType>();
             factory.AddCase(useCase);
 
             kernel.Register(Component.For<TBaseType>().UsingFactoryMethod(() => factory.Build(null)).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
@@ -17,7 +17,7 @@ namespace Siege.Container.WindsorAdapter
 
         public static void Bind<TBaseType>(this IDefaultUseCase<TBaseType> useCase, IKernel kernel, WindsorAdapter locator)
         {
-            var factory = (WindsorFactory<TBaseType>)locator.GetFactory<TBaseType>();
+            var factory = (Factory<TBaseType>)locator.GetFactory<TBaseType>();
             factory.AddCase(useCase);
 
             if(typeof(TBaseType) != useCase.GetBoundType()) kernel.Register(Component.For<TBaseType>().UsingFactoryMethod(() => factory.Build(null)).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));

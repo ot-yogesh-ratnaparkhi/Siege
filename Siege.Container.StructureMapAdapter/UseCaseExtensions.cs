@@ -10,7 +10,7 @@ namespace Siege.Container.StructureMapAdapter
         {
             Registry registry = new Registry();
 
-            var factory = (StructureMapFactory<TBaseType>)locator.GetFactory<TBaseType>();
+            var factory = (Factory<TBaseType>)locator.GetFactory<TBaseType>();
             factory.AddCase(useCase);
 
             registry.ForRequestedType<TBaseType>().CacheBy(InstanceScope.PerRequest).TheDefault.Is.ConstructedBy(context => factory.Build(null));
@@ -22,7 +22,7 @@ namespace Siege.Container.StructureMapAdapter
         {
             Registry registry = new Registry();
 
-            var factory = (StructureMapFactory<TBaseType>)locator.GetFactory<TBaseType>();
+            var factory = (Factory<TBaseType>)locator.GetFactory<TBaseType>();
             factory.AddCase(useCase);
 
             if (typeof(TBaseType) != useCase.GetBoundType()) registry.ForRequestedType<TBaseType>().CacheBy(InstanceScope.PerRequest).TheDefault.Is.ConstructedBy(context => factory.Build(null));

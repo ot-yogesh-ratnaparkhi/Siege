@@ -109,15 +109,15 @@ namespace Siege.Container.WindsorAdapter
                 {
                     if (!factories.ContainsKey(typeof(TBaseType)))
                     {
-                        WindsorFactory<TBaseType> factory = new WindsorFactory<TBaseType>(this.locator);
-                        Register(Given<WindsorFactory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
+                        Factory<TBaseType> factory = new Factory<TBaseType>(this.locator);
+                        Register(Given<Factory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
 
                         factories.Add(typeof(TBaseType), factory);
                     }
                 }
             }
 
-            return (WindsorFactory<TBaseType>)factories[typeof(TBaseType)];
+            return (Factory<TBaseType>)factories[typeof(TBaseType)];
         }
 
         public void Dispose()

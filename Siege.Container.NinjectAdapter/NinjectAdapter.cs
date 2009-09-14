@@ -51,7 +51,7 @@ namespace Siege.Container.NinjectAdapter
                 args.Add(argument);
             }
 
-            return kernel.Get<T>(args.ToArray());
+            return (T)kernel.Get(type, args.ToArray());
         }
 
         public T GetInstance<T>(string key)
@@ -120,15 +120,15 @@ namespace Siege.Container.NinjectAdapter
                 {
                     if (!factories.ContainsKey(typeof(TBaseType)))
                     {
-                        NinjectFactory<TBaseType> factory = new NinjectFactory<TBaseType>(locator, kernel);
-                        Register(Given<NinjectFactory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
+                        Factory<TBaseType> factory = new Factory<TBaseType>(locator);
+                        Register(Given<Factory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
 
                         factories.Add(typeof(TBaseType), factory);
                     }
                 }
             }
 
-            return (NinjectFactory<TBaseType>)factories[typeof(TBaseType)];
+            return (Factory<TBaseType>)factories[typeof(TBaseType)];
         }
 
         public void Dispose()

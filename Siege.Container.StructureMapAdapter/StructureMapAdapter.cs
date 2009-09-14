@@ -10,7 +10,7 @@ namespace Siege.Container.StructureMapAdapter
         private readonly StructureMap.Container container;
 
         private readonly Hashtable factories = new Hashtable();
-        public StructureMapAdapter() : this(new StructureMap.Container()) {}
+        public StructureMapAdapter() : this(new StructureMap.Container(x => x.IncludeConfigurationFromConfigFile = true)) {}
         public StructureMapAdapter(StructureMap.Container container)
         {
             this.container = container;
@@ -129,15 +129,15 @@ namespace Siege.Container.StructureMapAdapter
                 {
                     if (!factories.ContainsKey(typeof(TBaseType)))
                     {
-                        StructureMapFactory<TBaseType> factory = new StructureMapFactory<TBaseType>(this.locator);
-                        Register(Given<StructureMapFactory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
+                        Factory<TBaseType> factory = new Factory<TBaseType>(this.locator);
+                        Register(Given<Factory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
 
                         factories.Add(typeof(TBaseType), factory);
                     }
                 }
             }
 
-            return (StructureMapFactory<TBaseType>)factories[typeof(TBaseType)];
+            return (Factory<TBaseType>)factories[typeof(TBaseType)];
         }
 
         public void Dispose()

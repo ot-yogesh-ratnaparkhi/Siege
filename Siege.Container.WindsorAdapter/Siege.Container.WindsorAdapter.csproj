@@ -61,7 +61,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WindsorFactory.cs" />
     <Compile Include="UseCaseExtensions.cs" />
     <Compile Include="WindsorAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

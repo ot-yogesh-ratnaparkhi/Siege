@@ -24,7 +24,7 @@ namespace Siege.Workflow.Framework
         protected Workflow(IContextualServiceLocator serviceLocator, IContract contract)
         {
             this.serviceLocator = serviceLocator;
-            this.serviceLocator.AddContext(new Context<IContract>(contract));
+            this.serviceLocator.AddContext(contract);
             this.contract = contract;
         }
 

@@ -51,7 +51,6 @@
   <ItemGroup>
     <Compile Include="StructureMapAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StructureMapFactory.cs" />
     <Compile Include="UseCaseExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
