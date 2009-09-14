@@ -7,4 +7,4 @@ dist
 *resharper*
 *.user
 *.cache
-*Siege.Workflow.Engine.*
+Siege.Workflow.Engine
