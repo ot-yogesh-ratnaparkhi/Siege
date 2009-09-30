@@ -30,11 +30,30 @@ namespace Siege.Container.StructureMapAdapter
             container.Configure(configure => configure.AddRegistry(registry));
         }
 
-        public static void Bind<TBaseType>(this ImplementationUseCase<TBaseType> useCase, StructureMap.Container container)
+        public static void Bind<TBaseType>(this DefaultInstanceUseCase<TBaseType> useCase, StructureMap.Container container, StructureMapAdapter locator)
         {
             Registry registry = new Registry();
-            registry.ForRequestedType<TBaseType>().CacheBy(InstanceScope.PerRequest).AddInstances(x => x.IsThis(useCase.GetBinding()));
+
+            var factory = (Factory<TBaseType>)locator.GetFactory<TBaseType>();
+
+            factory.AddCase(useCase);
+
+            if (typeof(TBaseType) != useCase.GetBoundType())
+            {
+                registry.ForRequestedType<TBaseType>().CacheBy(InstanceScope.PerRequest).TheDefault.Is.ConstructedBy(context => factory.Build(null));
+            }
+
+            var registrar = (typeof(UseCaseExtensions)).GetMethod("BindInstance").MakeGenericMethod(typeof(TBaseType), useCase.GetBinding().GetType());
+            registrar.Invoke(useCase, new object[] { useCase, registry });
+
             container.Configure(configure => configure.AddRegistry(registry));
+        }
+
+        public static void BindInstance<TBaseType, TInstanceType>(DefaultInstanceUseCase<TBaseType> useCase, Registry registry)
+        {
+            object instance = useCase.GetBinding();
+
+            registry.ForRequestedType<TInstanceType>().CacheBy(InstanceScope.PerRequest).TheDefault.IsThis((TInstanceType)instance);
         }
 
         public static void Bind<TBaseType>(this IKeyBasedUseCase<TBaseType> useCase, StructureMap.Container container)

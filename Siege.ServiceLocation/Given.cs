@@ -29,7 +29,7 @@ namespace Siege.ServiceLocation
 
         public static IDefaultUseCase<TBaseType> Then(TBaseType implementation)
         {
-            DefaultImplementationUseCase<TBaseType> useCase = new DefaultImplementationUseCase<TBaseType>();
+            DefaultInstanceUseCase<TBaseType> useCase = new DefaultInstanceUseCase<TBaseType>();
 
             useCase.BindTo(implementation);
 
@@ -38,7 +38,7 @@ namespace Siege.ServiceLocation
 
         public static IKeyBasedUseCase<TBaseType> Then(string key, TBaseType implementation)
         {
-            KeyBasedImplementationUseCase<TBaseType> useCase = new KeyBasedImplementationUseCase<TBaseType>(key);
+            KeyBasedInstanceUseCase<TBaseType> useCase = new KeyBasedInstanceUseCase<TBaseType>(key);
 
             useCase.BindTo(implementation);
 

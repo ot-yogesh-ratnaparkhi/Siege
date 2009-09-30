@@ -67,9 +67,9 @@ namespace Siege.Container.WindsorAdapter
 
                 conditionalCase.Bind(this.kernel, this);
             }
-            else if (useCase is KeyBasedImplementationUseCase<T>)
+            else if (useCase is KeyBasedInstanceUseCase<T>)
             {
-                var keyCase = useCase as KeyBasedImplementationUseCase<T>;
+                var keyCase = useCase as KeyBasedInstanceUseCase<T>;
 
                 keyCase.Bind(this.kernel);
             }
@@ -79,11 +79,11 @@ namespace Siege.Container.WindsorAdapter
 
                 keyCase.Bind(this.kernel);
             }
-            else if (useCase is ImplementationUseCase<T>)
+            else if (useCase is DefaultInstanceUseCase<T>)
             {
-                var implementation = useCase as ImplementationUseCase<T>;
+                var implementation = useCase as DefaultInstanceUseCase<T>;
 
-                implementation.Bind(kernel);
+                implementation.Bind(kernel, this);
             }
             else if (useCase is IDefaultUseCase<T>)
             {

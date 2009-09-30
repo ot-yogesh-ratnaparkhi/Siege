@@ -27,12 +27,13 @@ namespace Siege.Container.NinjectAdapter
             kernel.Bind(useCase.GetBoundType()).ToSelf();
         }
         
-        public static void Bind<TBaseType>(this DefaultImplementationUseCase<TBaseType> useCase, IKernel kernel, NinjectAdapter locator)
+        public static void Bind<TBaseType>(this DefaultInstanceUseCase<TBaseType> useCase, IKernel kernel, NinjectAdapter locator)
         {
             var factory = (Factory<TBaseType>)locator.GetFactory<TBaseType>();
             factory.AddCase(useCase);
 
-            kernel.Bind<TBaseType>().ToConstant(useCase.GetBinding());
+            if (typeof(TBaseType) != useCase.GetBoundType()) kernel.Bind<TBaseType>().ToMethod(context => factory.Build(new ParameterAdapter(context).Dictionary));
+            kernel.Bind(useCase.GetBoundType()).ToConstant(useCase.GetBinding());
         }
         
         public static void Bind<TBaseType>(this IKeyBasedUseCase<TBaseType> useCase, IKernel kernel)

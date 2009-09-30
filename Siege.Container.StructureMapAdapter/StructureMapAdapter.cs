@@ -97,11 +97,11 @@ namespace Siege.Container.StructureMapAdapter
 
                 keyCase.Bind(container);
             }
-            else if (useCase is ImplementationUseCase<T>)
+            else if (useCase is DefaultInstanceUseCase<T>)
             {
-                var implementation = useCase as ImplementationUseCase<T>;
+                var implementation = useCase as DefaultInstanceUseCase<T>;
 
-                implementation.Bind(container);
+                implementation.Bind(container, this);
             }
             else if (useCase is IDefaultUseCase<T>)
             {

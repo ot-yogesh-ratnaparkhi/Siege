@@ -23,7 +23,7 @@ namespace Siege.ServiceLocation
 
         public IConditionalUseCase<TBaseType> Then(TBaseType implementation)
         {
-            ConditionalImplementationUseCase<TBaseType> useCase = new ConditionalImplementationUseCase<TBaseType>();
+            ConditionalInstanceUseCase<TBaseType> useCase = new ConditionalInstanceUseCase<TBaseType>();
 
             useCase.AddActivationRule(this);
             useCase.BindTo(implementation);

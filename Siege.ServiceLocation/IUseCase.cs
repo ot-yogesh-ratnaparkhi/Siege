@@ -7,11 +7,11 @@ namespace Siege.ServiceLocation
     public interface IUseCase
     {
         Type GetBoundType();
+        object Resolve(IServiceLocator locator, IList<object> context, IDictionary dictionary);
+        object Resolve(IServiceLocator locator, IDictionary dictionary);
     }
 
     public interface IUseCase<TBaseType> : IUseCase
     {
-        TBaseType Resolve(IServiceLocator locator, IList<object> context, IDictionary dictionary);
-        TBaseType Resolve(IServiceLocator locator, IDictionary dictionary);
     }
 }

@@ -24,13 +24,17 @@ namespace Siege.Container.WindsorAdapter
             kernel.Register(Component.For(useCase.GetBoundType()).ImplementedBy(useCase.GetBoundType()).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
         }
 
-        public static void Bind<TBaseType>(this KeyBasedImplementationUseCase<TBaseType> useCase, IKernel kernel)
+        public static void Bind<TBaseType>(this KeyBasedInstanceUseCase<TBaseType> useCase, IKernel kernel)
         {
             kernel.Register(Component.For(useCase.GetBoundType()).Instance(useCase.GetBinding()).Named(useCase.Key));
         }
 
-        public static void Bind<TBaseType>(this ImplementationUseCase<TBaseType> useCase, IKernel kernel)
+        public static void Bind<TBaseType>(this DefaultInstanceUseCase<TBaseType> useCase, IKernel kernel, WindsorAdapter locator)
         {
+            var factory = (Factory<TBaseType>)locator.GetFactory<TBaseType>();
+            factory.AddCase(useCase);
+
+            kernel.Register(Component.For<TBaseType>().UsingFactoryMethod(() => factory.Build(null)).LifeStyle.Singleton.Unless(Component.ServiceAlreadyRegistered));
             kernel.Register(Component.For(useCase.GetBoundType()).Instance(useCase.GetBinding()).Unless(Component.ServiceAlreadyRegistered));
         }
 

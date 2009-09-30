@@ -160,6 +160,21 @@ namespace Siege.Container.UnitTests
             Assert.IsTrue(locator.GetInstance<ITestInterface>() is DependsOnIServiceLocator);
         }
 
+        [Test]
+        public void Should_Resolve_If_Dependency_Is_Registered_As_Instance()
+        {
+            var arg = new ConstructorArgument();
+
+            locator
+                .Register(Given<ITestInterface>.Then<DependsOnInterface>())
+                .Register(Given<IConstructorArgument>.Then(arg));
+
+            DependsOnInterface resolution = (DependsOnInterface)locator.GetInstance<ITestInterface>();
+
+            Assert.IsTrue(resolution is DependsOnInterface);
+            Assert.AreSame(arg, resolution.Argument);
+        }
+
         private TestContext CreateContext(TestEnum types)
         {
             return new TestContext(types);
@@ -199,6 +214,21 @@ namespace Siege.Container.UnitTests
     {
         public DependsOnIServiceLocator(IServiceLocator locator)
         {
+        }
+    }
+
+    public class DependsOnInterface : ITestInterface
+    {
+        private readonly IConstructorArgument argument;
+
+        public DependsOnInterface(IConstructorArgument argument)
+        {
+            this.argument = argument;
+        }
+
+        public IConstructorArgument Argument
+        {
+            get { return argument; }
         }
     }
 }

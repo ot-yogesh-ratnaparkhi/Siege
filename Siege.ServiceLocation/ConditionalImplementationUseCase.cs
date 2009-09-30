@@ -1,6 +1,6 @@
 namespace Siege.ServiceLocation
 {
-    public class ConditionalImplementationUseCase<TBaseType> : ImplementationUseCase<TBaseType>, IConditionalUseCase<TBaseType>
+    public class ConditionalInstanceUseCase<TBaseType> : InstanceUseCase<TBaseType>, IConditionalUseCase<TBaseType>
     {
     }
 }

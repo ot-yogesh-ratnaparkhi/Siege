@@ -88,9 +88,9 @@ namespace Siege.Container.NinjectAdapter
 
                 keyCase.Bind(kernel);
             }
-            else if (useCase is DefaultImplementationUseCase<T>)
+            else if (useCase is DefaultInstanceUseCase<T>)
             {
-                var implementation = useCase as DefaultImplementationUseCase<T>;
+                var implementation = useCase as DefaultInstanceUseCase<T>;
 
                 implementation.Bind(kernel, this);
             }

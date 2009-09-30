@@ -57,9 +57,9 @@ namespace Siege.Container
 
             if (selectedCase != null)
             {
-                foreach (IUseCase<TOutput> useCase in selectedCase)
+                foreach (IUseCase useCase in selectedCase)
                 {
-                    TOutput value = useCase.Resolve(serviceLocator, this.Context, constructorArguments);
+                    TOutput value = (TOutput)useCase.Resolve(serviceLocator, this.Context, constructorArguments);
 
                     if (!Equals(value, default(TOutput))) return value;
                 }
