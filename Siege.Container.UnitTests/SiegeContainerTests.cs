@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Siege.ServiceLocation;
+using Siege.ServiceLocation.TypeGeneration;
 
 namespace Siege.Container.UnitTests
 {
@@ -161,6 +163,15 @@ namespace Siege.Container.UnitTests
         }
 
         [Test]
+        [ExpectedException(typeof(NotImplementedException))]
+        public void Should_Use_AOP()
+        {
+            locator.Register(Given<AOPExample>.Then<AOPExample>());
+            locator.Register(Given<ThrowsExceptionAttribute>.Then<ThrowsExceptionAttribute>());
+            locator.GetInstance<AOPExample>().Test();
+        }
+
+        [Test]
         public void Should_Resolve_If_Dependency_Is_Registered_As_Instance()
         {
             var arg = new ConstructorArgument();
@@ -229,6 +240,37 @@ namespace Siege.Container.UnitTests
         public IConstructorArgument Argument
         {
             get { return argument; }
+        }
+    }
+
+    public class AOPExample
+    {
+        [ThrowsException]
+        public virtual void Test()
+        {
+            
+        }
+    }
+
+    public class ThrowsExceptionAttribute : Attribute, IProcessEncapsulatingAttribute
+    {
+        private readonly IContextualServiceLocator locator;
+
+        public ThrowsExceptionAttribute() {}
+
+        public ThrowsExceptionAttribute(IContextualServiceLocator locator)
+        {
+            this.locator = locator;
+        }
+
+        public TResponseType Process<TResponseType>(Func<TResponseType> func)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Process(Action action)
+        {
+            throw new NotImplementedException();
         }
     }
 }

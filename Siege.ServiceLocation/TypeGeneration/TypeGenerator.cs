@@ -8,65 +8,32 @@ using System.Threading;
 
 namespace Siege.ServiceLocation.TypeGeneration
 {
-    public interface IAopAttribute
-    {
-        TResponseType Process<TResponseType>(Func<TResponseType> func);
-    }
-
-    public class SampleAttribute : Attribute, IAopAttribute
-    {
-        public TResponseType Process<TResponseType>(Func<TResponseType> func)
-        {
-            throw new NotImplementedException();
-            return func.Invoke();
-        }
-    }
-
-    public class LolAttribute : SampleAttribute
-    {
-        public new TResponseType Process<TResponseType>(Func<TResponseType> func)
-        {
-            return base.Process(() => default(TResponseType));
-        }
-    }
-
     public class TypeGenerator
     {
-        private static readonly AssemblyBuilder assemblyBuilder;
-        private static readonly ModuleBuilder moduleBuilder;
-        private static readonly object lockObject = new object();
         private static readonly Hashtable definedTypes = new Hashtable();
+        public static IContextualServiceLocator ServiceLocator;
 
-        static TypeGenerator()
-        {
-            if(assemblyBuilder == null)
-            {
-                lock (lockObject)
-                {
-                    if (assemblyBuilder == null)
-                    {
-                        AssemblyName assemblyName = new AssemblyName {Name = "GeneratedTypes"};
-                        AppDomain thisDomain = Thread.GetDomain();
-
-                        assemblyBuilder = thisDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave);
-                        moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyBuilder.GetName().Name, assemblyBuilder.GetName().Name + ".dll");
-                    }
-                }
-            }
-        }
-
-        public Type Generate<TBaseType>()
+        public static Type Generate<TBaseType>()
         {
             if (definedTypes.ContainsKey(typeof(TBaseType))) return (Type)definedTypes[typeof (TBaseType)];
+            if (typeof(TBaseType).GetMethods().Where(methodInfo => methodInfo.GetCustomAttributes(typeof(IAopAttribute), true).Count() > 0).Count() == 0) return typeof (TBaseType);
 
-            TypeBuilder typeBuilder = moduleBuilder.DefineType("Dynamic" + typeof(TBaseType),
-                    TypeAttributes.Public |
-                    TypeAttributes.Class |
-                    TypeAttributes.AutoClass |
-                    TypeAttributes.AnsiClass |
-                    TypeAttributes.BeforeFieldInit |
-                    TypeAttributes.AutoLayout,
-                    typeof(TBaseType));
+
+            var dllName = typeof(TBaseType).Namespace + ".Dynamic" + typeof(TBaseType).Name;
+            AssemblyName assemblyName = new AssemblyName { Name = dllName };
+            AppDomain thisDomain = Thread.GetDomain();
+
+            var assemblyBuilder = thisDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave);
+            var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyBuilder.GetName().Name, assemblyBuilder.GetName().Name + ".dll");
+
+            TypeBuilder typeBuilder = moduleBuilder.DefineType("Dynamic" + typeof(TBaseType).Name,
+                                                               TypeAttributes.Public |
+                                                               TypeAttributes.Class |
+                                                               TypeAttributes.AutoClass |
+                                                               TypeAttributes.AnsiClass |
+                                                               TypeAttributes.BeforeFieldInit |
+                                                               TypeAttributes.AutoLayout,
+                                                               typeof(TBaseType));
 
             GenerateConstructors(typeBuilder);
             GenerateMethods<TBaseType>(typeBuilder);
@@ -104,36 +71,80 @@ namespace Siege.ServiceLocation.TypeGeneration
                 var parameters = method.GetParameters();
                 List<Type> types = new List<Type>();
 
-                foreach(ParameterInfo info in parameters)
+                foreach (ParameterInfo info in parameters)
                 {
                     types.Add(info.ParameterType);
                 }
-
+              
                 MethodBuilder methodBuilder = builder.DefineMethod(
                     method.Name,
-                    MethodAttributes.Public | MethodAttributes.HideBySig,
+                    MethodAttributes.Public | MethodAttributes.Virtual,
                     method.ReturnType, types.ToArray());
 
-                Type funcType = typeof(Func<>).MakeGenericType(method.ReturnType);
-                var funcConstructor = funcType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
-                ILGenerator methodGenerator = methodBuilder.GetILGenerator();
+                GenerateEncapsulatedCalls(methodBuilder.GetILGenerator(), method);
 
-                methodGenerator.DeclareLocal(method.ReturnType);
-                methodGenerator.Emit(OpCodes.Nop);
+                builder.DefineMethodOverride(methodBuilder, typeof(TBaseType).GetMethod(method.Name));
+            }
+        }
 
-                foreach (Attribute attribute in method.GetCustomAttributes(typeof(IAopAttribute), true))
+        private static void GenerateEncapsulatedCalls(ILGenerator methodGenerator, MethodInfo method)
+        {
+            Type funcType = null;
+
+            if(method.ReturnType == typeof(void))
+            {
+                funcType = typeof (Action);
+            }
+            else
+            {
+                funcType = typeof(Func<>).MakeGenericType(method.ReturnType);
+            }
+
+            var funcConstructor = funcType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
+
+            if (method.ReturnType != typeof(void)) methodGenerator.DeclareLocal(method.ReturnType);
+            methodGenerator.Emit(OpCodes.Nop);
+
+            foreach (Attribute attribute in method.GetCustomAttributes(typeof(IProcessEncapsulatingAttribute), true))
+            {
+                if (ServiceLocator == null)
                 {
                     methodGenerator.Emit(OpCodes.Newobj, attribute.GetType().GetConstructor(new Type[0]));
+                }
+                else
+                {
                     methodGenerator.Emit(OpCodes.Ldarg_0);
-                    methodGenerator.Emit(OpCodes.Ldftn, method);
-                    methodGenerator.Emit(OpCodes.Newobj, funcConstructor);
-                    methodGenerator.Emit(OpCodes.Call, attribute.GetType().GetMethod("Process").MakeGenericMethod(method.ReturnType));
+                    methodGenerator.Emit(OpCodes.Ldfld, typeof(TypeGenerator).GetField("ServiceLocator"));
+                    methodGenerator.Emit(OpCodes.Callvirt, typeof(IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attribute.GetType()));
+                }
+                methodGenerator.Emit(OpCodes.Ldarg_0);
+                methodGenerator.Emit(OpCodes.Ldftn, method);
+                methodGenerator.Emit(OpCodes.Newobj, funcConstructor);
+
+                MethodInfo info = null;
+
+                if (method.ReturnType == typeof(void))
+                {
+                    info = attribute.GetType().GetMethod("Process", new [] {typeof(Action)});
+                }
+                else
+                {
+                    info = attribute.GetType().GetMethods().Where(
+                        memberInfo => memberInfo.Name == "Process" && 
+                                      memberInfo.GetParameters().Where(parameter => parameter.ParameterType != typeof (Action)).Count() >
+                                      0).First().MakeGenericMethod(method.ReturnType);
                 }
 
+                methodGenerator.Emit(OpCodes.Call, info);
+            }
+
+            if(method.ReturnType != typeof(void))
+            {
                 methodGenerator.Emit(OpCodes.Stloc_0);
                 methodGenerator.Emit(OpCodes.Ldloc_0);
-                methodGenerator.Emit(OpCodes.Ret);
             }
+            
+            methodGenerator.Emit(OpCodes.Ret);
         }
     }
 }

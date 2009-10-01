@@ -67,6 +67,10 @@
     <Compile Include="KeyBasedUseCase.cs" />
     <Compile Include="ObjectToDictionaryRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeGeneration\IAopAttribute.cs" />
+    <Compile Include="TypeGeneration\IPostProcessingAttribute.cs" />
+    <Compile Include="TypeGeneration\IPreProcessingAttribute.cs" />
+    <Compile Include="TypeGeneration\IProcessEncapsulatingAttribute.cs" />
     <Compile Include="TypeGeneration\TypeGenerator.cs" />
     <Compile Include="UseCase.cs" />
   </ItemGroup>
