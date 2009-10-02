@@ -163,11 +163,12 @@ namespace Siege.Container.UnitTests
         }
 
         [Test]
-        [ExpectedException(typeof(NotImplementedException))]
         public void Should_Use_AOP()
         {
             locator.Register(Given<AOPExample>.Then<AOPExample>());
             locator.Register(Given<ThrowsExceptionAttribute>.Then<ThrowsExceptionAttribute>());
+            locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
+            locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
             locator.GetInstance<AOPExample>().Test();
         }
 
@@ -245,13 +246,14 @@ namespace Siege.Container.UnitTests
 
     public class AOPExample
     {
-        [ThrowsException]
-        public virtual void Test()
+        [SamplePreProcessingAttribute, ThrowsException, ThrowsException, ThrowsException, SamplePostProcessingAttribute]
+        public virtual string Test()
         {
-            
+            return "yay";
         }
     }
 
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
     public class ThrowsExceptionAttribute : Attribute, IProcessEncapsulatingAttribute
     {
         private readonly IContextualServiceLocator locator;
@@ -265,12 +267,59 @@ namespace Siege.Container.UnitTests
 
         public TResponseType Process<TResponseType>(Func<TResponseType> func)
         {
-            throw new NotImplementedException();
+            return default(TResponseType);
         }
 
         public void Process(Action action)
         {
-            throw new NotImplementedException();
+        }
+    }
+
+    public class SamplePreProcessingAttribute : Attribute, IPreProcessingAttribute
+    {
+        public void Process()
+        {
+            
+        }
+    }
+
+    public class SamplePostProcessingAttribute : Attribute, IPostProcessingAttribute
+    {
+        public void Process()
+        {
+        }
+    }
+
+    public class SampleClass
+    {
+        private readonly IContextualServiceLocator serviceLocator;
+
+        public SampleClass(IContextualServiceLocator serviceLocator)
+        {
+            this.serviceLocator = serviceLocator;
+        }
+
+        public string Test()
+        {
+            serviceLocator.GetInstance<SamplePreProcessingAttribute>().Process();
+            string epic = serviceLocator.GetInstance<ThrowsExceptionAttribute>().Process
+                (
+                    () => serviceLocator.GetInstance<ThrowsExceptionAttribute>().Process
+                        (
+                            () => serviceLocator.GetInstance<ThrowsExceptionAttribute>().Process
+                                (
+                                    () => lulz()
+                                )
+                        )
+                );
+            serviceLocator.GetInstance<SamplePostProcessingAttribute>().Process();
+
+            return epic;
+        }
+
+        public string lulz()
+        {
+            return "yay";
         }
     }
 }

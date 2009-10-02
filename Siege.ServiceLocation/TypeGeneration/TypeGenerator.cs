@@ -81,13 +81,118 @@ namespace Siege.ServiceLocation.TypeGeneration
                     MethodAttributes.Public | MethodAttributes.Virtual,
                     method.ReturnType, types.ToArray());
 
-                GenerateEncapsulatedCalls(methodBuilder.GetILGenerator(), method);
+                GenerateCalls(methodBuilder.GetILGenerator(), method, typeof(IPreProcessingAttribute));
+                GenerateEncapsulatedCalls(methodBuilder.GetILGenerator(), method, builder, types.ToArray());
+                GenerateCalls(methodBuilder.GetILGenerator(), method, typeof(IPostProcessingAttribute));
 
+                methodBuilder.GetILGenerator().Emit(OpCodes.Nop);
+                methodBuilder.GetILGenerator().Emit(OpCodes.Ret);
                 builder.DefineMethodOverride(methodBuilder, typeof(TBaseType).GetMethod(method.Name));
             }
         }
 
-        private static void GenerateEncapsulatedCalls(ILGenerator methodGenerator, MethodInfo method)
+        private static void GenerateCalls(ILGenerator methodGenerator, MethodInfo method, Type attributeType)
+        {
+            if (method.ReturnType != typeof(void)) methodGenerator.DeclareLocal(method.ReturnType);
+            methodGenerator.Emit(OpCodes.Nop);
+
+            foreach (Attribute attribute in method.GetCustomAttributes(attributeType, true))
+            {
+                GenerateMethod(methodGenerator, attribute);
+            }
+        }
+
+        private static void GenerateMethod(ILGenerator methodGenerator, Attribute attribute)
+        {
+            if (ServiceLocator == null)
+            {
+                methodGenerator.Emit(OpCodes.Newobj, attribute.GetType().GetConstructor(new Type[0]));
+            }
+            else
+            {
+                methodGenerator.Emit(OpCodes.Ldarg_0);
+                methodGenerator.Emit(OpCodes.Ldfld, typeof(TypeGenerator).GetField("ServiceLocator"));
+                methodGenerator.Emit(OpCodes.Callvirt, typeof(IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attribute.GetType()));
+            }
+
+            methodGenerator.Emit(OpCodes.Callvirt, attribute.GetType().GetMethod("Process"));
+        }
+
+        private static MethodInfo GenerateNestedMethod(object[] attributes, Type returnType, int counter, TypeBuilder builder, MethodInfo method, Type[] types)
+        {
+            if (attributes.Length != counter + 1)
+            {
+                method = GenerateNestedMethod(attributes, returnType, counter + 1, builder, method, types);
+            }
+
+            Attribute attribute = (Attribute)attributes[counter];
+
+            MethodBuilder methodBuilder = builder.DefineMethod(
+                method.Name + "_" + counter,
+                MethodAttributes.Public | MethodAttributes.Virtual,
+                method.ReturnType, types.ToArray());
+
+            var methodGenerator = methodBuilder.GetILGenerator();
+
+            if (ServiceLocator == null)
+            {
+                methodGenerator.Emit(OpCodes.Newobj, attribute.GetType().GetConstructor(new Type[0]));
+            }
+            else
+            {
+                methodGenerator.Emit(OpCodes.Ldarg_0);
+                methodGenerator.Emit(OpCodes.Ldfld, typeof(TypeGenerator).GetField("ServiceLocator"));
+                methodGenerator.Emit(OpCodes.Callvirt, typeof(IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attribute.GetType()));
+            }
+
+            MethodInfo info = null;
+
+            if (returnType == typeof(void))
+            {
+                info = attribute.GetType().GetMethod("Process", new[] { typeof(Action) });
+            }
+            else
+            {
+                info = attribute.GetType().GetMethods().Where(
+                    memberInfo => memberInfo.Name == "Process" &&
+                                  memberInfo.GetParameters().Where(parameter => parameter.ParameterType != typeof(Action)).Count() >
+                                  0).First().MakeGenericMethod(returnType);
+            }
+
+            Type funcType = null;
+
+            if (method.ReturnType == typeof(void))
+            {
+                funcType = typeof(Action);
+            }
+            else
+            {
+                funcType = typeof(Func<>).MakeGenericType(method.ReturnType);
+            }
+
+            var funcConstructor = funcType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
+
+            if (method.ReturnType != typeof(void)) methodGenerator.DeclareLocal(method.ReturnType);
+            
+
+            methodGenerator.Emit(OpCodes.Ldarg_0);
+            methodGenerator.Emit(OpCodes.Ldftn, method);
+            methodGenerator.Emit(OpCodes.Newobj, funcConstructor);
+
+            methodGenerator.Emit(OpCodes.Callvirt, info);
+
+            if (method.ReturnType != typeof(void))
+            {
+                methodGenerator.Emit(OpCodes.Stloc_0);
+                methodGenerator.Emit(OpCodes.Ldloc_0);
+            }
+
+            methodGenerator.Emit(OpCodes.Ret);
+
+            return methodBuilder;
+        }
+
+        private static void GenerateEncapsulatedCalls(ILGenerator methodGenerator, MethodInfo method, TypeBuilder builder, Type[] types)
         {
             Type funcType = null;
 
@@ -102,49 +207,41 @@ namespace Siege.ServiceLocation.TypeGeneration
 
             var funcConstructor = funcType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
 
+            var attributes = method.GetCustomAttributes(typeof(IProcessEncapsulatingAttribute), true);
+
             if (method.ReturnType != typeof(void)) methodGenerator.DeclareLocal(method.ReturnType);
             methodGenerator.Emit(OpCodes.Nop);
 
-            foreach (Attribute attribute in method.GetCustomAttributes(typeof(IProcessEncapsulatingAttribute), true))
+            if (ServiceLocator == null)
             {
-                if (ServiceLocator == null)
-                {
-                    methodGenerator.Emit(OpCodes.Newobj, attribute.GetType().GetConstructor(new Type[0]));
-                }
-                else
-                {
-                    methodGenerator.Emit(OpCodes.Ldarg_0);
-                    methodGenerator.Emit(OpCodes.Ldfld, typeof(TypeGenerator).GetField("ServiceLocator"));
-                    methodGenerator.Emit(OpCodes.Callvirt, typeof(IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attribute.GetType()));
-                }
+                methodGenerator.Emit(OpCodes.Newobj, attributes[0].GetType().GetConstructor(new Type[0]));
+            }
+            else
+            {
                 methodGenerator.Emit(OpCodes.Ldarg_0);
-                methodGenerator.Emit(OpCodes.Ldftn, method);
-                methodGenerator.Emit(OpCodes.Newobj, funcConstructor);
-
-                MethodInfo info = null;
-
-                if (method.ReturnType == typeof(void))
-                {
-                    info = attribute.GetType().GetMethod("Process", new [] {typeof(Action)});
-                }
-                else
-                {
-                    info = attribute.GetType().GetMethods().Where(
-                        memberInfo => memberInfo.Name == "Process" && 
-                                      memberInfo.GetParameters().Where(parameter => parameter.ParameterType != typeof (Action)).Count() >
-                                      0).First().MakeGenericMethod(method.ReturnType);
-                }
-
-                methodGenerator.Emit(OpCodes.Call, info);
+                methodGenerator.Emit(OpCodes.Ldfld, typeof(TypeGenerator).GetField("ServiceLocator"));
+                methodGenerator.Emit(OpCodes.Callvirt, typeof(IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attributes[0].GetType()));
             }
 
-            if(method.ReturnType != typeof(void))
+            methodGenerator.Emit(OpCodes.Ldarg_0);
+            methodGenerator.Emit(OpCodes.Ldftn, GenerateNestedMethod(attributes, method.ReturnType, 0, builder, method, types));
+            methodGenerator.Emit(OpCodes.Newobj, funcConstructor);
+
+            MethodInfo info = null;
+
+            if (method.ReturnType == typeof(void))
             {
-                methodGenerator.Emit(OpCodes.Stloc_0);
-                methodGenerator.Emit(OpCodes.Ldloc_0);
+                info = attributes[0].GetType().GetMethod("Process", new[] { typeof(Action) });
             }
-            
-            methodGenerator.Emit(OpCodes.Ret);
+            else
+            {
+                info = attributes[0].GetType().GetMethods().Where(
+                    memberInfo => memberInfo.Name == "Process" &&
+                                  memberInfo.GetParameters().Where(parameter => parameter.ParameterType != typeof(Action)).Count() >
+                                  0).First().MakeGenericMethod(method.ReturnType);
+            }
+
+            methodGenerator.Emit(OpCodes.Callvirt, info);
         }
     }
 }

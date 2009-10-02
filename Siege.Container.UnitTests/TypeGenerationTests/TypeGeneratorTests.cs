@@ -23,7 +23,6 @@ namespace Siege.Container.UnitTests.TypeGenerationTests
         }
 
         [Test]
-        [ExpectedException(typeof(NotImplementedException))]
         public void Should_Throw_Exception_From_Attribute()
         {
             var result = TypeGenerator.Generate<TestType>();
