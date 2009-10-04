@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
-using Siege.ServiceLocation.TypeGeneration;
+using Siege.ServiceLocation;
+using Siege.ServiceLocation.Aop;
 
 namespace Siege.Container.UnitTests.TypeGenerationTests
 {
@@ -10,13 +12,13 @@ namespace Siege.Container.UnitTests.TypeGenerationTests
         [SetUp]
         public void SetUp()
         {
-            TypeGenerator.ServiceLocator = null;
+            AopBinder.ServiceLocator = null;
         }
 
         [Test]
         public void Should_Generate_Type()
         {
-            var result = TypeGenerator.Generate<TestType>();
+            var result = AopBinder.Generate<TestType>();
             TestType instance = (TestType)Activator.CreateInstance(result);
             Assert.IsTrue(instance is TestType);
             Assert.AreNotEqual(typeof(TestType), instance.GetType());
@@ -25,19 +27,55 @@ namespace Siege.Container.UnitTests.TypeGenerationTests
         [Test]
         public void Should_Throw_Exception_From_Attribute()
         {
-            var result = TypeGenerator.Generate<TestType>();
+            var result = AopBinder.Generate<TestType>();
             TestType instance = (TestType)Activator.CreateInstance(result);
             
-            instance.Test();
+            var test = instance.Test("yay", "yay");
+
+            Assert.AreEqual("yay", test);
         }
     }
 
     public class TestType
     {
-        [ThrowsException]
-        public virtual string Test()
+        [SamplePreProcessing, SamplePostProcessing]
+        public virtual string Test(object arg1, object arg2)
         {
-            return null;
+            return arg1.ToString();
+        }
+    }
+
+    public class TestBase
+    {
+        protected readonly IContextualServiceLocator locator;
+
+        public TestBase(IContextualServiceLocator locator)
+        {
+            this.locator = locator;
+        }
+
+        public virtual string Test(object arg1, object arg2)
+        {
+            return "yay";
+        }
+    }
+
+    public class TestClass : TestBase
+    {
+        public object sample;
+
+        public TestClass(IContextualServiceLocator locator) : base(locator)
+        {
+        }
+
+        public override string Test(object arg1, object arg2)
+        {
+            sample = locator;
+            new SamplePreProcessingAttribute().Process();
+            var value = new SampleEncapsulatingAttribute(locator).Process(() => base.Test(arg1, arg2));
+            new SamplePostProcessingAttribute().Process();
+
+            return value;
         }
     }
 }

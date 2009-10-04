@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Siege.ServiceLocation;
+using Siege.ServiceLocation.Aop;
 using Siege.ServiceLocation.TypeGeneration;
 
 namespace Siege.Container.UnitTests
@@ -166,7 +167,7 @@ namespace Siege.Container.UnitTests
         public void Should_Use_AOP()
         {
             locator.Register(Given<AOPExample>.Then<AOPExample>());
-            locator.Register(Given<ThrowsExceptionAttribute>.Then<ThrowsExceptionAttribute>());
+            locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
             locator.GetInstance<AOPExample>().Test();
@@ -246,21 +247,44 @@ namespace Siege.Container.UnitTests
 
     public class AOPExample
     {
-        [SamplePreProcessingAttribute, ThrowsException, ThrowsException, ThrowsException, SamplePostProcessingAttribute]
+        [SampleEncapsulating]
         public virtual string Test()
         {
             return "yay";
         }
     }
 
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
-    public class ThrowsExceptionAttribute : Attribute, IProcessEncapsulatingAttribute
+    public class SampleBase
+    {
+        public virtual string Test()
+        {
+            return "yay";
+        }
+    }
+
+    public class SampleClass : SampleBase
     {
         private readonly IContextualServiceLocator locator;
 
-        public ThrowsExceptionAttribute() {}
+        public SampleClass(IContextualServiceLocator locator)
+        {
+            this.locator = locator;
+        }
 
-        public ThrowsExceptionAttribute(IContextualServiceLocator locator)
+        public override string Test()
+        {
+            return locator.GetInstance<SampleEncapsulatingAttribute>().Process(() => base.Test());
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
+    public class SampleEncapsulatingAttribute : Attribute, IProcessEncapsulatingAttribute
+    {
+        private readonly IContextualServiceLocator locator;
+
+        public SampleEncapsulatingAttribute() {}
+
+        public SampleEncapsulatingAttribute(IContextualServiceLocator locator)
         {
             this.locator = locator;
         }
@@ -287,39 +311,6 @@ namespace Siege.Container.UnitTests
     {
         public void Process()
         {
-        }
-    }
-
-    public class SampleClass
-    {
-        private readonly IContextualServiceLocator serviceLocator;
-
-        public SampleClass(IContextualServiceLocator serviceLocator)
-        {
-            this.serviceLocator = serviceLocator;
-        }
-
-        public string Test()
-        {
-            serviceLocator.GetInstance<SamplePreProcessingAttribute>().Process();
-            string epic = serviceLocator.GetInstance<ThrowsExceptionAttribute>().Process
-                (
-                    () => serviceLocator.GetInstance<ThrowsExceptionAttribute>().Process
-                        (
-                            () => serviceLocator.GetInstance<ThrowsExceptionAttribute>().Process
-                                (
-                                    () => lulz()
-                                )
-                        )
-                );
-            serviceLocator.GetInstance<SamplePostProcessingAttribute>().Process();
-
-            return epic;
-        }
-
-        public string lulz()
-        {
-            return "yay";
         }
     }
 }

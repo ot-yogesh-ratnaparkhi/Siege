@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using Siege.ServiceLocation.TypeGeneration;
+using Siege.ServiceLocation.Aop;
 
 namespace Siege.ServiceLocation
 {
@@ -10,7 +10,7 @@ namespace Siege.ServiceLocation
 
         public void BindTo<TImplementationType>()
         {
-            boundType = TypeGenerator.Generate<TImplementationType>();
+            boundType = AopBinder.Generate<TImplementationType>();
         }
 
         public override Type GetBinding()

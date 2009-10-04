@@ -1,6 +1,7 @@
 using System;
+using Siege.ServiceLocation.TypeGeneration;
 
-namespace Siege.ServiceLocation.TypeGeneration
+namespace Siege.ServiceLocation.Aop
 {
     public interface IProcessEncapsulatingAttribute : IAopAttribute
     {

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Siege.ServiceLocation;
-using Siege.ServiceLocation.TypeGeneration;
+using Siege.ServiceLocation.Aop;
 
 namespace Siege.Container
 {
@@ -20,7 +20,7 @@ namespace Siege.Container
             this.serviceLocator = serviceLocator;
             this.contextStore = contextStore;
             this.serviceLocator.RegisterParentLocator(this);
-            TypeGenerator.ServiceLocator = this;
+            AopBinder.ServiceLocator = this;
         }
 
         public SiegeContainer(IServiceLocatorAdapter serviceLocator) : this(serviceLocator, new GlobalContextStore())
