@@ -8,13 +8,15 @@ namespace Siege.DynamicTypeGeneration.Actions
     {
         private readonly MethodBuilder builder;
         private readonly MethodInfo method;
-        private readonly IList<ITypeGenerationAction> actions;
+        private IList<ITypeGenerationAction> actions;
+        private readonly GeneratedMethod generatedMethod;
 
-        public SetFuncTargetAction(MethodBuilder builder, MethodInfo method, IList<ITypeGenerationAction> actions)
+        public SetFuncTargetAction(MethodBuilder builder, MethodInfo method, IList<ITypeGenerationAction> actions, GeneratedMethod generatedMethod)
         {
             this.builder = builder;
             this.method = method;
             this.actions = actions;
+            this.generatedMethod = generatedMethod;
         }
 
         public void Execute()
@@ -27,7 +29,7 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         public CallAction Call(MethodInfo method)
         {
-            var action = new CallAction(builder, method, actions);
+            var action = new CallAction(builder, method, actions, generatedMethod);
             this.actions.Add(action);
 
             return action;

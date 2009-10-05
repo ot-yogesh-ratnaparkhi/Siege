@@ -9,9 +9,14 @@ namespace Siege.DynamicTypeGeneration.Actions
     {
         private readonly Type baseType;
 
-        public CallBaseAction(MethodBuilder builder, MethodInfo method, IList<ITypeGenerationAction> actions, Type baseType) : base(builder, method, actions)
+        public CallBaseAction(MethodBuilder builder, MethodInfo method, IList<ITypeGenerationAction> actions, Type baseType, GeneratedMethod generatedMethod) : base(builder, method, actions, generatedMethod)
         {
             this.baseType = baseType;
+
+            if (method.ReturnType != typeof(void))
+            {
+                generatedMethod.AddLocal(method.ReturnType);
+            }
         }
 
         public override void Execute()
@@ -38,15 +43,6 @@ namespace Siege.DynamicTypeGeneration.Actions
             }
 
             methodGenerator.Emit(OpCodes.Call, baseType.GetMethod(method.Name, parameters.ToArray()));
-            
-            if (method.ReturnType != typeof(void))
-            {
-                methodGenerator.DeclareLocal(method.ReturnType);
-            }
-            else
-            {
-                methodGenerator.Emit(OpCodes.Nop);
-            }
         }
     }
 }

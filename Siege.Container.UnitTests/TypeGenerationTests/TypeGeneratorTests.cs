@@ -72,10 +72,16 @@ namespace Siege.Container.UnitTests.TypeGenerationTests
         {
             sample = locator;
             new SamplePreProcessingAttribute().Process();
-            var value = new SampleEncapsulatingAttribute(locator).Process(() => base.Test(arg1, arg2));
+            var value = this.Test2(arg1, arg2);
+            //var value = new SampleEncapsulatingAttribute(locator).Process(() => this.Test2(arg1, arg2));
             new SamplePostProcessingAttribute().Process();
 
             return value;
+        }
+
+        public string Test2(object arg1, object arg2)
+        {
+            return base.Test(arg1, arg2);
         }
     }
 }

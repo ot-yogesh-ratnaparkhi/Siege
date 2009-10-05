@@ -256,6 +256,13 @@ namespace Siege.Container.UnitTests
 
     public class SampleBase
     {
+        protected readonly IContextualServiceLocator locator;
+
+        public SampleBase(IContextualServiceLocator locator)
+        {
+            this.locator = locator;
+        }
+        
         public virtual string Test()
         {
             return "yay";
@@ -264,16 +271,20 @@ namespace Siege.Container.UnitTests
 
     public class SampleClass : SampleBase
     {
-        private readonly IContextualServiceLocator locator;
-
-        public SampleClass(IContextualServiceLocator locator)
+        private object x;
+        public SampleClass(IContextualServiceLocator locator) : base(locator)
         {
-            this.locator = locator;
         }
 
         public override string Test()
         {
-            return locator.GetInstance<SampleEncapsulatingAttribute>().Process(() => base.Test());
+            x = locator;
+            return locator.GetInstance<SampleEncapsulatingAttribute>().Process(() => this.Test2());
+        }
+
+        private string Test2()
+        {
+            return base.Test();
         }
     }
 

@@ -9,7 +9,7 @@ namespace Siege.DynamicTypeGeneration
     {
         private readonly TypeBuilder builder;
         private readonly MethodBuilder methodBuilder;
-        private readonly IList<ITypeGenerationAction> actions;
+        private IList<ITypeGenerationAction> actions;
         public MethodInfo Method { get { return methodBuilder; } }
 
         public CompletedMethod(TypeBuilder builder, MethodBuilder methodBuilder, IList<ITypeGenerationAction> actions)

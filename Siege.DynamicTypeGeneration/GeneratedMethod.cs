@@ -10,7 +10,9 @@ namespace Siege.DynamicTypeGeneration
     {
         private readonly TypeBuilder typeBuilder;
         private readonly MethodBuilder builder;
-        private readonly IList<ITypeGenerationAction> actions;
+        private IList<ITypeGenerationAction> actions;
+        internal int LocalCount { get; set; }
+
 
         public GeneratedMethod(TypeBuilder typeBuilder, MethodBuilder builder, IList<ITypeGenerationAction> actions)
         {
@@ -26,7 +28,7 @@ namespace Siege.DynamicTypeGeneration
 
         public CallAction Call(MethodInfo method)
         {
-            var action = new CallAction(builder, method, actions);
+            var action = new CallAction(builder, method, actions, this);
             this.actions.Add(action);
 
             return action;
@@ -34,14 +36,14 @@ namespace Siege.DynamicTypeGeneration
 
         public CompletedMethod ReturnFrom(MethodInfo method)
         {
-            this.actions.Add(new ReturnAction(this.builder, method));
+            this.actions.Add(new ReturnAction(this.builder, method, this));
 
             return new CompletedMethod(this.typeBuilder, this.builder, this.actions);
         }
 
         public CallBaseAction CallBase(MethodInfo method, Type baseType)
         {
-            var action = new CallBaseAction(builder, method, actions, baseType);
+            var action = new CallBaseAction(builder, method, actions, baseType, this);
             this.actions.Add(action);
 
             return action;
@@ -49,7 +51,7 @@ namespace Siege.DynamicTypeGeneration
 
         public CreateFuncAction UsingFunc(Type type)
         {
-            var action = new CreateFuncAction(builder, type, actions);
+            var action = new CreateFuncAction(builder, type, actions, this);
 
             return action;
         }
@@ -60,6 +62,12 @@ namespace Siege.DynamicTypeGeneration
             this.actions.Add(action);
 
             return action;
+        }
+        
+        internal void AddLocal(Type localType)
+        {
+            this.actions.Add(new AddLocalAction(builder, localType));
+            this.LocalCount++;
         }
     }
 }

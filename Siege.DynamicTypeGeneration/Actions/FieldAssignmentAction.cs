@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
@@ -8,14 +7,12 @@ namespace Siege.DynamicTypeGeneration.Actions
     {
         private readonly MethodBuilder builder;
         private readonly FieldInfo source;
-        private readonly IList<ITypeGenerationAction> actions;
         private FieldInfo target;
 
         public FieldAssignmentAction(MethodBuilder builder, FieldInfo source)
         {
             this.builder = builder;
             this.source = source;
-            this.actions = actions;
         }
 
         public void Execute()

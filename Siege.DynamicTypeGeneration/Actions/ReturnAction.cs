@@ -7,11 +7,13 @@ namespace Siege.DynamicTypeGeneration.Actions
     {
         protected readonly MethodBuilder builder;
         protected readonly MethodInfo method;
+        private readonly GeneratedMethod generatedMethod;
 
-        public ReturnAction(MethodBuilder builder, MethodInfo method)
+        public ReturnAction(MethodBuilder builder, MethodInfo method, GeneratedMethod generatedMethod)
         {
             this.builder = builder;
             this.method = method;
+            this.generatedMethod = generatedMethod;
         }
 
         public virtual void Execute()
@@ -20,10 +22,12 @@ namespace Siege.DynamicTypeGeneration.Actions
 
             if (method.ReturnType != typeof(void))
             {
-                methodGenerator.Emit(OpCodes.Stloc_0);
                 methodGenerator.Emit(OpCodes.Ldloc_0);
-                methodGenerator.Emit(OpCodes.Stloc_1);
-                methodGenerator.Emit(OpCodes.Ldloc_1);
+                for (int i = 0; i <= generatedMethod.LocalCount; i++)
+                {
+                    methodGenerator.Emit(OpCodes.Stloc, i);
+                    methodGenerator.Emit(OpCodes.Ldloc, i);
+                }   
             }
 
             methodGenerator.Emit(OpCodes.Nop);

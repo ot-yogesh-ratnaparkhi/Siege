@@ -126,7 +126,12 @@ namespace Siege.ServiceLocation.Aop
             var attributes = method.GetCustomAttributes(typeof(IProcessEncapsulatingAttribute), true);
             if(attributes.Length == 0)
             {
-                generatedMethod.CallBase(method, typeof(TBaseType));
+                GeneratedMethod subMethod = generator.CreateMethod(method.Name + "_Base", method.ReturnType, types);
+                subMethod.CallBase(method, typeof(TBaseType));
+
+                var completedSubMethod = subMethod.ReturnFrom(method);
+                generatedMethod.Call(completedSubMethod.Method).WithParametersFrom(method);
+
                 return;
             }
 

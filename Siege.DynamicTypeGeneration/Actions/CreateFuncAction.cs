@@ -9,12 +9,14 @@ namespace Siege.DynamicTypeGeneration.Actions
     {
         private readonly MethodBuilder builder;
         private IList<ITypeGenerationAction> actions;
+        private readonly GeneratedMethod generatedMethod;
         private ConstructorInfo funcConstructor;
 
-        public CreateFuncAction(MethodBuilder builder, Type returnType, IList<ITypeGenerationAction> actions)
+        public CreateFuncAction(MethodBuilder builder, Type returnType, IList<ITypeGenerationAction> actions, GeneratedMethod generatedMethod)
         {
             this.builder = builder;
             this.actions = actions;
+            this.generatedMethod = generatedMethod;
 
             Type funcType;
 
@@ -32,7 +34,7 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         public SetFuncTargetAction Targetting(MethodInfo method)
         {
-            var action = new SetFuncTargetAction(this.builder, method, this.actions);
+            var action = new SetFuncTargetAction(this.builder, method, this.actions, generatedMethod);
             this.actions.Add(action);
             this.actions.Add(this);
 
