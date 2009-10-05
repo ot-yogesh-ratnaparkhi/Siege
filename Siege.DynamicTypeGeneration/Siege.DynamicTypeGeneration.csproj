@@ -47,10 +47,10 @@
   <ItemGroup>
     <Compile Include="Actions\AddDefaultConstructorAction.cs" />
     <Compile Include="Actions\AddFieldAction.cs" />
-    <Compile Include="Actions\AddLocalAction.cs" />
     <Compile Include="Actions\AddMethodAction.cs" />
     <Compile Include="Actions\CallAction.cs" />
     <Compile Include="Actions\CallBaseAction.cs" />
+    <Compile Include="Actions\CaptureCallResultAction.cs" />
     <Compile Include="Actions\CreateFuncAction.cs" />
     <Compile Include="Actions\FieldAssignmentAction.cs" />
     <Compile Include="Actions\InstantiationAction.cs" />

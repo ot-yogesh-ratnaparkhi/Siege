@@ -27,7 +27,6 @@ namespace Siege.DynamicTypeGeneration.Actions
             var methodGenerator = MethodBuilder.GetILGenerator();
 
             if (returnType != typeof(void)) methodGenerator.DeclareLocal(returnType);
-            methodGenerator.Emit(OpCodes.Nop);
         }
     }
 }

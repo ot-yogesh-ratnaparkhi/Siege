@@ -130,7 +130,7 @@ namespace Siege.ServiceLocation.Aop
                 subMethod.CallBase(method, typeof(TBaseType));
 
                 var completedSubMethod = subMethod.ReturnFrom(method);
-                generatedMethod.Call(completedSubMethod.Method).WithParametersFrom(method);
+                generatedMethod.Call(completedSubMethod.Method).WithParametersFrom(method).CaptureResult();
 
                 return;
             }

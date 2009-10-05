@@ -19,11 +19,6 @@ namespace Siege.DynamicTypeGeneration.Actions
             this.method = method;
             this.actions = actions;
             this.generatedMethod = generatedMethod;
-
-            if (method.ReturnType != typeof(void))
-            {
-                generatedMethod.AddLocal(method.ReturnType);
-            }
         }
 
         public void On(FieldInfo field)
@@ -51,12 +46,20 @@ namespace Siege.DynamicTypeGeneration.Actions
                 }
             }
             methodGenerator.Emit(OpCodes.Call, method);
-            methodGenerator.Emit(OpCodes.Nop);
         }
 
-        public void WithParametersFrom(MethodInfo info)
+        public CallAction WithParametersFrom(MethodInfo info)
         {
             parametersFrom = info;
+
+            return this;
+        }
+
+        public CallAction CaptureResult()
+        {
+            this.actions.Add(new CaptureCallResultAction(this.builder, this.method, this.generatedMethod));
+
+            return this;
         }
     }
 }

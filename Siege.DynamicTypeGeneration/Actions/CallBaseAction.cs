@@ -12,11 +12,6 @@ namespace Siege.DynamicTypeGeneration.Actions
         public CallBaseAction(MethodBuilder builder, MethodInfo method, IList<ITypeGenerationAction> actions, Type baseType, GeneratedMethod generatedMethod) : base(builder, method, actions, generatedMethod)
         {
             this.baseType = baseType;
-
-            if (method.ReturnType != typeof(void))
-            {
-                generatedMethod.AddLocal(method.ReturnType);
-            }
         }
 
         public override void Execute()

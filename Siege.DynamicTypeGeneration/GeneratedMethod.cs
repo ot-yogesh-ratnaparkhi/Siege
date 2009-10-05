@@ -64,9 +64,8 @@ namespace Siege.DynamicTypeGeneration
             return action;
         }
         
-        internal void AddLocal(Type localType)
+        internal void AddLocal()
         {
-            this.actions.Add(new AddLocalAction(builder, localType));
             this.LocalCount++;
         }
     }
