@@ -52,12 +52,15 @@
     <Compile Include="Actions\CallBaseAction.cs" />
     <Compile Include="Actions\CaptureCallResultAction.cs" />
     <Compile Include="Actions\CreateFuncAction.cs" />
+    <Compile Include="Actions\CreateFuncEncapsulationAction.cs" />
     <Compile Include="Actions\FieldAssignmentAction.cs" />
     <Compile Include="Actions\InstantiationAction.cs" />
     <Compile Include="Actions\OverrideMethodAction.cs" />
     <Compile Include="Actions\ReturnAction.cs" />
     <Compile Include="Actions\SetFuncTargetAction.cs" />
+    <Compile Include="BuilderBundle.cs" />
     <Compile Include="CompletedMethod.cs" />
+    <Compile Include="DynamicTypeAttribute.cs" />
     <Compile Include="GeneratedField.cs" />
     <Compile Include="GeneratedMethod.cs" />
     <Compile Include="Actions\ITypeGenerationAction.cs" />

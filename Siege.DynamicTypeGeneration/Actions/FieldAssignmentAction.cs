@@ -5,13 +5,13 @@ namespace Siege.DynamicTypeGeneration.Actions
 {
     public class FieldAssignmentAction : ITypeGenerationAction
     {
-        private readonly MethodBuilder builder;
+        private readonly MethodBuilderBundle bundle;
         private readonly FieldInfo source;
         private FieldInfo target;
 
-        public FieldAssignmentAction(MethodBuilder builder, FieldInfo source)
+        public FieldAssignmentAction(MethodBuilderBundle bundle, FieldInfo source)
         {
-            this.builder = builder;
+            this.bundle = bundle;
             this.source = source;
         }
 
@@ -19,7 +19,7 @@ namespace Siege.DynamicTypeGeneration.Actions
         {
             if(target != null)
             {
-                var methodBuilder = builder.GetILGenerator();
+                var methodBuilder = this.bundle.MethodBuilder.GetILGenerator();
 
                 methodBuilder.Emit(OpCodes.Ldarg_0);
                 methodBuilder.Emit(OpCodes.Ldarg_0);

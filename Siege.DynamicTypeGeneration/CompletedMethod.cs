@@ -1,27 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
 using Siege.DynamicTypeGeneration.Actions;
 
 namespace Siege.DynamicTypeGeneration
 {
     public class CompletedMethod
     {
-        private readonly TypeBuilder builder;
-        private readonly MethodBuilder methodBuilder;
+        private readonly MethodBuilderBundle bundle;
         private IList<ITypeGenerationAction> actions;
-        public MethodInfo Method { get { return methodBuilder; } }
 
-        public CompletedMethod(TypeBuilder builder, MethodBuilder methodBuilder, IList<ITypeGenerationAction> actions)
+        public MethodInfo Method
         {
-            this.builder = builder;
-            this.methodBuilder = methodBuilder;
+            get { return bundle.MethodBuilder; }
+        }
+
+        public CompletedMethod(MethodBuilderBundle bundle, IList<ITypeGenerationAction> actions)
+        {
+            this.bundle = bundle;
             this.actions = actions;
         }
 
         public void Override(MethodInfo method)
         {
-            this.actions.Add(new OverrideMethodAction(builder, methodBuilder, method));
+            this.actions.Add(new OverrideMethodAction(bundle, method));
         }
     }
 }

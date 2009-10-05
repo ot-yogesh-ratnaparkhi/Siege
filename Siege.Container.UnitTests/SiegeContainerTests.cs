@@ -170,7 +170,7 @@ namespace Siege.Container.UnitTests
             locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
-            locator.GetInstance<AOPExample>().Test();
+            locator.GetInstance<AOPExample>().Test("yay", "yay");
         }
 
         [Test]
@@ -248,7 +248,7 @@ namespace Siege.Container.UnitTests
     public class AOPExample
     {
         [SampleEncapsulating]
-        public virtual string Test()
+        public virtual string Test(object arg1, object arg2)
         {
             return "yay";
         }
@@ -262,8 +262,8 @@ namespace Siege.Container.UnitTests
         {
             this.locator = locator;
         }
-        
-        public virtual string Test()
+
+        public virtual string Test(object arg1, object arg2)
         {
             return "yay";
         }
@@ -276,15 +276,15 @@ namespace Siege.Container.UnitTests
         {
         }
 
-        public override string Test()
+        public override string Test(object arg1, object arg2)
         {
             x = locator;
-            return locator.GetInstance<SampleEncapsulatingAttribute>().Process(() => this.Test2());
+            return locator.GetInstance<SampleEncapsulatingAttribute>().Process(() => this.Test2(arg1, arg2));
         }
 
-        private string Test2()
+        private string Test2(object arg1, object arg2)
         {
-            return base.Test();
+            return base.Test(arg1, arg2);
         }
     }
 

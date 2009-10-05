@@ -6,21 +6,25 @@ namespace Siege.DynamicTypeGeneration.Actions
 {
     public class AddMethodAction : ITypeGenerationAction
     {
-        private readonly TypeBuilder typeBuilder;
         private readonly Type returnType;
+        private MethodBuilderBundle bundle;
 
-        public AddMethodAction(TypeBuilder typeBuilder, string methodName, Type returnType, Type[] parameterTypes)
+        public AddMethodAction(BuilderBundle bundle, string methodName, Type returnType, Type[] parameterTypes, bool isOverride)
         {
-            this.typeBuilder = typeBuilder;
             this.returnType = returnType;
+            var methodAttributes = MethodAttributes.Public;
+            if (isOverride) methodAttributes |= MethodAttributes.Virtual; 
 
-            MethodBuilder = this.typeBuilder.DefineMethod(
-                methodName,
-                MethodAttributes.Public | MethodAttributes.Virtual,
-                returnType, parameterTypes);
+            this.bundle = new MethodBuilderBundle(bundle)
+                              {
+                                  MethodBuilder = bundle.TypeBuilder.DefineMethod(
+                                      methodName,
+                                      methodAttributes,
+                                      returnType, parameterTypes)
+                              };
         }
 
-        public MethodBuilder MethodBuilder { get; set; }
+        public MethodBuilder MethodBuilder { get { return bundle.MethodBuilder; } }
 
         public void Execute()
         {

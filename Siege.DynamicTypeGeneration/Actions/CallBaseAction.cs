@@ -9,14 +9,14 @@ namespace Siege.DynamicTypeGeneration.Actions
     {
         private readonly Type baseType;
 
-        public CallBaseAction(MethodBuilder builder, MethodInfo method, IList<ITypeGenerationAction> actions, Type baseType, GeneratedMethod generatedMethod) : base(builder, method, actions, generatedMethod)
+        public CallBaseAction(MethodBuilderBundle bundle, MethodInfo method, IList<ITypeGenerationAction> actions, Type baseType, GeneratedMethod generatedMethod) : base(bundle, method, actions, generatedMethod)
         {
             this.baseType = baseType;
         }
 
         public override void Execute()
         {
-            var methodGenerator = builder.GetILGenerator();
+            var methodGenerator = this.bundle.MethodBuilder.GetILGenerator();
 
             if (target != null)
             {

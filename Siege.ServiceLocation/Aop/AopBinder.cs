@@ -42,7 +42,7 @@ namespace Siege.ServiceLocation.Aop
                     types.Add(info.ParameterType);
                 }
 
-                GeneratedMethod generatedMethod = generator.CreateMethod(method.Name, method.ReturnType, types.ToArray());
+                GeneratedMethod generatedMethod = generator.CreateMethod(method.Name, method.ReturnType, types.ToArray(), true);
                 generatedMethod.Assign(field.Source).To(field.Field);
 
                 GenerateCalls(generatedMethod, method, typeof(IPreProcessingAttribute));
@@ -89,7 +89,7 @@ namespace Siege.ServiceLocation.Aop
 
             Attribute attribute = (Attribute)attributes[counter];
 
-            GeneratedMethod generatedMethod = builder.CreateMethod(method.Name + "_" + counter, method.ReturnType, types.ToArray());
+            GeneratedMethod generatedMethod = builder.CreateMethod(method.Name + "_" + counter, method.ReturnType, types.ToArray(), false);
 
             if (ServiceLocator == null)
             {
@@ -126,7 +126,7 @@ namespace Siege.ServiceLocation.Aop
             var attributes = method.GetCustomAttributes(typeof(IProcessEncapsulatingAttribute), true);
             if(attributes.Length == 0)
             {
-                GeneratedMethod subMethod = generator.CreateMethod(method.Name + "_Base", method.ReturnType, types);
+                GeneratedMethod subMethod = generator.CreateMethod(method.Name + "_Base", method.ReturnType, types, true);
                 subMethod.CallBase(method, typeof(TBaseType));
 
                 var completedSubMethod = subMethod.ReturnFrom(method);

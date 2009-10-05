@@ -1,34 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
 using Siege.DynamicTypeGeneration.Actions;
 
 namespace Siege.DynamicTypeGeneration
 {
     public class GeneratedMethod
     {
-        private readonly TypeBuilder typeBuilder;
-        private readonly MethodBuilder builder;
+        private readonly MethodBuilderBundle bundle;
         private IList<ITypeGenerationAction> actions;
         internal int LocalCount { get; set; }
 
 
-        public GeneratedMethod(TypeBuilder typeBuilder, MethodBuilder builder, IList<ITypeGenerationAction> actions)
+        public GeneratedMethod(MethodBuilderBundle bundle, IList<ITypeGenerationAction> actions)
         {
-            this.typeBuilder = typeBuilder;
-            this.builder = builder;
+            this.bundle = bundle;
             this.actions = actions;
         }
 
         public void Instantiate(Type type, Type[] constructorArguments)
         {
-            this.actions.Add(new InstantiationAction(builder, type, constructorArguments));
+            this.actions.Add(new InstantiationAction(bundle, type, constructorArguments));
         }
 
         public CallAction Call(MethodInfo method)
         {
-            var action = new CallAction(builder, method, actions, this);
+            var action = new CallAction(bundle, method, actions, this);
             this.actions.Add(action);
 
             return action;
@@ -36,14 +33,14 @@ namespace Siege.DynamicTypeGeneration
 
         public CompletedMethod ReturnFrom(MethodInfo method)
         {
-            this.actions.Add(new ReturnAction(this.builder, method, this));
+            this.actions.Add(new ReturnAction(this.bundle, method, this));
 
-            return new CompletedMethod(this.typeBuilder, this.builder, this.actions);
+            return new CompletedMethod(this.bundle, this.actions);
         }
 
         public CallBaseAction CallBase(MethodInfo method, Type baseType)
         {
-            var action = new CallBaseAction(builder, method, actions, baseType, this);
+            var action = new CallBaseAction(bundle, method, actions, baseType, this);
             this.actions.Add(action);
 
             return action;
@@ -51,19 +48,18 @@ namespace Siege.DynamicTypeGeneration
 
         public CreateFuncAction UsingFunc(Type type)
         {
-            var action = new CreateFuncAction(builder, type, actions, this);
-
+            var action = new CreateFuncAction(this.bundle, type, actions, this);
             return action;
         }
 
         public FieldAssignmentAction Assign(FieldInfo value)
         {
-            var action = new FieldAssignmentAction(builder, value);
+            var action = new FieldAssignmentAction(bundle, value);
             this.actions.Add(action);
 
             return action;
         }
-        
+
         internal void AddLocal()
         {
             this.LocalCount++;

@@ -5,20 +5,20 @@ namespace Siege.DynamicTypeGeneration.Actions
 {
     public class ReturnAction : ITypeGenerationAction
     {
-        protected readonly MethodBuilder builder;
+        private readonly MethodBuilderBundle bundle;
         protected readonly MethodInfo method;
         private readonly GeneratedMethod generatedMethod;
 
-        public ReturnAction(MethodBuilder builder, MethodInfo method, GeneratedMethod generatedMethod)
+        public ReturnAction(MethodBuilderBundle bundle, MethodInfo method, GeneratedMethod generatedMethod)
         {
-            this.builder = builder;
+            this.bundle = bundle;
             this.method = method;
             this.generatedMethod = generatedMethod;
         }
 
         public virtual void Execute()
         {
-            var methodGenerator = builder.GetILGenerator();
+            var methodGenerator = this.bundle.MethodBuilder.GetILGenerator();
 
             if (method.ReturnType != typeof(void))
             {

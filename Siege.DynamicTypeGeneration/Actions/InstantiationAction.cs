@@ -5,20 +5,20 @@ namespace Siege.DynamicTypeGeneration.Actions
 {
     public class InstantiationAction : ITypeGenerationAction
     {
-        private readonly MethodBuilder builder;
+        private readonly MethodBuilderBundle bundle;
         private readonly Type type;
         private readonly Type[] constructorArguments;
 
-        public InstantiationAction(MethodBuilder builder, Type type, Type[] constructorArguments)
+        public InstantiationAction(MethodBuilderBundle bundle, Type type, Type[] constructorArguments)
         {
-            this.builder = builder;
+            this.bundle = bundle;
             this.type = type;
             this.constructorArguments = constructorArguments;
         }
 
         public void Execute()
         {
-            this.builder.GetILGenerator().Emit(OpCodes.Newobj, type.GetConstructor(constructorArguments));
+            this.bundle.MethodBuilder.GetILGenerator().Emit(OpCodes.Newobj, type.GetConstructor(constructorArguments));
         }
     }
 }
