@@ -9,7 +9,7 @@ namespace Siege.DynamicTypeGeneration.Actions
         private readonly TypeBuilder builder;
         private ConstructorInfo constructor;
         private ConstructorBuilder constructorBuilder;
-        public ConstructorInfo Constructor { get { return this.constructor; } }
+		public ConstructorInfo Constructor { get { return this.constructorBuilder; } }
 
         public AddDefaultConstructorAction(BuilderBundle bundle)
         {

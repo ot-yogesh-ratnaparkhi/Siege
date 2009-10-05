@@ -60,7 +60,6 @@
     <Compile Include="Actions\SetFuncTargetAction.cs" />
     <Compile Include="BuilderBundle.cs" />
     <Compile Include="CompletedMethod.cs" />
-    <Compile Include="DynamicTypeAttribute.cs" />
     <Compile Include="GeneratedField.cs" />
     <Compile Include="GeneratedMethod.cs" />
     <Compile Include="Actions\ITypeGenerationAction.cs" />

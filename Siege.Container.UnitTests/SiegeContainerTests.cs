@@ -247,7 +247,7 @@ namespace Siege.Container.UnitTests
 
     public class AOPExample
     {
-        [SampleEncapsulating]
+        [SamplePreProcessing, SampleEncapsulating, SamplePostProcessing]
         public virtual string Test(object arg1, object arg2)
         {
             return "yay";
@@ -279,7 +279,11 @@ namespace Siege.Container.UnitTests
         public override string Test(object arg1, object arg2)
         {
             x = locator;
-            return locator.GetInstance<SampleEncapsulatingAttribute>().Process(() => this.Test2(arg1, arg2));
+        	locator.GetInstance<SamplePreProcessingAttribute>().Process();
+            var result = locator.GetInstance<SampleEncapsulatingAttribute>().Process(() => this.Test2(arg1, arg2));
+			locator.GetInstance<SamplePostProcessingAttribute>().Process();
+
+			return result;
         }
 
         private string Test2(object arg1, object arg2)

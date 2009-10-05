@@ -38,22 +38,21 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         public SetFuncTargetAction Targetting(MethodInfo method)
         {
-            //CreateFuncEncapsulationAction nestedType;
+			CreateFuncEncapsulationAction nestedType;
 
-            //if (!generatedTypes.ContainsKey(bundle.TypeBuilder.Name))
-            //{
-            //    nestedType = new CreateFuncEncapsulationAction(bundle, method, this.actions);
+			if (!generatedTypes.ContainsKey(bundle.TypeBuilder.Name))
+			{
+				nestedType = new CreateFuncEncapsulationAction(bundle, method, this.actions);
+				generatedTypes.Add(bundle.TypeBuilder.Name, nestedType);
+				this.actions.Add(nestedType);
+			}
+			else
+			{
+				nestedType = (CreateFuncEncapsulationAction)generatedTypes[bundle.TypeBuilder.Name];
+			}
 
-            //    //this.actions.Add(nestedType);
-            //    generatedTypes.Add(bundle.TypeBuilder.Name, nestedType);
-            //}
-            //else
-            //{
-            //    nestedType = (CreateFuncEncapsulationAction) generatedTypes[bundle.TypeBuilder.Name];
-            //}
-            
-            //this.actions.Add(new LoadNestedTypeAction(bundle, nestedType.LocalBuilder, method, nestedType));
-            var action = new SetFuncTargetAction(this.bundle, method, this.actions, generatedMethod);
+			this.actions.Add(new LoadNestedTypeAction(bundle, nestedType.LocalBuilder, method, nestedType));
+			var action = new SetFuncTargetAction(this.bundle, nestedType.Method, this.actions, generatedMethod);
             this.actions.Add(action);
             this.actions.Add(this);
 
@@ -85,27 +84,27 @@ namespace Siege.DynamicTypeGeneration.Actions
 
             public void Execute()
             {
-                if (method.DeclaringType.GetCustomAttributes(typeof(DynamicTypeAttribute), true).Length > 0) return;
-
                 var methodGenerator = bundle.MethodBuilder.GetILGenerator();
-                
+				
+				methodGenerator.DeclareLocal(type);
+				methodGenerator.DeclareLocal(method.ReturnType);
+
                 methodGenerator.Emit(OpCodes.Newobj, action.Constructor);
-                methodGenerator.Emit(OpCodes.Stloc_0);
-                methodGenerator.Emit(OpCodes.Ldloc_0);
+                methodGenerator.Emit(OpCodes.Stloc_1);
+                methodGenerator.Emit(OpCodes.Ldloc_1);
 
                 int counter = 1;
-                foreach(ParameterInfo parameter in method.GetParameters())
+                foreach(FieldInfo info in action.PublicFields)
                 {
-                    FieldInfo info = type.GetField(parameter.Name);
-                    methodGenerator.Emit(OpCodes.Ldloc_0);
+                    methodGenerator.Emit(OpCodes.Ldloc_1);
                     methodGenerator.Emit(OpCodes.Ldarg, counter);
-                    //methodGenerator.Emit(OpCodes.Stfld, info);
+                    methodGenerator.Emit(OpCodes.Stfld, info);
 
                     counter++;
                 }
 
                 methodGenerator.Emit(OpCodes.Ldarg_0);
-                //methodGenerator.Emit(OpCodes.Stfld, type.GetField(bundle.TypeBuilder.Name));
+                methodGenerator.Emit(OpCodes.Stfld, action.DynamicType);
             }
         }
     }

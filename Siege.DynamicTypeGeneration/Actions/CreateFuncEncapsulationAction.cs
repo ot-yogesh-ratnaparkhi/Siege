@@ -13,7 +13,10 @@ namespace Siege.DynamicTypeGeneration.Actions
         private IList<ITypeGenerationAction> actions;
         private MethodBuilderBundle methodBundle;
         private IList<FieldInfo> fields = new List<FieldInfo>();
-        public MethodInfo Method { get { return this.internalMethod; } }
+		private IList<FieldInfo> publicFields = new List<FieldInfo>();
+    	private FieldInfo dynamicType;
+    
+    	public MethodInfo Method { get { return this.internalMethod; } }
         public ConstructorInfo Constructor { get { return constructor; } }
 
         public CreateFuncEncapsulationAction(BuilderBundle bundle, MethodInfo method,
@@ -34,6 +37,7 @@ namespace Siege.DynamicTypeGeneration.Actions
 
             var thisAction = new AddFieldAction(localBundle, bundle.TypeBuilder.Name, bundle.TypeBuilder);
             this.fields.Add(thisAction.Field);
+			this.dynamicType = thisAction.Field;
 
             this.actions.Add(thisAction);
 
@@ -41,10 +45,10 @@ namespace Siege.DynamicTypeGeneration.Actions
             {
                 var fieldAction = new AddFieldAction(localBundle, info.Name, info.ParameterType);
                 this.fields.Add(fieldAction.Field);
+				this.PublicFields.Add(fieldAction.Field);
 
                 this.actions.Add(fieldAction);
             }
-
 
             var action = new AddMethodAction(localBundle, "InternalMethod", method.ReturnType, new Type[0], false);
             this.internalMethod = action.MethodBuilder;
@@ -62,7 +66,17 @@ namespace Siege.DynamicTypeGeneration.Actions
             get { return localBuilder; }
         }
 
-        public void Execute()
+    	public FieldInfo DynamicType
+    	{
+    		get { return dynamicType; }
+    	}
+
+    	public IList<FieldInfo> PublicFields
+    	{
+    		get { return publicFields; }
+    	}
+
+    	public void Execute()
         {
             localBuilder.CreateType();
         }
@@ -78,8 +92,6 @@ namespace Siege.DynamicTypeGeneration.Actions
                 this.bundle = bundle;
                 this.fields = fields;
                 this.method = method;
-
-                this.bundle.TypeBuilder.SetCustomAttribute(new CustomAttributeBuilder(typeof(DynamicTypeAttribute).GetConstructor(new Type[0]), new Type[0]));
             }
 
             public void Execute()
