@@ -15,12 +15,14 @@ namespace Siege.DynamicTypeGeneration.Actions
         private IList<FieldInfo> fields = new List<FieldInfo>();
 		private IList<FieldInfo> publicFields = new List<FieldInfo>();
     	private FieldInfo dynamicType;
-    
-    	public MethodInfo Method { get { return this.internalMethod; } }
+        public GeneratedMethod LocalGeneratedMethod { get { return this.localMethod; } }
+        private GeneratedMethod localMethod;
+
+        public MethodInfo Method { get { return this.internalMethod; } }
         public ConstructorInfo Constructor { get { return constructor; } }
 
         public CreateFuncEncapsulationAction(BuilderBundle bundle, MethodInfo method,
-                                             IList<ITypeGenerationAction> actions)
+                                             IList<ITypeGenerationAction> actions, GeneratedMethod generatedMethod)
         {
             this.actions = actions;
 
@@ -30,7 +32,7 @@ namespace Siege.DynamicTypeGeneration.Actions
                                                                TypeAttributes.BeforeFieldInit);
 
             var localBundle = new BuilderBundle {TypeBuilder = localBuilder, ModuleBuilder = bundle.ModuleBuilder};
-
+            
             var constructorAction = new AddDefaultConstructorAction(localBundle);
             this.constructor = constructorAction.Constructor;
             this.actions.Add(constructorAction);
@@ -51,19 +53,20 @@ namespace Siege.DynamicTypeGeneration.Actions
             }
 
             var action = new AddMethodAction(localBundle, "InternalMethod", method.ReturnType, new Type[0], false);
+            
             this.internalMethod = action.MethodBuilder;
 
             this.methodBundle = new MethodBuilderBundle(localBundle) {MethodBuilder = action.MethodBuilder};
-            var generatedMethod = new GeneratedMethod(methodBundle, this.actions);
+            this.localMethod = new GeneratedMethod(methodBundle, this.actions);
+
+            generatedMethod.AddLocal(action.MethodBuilder); 
+            generatedMethod.AddLocal(localBuilder);
             this.actions.Add(new FuncInternalsAction(methodBundle, fields, method));
 
-            generatedMethod.ReturnFrom(method);
+            this.actions.Add(new CaptureCallResultAction(methodBundle, action.MethodBuilder, generatedMethod));
+            localMethod.AddLocal(method); 
+            localMethod.ReturnFrom(action.MethodBuilder);
             this.actions.Add(action);
-        }
-
-        public TypeBuilder LocalBuilder
-        {
-            get { return localBuilder; }
         }
 
     	public FieldInfo DynamicType
@@ -104,8 +107,6 @@ namespace Siege.DynamicTypeGeneration.Actions
                 }
 
                 methodGenerator.Emit(OpCodes.Call, method);
-                methodGenerator.Emit(OpCodes.Stloc_0);
-                methodGenerator.Emit(OpCodes.Ldloc_0);
             }
         }
     }

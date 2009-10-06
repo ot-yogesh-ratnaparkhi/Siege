@@ -34,6 +34,7 @@ namespace Siege.DynamicTypeGeneration.Actions
             }
 
             this.funcConstructor = funcType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
+			
         }
 
         public SetFuncTargetAction Targetting(MethodInfo method)
@@ -42,7 +43,7 @@ namespace Siege.DynamicTypeGeneration.Actions
 
 			if (!generatedTypes.ContainsKey(bundle.TypeBuilder.Name))
 			{
-				nestedType = new CreateFuncEncapsulationAction(bundle, method, this.actions);
+				nestedType = new CreateFuncEncapsulationAction(bundle, method, this.actions, generatedMethod);
 				generatedTypes.Add(bundle.TypeBuilder.Name, nestedType);
 				this.actions.Add(nestedType);
 			}
@@ -51,8 +52,8 @@ namespace Siege.DynamicTypeGeneration.Actions
 				nestedType = (CreateFuncEncapsulationAction)generatedTypes[bundle.TypeBuilder.Name];
 			}
 
-			this.actions.Add(new LoadNestedTypeAction(bundle, nestedType.LocalBuilder, method, nestedType));
-			var action = new SetFuncTargetAction(this.bundle, nestedType.Method, this.actions, generatedMethod);
+            this.actions.Add(new LoadNestedTypeAction(bundle, nestedType, generatedMethod));
+            var action = new SetFuncTargetAction(this.bundle, nestedType.Method, this.actions, generatedMethod);
             this.actions.Add(action);
             this.actions.Add(this);
 
@@ -69,15 +70,15 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         private class LoadNestedTypeAction : ITypeGenerationAction
         {
+            private GeneratedMethod generatedMethod;
             private readonly MethodBuilderBundle bundle;
-            private readonly Type type;
             private readonly MethodInfo method;
             private readonly CreateFuncEncapsulationAction action;
 
-            public LoadNestedTypeAction(MethodBuilderBundle bundle, Type type, MethodInfo method, CreateFuncEncapsulationAction action)
+            public LoadNestedTypeAction(MethodBuilderBundle bundle, CreateFuncEncapsulationAction action, GeneratedMethod generatedMethod)
             {
+                this.generatedMethod = generatedMethod;
                 this.bundle = bundle;
-                this.type = type;
                 this.method = method;
                 this.action = action;
             }
@@ -85,20 +86,17 @@ namespace Siege.DynamicTypeGeneration.Actions
             public void Execute()
             {
                 var methodGenerator = bundle.MethodBuilder.GetILGenerator();
-				
-				methodGenerator.DeclareLocal(type);
-				methodGenerator.DeclareLocal(method.ReturnType);
 
-                methodGenerator.Emit(OpCodes.Newobj, action.Constructor);
-                methodGenerator.Emit(OpCodes.Stloc_1);
-                methodGenerator.Emit(OpCodes.Ldloc_1);
+				methodGenerator.Emit(OpCodes.Newobj, action.Constructor);
+                methodGenerator.Emit(OpCodes.Stloc, (int)generatedMethod.Locals[action.Method]);
+                methodGenerator.Emit(OpCodes.Ldloc, (int)generatedMethod.Locals[action.Method]);
 
                 int counter = 1;
                 foreach(FieldInfo info in action.PublicFields)
                 {
-                    methodGenerator.Emit(OpCodes.Ldloc_1);
                     methodGenerator.Emit(OpCodes.Ldarg, counter);
                     methodGenerator.Emit(OpCodes.Stfld, info);
+                    methodGenerator.Emit(OpCodes.Ldloc, (int)generatedMethod.Locals[action.Method]);
 
                     counter++;
                 }

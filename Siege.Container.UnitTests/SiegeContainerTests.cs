@@ -247,7 +247,7 @@ namespace Siege.Container.UnitTests
 
     public class AOPExample
     {
-        [SamplePreProcessing, SampleEncapsulating, SamplePostProcessing]
+        [SamplePostProcessing, SamplePreProcessing, SampleEncapsulating]
         public virtual string Test(object arg1, object arg2)
         {
             return "yay";
@@ -288,7 +288,9 @@ namespace Siege.Container.UnitTests
 
         private string Test2(object arg1, object arg2)
         {
-            return base.Test(arg1, arg2);
+            var test = base.Test(arg1, arg2);
+
+            return test;
         }
     }
 

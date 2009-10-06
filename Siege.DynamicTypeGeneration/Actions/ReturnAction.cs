@@ -22,10 +22,13 @@ namespace Siege.DynamicTypeGeneration.Actions
 
             if (method.ReturnType != typeof(void))
             {
-                for (int i = 0; i < generatedMethod.LocalCount; i++)
+                methodGenerator.Emit(OpCodes.Ldloc_0);
+
+                if (generatedMethod.LocalCount > 1)
                 {
-                    methodGenerator.Emit(OpCodes.Ldloc, i);
-                }   
+                    methodGenerator.Emit(OpCodes.Stloc_0);
+                    methodGenerator.Emit(OpCodes.Ldloc_0);
+                }
             }
 
             methodGenerator.Emit(OpCodes.Ret);

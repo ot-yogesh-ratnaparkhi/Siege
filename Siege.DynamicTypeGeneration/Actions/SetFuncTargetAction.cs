@@ -24,7 +24,14 @@ namespace Siege.DynamicTypeGeneration.Actions
         {
             var methodGenerator = this.bundle.MethodBuilder.GetILGenerator();
 
-            methodGenerator.Emit(OpCodes.Ldarg_0);
+            if (generatedMethod.Locals.ContainsKey(method))
+            {
+                methodGenerator.Emit(OpCodes.Ldloc, (int)generatedMethod.Locals[method]);
+            }
+            else
+            {
+                methodGenerator.Emit(OpCodes.Ldarg_0);
+            }
             methodGenerator.Emit(OpCodes.Ldftn, method);
         }
 

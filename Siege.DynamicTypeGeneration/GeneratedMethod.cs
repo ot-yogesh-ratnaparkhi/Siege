@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Siege.DynamicTypeGeneration.Actions;
@@ -9,7 +10,13 @@ namespace Siege.DynamicTypeGeneration
     {
         private readonly MethodBuilderBundle bundle;
         private IList<ITypeGenerationAction> actions;
+        private Hashtable locals = new Hashtable();
         internal int LocalCount { get; set; }
+
+        public Hashtable Locals
+        {
+            get { return locals; }
+        }
 
 
         public GeneratedMethod(MethodBuilderBundle bundle, IList<ITypeGenerationAction> actions)
@@ -60,9 +67,22 @@ namespace Siege.DynamicTypeGeneration
             return action;
         }
 
-        internal void AddLocal()
+        internal void AddLocal(Type item)
         {
             this.LocalCount++;
+            var local = new AddLocalAction(bundle, item);
+
+            this.Locals.Add(item, this.LocalCount);
+            this.actions.Add(local);
+        }
+
+        internal void AddLocal(MethodInfo item)
+        {
+            this.LocalCount++;
+            var local = new AddLocalAction(bundle, item.ReturnType);
+
+            this.Locals.Add(item, this.LocalCount);
+            this.actions.Add(local);
         }
     }
 }

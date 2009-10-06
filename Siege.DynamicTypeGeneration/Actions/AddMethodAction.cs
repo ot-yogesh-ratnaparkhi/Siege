@@ -28,9 +28,6 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         public void Execute()
         {
-            var methodGenerator = MethodBuilder.GetILGenerator();
-
-            if (returnType != typeof(void)) methodGenerator.DeclareLocal(returnType);
         }
     }
 }

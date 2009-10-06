@@ -47,6 +47,7 @@ namespace Siege.DynamicTypeGeneration
             var method = new GeneratedMethod(methodBundle, this.actions);
 
             this.actions.Add(action);
+            if (returnType != typeof(void)) method.AddLocal(action.MethodBuilder);
 
             return method;
         }
