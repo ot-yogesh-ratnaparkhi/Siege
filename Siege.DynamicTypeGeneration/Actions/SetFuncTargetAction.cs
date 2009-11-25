@@ -6,14 +6,15 @@ namespace Siege.DynamicTypeGeneration.Actions
 {
     public class SetFuncTargetAction : ITypeGenerationAction
     {
-        private readonly MethodBuilder builder;
+        private readonly MethodBuilderBundle bundle;
         private readonly MethodInfo method;
         private IList<ITypeGenerationAction> actions;
         private readonly GeneratedMethod generatedMethod;
 
-        public SetFuncTargetAction(MethodBuilder builder, MethodInfo method, IList<ITypeGenerationAction> actions, GeneratedMethod generatedMethod)
+        public SetFuncTargetAction(MethodBuilderBundle bundle, MethodInfo method, IList<ITypeGenerationAction> actions,
+                                   GeneratedMethod generatedMethod)
         {
-            this.builder = builder;
+            this.bundle = bundle;
             this.method = method;
             this.actions = actions;
             this.generatedMethod = generatedMethod;
@@ -21,17 +22,23 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         public void Execute()
         {
-            var methodGenerator = builder.GetILGenerator();
+            var methodGenerator = this.bundle.MethodBuilder.GetILGenerator();
 
-            methodGenerator.Emit(OpCodes.Ldarg_0);
+            if (generatedMethod.Locals.ContainsKey(method))
+            {
+                methodGenerator.Emit(OpCodes.Ldloc, (int)generatedMethod.Locals[method]);
+            }
+            else
+            {
+                methodGenerator.Emit(OpCodes.Ldarg_0);
+            }
             methodGenerator.Emit(OpCodes.Ldftn, method);
         }
 
         public CallAction Call(MethodInfo method)
         {
-            var action = new CallAction(builder, method, actions, generatedMethod);
+            var action = new CallAction(bundle, method, actions, generatedMethod);
             this.actions.Add(action);
-
             return action;
         }
     }

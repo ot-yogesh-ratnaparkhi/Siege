@@ -1,24 +1,21 @@
 ﻿using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
     public class OverrideMethodAction : ITypeGenerationAction
     {
-        private readonly TypeBuilder builder;
-        private readonly MethodBuilder methodBuilder;
+        private readonly MethodBuilderBundle bundle;
         private readonly MethodInfo method;
 
-        public OverrideMethodAction(TypeBuilder builder, MethodBuilder methodBuilder, MethodInfo method)
+        public OverrideMethodAction(MethodBuilderBundle bundle, MethodInfo method)
         {
-            this.builder = builder;
-            this.methodBuilder = methodBuilder;
+            this.bundle = bundle;
             this.method = method;
         }
 
         public void Execute()
         {
-            builder.DefineMethodOverride(methodBuilder, method);
+            this.bundle.TypeBuilder.DefineMethodOverride(this.bundle.MethodBuilder, method);
         }
     }
 }

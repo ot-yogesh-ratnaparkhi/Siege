@@ -9,10 +9,9 @@ namespace Siege.DynamicTypeGeneration
 {
     public class TypeGenerator
     {
-        private readonly TypeBuilder typeBuilder;
         private readonly AssemblyBuilder assemblyBuilder;
         private IList<ITypeGenerationAction> actions = new List<ITypeGenerationAction>();
-
+        private BuilderBundle bundle = new BuilderBundle();
         public TypeGenerator(string typeName, Type baseType)
         {
             var dllName = baseType.Namespace + "." + typeName;
@@ -20,31 +19,35 @@ namespace Siege.DynamicTypeGeneration
             AppDomain thisDomain = Thread.GetDomain();
 
             this.assemblyBuilder = thisDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave);
-            var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyBuilder.GetName().Name, assemblyBuilder.GetName().Name + ".dll");
+            this.bundle.ModuleBuilder = assemblyBuilder.DefineDynamicModule(assemblyBuilder.GetName().Name, assemblyBuilder.GetName().Name + ".dll");
 
-            this.typeBuilder = moduleBuilder.DefineType(typeName,
-                                                   TypeAttributes.Public |
-                                                   TypeAttributes.Class |
-                                                   TypeAttributes.AutoClass |
-                                                   TypeAttributes.AnsiClass |
-                                                   TypeAttributes.BeforeFieldInit |
-                                                   TypeAttributes.AutoLayout,
-                                                   baseType);
+            this.bundle.TypeBuilder = this.bundle.ModuleBuilder.DefineType(typeName,
+                                                            TypeAttributes.Public |
+                                                            TypeAttributes.Class |
+                                                            TypeAttributes.AutoClass |
+                                                            TypeAttributes.AnsiClass |
+                                                            TypeAttributes.BeforeFieldInit |
+                                                            TypeAttributes.AutoLayout,
+                                                            baseType);
+
 
             GenerateDefaultConstructor();
         }
 
         private void GenerateDefaultConstructor()
         {
-            this.actions.Add(new AddDefaultConstructorAction(this.typeBuilder));
+            this.actions.Add(new AddDefaultConstructorAction(this.bundle));
         }
 
-        public GeneratedMethod CreateMethod(string methodName, Type returnType, Type[] parameterTypes)
+        public GeneratedMethod CreateMethod(string methodName, Type returnType, Type[] parameterTypes, bool isOverride)
         {
-            var action = new AddMethodAction(this.typeBuilder, methodName, returnType, parameterTypes);
-            var method = new GeneratedMethod(this.typeBuilder, action.MethodBuilder, this.actions);
+            var action = new AddMethodAction(this.bundle, methodName, returnType, parameterTypes, isOverride);
+
+            var methodBundle = new MethodBuilderBundle(bundle) {MethodBuilder = action.MethodBuilder};
+            var method = new GeneratedMethod(methodBundle, this.actions);
 
             this.actions.Add(action);
+            if (returnType != typeof(void)) method.AddLocal(action.MethodBuilder);
 
             return method;
         }
@@ -56,7 +59,7 @@ namespace Siege.DynamicTypeGeneration
                 action.Execute();
             }
 
-            Type type = this.typeBuilder.CreateType();
+            Type type = this.bundle.TypeBuilder.CreateType();
 
             assemblyBuilder.Save(assemblyBuilder.GetName().Name + ".dll");
 
@@ -65,7 +68,7 @@ namespace Siege.DynamicTypeGeneration
 
         public GeneratedField CreateField(FieldInfo field)
         {
-            var action = new AddFieldAction(this.typeBuilder, field);
+            var action = new AddFieldAction(this.bundle, field);
             var generatedField = new GeneratedField(action);
 
             this.actions.Add(action);

@@ -6,24 +6,20 @@ namespace Siege.DynamicTypeGeneration.Actions
 {
     public class CallAction : ITypeGenerationAction
     {
-        protected readonly MethodBuilder builder;
+        protected readonly MethodBuilderBundle bundle;
         protected readonly MethodInfo method;
         protected IList<ITypeGenerationAction> actions;
         protected readonly GeneratedMethod generatedMethod;
         protected FieldInfo target;
         protected MethodInfo parametersFrom;
 
-        public CallAction(MethodBuilder builder, MethodInfo method, IList<ITypeGenerationAction> actions, GeneratedMethod generatedMethod)
+        public CallAction(MethodBuilderBundle bundle, MethodInfo method, IList<ITypeGenerationAction> actions,
+                          GeneratedMethod generatedMethod)
         {
-            this.builder = builder;
+            this.bundle = bundle;
             this.method = method;
             this.actions = actions;
             this.generatedMethod = generatedMethod;
-
-            if (method.ReturnType != typeof(void))
-            {
-                generatedMethod.AddLocal(method.ReturnType);
-            }
         }
 
         public void On(FieldInfo field)
@@ -33,7 +29,7 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         public virtual void Execute()
         {
-            var methodGenerator = builder.GetILGenerator();
+            var methodGenerator = this.bundle.MethodBuilder.GetILGenerator();
 
             if (target != null)
             {
@@ -51,12 +47,20 @@ namespace Siege.DynamicTypeGeneration.Actions
                 }
             }
             methodGenerator.Emit(OpCodes.Call, method);
-            methodGenerator.Emit(OpCodes.Nop);
         }
 
-        public void WithParametersFrom(MethodInfo info)
+        public CallAction WithParametersFrom(MethodInfo info)
         {
             parametersFrom = info;
+
+            return this;
+        }
+
+        public CallAction CaptureResult()
+        {
+            this.actions.Add(new CaptureCallResultAction(this.bundle, this.method, this.generatedMethod));
+
+            return this;
         }
     }
 }

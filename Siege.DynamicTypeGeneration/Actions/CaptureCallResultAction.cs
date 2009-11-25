@@ -1,22 +1,22 @@
-﻿using System;
+﻿using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class AddLocalAction : ITypeGenerationAction
+    public class CaptureCallResultAction : ITypeGenerationAction
     {
         private readonly MethodBuilderBundle bundle;
-        private readonly Type type;
 
-        public AddLocalAction(MethodBuilderBundle bundle, Type type)
+        public CaptureCallResultAction(MethodBuilderBundle bundle, MethodInfo method, GeneratedMethod generatedMethod)
         {
             this.bundle = bundle;
-            this.type = type;
         }
 
         public void Execute()
         {
             var methodGenerator = this.bundle.MethodBuilder.GetILGenerator();
-            methodGenerator.DeclareLocal(type);
+
+            methodGenerator.Emit(OpCodes.Stloc_0);
         }
     }
 }

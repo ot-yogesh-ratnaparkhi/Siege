@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D9F74E30-B6F0-481D-A7AA-C7D30C0EA43C}</ProjectGuid>
+    <ProjectGuid>{921C561C-9FFC-4122-A651-8670B6C95B8C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Siege.DynamicTypeGeneration</RootNamespace>
-    <AssemblyName>Siege.DynamicTypeGeneration</AssemblyName>
+    <RootNamespace>Siege.QueryAbstractions</RootNamespace>
+    <AssemblyName>Siege.QueryAbstractions</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -45,27 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actions\AddDefaultConstructorAction.cs" />
-    <Compile Include="Actions\AddFieldAction.cs" />
-    <Compile Include="Actions\AddLocalAction.cs" />
-    <Compile Include="Actions\AddMethodAction.cs" />
-    <Compile Include="Actions\CallAction.cs" />
-    <Compile Include="Actions\CallBaseAction.cs" />
-    <Compile Include="Actions\CaptureCallResultAction.cs" />
-    <Compile Include="Actions\CreateFuncAction.cs" />
-    <Compile Include="Actions\CreateFuncEncapsulationAction.cs" />
-    <Compile Include="Actions\FieldAssignmentAction.cs" />
-    <Compile Include="Actions\InstantiationAction.cs" />
-    <Compile Include="Actions\OverrideMethodAction.cs" />
-    <Compile Include="Actions\ReturnAction.cs" />
-    <Compile Include="Actions\SetFuncTargetAction.cs" />
-    <Compile Include="BuilderBundle.cs" />
-    <Compile Include="CompletedMethod.cs" />
-    <Compile Include="GeneratedField.cs" />
-    <Compile Include="GeneratedMethod.cs" />
-    <Compile Include="Actions\ITypeGenerationAction.cs" />
+    <Compile Include="IQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TypeGenerator.cs" />
+    <Compile Include="Queries\SelectQuery.cs" />
+    <Compile Include="Statements\JoinStatement.cs" />
+    <Compile Include="Statements\SelectStatement.cs" />
+    <Compile Include="Statements\WhereStatement.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
