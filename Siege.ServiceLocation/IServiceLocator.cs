@@ -3,15 +3,16 @@ using System.Collections;
 
 namespace Siege.ServiceLocation
 {
-    public interface IServiceLocator : IDisposable
+    public interface IServiceLocator : Microsoft.Practices.ServiceLocation.IServiceLocator, IDisposable
     {
-        T GetInstance<T>();
-        T GetInstance<T>(IDictionary constructorArguments);
-        T GetInstance<T>(object anonymousConstructorArguments);
-        T GetInstance<T>(Type type);
-        T GetInstance<T>(Type type, IDictionary constructorArguments);
-        T GetInstance<T>(string key);
-        T GetInstance<T>(string key, IDictionary constructorArguments);
-        IServiceLocator Register<T>(IUseCase<T> useCase);
+        TService GetInstance<TService>(IDictionary constructorArguments);
+        new TService GetInstance<TService>(string key);
+        TService GetInstance<TService>(object anonymousConstructorArguments);
+        TService GetInstance<TService>(Type type);
+        TService GetInstance<TService>(Type type, IDictionary constructorArguments);
+        TService GetInstance<TService>(string key, IDictionary constructorArguments);
+        object GetInstance(Type type, IDictionary constructorArguments);
+        object GetInstance(Type serviceType, string key, IDictionary constructorArguments);
+        IServiceLocator Register<TService>(IUseCase<TService> useCase);
     }
 }

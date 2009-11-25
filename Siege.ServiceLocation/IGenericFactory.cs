@@ -2,8 +2,8 @@
 
 namespace Siege.ServiceLocation
 {
-    public interface IGenericFactory<TBaseType>
+    public interface IGenericFactory<TBaseService>
     {
-        TBaseType Build(IDictionary constructorArguments);
+        TBaseService Build(IDictionary constructorArguments);
     }
 }

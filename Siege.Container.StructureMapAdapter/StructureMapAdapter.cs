@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Siege.ServiceLocation;
 using StructureMap;
 
@@ -8,104 +9,73 @@ namespace Siege.Container.StructureMapAdapter
     public class StructureMapAdapter : IServiceLocatorAdapter
     {
         private readonly StructureMap.Container container;
-
         private readonly Hashtable factories = new Hashtable();
+        private IContextualServiceLocator locator;
+
         public StructureMapAdapter() : this(new StructureMap.Container(x => x.IncludeConfigurationFromConfigFile = true)) {}
         public StructureMapAdapter(StructureMap.Container container)
         {
             this.container = container;
         }
 
-        private IContextualServiceLocator locator;
-
-        public T GetInstance<T>()
+        public TService GetInstance<TService>()
         {
-            return container.GetInstance<T>();
+            return (TService)GetInstance(typeof(TService));
         }
 
-        public T GetInstance<T>(IDictionary constructorArguments)
+        public TService GetInstance<TService>(IDictionary constructorArguments)
         {
-            return GetInstance<T>(typeof (T), constructorArguments);
+            return GetInstance<TService>(typeof(TService), constructorArguments);
         }
 
-        public T GetInstance<T>(object anonymousConstructorArguments)
+        public TService GetInstance<TService>(object anonymousConstructorArguments)
         {
-            return GetInstance<T>(anonymousConstructorArguments.AnonymousTypeToDictionary());
+            return GetInstance<TService>(anonymousConstructorArguments.AnonymousTypeToDictionary());
         }
 
-        public T GetInstance<T>(Type type)
+        public TService GetInstance<TService>(Type type)
         {
-            return (T)container.GetInstance(type);
+            return (TService)GetInstance(type);
         }
 
-        public T GetInstance<T>(Type type, IDictionary constructorArguments)
+        public TService GetInstance<TService>(Type type, IDictionary constructorArguments)
         {
-            if (constructorArguments == null || constructorArguments.Count == 0) return (T)container.GetInstance(type);
+            return (TService) GetInstance(type, constructorArguments);
+        }
 
-            ExplicitArgsExpression expression = null;
+        public TService GetInstance<TService>(string key)
+        {
+            return GetInstance<TService>(key, null);
+        }
 
-            foreach (string key in constructorArguments.Keys)
+        public TService GetInstance<TService>(string name, IDictionary constructorArguments)
+        {
+            return (TService) GetInstance(typeof(TService), name, constructorArguments);
+        }
+
+        public IServiceLocator Register<TService>(IUseCase<TService> useCase)
+        {
+            if (useCase is IConditionalUseCase<TService>)
             {
-                if (expression == null)
-                {
-                    expression = container.With(key).EqualTo(constructorArguments[key]);
-                    continue;
-                }
-
-                expression.With(key).EqualTo(constructorArguments[key]);
-            }
-
-            return (T)expression.GetInstance(type);
-        }
-
-        public T GetInstance<T>(string key)
-        {
-            return GetInstance<T>(key, null);
-        }
-
-        public T GetInstance<T>(string name, IDictionary constructorArguments)
-        {
-            if (constructorArguments == null || constructorArguments.Count == 0) return container.GetInstance<T>(name);
-
-            ExplicitArgsExpression expression = null;
-
-            foreach (string key in constructorArguments.Keys)
-            {
-                if (expression == null)
-                {
-                    expression = container.With(key).EqualTo(constructorArguments[key]);
-                    continue;
-                }
-
-                expression.With(key).EqualTo(constructorArguments[key]);
-            }
-
-            return expression.GetInstance<T>(name);
-        }
-
-        public IServiceLocator Register<T>(IUseCase<T> useCase)
-        {
-            if(useCase is IConditionalUseCase<T>)
-            {
-                var conditionalCase = useCase as IConditionalUseCase<T>;
+                var conditionalCase = useCase as IConditionalUseCase<TService>;
 
                 conditionalCase.Bind(container, this);
             }
-            else if (useCase is IKeyBasedUseCase<T>)
+            else if (useCase is IKeyBasedUseCase<TService>)
             {
-                var keyCase = useCase as IKeyBasedUseCase<T>;
+                var keyCase = useCase as IKeyBasedUseCase<TService>;
 
                 keyCase.Bind(container);
             }
-            else if (useCase is DefaultInstanceUseCase<T>)
+            else if (useCase is DefaultInstanceUseCase<TService>)
             {
-                var implementation = useCase as DefaultInstanceUseCase<T>;
+                var implementation = useCase as DefaultInstanceUseCase<TService>;
 
                 implementation.Bind(container, this);
             }
-            else if (useCase is IDefaultUseCase<T>)
+            else if (useCase is IDefaultUseCase<TService>)
             {
-                var genericCase = useCase as IDefaultUseCase<T>;
+                var genericCase = useCase as IDefaultUseCase<TService>;
 
                 genericCase.Bind(container, this);
             }
@@ -142,6 +112,72 @@ namespace Siege.Container.StructureMapAdapter
 
         public void Dispose()
         {
+        }
+
+
+        public object GetInstance(Type serviceType)
+        {
+            return container.GetInstance(serviceType);
+        }
+
+        public object GetInstance(Type serviceType, string key)
+        {
+            return GetInstance(serviceType, key, null);
+        }
+
+        public IEnumerable<object> GetAllInstances(Type serviceType)
+        {
+            return (IEnumerable<object>)container.GetAllInstances(serviceType);
+        }
+
+        public IEnumerable<TService> GetAllInstances<TService>()
+        {
+            return container.GetAllInstances<TService>();
+        }
+
+        public object GetInstance(Type type, IDictionary constructorArguments)
+        {
+            if (constructorArguments == null || constructorArguments.Count == 0) return container.GetInstance(type);
+
+            ExplicitArgsExpression expression = null;
+
+            foreach (string key in constructorArguments.Keys)
+            {
+                if (expression == null)
+                {
+                    expression = container.With(key).EqualTo(constructorArguments[key]);
+                    continue;
+                }
+
+                expression.With(key).EqualTo(constructorArguments[key]);
+            }
+
+            return expression.GetInstance(type);
+        }
+
+        public object GetInstance(Type serviceType, string key, IDictionary constructorArguments)
+        {
+            if (constructorArguments == null || constructorArguments.Count == 0) return container.GetInstance(serviceType, key);
+
+            ExplicitArgsExpression expression = null;
+
+            foreach (string name in constructorArguments.Keys)
+            {
+                if (expression == null)
+                {
+                    expression = container.With(name).EqualTo(constructorArguments[name]);
+                    continue;
+                }
+
+                expression.With(key).EqualTo(constructorArguments[key]);
+            }
+
+            return expression.GetInstance(serviceType);
+        }
+
+        public object GetService(Type serviceType)
+        {
+            return container.GetInstance(serviceType);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Siege.ServiceLocation
 {
-    public class GenericUseCase<TBaseType> : UseCase<TBaseType, Type>
+    public class GenericUseCase<TBaseService> : UseCase<TBaseService, Type>
     {
         protected Type boundType;
 
@@ -36,9 +36,9 @@ namespace Siege.ServiceLocation
                 this.boundType = boundType;
             }
 
-            public TBaseType Resolve(IServiceLocator locator, IDictionary constructorArguments)
+            public TBaseService Resolve(IServiceLocator locator, IDictionary constructorArguments)
             {
-                return locator.GetInstance<TBaseType>(boundType, constructorArguments);
+                return locator.GetInstance<TBaseService>(boundType, constructorArguments);
             }
         }
     }

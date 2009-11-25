@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Castle.Facilities.FactorySupport;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
@@ -21,73 +22,70 @@ namespace Siege.Container.WindsorAdapter
             this.kernel.AddFacility<FactorySupportFacility>();
         }
 
-        public T GetInstance<T>()
+        public TService GetInstance<TService>()
         {
-            return kernel.Resolve<T>();
+            return kernel.Resolve<TService>();
         }
 
-        public T GetInstance<T>(IDictionary constructorArguments)
+        public TService GetInstance<TService>(IDictionary constructorArguments)
         {
-            return GetInstance<T>(typeof (T), constructorArguments);
+            return GetInstance<TService>(typeof(TService), constructorArguments);
         }
 
-        public T GetInstance<T>(object anonymousConstructorArguments)
+        public TService GetInstance<TService>(object anonymousConstructorArguments)
         {
-            return GetInstance<T>(anonymousConstructorArguments.AnonymousTypeToDictionary());
+            return GetInstance<TService>(anonymousConstructorArguments.AnonymousTypeToDictionary());
         }
 
-        public T GetInstance<T>(Type type)
+        public TService GetInstance<TService>(Type type)
         {
-            return (T)kernel.Resolve(type);
+            return (TService)GetInstance(type);
         }
 
-        public T GetInstance<T>(Type type, IDictionary constructorArguments)
+        public TService GetInstance<TService>(Type type, IDictionary constructorArguments)
         {
-            if (constructorArguments == null) return (T) kernel.Resolve(type);
-            return (T)kernel.Resolve(type, constructorArguments);
+            return (TService)GetInstance(type, constructorArguments);
         }
 
-        public T GetInstance<T>(string key)
+        public TService GetInstance<TService>(string key)
         {
-            return GetInstance<T>(key, null);
+            return GetInstance<TService>(key, null);
         }
 
-        public T GetInstance<T>(string key, IDictionary constructorArguments)
+        public TService GetInstance<TService>(string key, IDictionary constructorArguments)
         {
-            if (constructorArguments == null) return kernel.Resolve<T>(key);
-
-            return (T)kernel.Resolve(key, constructorArguments);
+            return (TService)GetInstance(typeof (TService), key, constructorArguments);
         }
 
-        public IServiceLocator Register<T>(IUseCase<T> useCase)
+        public IServiceLocator Register<TService>(IUseCase<TService> useCase)
         {
-            if(useCase is IConditionalUseCase<T>)
+            if (useCase is IConditionalUseCase<TService>)
             {
-                var conditionalCase = useCase as IConditionalUseCase<T>;
+                var conditionalCase = useCase as IConditionalUseCase<TService>;
 
                 conditionalCase.Bind(this.kernel, this);
             }
-            else if (useCase is KeyBasedInstanceUseCase<T>)
+            else if (useCase is KeyBasedInstanceUseCase<TService>)
             {
-                var keyCase = useCase as KeyBasedInstanceUseCase<T>;
+                var keyCase = useCase as KeyBasedInstanceUseCase<TService>;
 
                 keyCase.Bind(this.kernel);
             }
-            else if (useCase is KeyBasedUseCase<T>)
+            else if (useCase is KeyBasedUseCase<TService>)
             {
-                var keyCase = useCase as KeyBasedUseCase<T>;
+                var keyCase = useCase as KeyBasedUseCase<TService>;
 
                 keyCase.Bind(this.kernel);
             }
-            else if (useCase is DefaultInstanceUseCase<T>)
+            else if (useCase is DefaultInstanceUseCase<TService>)
             {
-                var implementation = useCase as DefaultInstanceUseCase<T>;
+                var implementation = useCase as DefaultInstanceUseCase<TService>;
 
                 implementation.Bind(kernel, this);
             }
-            else if (useCase is IDefaultUseCase<T>)
+            else if (useCase is IDefaultUseCase<TService>)
             {
-                IDefaultUseCase<T> genericCase = useCase as IDefaultUseCase<T>;
+                IDefaultUseCase<TService> genericCase = useCase as IDefaultUseCase<TService>;
 
                 genericCase.Bind(kernel, this);
             }
@@ -123,6 +121,45 @@ namespace Siege.Container.WindsorAdapter
         public void Dispose()
         {
             this.kernel.Dispose();
+        }
+
+        public object GetInstance(Type serviceType)
+        {
+            return kernel.Resolve(serviceType);
+        }
+
+        public object GetInstance(Type serviceType, string key)
+        {
+            return kernel.Resolve(serviceType, key);
+        }
+
+        public IEnumerable<object> GetAllInstances(Type serviceType)
+        {
+            return (IEnumerable<object>)kernel.ResolveAll(serviceType);
+        }
+
+        public IEnumerable<TService> GetAllInstances<TService>()
+        {
+            return kernel.ResolveAll<TService>();
+        }
+
+        public object GetInstance(Type type, IDictionary constructorArguments)
+        {
+            if (constructorArguments == null) return kernel.Resolve(type);
+
+            return kernel.Resolve(type, constructorArguments);
+        }
+
+        public object GetInstance(Type serviceType, string key, IDictionary constructorArguments)
+        {
+            if (constructorArguments == null) return kernel.Resolve(key, serviceType);
+
+            return kernel.Resolve(key, serviceType, constructorArguments);
+        }
+
+        public object GetService(Type serviceType)
+        {
+            return kernel.GetService(serviceType);
         }
     }
 }

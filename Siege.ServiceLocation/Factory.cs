@@ -3,54 +3,54 @@ using System.Collections.Generic;
 
 namespace Siege.ServiceLocation
 {
-    public class Factory<TBaseType> : IGenericFactory<TBaseType>
+    public class Factory<TBaseService> : IGenericFactory<TBaseService>
     {
         private readonly IContextualServiceLocator serviceLocator;
-        private readonly List<IConditionalUseCase<TBaseType>> conditionalUseCases = new List<IConditionalUseCase<TBaseType>>();
-        private readonly List<IDefaultUseCase<TBaseType>> defaultCases = new List<IDefaultUseCase<TBaseType>>();
+        private readonly List<IConditionalUseCase<TBaseService>> conditionalUseCases = new List<IConditionalUseCase<TBaseService>>();
+        private readonly List<IDefaultUseCase<TBaseService>> defaultCases = new List<IDefaultUseCase<TBaseService>>();
 
         public Factory(IContextualServiceLocator serviceLocator)
         {
             this.serviceLocator = serviceLocator;
         }
 
-        public List<IConditionalUseCase<TBaseType>> ConditionalUseCases
+        public List<IConditionalUseCase<TBaseService>> ConditionalUseCases
         {
             get { return conditionalUseCases; }
         }
 
-        public List<IDefaultUseCase<TBaseType>> DefaultUseCases
+        public List<IDefaultUseCase<TBaseService>> DefaultUseCases
         {
             get { return defaultCases; }
         }
 
-        public void AddCase(IConditionalUseCase<TBaseType> useCase)
+        public void AddCase(IConditionalUseCase<TBaseService> useCase)
         {
             ConditionalUseCases.Add(useCase);
         }
 
-        public void AddCase(IDefaultUseCase<TBaseType> useCase)
+        public void AddCase(IDefaultUseCase<TBaseService> useCase)
         {
             DefaultUseCases.Add(useCase);
         }
 
-        public TBaseType Build(IDictionary constructorArguments)
+        public TBaseService Build(IDictionary constructorArguments)
         {
-            foreach (IConditionalUseCase<TBaseType> useCase in ConditionalUseCases)
+            foreach (IConditionalUseCase<TBaseService> useCase in ConditionalUseCases)
             {
-                TBaseType result = (TBaseType)useCase.Resolve(serviceLocator, serviceLocator.Context, constructorArguments);
+                TBaseService result = (TBaseService)useCase.Resolve(serviceLocator, serviceLocator.Context, constructorArguments);
 
-                if (!Equals(result, default(TBaseType))) return result;
+                if (!Equals(result, default(TBaseService))) return result;
             }
 
-            foreach (IDefaultUseCase<TBaseType> useCase in defaultCases)
+            foreach (IDefaultUseCase<TBaseService> useCase in defaultCases)
             {
-                TBaseType result = (TBaseType)useCase.Resolve(serviceLocator, constructorArguments);
+                TBaseService result = (TBaseService)useCase.Resolve(serviceLocator, constructorArguments);
 
-                if (!Equals(result, default(TBaseType))) return result;
+                if (!Equals(result, default(TBaseService))) return result;
             }
 
-            return serviceLocator.GetInstance<TBaseType>();
+            return serviceLocator.GetInstance<TBaseService>();
         }
     }
 }

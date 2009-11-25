@@ -11,7 +11,7 @@ namespace Siege.ServiceLocation
         object Resolve(IServiceLocator locator, IDictionary dictionary);
     }
 
-    public interface IUseCase<TBaseType> : IUseCase
+    public interface IUseCase<TBaseService> : IUseCase
     {
     }
 }

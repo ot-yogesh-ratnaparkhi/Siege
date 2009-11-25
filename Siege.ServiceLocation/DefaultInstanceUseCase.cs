@@ -1,4 +1,4 @@
 namespace Siege.ServiceLocation
 {
-    public class DefaultInstanceUseCase<TBaseType> : InstanceUseCase<TBaseType>, IDefaultUseCase<TBaseType> { }
+    public class DefaultInstanceUseCase<TBaseService> : InstanceUseCase<TBaseService>, IDefaultUseCase<TBaseService> { }
 }

@@ -4,5 +4,5 @@
     {
         string Key { get; }
     }
-    public interface IKeyBasedUseCase<TBaseType> : IKeyBasedUseCase, IUseCase<TBaseType> { }
+    public interface IKeyBasedUseCase<TBaseService> : IKeyBasedUseCase, IUseCase<TBaseService> { }
 }

@@ -19,39 +19,29 @@ namespace Siege.Container.NinjectAdapter
             kernel = iKernel;
         }
 
-        public T GetInstance<T>()
+        public TService GetInstance<TService>()
         {
-            return kernel.Get<T>();
+            return kernel.Get<TService>();
         }
 
-        public T GetInstance<T>(IDictionary constructorArguments)
+        public TService GetInstance<TService>(IDictionary constructorArguments)
         {
-            return GetInstance<T>(typeof (T), constructorArguments);
+            return GetInstance<TService>(typeof(TService), constructorArguments);
         }
 
-        public T GetInstance<T>(object anonymousConstructorArguments)
+        public TService GetInstance<TService>(object anonymousConstructorArguments)
         {
-            return GetInstance<T>(anonymousConstructorArguments.AnonymousTypeToDictionary());
+            return GetInstance<TService>(anonymousConstructorArguments.AnonymousTypeToDictionary());
         }
 
-        public T GetInstance<T>(Type type)
+        public TService GetInstance<TService>(Type type)
         {
-            return (T)kernel.Get(type);
+            return (TService) GetInstance(type);
         }
 
-        public T GetInstance<T>(Type type, IDictionary constructorArguments)
+        public TService GetInstance<TService>(Type type, IDictionary constructorArguments)
         {
-            if (constructorArguments == null || constructorArguments.Count == 0) return (T)kernel.Get(type);
-            
-            List<ConstructorArgument> args = new List<ConstructorArgument>();
-            
-            foreach (string key in constructorArguments.Keys)
-            {
-                ConstructorArgument argument = new ConstructorArgument(key, constructorArguments[key]);
-                args.Add(argument);
-            }
-
-            return (T)kernel.Get(type, args.ToArray());
+            return (TService) GetInstance(type, constructorArguments);
         }
 
         public T GetInstance<T>(string key)
@@ -59,44 +49,34 @@ namespace Siege.Container.NinjectAdapter
             return kernel.Get<T>(key);
         }
 
-        public T GetInstance<T>(string name, IDictionary constructorArguments)
+        public TService GetInstance<TService>(string name, IDictionary constructorArguments)
         {
-            if (constructorArguments == null || constructorArguments.Count == 0) return kernel.Get<T>(name);
-
-            List<ConstructorArgument> args = new List<ConstructorArgument>();
-
-            foreach (string key in constructorArguments.Keys)
-            {
-                ConstructorArgument argument = new ConstructorArgument(key, constructorArguments[key]);
-                args.Add(argument);
-            }
-
-            return kernel.Get<T>(name, args.ToArray());
+            return (TService) GetInstance(typeof(TService), name, constructorArguments);
         }
 
-        public IServiceLocator Register<T>(IUseCase<T> useCase)
+        public IServiceLocator Register<TService>(IUseCase<TService> useCase)
         {
-            if(useCase is IConditionalUseCase<T>)
+            if (useCase is IConditionalUseCase<TService>)
             {
-                var conditionalCase = useCase as IConditionalUseCase<T>;
+                var conditionalCase = useCase as IConditionalUseCase<TService>;
 
                 conditionalCase.Bind(kernel, this);
             }
-            else if (useCase is IKeyBasedUseCase<T>)
+            else if (useCase is IKeyBasedUseCase<TService>)
             {
-                var keyCase = useCase as IKeyBasedUseCase<T>;
+                var keyCase = useCase as IKeyBasedUseCase<TService>;
 
                 keyCase.Bind(kernel);
             }
-            else if (useCase is DefaultInstanceUseCase<T>)
+            else if (useCase is DefaultInstanceUseCase<TService>)
             {
-                var implementation = useCase as DefaultInstanceUseCase<T>;
+                var implementation = useCase as DefaultInstanceUseCase<TService>;
 
                 implementation.Bind(kernel, this);
             }
-            else if (useCase is IDefaultUseCase<T>)
+            else if (useCase is IDefaultUseCase<TService>)
             {
-                IDefaultUseCase<T> genericCase = useCase as IDefaultUseCase<T>;
+                IDefaultUseCase<TService> genericCase = useCase as IDefaultUseCase<TService>;
 
                 genericCase.Bind(kernel, this);
             }
@@ -134,6 +114,61 @@ namespace Siege.Container.NinjectAdapter
         public void Dispose()
         {
             this.kernel.Dispose();
+        }
+
+        public object GetInstance(Type serviceType)
+        {
+            return kernel.Get(serviceType);
+        }
+
+        public object GetInstance(Type serviceType, string key)
+        {
+            return GetInstance(serviceType, key, null);
+        }
+
+        public IEnumerable<object> GetAllInstances(Type serviceType)
+        {
+            return kernel.GetAll(serviceType);
+        }
+
+        public IEnumerable<TService> GetAllInstances<TService>()
+        {
+            return kernel.GetAll<TService>();
+        }
+
+        public object GetInstance(Type type, IDictionary constructorArguments)
+        {
+            if (constructorArguments == null || constructorArguments.Count == 0) return kernel.Get(type);
+
+            List<ConstructorArgument> args = new List<ConstructorArgument>();
+
+            foreach (string key in constructorArguments.Keys)
+            {
+                ConstructorArgument argument = new ConstructorArgument(key, constructorArguments[key]);
+                args.Add(argument);
+            }
+
+            return kernel.Get(type, args.ToArray());
+        }
+
+        public object GetInstance(Type serviceType, string key, IDictionary constructorArguments)
+        {
+            if (constructorArguments == null || constructorArguments.Count == 0) return kernel.Get(serviceType, key);
+
+            List<ConstructorArgument> args = new List<ConstructorArgument>();
+
+            foreach (string name in constructorArguments.Keys)
+            {
+                ConstructorArgument argument = new ConstructorArgument(name, constructorArguments[key]);
+                args.Add(argument);
+            }
+
+            return kernel.Get(serviceType, key, args.ToArray());
+        }
+
+        public object GetService(Type serviceType)
+        {
+            return kernel.GetService(serviceType);
         }
     }
 }

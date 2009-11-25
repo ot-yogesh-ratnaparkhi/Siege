@@ -43,6 +43,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Castle Windsor 2.0\bin\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject, Version=2.0.0.152, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Ninject.dll</HintPath>
@@ -113,10 +117,6 @@
     <ProjectReference Include="..\Siege.Container.WindsorAdapter\Siege.Container.WindsorAdapter.csproj">
       <Project>{20AE3922-30F4-47C5-A86B-C27E320BDE65}</Project>
       <Name>Siege.Container.WindsorAdapter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Siege.Container\Siege.Container.csproj">
-      <Project>{FF809718-BCE7-4C51-8C2D-CCBCFA346A40}</Project>
-      <Name>Siege.Container</Name>
     </ProjectReference>
     <ProjectReference Include="..\Siege.ServiceLocation\Siege.ServiceLocation.csproj">
       <Project>{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}</Project>

@@ -3,16 +3,16 @@ using System.Collections;
 
 namespace Siege.ServiceLocation
 {
-    public class InstanceUseCase<TBaseType> : UseCase<TBaseType, TBaseType>
+    public class InstanceUseCase<TBaseService> : UseCase<TBaseService, TBaseService>
     {
-        protected TBaseType implementation;
+        protected TBaseService implementation;
 
-        public virtual void BindTo(TBaseType implementation)
+        public virtual void BindTo(TBaseService implementation)
         {
             this.implementation = implementation;
         }
 
-        public override TBaseType GetBinding()
+        public override TBaseService GetBinding()
         {
             return this.implementation;
         }
@@ -29,14 +29,14 @@ namespace Siege.ServiceLocation
 
         public class ImplementationActivationStrategy : IActivationStrategy
         {
-            private readonly TBaseType implementation;
+            private readonly TBaseService implementation;
 
-            public ImplementationActivationStrategy(TBaseType implementation)
+            public ImplementationActivationStrategy(TBaseService implementation)
             {
                 this.implementation = implementation;
             }
 
-            public TBaseType Resolve(IServiceLocator locator, IDictionary constructorArguments)
+            public TBaseService Resolve(IServiceLocator locator, IDictionary constructorArguments)
             {
                 return implementation;
             }

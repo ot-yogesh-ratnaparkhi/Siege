@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace Siege.ServiceLocation
 {
-    public abstract class UseCase<TBaseType, TOutput> : IUseCase<TBaseType>
+    public abstract class UseCase<TBaseService, TService> : IUseCase<TBaseService>
     {
         protected readonly List<IActivationRule> rules = new List<IActivationRule>();
-        public abstract TOutput GetBinding();
+        public abstract TService GetBinding();
         protected abstract IActivationStrategy GetActivationStrategy();
 
         public void AddActivationRule(IActivationRule rule)
@@ -25,7 +25,7 @@ namespace Siege.ServiceLocation
                 }
             }
 
-            return default(TBaseType);
+            return default(TBaseService);
         }
 
         public object Resolve(IServiceLocator locator, IDictionary constructorArguments)
@@ -37,7 +37,7 @@ namespace Siege.ServiceLocation
 
         protected interface IActivationStrategy
         {
-            TBaseType Resolve(IServiceLocator locator, IDictionary constructorArguments);
+            TBaseService Resolve(IServiceLocator locator, IDictionary constructorArguments);
         }
     }
 }

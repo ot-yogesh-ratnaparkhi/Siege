@@ -2,43 +2,43 @@
 
 namespace Siege.ServiceLocation
 {
-    public class Given<TBaseType>
+    public class Given<TBaseService>
     {
-        public static ConditionalActivationRule<TBaseType, TContext> When<TContext>(Func<TContext, bool> evaluation)
+        public static ConditionalActivationRule<TBaseService, TContext> When<TContext>(Func<TContext, bool> evaluation)
         {
-            return new ConditionalActivationRule<TBaseType, TContext>(evaluation);
+            return new ConditionalActivationRule<TBaseService, TContext>(evaluation);
         }
 
-        public static IDefaultUseCase<TBaseType> Then<TImplementingType>() where TImplementingType : TBaseType
+        public static IDefaultUseCase<TBaseService> Then<TImplementingType>() where TImplementingType : TBaseService
         {
-            DefaultUseCase<TBaseType> useCase = new DefaultUseCase<TBaseType>();
+            DefaultUseCase<TBaseService> useCase = new DefaultUseCase<TBaseService>();
 
             useCase.BindTo<TImplementingType>();
 
             return useCase;
         }
 
-        public static KeyBasedUseCase<TBaseType> Then<TImplementingType>(string key) where TImplementingType : TBaseType
+        public static KeyBasedUseCase<TBaseService> Then<TImplementingType>(string key) where TImplementingType : TBaseService
         {
-            KeyBasedUseCase<TBaseType> useCase = new KeyBasedUseCase<TBaseType>(key);
+            KeyBasedUseCase<TBaseService> useCase = new KeyBasedUseCase<TBaseService>(key);
 
             useCase.BindTo<TImplementingType>();
 
             return useCase;
         }
 
-        public static IDefaultUseCase<TBaseType> Then(TBaseType implementation)
+        public static IDefaultUseCase<TBaseService> Then(TBaseService implementation)
         {
-            DefaultInstanceUseCase<TBaseType> useCase = new DefaultInstanceUseCase<TBaseType>();
+            DefaultInstanceUseCase<TBaseService> useCase = new DefaultInstanceUseCase<TBaseService>();
 
             useCase.BindTo(implementation);
 
             return useCase;
         }
 
-        public static IKeyBasedUseCase<TBaseType> Then(string key, TBaseType implementation)
+        public static IKeyBasedUseCase<TBaseService> Then(string key, TBaseService implementation)
         {
-            KeyBasedInstanceUseCase<TBaseType> useCase = new KeyBasedInstanceUseCase<TBaseType>(key);
+            KeyBasedInstanceUseCase<TBaseService> useCase = new KeyBasedInstanceUseCase<TBaseService>(key);
 
             useCase.BindTo(implementation);
 

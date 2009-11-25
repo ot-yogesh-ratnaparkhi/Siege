@@ -2,7 +2,7 @@ using System;
 
 namespace Siege.ServiceLocation
 {
-    public class ConditionalActivationRule<TBaseType, TContext> : IActivationRule
+    public class ConditionalActivationRule<TBaseService, TContext> : IActivationRule
     {
         private readonly Predicate<object> evaluation;
 
@@ -11,9 +11,9 @@ namespace Siege.ServiceLocation
             this.evaluation = x => (x is TContext) ? evaluation.Invoke((TContext)x) : false;
         }
 
-        public IConditionalUseCase<TBaseType> Then<TImplementingType>() where TImplementingType : TBaseType
+        public IConditionalUseCase<TBaseService> Then<TImplementingType>() where TImplementingType : TBaseService
         {
-            ConditionalGenericUseCase<TBaseType> useCase = new ConditionalGenericUseCase<TBaseType>();
+            ConditionalGenericUseCase<TBaseService> useCase = new ConditionalGenericUseCase<TBaseService>();
 
             useCase.AddActivationRule(this);
             useCase.BindTo<TImplementingType>();
@@ -21,9 +21,9 @@ namespace Siege.ServiceLocation
             return useCase;
         }
 
-        public IConditionalUseCase<TBaseType> Then(TBaseType implementation)
+        public IConditionalUseCase<TBaseService> Then(TBaseService implementation)
         {
-            ConditionalInstanceUseCase<TBaseType> useCase = new ConditionalInstanceUseCase<TBaseType>();
+            ConditionalInstanceUseCase<TBaseService> useCase = new ConditionalInstanceUseCase<TBaseService>();
 
             useCase.AddActivationRule(this);
             useCase.BindTo(implementation);

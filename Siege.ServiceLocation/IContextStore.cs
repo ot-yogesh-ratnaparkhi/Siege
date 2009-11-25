@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Siege.Container
+namespace Siege.ServiceLocation
 {
     public interface IContextStore
     {

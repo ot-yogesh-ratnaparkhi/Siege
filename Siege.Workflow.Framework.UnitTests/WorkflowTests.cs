@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Siege.Container;
 using Siege.Container.StructureMapAdapter;
 using Siege.ServiceLocation;
 using Siege.Workflow.Framework.Activities;

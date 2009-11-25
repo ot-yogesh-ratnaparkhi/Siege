@@ -1,6 +1,6 @@
 namespace Siege.ServiceLocation
 {
-    public class KeyBasedInstanceUseCase<TBaseType> : InstanceUseCase<TBaseType>, IKeyBasedUseCase<TBaseType>
+    public class KeyBasedInstanceUseCase<TBaseService> : InstanceUseCase<TBaseService>, IKeyBasedUseCase<TBaseService>
     {
         private readonly string key;
 

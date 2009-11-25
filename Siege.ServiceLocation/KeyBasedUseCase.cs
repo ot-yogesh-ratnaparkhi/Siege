@@ -2,7 +2,7 @@ using System.Collections;
 
 namespace Siege.ServiceLocation
 {
-    public class KeyBasedUseCase<TBaseType> : GenericUseCase<TBaseType>, IKeyBasedUseCase<TBaseType>
+    public class KeyBasedUseCase<TBaseService> : GenericUseCase<TBaseService>, IKeyBasedUseCase<TBaseService>
     {
         private readonly string key;
 
@@ -30,9 +30,9 @@ namespace Siege.ServiceLocation
                 this.key = key;
             }
 
-            public TBaseType Resolve(IServiceLocator locator, IDictionary constructorArguments)
+            public TBaseService Resolve(IServiceLocator locator, IDictionary constructorArguments)
             {
-                return locator.GetInstance<TBaseType>(key, constructorArguments);
+                return locator.GetInstance<TBaseService>(key, constructorArguments);
             }
         }
     }
