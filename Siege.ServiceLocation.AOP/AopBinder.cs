@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Siege.DynamicTypeGeneration;
-using Siege.ServiceLocation.TypeGeneration;
+using Siege.ServiceLocation.AOP;
 
 namespace Siege.ServiceLocation.Aop
 {

@@ -1,4 +1,4 @@
-namespace Siege.ServiceLocation.TypeGeneration
+namespace Siege.ServiceLocation.AOP
 {
     public interface IAopAttribute
     {

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Siege.ServiceLocation;
-using Siege.ServiceLocation.Aop;
-using Siege.ServiceLocation.TypeGeneration;
 
 namespace Siege.Container.UnitTests
 {
@@ -164,16 +161,6 @@ namespace Siege.Container.UnitTests
         }
 
         [Test]
-        public void Should_Use_AOP()
-        {
-            locator.Register(Given<AOPExample>.Then<AOPExample>());
-            locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
-            locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
-            locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
-            locator.GetInstance<AOPExample>().Test();
-        }
-
-        [Test]
         public void Should_Resolve_If_Dependency_Is_Registered_As_Instance()
         {
             var arg = new ConstructorArgument();
@@ -242,86 +229,6 @@ namespace Siege.Container.UnitTests
         public IConstructorArgument Argument
         {
             get { return argument; }
-        }
-    }
-
-    public class AOPExample
-    {
-        [SampleEncapsulating]
-        public virtual string Test()
-        {
-            return "yay";
-        }
-    }
-
-    public class SampleBase
-    {
-        protected readonly IContextualServiceLocator locator;
-
-        public SampleBase(IContextualServiceLocator locator)
-        {
-            this.locator = locator;
-        }
-        
-        public virtual string Test()
-        {
-            return "yay";
-        }
-    }
-
-    public class SampleClass : SampleBase
-    {
-        private object x;
-        public SampleClass(IContextualServiceLocator locator) : base(locator)
-        {
-        }
-
-        public override string Test()
-        {
-            x = locator;
-            return locator.GetInstance<SampleEncapsulatingAttribute>().Process(() => this.Test2());
-        }
-
-        private string Test2()
-        {
-            return base.Test();
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
-    public class SampleEncapsulatingAttribute : Attribute, IProcessEncapsulatingAttribute
-    {
-        private readonly IContextualServiceLocator locator;
-
-        public SampleEncapsulatingAttribute() {}
-
-        public SampleEncapsulatingAttribute(IContextualServiceLocator locator)
-        {
-            this.locator = locator;
-        }
-
-        public TResponseType Process<TResponseType>(Func<TResponseType> func)
-        {
-            return default(TResponseType);
-        }
-
-        public void Process(Action action)
-        {
-        }
-    }
-
-    public class SamplePreProcessingAttribute : Attribute, IPreProcessingAttribute
-    {
-        public void Process()
-        {
-            
-        }
-    }
-
-    public class SamplePostProcessingAttribute : Attribute, IPostProcessingAttribute
-    {
-        public void Process()
-        {
         }
     }
 }

@@ -1,5 +1,5 @@
 using System;
-using Siege.ServiceLocation.TypeGeneration;
+using Siege.ServiceLocation.AOP;
 
 namespace Siege.ServiceLocation.Aop
 {

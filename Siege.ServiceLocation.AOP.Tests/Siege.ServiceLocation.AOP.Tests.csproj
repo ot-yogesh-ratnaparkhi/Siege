@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}</ProjectGuid>
+    <ProjectGuid>{9AF0AB00-BD4E-4C76-ACCD-0F33E15F9ADF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Siege.ServiceLocation</RootNamespace>
-    <AssemblyName>Siege.ServiceLocation</AssemblyName>
+    <RootNamespace>Siege.ServiceLocation.AOP.Tests</RootNamespace>
+    <AssemblyName>Siege.ServiceLocation.AOP.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -45,34 +49,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConditionalActivationRule.cs" />
-    <Compile Include="Factory.cs" />
-    <Compile Include="IGenericFactory.cs" />
-    <Compile Include="ConditionalGenericUseCase.cs" />
-    <Compile Include="ConditionalImplementationUseCase.cs" />
-    <Compile Include="DefaultInstanceUseCase.cs" />
-    <Compile Include="DefaultUseCase.cs" />
-    <Compile Include="GenericUseCase.cs" />
-    <Compile Include="Given.cs" />
-    <Compile Include="IActivationRule.cs" />
-    <Compile Include="IConditionalUseCase.cs" />
-    <Compile Include="IContextualServiceLocator.cs" />
-    <Compile Include="IDefaultUseCase.cs" />
-    <Compile Include="IKeyBasedUseCase.cs" />
-    <Compile Include="InstanceUseCase.cs" />
-    <Compile Include="IServiceLocator.cs" />
-    <Compile Include="IServiceLocatorAdapter.cs" />
-    <Compile Include="IUseCase.cs" />
-    <Compile Include="KeyBasedInstanceUseCase.cs" />
-    <Compile Include="KeyBasedUseCase.cs" />
-    <Compile Include="ObjectToDictionaryRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UseCase.cs" />
+    <Compile Include="TypeGeneratorTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Siege.DynamicTypeGeneration\Siege.DynamicTypeGeneration.csproj">
-      <Project>{D9F74E30-B6F0-481D-A7AA-C7D30C0EA43C}</Project>
-      <Name>Siege.DynamicTypeGeneration</Name>
+    <ProjectReference Include="..\Siege.ServiceLocation.AOP\Siege.ServiceLocation.AOP.csproj">
+      <Project>{2EDF2E1D-C65C-4246-99A8-217B7CB38810}</Project>
+      <Name>Siege.ServiceLocation.AOP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.ServiceLocation\Siege.ServiceLocation.csproj">
+      <Project>{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}</Project>
+      <Name>Siege.ServiceLocation</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

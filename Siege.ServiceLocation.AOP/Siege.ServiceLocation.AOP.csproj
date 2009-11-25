@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}</ProjectGuid>
+    <ProjectGuid>{2EDF2E1D-C65C-4246-99A8-217B7CB38810}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Siege.ServiceLocation</RootNamespace>
-    <AssemblyName>Siege.ServiceLocation</AssemblyName>
+    <RootNamespace>Siege.ServiceLocation.AOP</RootNamespace>
+    <AssemblyName>Siege.ServiceLocation.AOP</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -45,34 +45,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConditionalActivationRule.cs" />
-    <Compile Include="Factory.cs" />
-    <Compile Include="IGenericFactory.cs" />
-    <Compile Include="ConditionalGenericUseCase.cs" />
-    <Compile Include="ConditionalImplementationUseCase.cs" />
-    <Compile Include="DefaultInstanceUseCase.cs" />
-    <Compile Include="DefaultUseCase.cs" />
-    <Compile Include="GenericUseCase.cs" />
-    <Compile Include="Given.cs" />
-    <Compile Include="IActivationRule.cs" />
-    <Compile Include="IConditionalUseCase.cs" />
-    <Compile Include="IContextualServiceLocator.cs" />
-    <Compile Include="IDefaultUseCase.cs" />
-    <Compile Include="IKeyBasedUseCase.cs" />
-    <Compile Include="InstanceUseCase.cs" />
-    <Compile Include="IServiceLocator.cs" />
-    <Compile Include="IServiceLocatorAdapter.cs" />
-    <Compile Include="IUseCase.cs" />
-    <Compile Include="KeyBasedInstanceUseCase.cs" />
-    <Compile Include="KeyBasedUseCase.cs" />
-    <Compile Include="ObjectToDictionaryRegistry.cs" />
+    <Compile Include="AopBinder.cs" />
+    <Compile Include="IAopAttribute.cs" />
+    <Compile Include="IPostProcessingAttribute.cs" />
+    <Compile Include="IPreProcessingAttribute.cs" />
+    <Compile Include="IProcessEncapsulatingAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UseCase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Siege.DynamicTypeGeneration\Siege.DynamicTypeGeneration.csproj">
       <Project>{D9F74E30-B6F0-481D-A7AA-C7D30C0EA43C}</Project>
       <Name>Siege.DynamicTypeGeneration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.ServiceLocation\Siege.ServiceLocation.csproj">
+      <Project>{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}</Project>
+      <Name>Siege.ServiceLocation</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
