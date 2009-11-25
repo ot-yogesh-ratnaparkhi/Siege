@@ -34,7 +34,7 @@ namespace Siege.Container.WindsorAdapter
             var factory = (Factory<TBaseType>)locator.GetFactory<TBaseType>();
             factory.AddCase(useCase);
 
-            kernel.Register(Component.For<TBaseType>().UsingFactoryMethod(() => factory.Build(null)).LifeStyle.Singleton.Unless(Component.ServiceAlreadyRegistered));
+            kernel.Register(Component.For<TBaseType>().UsingFactoryMethod(() => factory.Build(null)).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
             kernel.Register(Component.For(useCase.GetBoundType()).Instance(useCase.GetBinding()).Unless(Component.ServiceAlreadyRegistered));
         }
 

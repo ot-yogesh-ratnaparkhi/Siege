@@ -15,7 +15,7 @@ namespace Siege.ServiceLocation
             rules.Add(rule);
         }
 
-        public object Resolve(IServiceLocator locator, IList<object> context, IDictionary constructorArguments) 
+        public object Resolve(IMinimalServiceLocator locator, IList<object> context, IDictionary constructorArguments) 
         {
             foreach (IActivationRule rule in this.rules)
             {
@@ -28,7 +28,7 @@ namespace Siege.ServiceLocation
             return default(TBaseService);
         }
 
-        public object Resolve(IServiceLocator locator, IDictionary constructorArguments)
+        public object Resolve(IMinimalServiceLocator locator, IDictionary constructorArguments)
         {
             return GetActivationStrategy().Resolve(locator, constructorArguments);
         }
@@ -37,7 +37,7 @@ namespace Siege.ServiceLocation
 
         protected interface IActivationStrategy
         {
-            TBaseService Resolve(IServiceLocator locator, IDictionary constructorArguments);
+            TBaseService Resolve(IMinimalServiceLocator locator, IDictionary constructorArguments);
         }
     }
 }

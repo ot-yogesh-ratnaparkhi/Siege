@@ -85,7 +85,7 @@ namespace Siege.ServiceLocation
 
         public TService GetInstance<TService>(string key, IDictionary constructorArguments)
         {
-            return (TService)GetInstance(typeof(TService), key, constructorArguments);
+            return serviceLocator.GetInstance<TService>(key, constructorArguments);
         }
 
         public object GetInstance(Type serviceType, string key, IDictionary constructorArguments)
@@ -93,7 +93,7 @@ namespace Siege.ServiceLocation
             return this.serviceLocator.GetInstance(serviceType, key, constructorArguments);
         }
 
-        public IServiceLocator Register<TService>(IUseCase<TService> useCase)
+        public IMinimalServiceLocator Register<TService>(IUseCase<TService> useCase)
         {
             if (useCase is IDefaultUseCase<TService>)
             {
@@ -133,7 +133,7 @@ namespace Siege.ServiceLocation
 
         public object GetService(Type serviceType)
         {
-            return this.serviceLocator.GetService(serviceType);
+            return this.serviceLocator.GetInstance(serviceType, null);
         }
 
         public object GetInstance(Type serviceType)

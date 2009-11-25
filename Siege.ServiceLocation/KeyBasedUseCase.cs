@@ -30,7 +30,7 @@ namespace Siege.ServiceLocation
                 this.key = key;
             }
 
-            public TBaseService Resolve(IServiceLocator locator, IDictionary constructorArguments)
+            public TBaseService Resolve(IMinimalServiceLocator locator, IDictionary constructorArguments)
             {
                 return locator.GetInstance<TBaseService>(key, constructorArguments);
             }

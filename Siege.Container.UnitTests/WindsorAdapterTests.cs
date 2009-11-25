@@ -25,6 +25,19 @@ namespace Siege.Container.UnitTests
         {
             kernel.Register(Component.For<IUnregisteredInterface>().ImplementedBy<UnregisteredClass>());
         }
+        
+        [Test]
+        public virtual void Should_Dispose_From_Containers()
+        {
+            DefaultKernel disposableKernel = new DefaultKernel();
+            using (var disposableLocater = new SiegeContainer(new WindsorAdapter.WindsorAdapter(disposableKernel)))
+            {
+                disposableLocater.Register(Given<ITestInterface>.Then<TestCase1>());
+                Assert.IsTrue(disposableLocater.GetInstance<ITestInterface>() is TestCase1);
+            }
+            
+            Assert.IsFalse(disposableKernel.HasComponent(typeof(ITestInterface)));
+        }
 
         [ExpectedException(typeof(ComponentNotFoundException))]
         public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Siege.ServiceLocation;
 using StructureMap;
 
@@ -8,8 +9,8 @@ namespace Siege.Container.StructureMapAdapter
 {
     public class StructureMapAdapter : IServiceLocatorAdapter
     {
-        private readonly StructureMap.Container container;
-        private readonly Hashtable factories = new Hashtable();
+        private StructureMap.Container container;
+        private Hashtable factories = new Hashtable();
         private IContextualServiceLocator locator;
 
         public StructureMapAdapter() : this(new StructureMap.Container(x => x.IncludeConfigurationFromConfigFile = true)) {}
@@ -20,32 +21,7 @@ namespace Siege.Container.StructureMapAdapter
 
         public TService GetInstance<TService>()
         {
-            return (TService)GetInstance(typeof(TService));
-        }
-
-        public TService GetInstance<TService>(IDictionary constructorArguments)
-        {
-            return GetInstance<TService>(typeof(TService), constructorArguments);
-        }
-
-        public TService GetInstance<TService>(object anonymousConstructorArguments)
-        {
-            return GetInstance<TService>(anonymousConstructorArguments.AnonymousTypeToDictionary());
-        }
-
-        public TService GetInstance<TService>(Type type)
-        {
-            return (TService)GetInstance(type);
-        }
-
-        public TService GetInstance<TService>(Type type, IDictionary constructorArguments)
-        {
-            return (TService) GetInstance(type, constructorArguments);
-        }
-
-        public TService GetInstance<TService>(string key)
-        {
-            return GetInstance<TService>(key, null);
+            return container.GetInstance<TService>();
         }
 
         public TService GetInstance<TService>(string name, IDictionary constructorArguments)
@@ -53,7 +29,7 @@ namespace Siege.Container.StructureMapAdapter
             return (TService) GetInstance(typeof(TService), name, constructorArguments);
         }
 
-        public IServiceLocator Register<TService>(IUseCase<TService> useCase)
+        public IMinimalServiceLocator Register<TService>(IUseCase<TService> useCase)
         {
             if (useCase is IConditionalUseCase<TService>)
             {
@@ -112,22 +88,19 @@ namespace Siege.Container.StructureMapAdapter
 
         public void Dispose()
         {
-        }
-
-
-        public object GetInstance(Type serviceType)
-        {
-            return container.GetInstance(serviceType);
-        }
-
-        public object GetInstance(Type serviceType, string key)
-        {
-            return GetInstance(serviceType, key, null);
+            
         }
 
         public IEnumerable<object> GetAllInstances(Type serviceType)
         {
-            return (IEnumerable<object>)container.GetAllInstances(serviceType);
+            Collection<object> objects = new Collection<object>();
+
+            foreach (object item in container.GetAllInstances(serviceType))
+            {
+                objects.Add(item);
+            }
+
+            return objects;
         }
 
         public IEnumerable<TService> GetAllInstances<TService>()
@@ -173,11 +146,6 @@ namespace Siege.Container.StructureMapAdapter
             }
 
             return expression.GetInstance(serviceType);
-        }
-
-        public object GetService(Type serviceType)
-        {
-            return container.GetInstance(serviceType);
         }
     }
 }

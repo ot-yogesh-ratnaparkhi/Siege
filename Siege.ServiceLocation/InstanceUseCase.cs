@@ -36,7 +36,7 @@ namespace Siege.ServiceLocation
                 this.implementation = implementation;
             }
 
-            public TBaseService Resolve(IServiceLocator locator, IDictionary constructorArguments)
+            public TBaseService Resolve(IMinimalServiceLocator locator, IDictionary constructorArguments)
             {
                 return implementation;
             }

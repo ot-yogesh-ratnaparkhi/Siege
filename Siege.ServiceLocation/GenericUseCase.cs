@@ -36,9 +36,9 @@ namespace Siege.ServiceLocation
                 this.boundType = boundType;
             }
 
-            public TBaseService Resolve(IServiceLocator locator, IDictionary constructorArguments)
+            public TBaseService Resolve(IMinimalServiceLocator locator, IDictionary constructorArguments)
             {
-                return locator.GetInstance<TBaseService>(boundType, constructorArguments);
+                return (TBaseService)locator.GetInstance(boundType, constructorArguments);
             }
         }
     }

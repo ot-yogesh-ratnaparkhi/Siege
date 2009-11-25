@@ -17,7 +17,6 @@ namespace Siege.Container.UnitTests
         {
             locator = new SiegeContainer(GetAdapter());
         }
-
         [Test]
         public void Should_Be_Able_To_Bind_An_Interface_To_A_Type()
         {
@@ -27,11 +26,35 @@ namespace Siege.Container.UnitTests
         }
 
         [Test]
+        public void Should_Be_Able_To_Bind_An_Interface_To_A_Type_Non_Generic()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>());
+
+            Assert.IsTrue(locator.GetInstance(typeof(ITestInterface)) is TestCase1);
+        }
+
+        [Test]
+        public void Should_Be_Able_To_Bind_An_Interface_To_A_Type_And_Resolve_With_Get_Service()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>());
+
+            Assert.IsTrue(locator.GetService(typeof(ITestInterface)) is TestCase1);
+        }
+
+        [Test]
         public void Should_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>("test"));
 
             Assert.IsTrue(locator.GetInstance<ITestInterface>("test") is TestCase1);
+        }
+
+        [Test]
+        public void Should_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_Non_Generic()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>("test"));
+
+            Assert.IsTrue(locator.GetInstance(typeof(ITestInterface), "test") is TestCase1);
         }
 
         [Test]
@@ -173,6 +196,42 @@ namespace Siege.Container.UnitTests
 
             Assert.IsTrue(resolution is DependsOnInterface);
             Assert.AreSame(arg, resolution.Argument);
+        }
+
+        [Test]
+        public void Should_Resolve_All_From_Service_Locator_Regardless_Of_Context()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>());
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
+
+            var instances = locator.GetAllInstances<ITestInterface>();
+
+            int count = 0;
+            foreach(ITestInterface item in instances)
+            {
+                Assert.IsInstanceOfType(typeof(ITestInterface), item);
+                count++;
+            }
+
+            //Assert.AreEqual(2, count);
+        }
+
+        [Test]
+        public void Should_Resolve_All_From_Service_Locator_Regardless_Of_Context_Non_Generic()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>());
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
+
+            var instances = locator.GetAllInstances(typeof(ITestInterface));
+
+            int count = 0;
+            foreach (ITestInterface item in instances)
+            {
+                Assert.IsInstanceOfType(typeof(ITestInterface), item);
+                count++;
+            }
+
+            //Assert.AreEqual(2, count);
         }
 
         private TestContext CreateContext(TestEnum types)

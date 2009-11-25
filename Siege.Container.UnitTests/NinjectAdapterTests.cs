@@ -28,6 +28,19 @@ namespace Siege.Container.UnitTests
             kernel.Bind<IUnregisteredInterface>().To(type);
         }
 
+        [Test]
+        public virtual void Should_Dispose_From_Containers()
+        {
+            var disposableContainer = new StandardKernel();
+            using (var disposableLocater = new SiegeContainer(new NinjectAdapter.NinjectAdapter(disposableContainer)))
+            {
+                disposableLocater.Register(Given<ITestInterface>.Then<TestCase1>());
+                Assert.IsTrue(disposableLocater.GetInstance<ITestInterface>() is TestCase1);
+            }
+
+            Assert.IsTrue(disposableContainer.IsDisposed);
+        }
+
         public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
         {
             base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
