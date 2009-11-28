@@ -2,7 +2,7 @@
 
 namespace Siege.ServiceLocation
 {
-    public class Given<TBaseService>
+    public class Given<TBaseService> 
     {
         public static ConditionalActivationRule<TBaseService, TContext> When<TContext>(Func<TContext, bool> evaluation)
         {
@@ -18,7 +18,16 @@ namespace Siege.ServiceLocation
             return useCase;
         }
 
-        public static KeyBasedUseCase<TBaseService> Then<TImplementingType>(string key) where TImplementingType : TBaseService
+        public static IDefaultUseCase<TBaseService> Then(Type implementingType)
+        {
+            DefaultUseCase<TBaseService> useCase = new DefaultUseCase<TBaseService>();
+
+            useCase.BindTo(implementingType);
+
+            return useCase;
+        }
+
+        public static IKeyBasedUseCase<TBaseService> Then<TImplementingType>(string key) where TImplementingType : TBaseService
         {
             KeyBasedUseCase<TBaseService> useCase = new KeyBasedUseCase<TBaseService>(key);
 

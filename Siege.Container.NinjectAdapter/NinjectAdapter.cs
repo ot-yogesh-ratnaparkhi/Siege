@@ -24,42 +24,13 @@ namespace Siege.Container.NinjectAdapter
             return (TService) GetInstance(typeof(TService), name, constructorArguments);
         }
 
-        public IMinimalServiceLocator Register<TService>(IUseCase<TService> useCase)
-        {
-            if (useCase is IConditionalUseCase<TService>)
-            {
-                var conditionalCase = useCase as IConditionalUseCase<TService>;
-
-                conditionalCase.Bind(kernel, this);
-            }
-            else if (useCase is IKeyBasedUseCase<TService>)
-            {
-                var keyCase = useCase as IKeyBasedUseCase<TService>;
-
-                keyCase.Bind(kernel);
-            }
-            else if (useCase is DefaultInstanceUseCase<TService>)
-            {
-                var implementation = useCase as DefaultInstanceUseCase<TService>;
-
-                implementation.Bind(kernel, this);
-            }
-            else if (useCase is IDefaultUseCase<TService>)
-            {
-                IDefaultUseCase<TService> genericCase = useCase as IDefaultUseCase<TService>;
-
-                genericCase.Bind(kernel, this);
-            }
-
-            return this;
-        }
-
         public void RegisterParentLocator(IContextualServiceLocator locator)
         {
             this.locator = locator;
 
-            Register(Given<IServiceLocator>.Then(locator));
-            Register(Given<IContextualServiceLocator>.Then(locator));
+            kernel.Bind<IServiceLocatorAdapter>().ToConstant(this);
+            locator.Register(Given<IServiceLocator>.Then(locator));
+            locator.Register(Given<IContextualServiceLocator>.Then(locator));
         }
 
         public IGenericFactory<TBaseType> GetFactory<TBaseType>()
@@ -71,7 +42,7 @@ namespace Siege.Container.NinjectAdapter
                     if (!factories.ContainsKey(typeof(TBaseType)))
                     {
                         Factory<TBaseType> factory = new Factory<TBaseType>(locator);
-                        Register(Given<Factory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
+                        locator.Register(Given<Factory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
 
                         factories.Add(typeof(TBaseType), factory);
                     }
@@ -81,9 +52,34 @@ namespace Siege.Container.NinjectAdapter
             return (Factory<TBaseType>)factories[typeof(TBaseType)];
         }
 
+        public void RegisterBinding(Type baseBinding, Type targetBinding)
+        {
+            kernel.Bind(baseBinding).To(targetBinding);
+        }
+
+        public Type ConditionalUseCaseBinding
+        {
+            get { return typeof (ConditionalUseCaseBinding<>); }
+        }
+
+        public Type DefaultUseCaseBinding
+        {
+            get { return typeof (DefaultUseCaseBinding<>); }
+        }
+
+        public Type DefaultInstanceUseCaseBinding
+        {
+            get { return typeof (DefaultInstanceUseCaseBinding<>); }
+        }
+
+        public Type KeyBasedUseCaseBinding
+        {
+            get { return typeof (KeyBasedUseCaseBinding<>); }
+        }
+
         public void Dispose()
         {
-            this.kernel.Dispose();
+            kernel.Dispose();
         }
 
         public IEnumerable<object> GetAllInstances(Type serviceType)

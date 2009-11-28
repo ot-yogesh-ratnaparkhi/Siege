@@ -8,6 +8,7 @@ namespace Siege.ServiceLocation
     {
         protected readonly List<IActivationRule> rules = new List<IActivationRule>();
         public abstract TService GetBinding();
+        public abstract Type GetUseCaseBindingType();
         protected abstract IActivationStrategy GetActivationStrategy();
 
         public void AddActivationRule(IActivationRule rule)

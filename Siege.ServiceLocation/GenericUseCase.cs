@@ -3,13 +3,18 @@ using System.Collections;
 
 namespace Siege.ServiceLocation
 {
-    public class GenericUseCase<TBaseService> : UseCase<TBaseService, Type>
+    public abstract class GenericUseCase<TBaseService> : UseCase<TBaseService, Type>
     {
         protected Type boundType;
 
         public void BindTo<TImplementationType>()
         {
             boundType = typeof(TImplementationType);
+        }
+
+        public void BindTo(Type type)
+        {
+            boundType = type;
         }
 
         public override Type GetBinding()

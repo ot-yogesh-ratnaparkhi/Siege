@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Siege.ServiceLocation
 {
@@ -17,6 +18,12 @@ namespace Siege.ServiceLocation
         {
             this.serviceLocator = serviceLocator;
             this.contextStore = contextStore;
+
+            this.serviceLocator.RegisterBinding(typeof(IConditionalUseCaseBinding<>), this.serviceLocator.ConditionalUseCaseBinding);
+            this.serviceLocator.RegisterBinding(typeof(IDefaultUseCaseBinding<>), this.serviceLocator.DefaultUseCaseBinding);
+            this.serviceLocator.RegisterBinding(typeof(IDefaultInstanceUseCaseBinding<>), this.serviceLocator.DefaultInstanceUseCaseBinding);
+            this.serviceLocator.RegisterBinding(typeof(IKeyBasedUseCaseBinding<>), this.serviceLocator.KeyBasedUseCaseBinding);
+
             this.serviceLocator.RegisterParentLocator(this);
         }
 
@@ -93,7 +100,7 @@ namespace Siege.ServiceLocation
             return this.serviceLocator.GetInstance(serviceType, key, constructorArguments);
         }
 
-        public IMinimalServiceLocator Register<TService>(IUseCase<TService> useCase)
+        public IServiceLocator Register<TService>(IUseCase<TService> useCase)
         {
             if (useCase is IDefaultUseCase<TService>)
             {
@@ -116,7 +123,11 @@ namespace Siege.ServiceLocation
             if (!registeredTypes.ContainsKey(typeof(TService))) registeredTypes.Add(typeof(TService), typeof(TService));
             if (!registeredImplementors.ContainsKey(useCase.GetType())) registeredImplementors.Add(useCase.GetType(), useCase.GetType());
 
-            serviceLocator.Register(useCase);
+            Type bindingType = useCase.GetUseCaseBindingType().MakeGenericType(useCase.GetType().GetGenericArguments().First());
+
+            var binding = GetInstance<IUseCaseBinding>(bindingType);
+
+            binding.Bind(useCase);
 
             return this;
         }

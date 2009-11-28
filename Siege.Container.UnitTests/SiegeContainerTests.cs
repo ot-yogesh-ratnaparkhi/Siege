@@ -54,7 +54,7 @@ namespace Siege.Container.UnitTests
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>("test"));
 
-            Assert.IsTrue(locator.GetInstance(typeof(ITestInterface), "test") is TestCase1);
+            Assert.IsInstanceOfType(typeof(TestCase1), locator.GetInstance(typeof(ITestInterface), "test"));
         }
 
         [Test]

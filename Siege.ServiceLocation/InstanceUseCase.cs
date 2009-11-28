@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Siege.ServiceLocation
 {
-    public class InstanceUseCase<TBaseService> : UseCase<TBaseService, TBaseService>
+    public abstract class InstanceUseCase<TBaseService> : UseCase<TBaseService, TBaseService>
     {
         protected TBaseService implementation;
 

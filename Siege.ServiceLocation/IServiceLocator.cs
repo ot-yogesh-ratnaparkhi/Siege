@@ -11,11 +11,11 @@ namespace Siege.ServiceLocation
         TService GetInstance<TService>(object anonymousConstructorArguments);
         TService GetInstance<TService>(Type type);
         TService GetInstance<TService>(Type type, IDictionary constructorArguments);
+        IServiceLocator Register<TService>(IUseCase<TService> useCase);
     }
 
     public interface IMinimalServiceLocator
     {
-        IMinimalServiceLocator Register<TService>(IUseCase<TService> useCase);
         object GetInstance(Type type, IDictionary constructorArguments);
         object GetInstance(Type serviceType, string key, IDictionary constructorArguments);
         TService GetInstance<TService>(string key, IDictionary constructorArguments);

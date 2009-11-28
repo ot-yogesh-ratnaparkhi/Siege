@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 
 namespace Siege.ServiceLocation
@@ -14,6 +15,11 @@ namespace Siege.ServiceLocation
         public string Key
         {
             get { return key; }
+        }
+
+        public override Type GetUseCaseBindingType()
+        {
+            return typeof (IKeyBasedUseCaseBinding<>);
         }
 
         protected override IActivationStrategy GetActivationStrategy()

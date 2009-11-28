@@ -1,3 +1,5 @@
+using System;
+
 namespace Siege.ServiceLocation
 {
     public class KeyBasedInstanceUseCase<TBaseService> : InstanceUseCase<TBaseService>, IKeyBasedUseCase<TBaseService>
@@ -12,6 +14,11 @@ namespace Siege.ServiceLocation
         public string Key
         {
             get { return key; }
+        }
+
+        public override Type GetUseCaseBindingType()
+        {
+            return typeof (IKeyBasedUseCaseBinding<>);
         }
     }
 }

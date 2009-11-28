@@ -27,46 +27,12 @@ namespace Siege.Container.WindsorAdapter
             return (TService)GetInstance(typeof (TService), key, constructorArguments);
         }
 
-        public IMinimalServiceLocator Register<TService>(IUseCase<TService> useCase)
-        {
-            if (useCase is IConditionalUseCase<TService>)
-            {
-                var conditionalCase = useCase as IConditionalUseCase<TService>;
-
-                conditionalCase.Bind(this.kernel, this);
-            }
-            else if (useCase is KeyBasedInstanceUseCase<TService>)
-            {
-                var keyCase = useCase as KeyBasedInstanceUseCase<TService>;
-
-                keyCase.Bind(this.kernel);
-            }
-            else if (useCase is KeyBasedUseCase<TService>)
-            {
-                var keyCase = useCase as KeyBasedUseCase<TService>;
-
-                keyCase.Bind(this.kernel);
-            }
-            else if (useCase is DefaultInstanceUseCase<TService>)
-            {
-                var implementation = useCase as DefaultInstanceUseCase<TService>;
-
-                implementation.Bind(kernel, this);
-            }
-            else if (useCase is IDefaultUseCase<TService>)
-            {
-                IDefaultUseCase<TService> genericCase = useCase as IDefaultUseCase<TService>;
-
-                genericCase.Bind(kernel, this);
-            }
-
-            return this;
-        }
-
         public void RegisterParentLocator(IContextualServiceLocator locator)
         {
             this.locator = locator;
+            
             kernel.Register(Component.For<IServiceLocator, IContextualServiceLocator>().Instance(locator));
+            kernel.Register(Component.For<IServiceLocatorAdapter>().Instance(this));
         }
 
         public IGenericFactory<TBaseType> GetFactory<TBaseType>()
@@ -77,8 +43,8 @@ namespace Siege.Container.WindsorAdapter
                 {
                     if (!factories.ContainsKey(typeof(TBaseType)))
                     {
-                        Factory<TBaseType> factory = new Factory<TBaseType>(this.locator);
-                        Register(Given<Factory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
+                        Factory<TBaseType> factory = new Factory<TBaseType>(locator);
+                        locator.Register(Given<Factory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
 
                         factories.Add(typeof(TBaseType), factory);
                     }
@@ -88,9 +54,14 @@ namespace Siege.Container.WindsorAdapter
             return (Factory<TBaseType>)factories[typeof(TBaseType)];
         }
 
+        public void RegisterBinding(Type baseBinding, Type targetBinding)
+        {
+            kernel.Register(Component.For(baseBinding).ImplementedBy(targetBinding));
+        }
+
         public void Dispose()
         {
-            this.kernel.Dispose();
+            kernel.Dispose();
         }
 
         public IEnumerable<object> GetAllInstances(Type serviceType)
@@ -115,6 +86,26 @@ namespace Siege.Container.WindsorAdapter
             if (constructorArguments == null) return kernel.Resolve(key, serviceType);
 
             return kernel.Resolve(key, serviceType, constructorArguments);
+        }
+        
+        public Type ConditionalUseCaseBinding
+        {
+            get { return typeof(ConditionalUseCaseBinding<>); }
+        }
+
+        public Type DefaultUseCaseBinding
+        {
+            get { return typeof(DefaultUseCaseBinding<>); }
+        }
+
+        public Type DefaultInstanceUseCaseBinding
+        {
+            get { return typeof(DefaultInstanceUseCaseBinding<>); }
+        }
+
+        public Type KeyBasedUseCaseBinding
+        {
+            get { return typeof(KeyBasedUseCaseBinding<>); }
         }
     }
 }

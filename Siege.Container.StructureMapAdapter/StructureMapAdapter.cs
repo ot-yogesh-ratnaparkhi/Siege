@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Siege.ServiceLocation;
 using StructureMap;
+using StructureMap.Attributes;
+using StructureMap.Configuration.DSL;
 
 namespace Siege.Container.StructureMapAdapter
 {
@@ -29,42 +31,19 @@ namespace Siege.Container.StructureMapAdapter
             return (TService) GetInstance(typeof(TService), name, constructorArguments);
         }
 
-        public IMinimalServiceLocator Register<TService>(IUseCase<TService> useCase)
-        {
-            if (useCase is IConditionalUseCase<TService>)
-            {
-                var conditionalCase = useCase as IConditionalUseCase<TService>;
-
-                conditionalCase.Bind(container, this);
-            }
-            else if (useCase is IKeyBasedUseCase<TService>)
-            {
-                var keyCase = useCase as IKeyBasedUseCase<TService>;
-
-                keyCase.Bind(container);
-            }
-            else if (useCase is DefaultInstanceUseCase<TService>)
-            {
-                var implementation = useCase as DefaultInstanceUseCase<TService>;
-
-                implementation.Bind(container, this);
-            }
-            else if (useCase is IDefaultUseCase<TService>)
-            {
-                var genericCase = useCase as IDefaultUseCase<TService>;
-
-                genericCase.Bind(container, this);
-            }
-
-            return this;
-        }
-
         public void RegisterParentLocator(IContextualServiceLocator locator)
         {
             this.locator = locator;
 
-            Register(Given<IServiceLocator>.Then(locator));
-            Register(Given<IContextualServiceLocator>.Then(locator));
+            Registry registry = new Registry();
+
+            registry.ForRequestedType<IServiceLocatorAdapter>().TheDefault.IsThis(this);
+            registry.ForRequestedType<StructureMap.Container>().TheDefault.IsThis(container);
+
+            container.Configure(x => x.AddRegistry(registry));
+
+            locator.Register(Given<IServiceLocator>.Then(locator));
+            locator.Register(Given<IContextualServiceLocator>.Then(locator));
         }
 
         public IGenericFactory<TBaseType> GetFactory<TBaseType>()
@@ -75,8 +54,8 @@ namespace Siege.Container.StructureMapAdapter
                 {
                     if (!factories.ContainsKey(typeof(TBaseType)))
                     {
-                        Factory<TBaseType> factory = new Factory<TBaseType>(this.locator);
-                        Register(Given<Factory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
+                        Factory<TBaseType> factory = new Factory<TBaseType>(locator);
+                        locator.Register(Given<Factory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
 
                         factories.Add(typeof(TBaseType), factory);
                     }
@@ -84,6 +63,13 @@ namespace Siege.Container.StructureMapAdapter
             }
 
             return (Factory<TBaseType>)factories[typeof(TBaseType)];
+        }
+
+        public void RegisterBinding(Type baseBinding, Type targetBinding)
+        {
+            Registry registry = new Registry();
+            registry.ForRequestedType(baseBinding).CacheBy(InstanceScope.PerRequest).TheDefaultIsConcreteType(targetBinding);
+            container.Configure(x => x.AddRegistry(registry));
         }
 
         public void Dispose()
@@ -146,6 +132,26 @@ namespace Siege.Container.StructureMapAdapter
             }
 
             return expression.GetInstance(serviceType);
+        }
+
+        public Type ConditionalUseCaseBinding
+        {
+            get { return typeof(ConditionalUseCaseBinding<>); }
+        }
+
+        public Type DefaultUseCaseBinding
+        {
+            get { return typeof(DefaultUseCaseBinding<>); }
+        }
+
+        public Type DefaultInstanceUseCaseBinding
+        {
+            get { return typeof(DefaultInstanceUseCaseBinding<>); }
+        }
+
+        public Type KeyBasedUseCaseBinding
+        {
+            get { return typeof(KeyBasedUseCaseBinding<>); }
         }
     }
 }

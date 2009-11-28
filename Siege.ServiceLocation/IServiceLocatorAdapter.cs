@@ -6,5 +6,10 @@ namespace Siege.ServiceLocation
     {
         void RegisterParentLocator(IContextualServiceLocator locator);
         IGenericFactory<TBaseService> GetFactory<TBaseService>();
+        void RegisterBinding(Type baseBinding, Type targetBinding);
+        Type ConditionalUseCaseBinding { get; }
+        Type DefaultUseCaseBinding { get; }
+        Type DefaultInstanceUseCaseBinding { get; }
+        Type KeyBasedUseCaseBinding { get; }
     }
 }
