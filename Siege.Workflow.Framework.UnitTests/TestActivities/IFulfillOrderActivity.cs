@@ -10,7 +10,7 @@ namespace Siege.Workflow.Framework.UnitTests.TestActivities
 
     public class FulfillOrderActivity : AbstractWorkflowActivity<IOrderContract>, IFulfillOrderActivity
     {
-        public FulfillOrderActivity(IContextualServiceLocator kernel, IContract contract) : base(kernel, contract)
+        public FulfillOrderActivity(IContextualServiceLocator kernel) : base(kernel)
         {
         }
 

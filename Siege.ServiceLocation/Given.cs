@@ -18,15 +18,6 @@ namespace Siege.ServiceLocation
             return useCase;
         }
 
-        public static IDefaultUseCase<TBaseService> Then(Type implementingType)
-        {
-            DefaultUseCase<TBaseService> useCase = new DefaultUseCase<TBaseService>();
-
-            useCase.BindTo(implementingType);
-
-            return useCase;
-        }
-
         public static IKeyBasedUseCase<TBaseService> Then<TImplementingType>(string key) where TImplementingType : TBaseService
         {
             KeyBasedUseCase<TBaseService> useCase = new KeyBasedUseCase<TBaseService>(key);

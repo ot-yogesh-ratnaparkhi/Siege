@@ -1,27 +1,29 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Siege.ServiceLocation
 {
-    public interface IServiceLocator : Microsoft.Practices.ServiceLocation.IServiceLocator, IDisposable, IMinimalServiceLocator
+    public interface IServiceLocator : Microsoft.Practices.ServiceLocation.IServiceLocator, IDisposable, IInstanceResolver, IBindingAdapter
     {
-        TService GetInstance<TService>(IDictionary constructorArguments);
         new TService GetInstance<TService>(string key);
-        TService GetInstance<TService>(object anonymousConstructorArguments);
         TService GetInstance<TService>(Type type);
-        TService GetInstance<TService>(Type type, IDictionary constructorArguments);
-        IServiceLocator Register<TService>(IUseCase<TService> useCase);
+        new object GetInstance(Type type);
+        new object GetInstance(Type type, string key);
     }
 
-    public interface IMinimalServiceLocator
+    public interface IInstanceResolver
     {
-        object GetInstance(Type type, IDictionary constructorArguments);
-        object GetInstance(Type serviceType, string key, IDictionary constructorArguments);
-        TService GetInstance<TService>(string key, IDictionary constructorArguments);
+        object GetInstance(Type type, string key);
+        object GetInstance(Type type);
     }
 
-    public interface IGetAllInstancesServiceLocator : IMinimalServiceLocator
+    public interface IBindingAdapter
+    {
+        IServiceLocator Register<TService>(IUseCase<TService> useCase);
+        IServiceLocator AddBinding(Type baseBinding, Type targetBinding);
+    }
+
+    public interface IGetAllInstancesServiceLocator
     {
         IEnumerable<object> GetAllInstances(Type serviceType);
         IEnumerable<TService> GetAllInstances<TService>();

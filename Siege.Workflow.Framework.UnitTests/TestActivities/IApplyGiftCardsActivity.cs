@@ -10,7 +10,7 @@ namespace Siege.Workflow.Framework.UnitTests.TestActivities
 
     public class ApplyGiftCardsActivity : AbstractWorkflowActivity<IGiftCardContract>, IApplyGiftCardsActivity
     {
-        public ApplyGiftCardsActivity(IContextualServiceLocator kernel, IContract contract) : base(kernel, contract)
+        public ApplyGiftCardsActivity(IContextualServiceLocator kernel) : base(kernel)
         {
         }
 

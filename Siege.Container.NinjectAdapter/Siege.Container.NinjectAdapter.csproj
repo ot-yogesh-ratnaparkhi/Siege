@@ -58,7 +58,6 @@
     <Compile Include="DefaultUseCaseBinding.cs" />
     <Compile Include="KeyBasedUseCaseBinding.cs" />
     <Compile Include="NinjectAdapter.cs" />
-    <Compile Include="ParameterAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

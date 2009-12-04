@@ -7,8 +7,8 @@ namespace Siege.Workflow.Framework.Activities
     {
         private Action action;
 
-        public ActionActivity(IContextualServiceLocator serviceLocator, IContract contract)
-            : base(serviceLocator, contract)
+        public ActionActivity(IContextualServiceLocator serviceLocator)
+            : base(serviceLocator)
         {
         }
 

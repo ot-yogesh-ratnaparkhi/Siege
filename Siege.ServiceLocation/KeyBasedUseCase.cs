@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 
 namespace Siege.ServiceLocation
 {
@@ -19,27 +18,7 @@ namespace Siege.ServiceLocation
 
         public override Type GetUseCaseBindingType()
         {
-            return typeof (IKeyBasedUseCaseBinding<>);
-        }
-
-        protected override IActivationStrategy GetActivationStrategy()
-        {
-            return new KeyBasedActivationStrategy(Key);
-        }
-
-        private class KeyBasedActivationStrategy : IActivationStrategy
-        {
-            private readonly string key;
-
-            public KeyBasedActivationStrategy(string key)
-            {
-                this.key = key;
-            }
-
-            public TBaseService Resolve(IMinimalServiceLocator locator, IDictionary constructorArguments)
-            {
-                return locator.GetInstance<TBaseService>(key, constructorArguments);
-            }
+            return typeof(IKeyBasedUseCaseBinding<>);
         }
     }
 }

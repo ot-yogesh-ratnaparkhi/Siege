@@ -5,13 +5,13 @@ namespace Siege.Workflow.Framework
     public interface IWorkflowActivity
     {
         Workflow SetWorkflow(Workflow workflow);
-        void Process();
+        void Process(IContract contract);
     }
 
     public abstract class AbstractWorkflowActivity : AbstractWorkflowActivity<IContract>
     {
-        protected AbstractWorkflowActivity(IContextualServiceLocator kernel, IContract contract)
-            : base(kernel, contract)
+        protected AbstractWorkflowActivity(IContextualServiceLocator kernel)
+            : base(kernel)
         {
         }
     }
@@ -21,26 +21,21 @@ namespace Siege.Workflow.Framework
     {
         protected abstract void Invoke(T contract);
 
-        protected AbstractWorkflowActivity(IContextualServiceLocator kernel, IContract contract)
-            : base(kernel, contract)
+        protected AbstractWorkflowActivity(IContextualServiceLocator kernel)
+            : base(kernel)
         {
         }
 
-        public virtual void Process(T contract)
+        public override void Process(IContract contract)
         {
-            Invoke(contract);
+            Invoke((T)contract);
 
             if (shouldBreak) return;
 
             foreach (Workflow workflow in this.sequence)
             {
-                workflow.Process();
+                workflow.Process(contract);
             }
-        }
-
-        public override void Process()
-        {
-            Process(contract as T);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Siege.Workflow.Framework.UnitTests.TestActivities
 
     public class RefundGiftCardsActivity : AbstractWorkflowActivity<IGiftCardContract>, IRefundGiftCardsActivity
     {
-        public RefundGiftCardsActivity(IContextualServiceLocator kernel, IContract contract) : base(kernel, contract)
+        public RefundGiftCardsActivity(IContextualServiceLocator kernel) : base(kernel)
         {
         }
 

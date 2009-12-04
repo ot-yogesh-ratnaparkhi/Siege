@@ -10,7 +10,7 @@ namespace Siege.Workflow.Framework.UnitTests.TestActivities
 
     public class ApplyCouponsActivity : AbstractWorkflowActivity<ICouponContract>, IApplyCouponsActivity
     {
-        public ApplyCouponsActivity(IContextualServiceLocator kernel, IContract contract) : base(kernel, contract)
+        public ApplyCouponsActivity(IContextualServiceLocator kernel) : base(kernel)
         {
         }
 

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Siege.ServiceLocation;
-using StructureMap;
 using StructureMap.Attributes;
 using StructureMap.Configuration.DSL;
 
@@ -19,16 +18,6 @@ namespace Siege.Container.StructureMapAdapter
         public StructureMapAdapter(StructureMap.Container container)
         {
             this.container = container;
-        }
-
-        public TService GetInstance<TService>()
-        {
-            return container.GetInstance<TService>();
-        }
-
-        public TService GetInstance<TService>(string name, IDictionary constructorArguments)
-        {
-            return (TService) GetInstance(typeof(TService), name, constructorArguments);
         }
 
         public void RegisterParentLocator(IContextualServiceLocator locator)
@@ -94,44 +83,14 @@ namespace Siege.Container.StructureMapAdapter
             return container.GetAllInstances<TService>();
         }
 
-        public object GetInstance(Type type, IDictionary constructorArguments)
+        public object GetInstance(Type type)
         {
-            if (constructorArguments == null || constructorArguments.Count == 0) return container.GetInstance(type);
-
-            ExplicitArgsExpression expression = null;
-
-            foreach (string key in constructorArguments.Keys)
-            {
-                if (expression == null)
-                {
-                    expression = container.With(key).EqualTo(constructorArguments[key]);
-                    continue;
-                }
-
-                expression.With(key).EqualTo(constructorArguments[key]);
-            }
-
-            return expression.GetInstance(type);
+            return container.GetInstance(type);
         }
 
-        public object GetInstance(Type serviceType, string key, IDictionary constructorArguments)
+        public object GetInstance(Type serviceType, string key)
         {
-            if (constructorArguments == null || constructorArguments.Count == 0) return container.GetInstance(serviceType, key);
-
-            ExplicitArgsExpression expression = null;
-
-            foreach (string name in constructorArguments.Keys)
-            {
-                if (expression == null)
-                {
-                    expression = container.With(name).EqualTo(constructorArguments[name]);
-                    continue;
-                }
-
-                expression.With(key).EqualTo(constructorArguments[key]);
-            }
-
-            return expression.GetInstance(serviceType);
+            return container.GetInstance(serviceType, key);
         }
 
         public Type ConditionalUseCaseBinding

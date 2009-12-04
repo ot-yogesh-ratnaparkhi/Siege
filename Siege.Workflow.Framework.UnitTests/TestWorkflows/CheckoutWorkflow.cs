@@ -8,7 +8,7 @@ namespace Siege.Workflow.Framework.UnitTests.TestWorkflows
     {
         private OrderStatus orderStatus;
 
-        public CheckoutWorkflow(IContextualServiceLocator serviceLocator, IContract contract) : base(serviceLocator, contract)
+        public CheckoutWorkflow(IContextualServiceLocator serviceLocator) : base(serviceLocator)
         {
             First<IApplyCouponsActivity>()
                 .Then<IApplyGiftCardsActivity>()

@@ -10,7 +10,7 @@ namespace Siege.Workflow.Framework.UnitTests.TestActivities
 
     public class ChargeCreditCardActivity : AbstractWorkflowActivity<ICreditCardContract>, IChargeCreditCardActivity
     {
-        public ChargeCreditCardActivity(IContextualServiceLocator kernel, IContract contract) : base(kernel, contract)
+        public ChargeCreditCardActivity(IContextualServiceLocator kernel) : base(kernel)
         {
         }
 

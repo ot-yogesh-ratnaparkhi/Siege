@@ -9,7 +9,6 @@ namespace Siege.Workflow.Framework
     public class Workflow
     {
         protected IContextualServiceLocator serviceLocator;
-        protected readonly IContract contract;
         protected readonly IList<Workflow> sequence = new List<Workflow>();
         protected readonly Hashtable exceptionCases = new Hashtable();
         protected Workflow rootWorkflow;
@@ -21,16 +20,14 @@ namespace Siege.Workflow.Framework
             get { return this.rootWorkflow; }
         }
 
-        protected Workflow(IContextualServiceLocator serviceLocator, IContract contract)
+        protected Workflow(IContextualServiceLocator serviceLocator)
         {
             this.serviceLocator = serviceLocator;
-            this.serviceLocator.AddContext(contract);
-            this.contract = contract;
         }
 
         public Workflow Create(Func<Workflow, Workflow> onCreate)
         {
-            Workflow newWorkflow = new Workflow(serviceLocator, contract);
+            Workflow newWorkflow = new Workflow(serviceLocator);
 
             onCreate(newWorkflow);
 
@@ -39,7 +36,7 @@ namespace Siege.Workflow.Framework
 
         public WorkflowActivity First(Action action)
         {
-            WorkflowActivity activity = serviceLocator.GetInstance<WorkflowActivity>(new { contract });
+            WorkflowActivity activity = serviceLocator.GetInstance<WorkflowActivity>();
 
             activity.For(action);
             this.rootWorkflow = this;
@@ -51,7 +48,7 @@ namespace Siege.Workflow.Framework
         public virtual WorkflowActivity<TActivity> First<TActivity>()
             where TActivity : IWorkflowActivity
         {
-            WorkflowActivity<TActivity> activity = serviceLocator.GetInstance<WorkflowActivity<TActivity>>(new { contract });
+            WorkflowActivity<TActivity> activity = serviceLocator.GetInstance<WorkflowActivity<TActivity>>();
 
             this.rootWorkflow = this;
             activity.SetWorkflow(this);
@@ -62,7 +59,7 @@ namespace Siege.Workflow.Framework
         public virtual WorkflowActivity<TActivityType> Then<TActivityType>()
             where TActivityType : IWorkflowActivity
         {
-            WorkflowActivity<TActivityType> workflowActivity = serviceLocator.GetInstance<WorkflowActivity<TActivityType>>(new { contract });
+            WorkflowActivity<TActivityType> workflowActivity = serviceLocator.GetInstance<WorkflowActivity<TActivityType>>();
 
             workflowActivity.SetWorkflow(this.rootWorkflow);
 
@@ -71,7 +68,7 @@ namespace Siege.Workflow.Framework
 
         public WorkflowActivity Then(Action action)
         {
-            WorkflowActivity workflowActivity = serviceLocator.GetInstance<WorkflowActivity>(new { contract });
+            WorkflowActivity workflowActivity = serviceLocator.GetInstance<WorkflowActivity>();
 
             workflowActivity.SetWorkflow(this.rootWorkflow);
             workflowActivity.For(action);
@@ -82,7 +79,7 @@ namespace Siege.Workflow.Framework
         public ExceptionActivity OnException<TExceptionType>()
             where TExceptionType : Exception
         {
-            ExceptionActivity activity = serviceLocator.GetInstance<ExceptionActivity>(new { contract });
+            ExceptionActivity activity = serviceLocator.GetInstance<ExceptionActivity>();
 
             exceptionCases.Add(typeof (TExceptionType), activity);
             activity.SetWorkflow(this);
@@ -92,7 +89,7 @@ namespace Siege.Workflow.Framework
 
         public ConditionalActivity If(Func<bool> evaluation)
         {
-            ConditionalActivity activity = serviceLocator.GetInstance<ConditionalActivity>(new { contract });
+            ConditionalActivity activity = serviceLocator.GetInstance<ConditionalActivity>();
 
             activity.SetWorkflow(this);
             activity.ForCondition(evaluation);
@@ -127,12 +124,12 @@ namespace Siege.Workflow.Framework
             if (this.parentWorkflow != null) this.parentWorkflow.Break();
         }
 
-        public virtual void Process()
+        public virtual void Process(IContract contract)
         {
             foreach (Workflow workflow in this.sequence)
             {
                 if (shouldBreak) break;
-                workflow.Process();
+                workflow.Process(contract);
             }
         }
     }

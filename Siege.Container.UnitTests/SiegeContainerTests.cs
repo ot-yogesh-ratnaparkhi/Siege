@@ -1,6 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using NUnit.Framework;
+using Siege.Container.UnitTests.RegistrationExtensions;
+using Siege.Container.UnitTests.TestClasses;
 using Siege.ServiceLocation;
 
 namespace Siege.Container.UnitTests
@@ -11,6 +12,7 @@ namespace Siege.Container.UnitTests
         protected IContextualServiceLocator locator;
         protected abstract IServiceLocatorAdapter GetAdapter();
         protected abstract void RegisterWithoutSiege();
+        protected abstract Type GetDecoratorUseCaseBinding();
 
         [SetUp]
         public virtual void SetUp()
@@ -160,23 +162,6 @@ namespace Siege.Container.UnitTests
         }
 
         [Test]
-        public void Should_Pass_Dictionary_As_A_Constructor_Argument()
-        {
-            IDictionary dictionary = new Dictionary<string, IConstructorArgument>();
-            dictionary.Add("argument", new ConstructorArgument());
-
-            locator.Register(Given<ITestInterface>.Then<TestCase4>());
-            Assert.IsTrue(locator.GetInstance<ITestInterface>(dictionary) is TestCase4);
-        }
-
-        [Test]
-        public void Should_Pass_Anonymous_Type_As_A_Constructor_Argument()
-        {
-            locator.Register(Given<ITestInterface>.Then<TestCase4>());
-            Assert.IsTrue(locator.GetInstance<ITestInterface>(new { argument = new ConstructorArgument() }) is TestCase4);
-        }
-
-        [Test]
         public void Should_Resolve_If_Depends_On_IServiceLocator()
         {
             locator.Register(Given<ITestInterface>.Then<DependsOnIServiceLocator>());
@@ -192,10 +177,10 @@ namespace Siege.Container.UnitTests
                 .Register(Given<ITestInterface>.Then<DependsOnInterface>())
                 .Register(Given<IConstructorArgument>.Then(arg));
 
-            DependsOnInterface resolution = (DependsOnInterface)locator.GetInstance<ITestInterface>();
+            var resolution = locator.GetInstance<ITestInterface>();
 
             Assert.IsTrue(resolution is DependsOnInterface);
-            Assert.AreSame(arg, resolution.Argument);
+            Assert.AreSame(arg, ((DependsOnInterface)resolution).Argument);
         }
 
         [Test]
@@ -205,15 +190,11 @@ namespace Siege.Container.UnitTests
             locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
 
             var instances = locator.GetAllInstances<ITestInterface>();
-
-            int count = 0;
+            
             foreach(ITestInterface item in instances)
             {
                 Assert.IsInstanceOfType(typeof(ITestInterface), item);
-                count++;
             }
-
-            //Assert.AreEqual(2, count);
         }
 
         [Test]
@@ -224,70 +205,32 @@ namespace Siege.Container.UnitTests
 
             var instances = locator.GetAllInstances(typeof(ITestInterface));
 
-            int count = 0;
             foreach (ITestInterface item in instances)
             {
                 Assert.IsInstanceOfType(typeof(ITestInterface), item);
-                count++;
             }
+        }
 
-            //Assert.AreEqual(2, count);
+        [Test]
+        public void Should_Be_Able_To_Extend_Registration()
+        {
+            locator
+                .Register(Given<ITestInterface>.Then<TestCase1>())
+                .Register(Given<TestCase1>
+                            .When<TestEnum>(context => context == TestEnum.Case1)
+                            .DecorateWith<TestCase1, TestDecorator>());
+
+            locator.AddContext(TestEnum.Case1);
+
+            var useCase = locator.GetInstance<TestCase1>();
+
+            Assert.IsInstanceOfType(typeof(TestDecorator), useCase);
+            Assert.IsInstanceOfType(typeof(TestCase1), ((TestDecorator)useCase).WrappedObject);
         }
 
         private TestContext CreateContext(TestEnum types)
         {
             return new TestContext(types);
-        }
-    }
-
-    public class TestContext
-    {
-        public TestContext(TestEnum context)
-        {
-            TestCases = context;
-        }
-
-        public TestEnum TestCases { get; set; }
-    }
-
-    public enum TestEnum
-    {
-        Case1,
-        Case2,
-        Case3
-    }
-
-    public interface IUnregisteredInterface {}
-    public interface ITestInterface {}
-    public interface IConstructorArgument {}
-    public class TestCase1 : ITestInterface {}
-    public class TestCase2 : ITestInterface {}
-    public class UnregisteredClass : IUnregisteredInterface {}
-    public class ConstructorArgument : IConstructorArgument {}
-    public class TestCase4 : ITestInterface
-    {
-        public TestCase4(IConstructorArgument argument) {}
-    }
-
-    public class DependsOnIServiceLocator : ITestInterface
-    {
-        public DependsOnIServiceLocator(IServiceLocator locator)
-        {
-        }
-    }
-
-    public class DependsOnInterface : ITestInterface
-    {
-        private readonly IConstructorArgument argument;
-
-        public DependsOnInterface(IConstructorArgument argument)
-        {
-            this.argument = argument;
-        }
-
-        public IConstructorArgument Argument
-        {
-            get { return argument; }
         }
     }
 }

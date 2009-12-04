@@ -10,8 +10,8 @@ namespace Siege.Workflow.Framework.Activities
         private Workflow successWorkflow;
         private Workflow failWorkflow;
 
-        public ConditionalActivity(IContextualServiceLocator serviceLocator, IContract contract)
-            : base(serviceLocator, contract)
+        public ConditionalActivity(IContextualServiceLocator serviceLocator)
+            : base(serviceLocator)
         {
         }
 
@@ -66,15 +66,15 @@ namespace Siege.Workflow.Framework.Activities
         {
             if (evaluation.Invoke())
             {
-                this.successWorkflow.Process();
+                this.successWorkflow.Process(contract);
             }
             else
             {
-                this.failWorkflow.Process();
+                this.failWorkflow.Process(contract);
             }
         }
 
-        public override void Process()
+        public override void Process(IContract contract)
         {
             Invoke(contract);
         }

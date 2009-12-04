@@ -1,6 +1,9 @@
-﻿using Castle.MicroKernel;
+﻿using System;
+using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using NUnit.Framework;
+using Siege.Container.UnitTests.RegistrationExtensions.Castle;
+using Siege.Container.UnitTests.TestClasses;
 using Siege.ServiceLocation;
 
 namespace Siege.Container.UnitTests
@@ -9,6 +12,11 @@ namespace Siege.Container.UnitTests
     public class WindsorAdapterTests : SiegeContainerTests
     {
         private IKernel kernel;
+
+        protected override Type GetDecoratorUseCaseBinding()
+        {
+            return typeof(DecoratorUseCaseBinding<>);
+        }
 
         public override void SetUp()
         {

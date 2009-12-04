@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Siege.ServiceLocation
@@ -8,8 +7,8 @@ namespace Siege.ServiceLocation
     {
         Type GetBoundType();
         Type GetUseCaseBindingType();
-        object Resolve(IMinimalServiceLocator locator, IList<object> context, IDictionary dictionary);
-        object Resolve(IMinimalServiceLocator locator, IDictionary dictionary);
+        object Resolve(IInstanceResolver locator, IList<object> context);
+        object Resolve(IInstanceResolver locator);
     }
 
     public interface IUseCase<TBaseService> : IUseCase

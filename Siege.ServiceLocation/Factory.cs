@@ -38,14 +38,14 @@ namespace Siege.ServiceLocation
         {
             foreach (IConditionalUseCase<TBaseService> useCase in ConditionalUseCases)
             {
-                TBaseService result = (TBaseService)useCase.Resolve(serviceLocator, serviceLocator.Context, constructorArguments);
+                TBaseService result = (TBaseService)useCase.Resolve(serviceLocator, serviceLocator.Context);
 
                 if (!Equals(result, default(TBaseService))) return result;
             }
 
             foreach (IDefaultUseCase<TBaseService> useCase in defaultCases)
             {
-                TBaseService result = (TBaseService)useCase.Resolve(serviceLocator, constructorArguments);
+                TBaseService result = (TBaseService)useCase.Resolve(serviceLocator);
 
                 if (!Equals(result, default(TBaseService))) return result;
             }

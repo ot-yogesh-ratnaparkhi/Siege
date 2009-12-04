@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 
 namespace Siege.ServiceLocation
 {
@@ -9,12 +8,12 @@ namespace Siege.ServiceLocation
 
         public void BindTo<TImplementationType>()
         {
-            boundType = typeof(TImplementationType);
+            BindTo(typeof(TImplementationType));
         }
 
-        public void BindTo(Type type)
+        public void BindTo(Type implementationType)
         {
-            boundType = type;
+            boundType = implementationType;
         }
 
         public override Type GetBinding()
@@ -22,7 +21,7 @@ namespace Siege.ServiceLocation
             return boundType;
         }
 
-        protected override IActivationStrategy GetActivationStrategy()
+        protected override IActivationStrategy<TBaseService> GetActivationStrategy()
         {
             return new GenericActivationStrategy(boundType);
         }
@@ -32,7 +31,7 @@ namespace Siege.ServiceLocation
             return boundType;
         }
 
-        public class GenericActivationStrategy : IActivationStrategy
+        public class GenericActivationStrategy : IActivationStrategy<TBaseService>
         {
             private readonly Type boundType;
 
@@ -41,9 +40,9 @@ namespace Siege.ServiceLocation
                 this.boundType = boundType;
             }
 
-            public TBaseService Resolve(IMinimalServiceLocator locator, IDictionary constructorArguments)
+            public TBaseService Resolve(IInstanceResolver locator)
             {
-                return (TBaseService)locator.GetInstance(boundType, constructorArguments);
+                return (TBaseService)locator.GetInstance(boundType);
             }
         }
     }

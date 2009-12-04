@@ -9,8 +9,8 @@ namespace Siege.Workflow.Framework.Activities
         protected T parentActivity;
         protected Action<T> outcome;
 
-        public CaptureResultActivity(IContextualServiceLocator serviceLocator, IContract contract)
-            : base(serviceLocator, contract)
+        public CaptureResultActivity(IContextualServiceLocator serviceLocator)
+            : base(serviceLocator)
         {
         }
 

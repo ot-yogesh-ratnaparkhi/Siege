@@ -24,7 +24,7 @@ namespace Siege.Container.NinjectAdapter
             var factory = (Factory<TService>)locator.GetFactory<TService>();
             factory.AddCase(useCase);
 
-            kernel.Bind<TService>().ToMethod(context => factory.Build(new ParameterAdapter(context).Dictionary));
+            kernel.Bind<TService>().ToMethod(context => factory.Build(null));
             kernel.Bind(useCase.GetBoundType()).ToSelf();
         }
     }

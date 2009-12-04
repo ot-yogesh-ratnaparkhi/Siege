@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Siege.ServiceLocation
@@ -9,36 +8,36 @@ namespace Siege.ServiceLocation
         protected readonly List<IActivationRule> rules = new List<IActivationRule>();
         public abstract TService GetBinding();
         public abstract Type GetUseCaseBindingType();
-        protected abstract IActivationStrategy GetActivationStrategy();
+        protected abstract IActivationStrategy<TBaseService> GetActivationStrategy();
 
         public void AddActivationRule(IActivationRule rule)
         {
             rules.Add(rule);
         }
 
-        public object Resolve(IMinimalServiceLocator locator, IList<object> context, IDictionary constructorArguments) 
+        public virtual object Resolve(IInstanceResolver locator, IList<object> context) 
         {
-            foreach (IActivationRule rule in this.rules)
+            foreach (IActivationRule rule in rules)
             {
                 foreach (object contextItem in context)
                 {
-                    if (rule.Evaluate(contextItem)) return GetActivationStrategy().Resolve(locator, constructorArguments);
+                    if (rule.Evaluate(contextItem)) return GetActivationStrategy().Resolve(locator);
                 }
             }
 
             return default(TBaseService);
         }
 
-        public object Resolve(IMinimalServiceLocator locator, IDictionary constructorArguments)
+        public object Resolve(IInstanceResolver locator)
         {
-            return GetActivationStrategy().Resolve(locator, constructorArguments);
+            return GetActivationStrategy().Resolve(locator);
         }
 
         public abstract Type GetBoundType();
+    }
 
-        protected interface IActivationStrategy
-        {
-            TBaseService Resolve(IMinimalServiceLocator locator, IDictionary constructorArguments);
-        }
+    public interface IActivationStrategy<TService>
+    {
+        TService Resolve(IInstanceResolver locator);
     }
 }

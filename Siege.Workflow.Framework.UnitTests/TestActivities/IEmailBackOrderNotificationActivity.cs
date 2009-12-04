@@ -9,7 +9,7 @@ namespace Siege.Workflow.Framework.UnitTests.TestActivities
 
     public class EmailBackOrderNotificationActivity : AbstractWorkflowActivity<INotificationContract>, IEmailBackOrderNotificationActivity
     {
-        public EmailBackOrderNotificationActivity(IContextualServiceLocator kernel, IContract contract) : base(kernel, contract)
+        public EmailBackOrderNotificationActivity(IContextualServiceLocator kernel) : base(kernel)
         {
         }
 

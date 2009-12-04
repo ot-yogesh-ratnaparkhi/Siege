@@ -1,6 +1,8 @@
 ﻿using System;
 using Ninject;
 using NUnit.Framework;
+using Siege.Container.UnitTests.RegistrationExtensions.Ninject;
+using Siege.Container.UnitTests.TestClasses;
 using Siege.ServiceLocation;
 
 namespace Siege.Container.UnitTests
@@ -9,6 +11,11 @@ namespace Siege.Container.UnitTests
     public class NinjectAdapterTests : SiegeContainerTests
     {
         private IKernel kernel;
+
+        protected override Type GetDecoratorUseCaseBinding()
+        {
+            return typeof(DecoratorUseCaseBinding<>);
+        }
 
         public override void SetUp()
         {

@@ -21,16 +21,6 @@ namespace Siege.ServiceLocation
             return useCase;
         }
 
-        public IConditionalUseCase<TBaseService> Then(Type implementingType)
-        {
-            ConditionalGenericUseCase<TBaseService> useCase = new ConditionalGenericUseCase<TBaseService>();
-
-            useCase.AddActivationRule(this);
-            useCase.BindTo(implementingType);
-
-            return useCase;
-        }
-
         public IConditionalUseCase<TBaseService> Then(TBaseService implementation)
         {
             ConditionalInstanceUseCase<TBaseService> useCase = new ConditionalInstanceUseCase<TBaseService>();

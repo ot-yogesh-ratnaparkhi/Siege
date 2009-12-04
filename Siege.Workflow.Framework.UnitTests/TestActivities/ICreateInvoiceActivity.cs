@@ -10,7 +10,7 @@ namespace Siege.Workflow.Framework.UnitTests.TestActivities
 
     public class CreateInvoiceActivity : AbstractWorkflowActivity<IInvoiceContract>, ICreateInvoiceActivity
     {
-        public CreateInvoiceActivity(IContextualServiceLocator kernel, IContract contract) : base(kernel, contract)
+        public CreateInvoiceActivity(IContextualServiceLocator kernel) : base(kernel)
         {
         }
 

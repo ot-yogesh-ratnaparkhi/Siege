@@ -22,11 +22,6 @@ namespace Siege.Container.WindsorAdapter
             this.kernel.AddFacility<FactorySupportFacility>();
         }
 
-        public TService GetInstance<TService>(string key, IDictionary constructorArguments)
-        {
-            return (TService)GetInstance(typeof (TService), key, constructorArguments);
-        }
-
         public void RegisterParentLocator(IContextualServiceLocator locator)
         {
             this.locator = locator;
@@ -74,18 +69,14 @@ namespace Siege.Container.WindsorAdapter
             return kernel.ResolveAll<TService>();
         }
 
-        public object GetInstance(Type type, IDictionary constructorArguments)
+        public object GetInstance(Type type)
         {
-            if (constructorArguments == null) return kernel.Resolve(type);
-
-            return kernel.Resolve(type, constructorArguments);
+            return kernel.Resolve(type);
         }
 
-        public object GetInstance(Type serviceType, string key, IDictionary constructorArguments)
+        public object GetInstance(Type type, string key)
         {
-            if (constructorArguments == null) return kernel.Resolve(key, serviceType);
-
-            return kernel.Resolve(key, serviceType, constructorArguments);
+            return kernel.Resolve(key, type);
         }
         
         public Type ConditionalUseCaseBinding

@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
+using Siege.Container.UnitTests.RegistrationExtensions.StructureMap;
+using Siege.Container.UnitTests.TestClasses;
 using Siege.ServiceLocation;
 using StructureMap;
 
@@ -17,6 +20,11 @@ namespace Siege.Container.UnitTests
         protected override void RegisterWithoutSiege()
         {
             container.Configure(registry => registry.ForRequestedType<IUnregisteredInterface>().TheDefaultIsConcreteType<UnregisteredClass>());
+        }
+
+        protected override Type GetDecoratorUseCaseBinding()
+        {
+            return typeof (DecoratorUseCaseBinding<>);
         }
 
         [ExpectedException(typeof(StructureMapException))]

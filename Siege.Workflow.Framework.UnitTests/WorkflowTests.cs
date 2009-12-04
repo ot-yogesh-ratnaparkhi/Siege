@@ -46,9 +46,9 @@ namespace Siege.Workflow.Framework.UnitTests
         public void Should_Run_Checkout_Workflow()
         {
             Checkoutcontract checkoutcontract = new Checkoutcontract();
-            CheckoutWorkflow workflow = new CheckoutWorkflow(locator, checkoutcontract);
+            CheckoutWorkflow workflow = new CheckoutWorkflow(locator);
 
-            workflow.Process();
+            workflow.Process(checkoutcontract);
         }
     }
 }
