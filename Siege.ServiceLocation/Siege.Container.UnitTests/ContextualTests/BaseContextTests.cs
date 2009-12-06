@@ -45,7 +45,7 @@ namespace Siege.Container.UnitTests.ContextualTests
         }
 
         [Test]
-        public void Complex_Scenario_1()
+        public void Should_Choose_Service1_And_Repository_1()
         {
             locator.Register(Given<ITestController>.Then<TestController>())
                      .Register(Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test1).Then<TestService1>())
@@ -62,7 +62,7 @@ namespace Siege.Container.UnitTests.ContextualTests
         }
 
         [Test]
-        public void Complex_Scenario_2()
+        public void Should_Choose_Service2_And_Repository_2()
         {
             locator.Register(Given<ITestController>.Then<TestController>())
                      .Register(Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test1).Then<TestService1>())
@@ -79,7 +79,7 @@ namespace Siege.Container.UnitTests.ContextualTests
         }
 
         [Test]
-        public void Complex_Scenario_3()
+        public void Should_Choose_DefaultTestService_And_Repository_2()
         {
             locator.Register(Given<ITestController>.Then<TestController>())
                      .Register(Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test1).Then<TestService1>())
