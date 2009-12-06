@@ -52,6 +52,7 @@
     <Compile Include="ConditionalActivationRule.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="GlobalContextStore.cs" />
+    <Compile Include="IBindingAdapter.cs" />
     <Compile Include="IConditionalUseCaseBinding.cs" />
     <Compile Include="IContextStore.cs" />
     <Compile Include="IDefaultInstanceUseCaseBinding.cs" />
@@ -67,6 +68,8 @@
     <Compile Include="IConditionalUseCase.cs" />
     <Compile Include="IContextualServiceLocator.cs" />
     <Compile Include="IDefaultUseCase.cs" />
+    <Compile Include="IGetAllInstancesServiceLocator.cs" />
+    <Compile Include="IInstanceResolver.cs" />
     <Compile Include="IKeyBasedUseCase.cs" />
     <Compile Include="IKeyBasedUseCaseBinding.cs" />
     <Compile Include="InstanceUseCase.cs" />

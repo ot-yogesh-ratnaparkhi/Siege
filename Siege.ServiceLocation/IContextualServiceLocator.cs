@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Siege.ServiceLocation
@@ -6,5 +7,6 @@ namespace Siege.ServiceLocation
     {
         IList<object> Context { get; }
         void AddContext(object contextItem);
+        IList<IUseCase> GetRegisteredUseCasesForType(Type type);
     }
 }

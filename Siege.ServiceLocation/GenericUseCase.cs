@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Siege.ServiceLocation
 {
@@ -21,7 +22,7 @@ namespace Siege.ServiceLocation
             return boundType;
         }
 
-        protected override IActivationStrategy<TBaseService> GetActivationStrategy()
+        protected override IActivationStrategy GetActivationStrategy()
         {
             return new GenericActivationStrategy(boundType);
         }
@@ -31,7 +32,7 @@ namespace Siege.ServiceLocation
             return boundType;
         }
 
-        public class GenericActivationStrategy : IActivationStrategy<TBaseService>
+        public class GenericActivationStrategy : IActivationStrategy
         {
             private readonly Type boundType;
 
@@ -40,9 +41,9 @@ namespace Siege.ServiceLocation
                 this.boundType = boundType;
             }
 
-            public TBaseService Resolve(IInstanceResolver locator)
+            public object Resolve(IInstanceResolver locator, IList<object> context)
             {
-                return (TBaseService)locator.GetInstance(boundType);
+                return locator.GetInstance(boundType);
             }
         }
     }

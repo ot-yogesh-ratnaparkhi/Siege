@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using Siege.Container.UnitTests.RegistrationExtensions;
+using Siege.Container.UnitTests.RegistrationExtensions.Classes;
 using Siege.Container.UnitTests.TestClasses;
 using Siege.ServiceLocation;
 
@@ -212,20 +213,68 @@ namespace Siege.Container.UnitTests
         }
 
         [Test]
-        public void Should_Be_Able_To_Extend_Registration()
+        public void Extended_Registration_Should_Work_With_All_Conditions_Met()
         {
+            RegistrationExtensions.RegistrationExtensions.Initialize(locator);
+
             locator
-                .Register(Given<ITestInterface>.Then<TestCase1>())
-                .Register(Given<TestCase1>
-                            .When<TestEnum>(context => context == TestEnum.Case1)
-                            .DecorateWith<TestCase1, TestDecorator>());
+                .AddBinding(typeof (IDecoratorUseCaseBinding<>), GetDecoratorUseCaseBinding())
+                .Register(Given<ICoffee>.Then<Coffee>())
+                .Register(Given<ICoffee>
+                              .When<Ingredients>(ingredients => ingredients == Ingredients.WhippedCream)
+                              .DecorateWith<WhippedCreamDecorator>())
+                .Register(Given<ICoffee>
+                              .When<Ingredients>(ingredients => ingredients == Ingredients.Espresso)
+                              .DecorateWith<EspressoShotDecorator>());
 
-            locator.AddContext(TestEnum.Case1);
+            locator.AddContext(Ingredients.WhippedCream);
+            locator.AddContext(Ingredients.Espresso);
 
-            var useCase = locator.GetInstance<TestCase1>();
+            var coffee = locator.GetInstance<ICoffee>();
 
-            Assert.IsInstanceOfType(typeof(TestDecorator), useCase);
-            Assert.IsInstanceOfType(typeof(TestCase1), ((TestDecorator)useCase).WrappedObject);
+            Assert.AreEqual(1.5M, coffee.Total);
+        }
+
+        [Test]
+        public void Extended_Registration_Should_Work_With_Some_Conditions_Met()
+        {
+            RegistrationExtensions.RegistrationExtensions.Initialize(locator);
+
+            locator
+                .AddBinding(typeof(IDecoratorUseCaseBinding<>), GetDecoratorUseCaseBinding())
+                .Register(Given<ICoffee>.Then<Coffee>())
+                .Register(Given<ICoffee>
+                              .When<Ingredients>(ingredients => ingredients == Ingredients.WhippedCream)
+                              .DecorateWith<WhippedCreamDecorator>())
+                .Register(Given<ICoffee>
+                              .When<Ingredients>(ingredients => ingredients == Ingredients.Espresso)
+                              .DecorateWith<EspressoShotDecorator>());
+
+            locator.AddContext(Ingredients.WhippedCream);
+            
+            var coffee = locator.GetInstance<ICoffee>();
+
+            Assert.AreEqual(1M, coffee.Total);
+        }
+
+        [Test]
+        public void Extended_Registration_Should_Work_With_No_Conditions_Met()
+        {
+            RegistrationExtensions.RegistrationExtensions.Initialize(locator);
+
+            locator
+                .AddBinding(typeof(IDecoratorUseCaseBinding<>), GetDecoratorUseCaseBinding())
+                .Register(Given<ICoffee>.Then<Coffee>())
+                .Register(Given<ICoffee>
+                              .When<Ingredients>(ingredients => ingredients == Ingredients.WhippedCream)
+                              .DecorateWith<WhippedCreamDecorator>())
+                .Register(Given<ICoffee>
+                              .When<Ingredients>(ingredients => ingredients == Ingredients.Espresso)
+                              .DecorateWith<EspressoShotDecorator>());
+
+            var coffee = locator.GetInstance<ICoffee>();
+
+            Assert.AreEqual(0.75M, coffee.Total);
         }
 
         private TestContext CreateContext(TestEnum types)

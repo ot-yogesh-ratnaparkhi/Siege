@@ -30,7 +30,7 @@ namespace Siege.Container.StructureMapAdapter
 
             if (typeof(TService) != useCase.GetBoundType())
             {
-                registry.ForRequestedType<TService>().CacheBy(InstanceScope.PerRequest).TheDefault.Is.ConstructedBy(context => factory.Build(null));
+                registry.ForRequestedType<TService>().CacheBy(InstanceScope.PerRequest).TheDefault.Is.ConstructedBy(context => factory.Build());
             }
 
             var registrar = (typeof(DefaultInstanceUseCaseBinding<TService>)).GetMethod("BindInstance").MakeGenericMethod(typeof(TService), useCase.GetBinding().GetType());

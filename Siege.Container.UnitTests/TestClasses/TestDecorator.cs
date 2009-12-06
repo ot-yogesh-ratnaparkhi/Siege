@@ -1,15 +1,15 @@
 ﻿namespace Siege.Container.UnitTests.TestClasses
 {
-    public class TestDecorator : TestCase1
+    public class TestDecorator : ITestInterface
     {
-        private readonly TestCase1 wrappedObject;
+        private readonly ITestInterface wrappedObject;
 
-        public TestDecorator(TestCase1 wrappedObject)
+        public TestDecorator(ITestInterface wrappedObject)
         {
             this.wrappedObject = wrappedObject;
         }
 
-        public TestCase1 WrappedObject
+        public ITestInterface WrappedObject
         {
             get { return wrappedObject; }
         }

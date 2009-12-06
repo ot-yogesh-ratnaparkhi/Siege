@@ -19,10 +19,10 @@ namespace Siege.ServiceLocation
             this.serviceLocator = serviceLocator;
             this.contextStore = contextStore;
 
-            this.AddBinding(typeof(IConditionalUseCaseBinding<>), this.serviceLocator.ConditionalUseCaseBinding);
-            this.AddBinding(typeof(IDefaultUseCaseBinding<>), this.serviceLocator.DefaultUseCaseBinding);
-            this.AddBinding(typeof(IDefaultInstanceUseCaseBinding<>), this.serviceLocator.DefaultInstanceUseCaseBinding);
-            this.AddBinding(typeof(IKeyBasedUseCaseBinding<>), this.serviceLocator.KeyBasedUseCaseBinding);
+            AddBinding(typeof(IConditionalUseCaseBinding<>), this.serviceLocator.ConditionalUseCaseBinding);
+            AddBinding(typeof(IDefaultUseCaseBinding<>), this.serviceLocator.DefaultUseCaseBinding);
+            AddBinding(typeof(IDefaultInstanceUseCaseBinding<>), this.serviceLocator.DefaultInstanceUseCaseBinding);
+            AddBinding(typeof(IKeyBasedUseCaseBinding<>), this.serviceLocator.KeyBasedUseCaseBinding);
 
             this.serviceLocator.RegisterParentLocator(this);
         }
@@ -34,7 +34,7 @@ namespace Siege.ServiceLocation
 
         public void AddContext(object contextItem)
         {
-            this.contextStore.Add(contextItem);
+            contextStore.Add(contextItem);
         }
 
         public TService GetInstance<TService>()
@@ -49,7 +49,7 @@ namespace Siege.ServiceLocation
 
         public IServiceLocator AddBinding(Type baseBinding, Type targetBinding)
         {
-            this.serviceLocator.RegisterBinding(baseBinding, targetBinding);
+            serviceLocator.RegisterBinding(baseBinding, targetBinding);
             return this;
         }
 
@@ -61,7 +61,7 @@ namespace Siege.ServiceLocation
             {
                 foreach (IUseCase useCase in selectedCase)
                 {
-                    object value = useCase.Resolve(serviceLocator, this.Context);
+                    object value = useCase.Resolve(serviceLocator, Context);
 
                     if (value != null) return value;
                 }
@@ -85,23 +85,23 @@ namespace Siege.ServiceLocation
         {
             if (useCase is IDefaultUseCase<TService>)
             {
-                defaultCases.Add(typeof(TService), useCase);
+                if(!defaultCases.ContainsKey(useCase.GetBoundType())) defaultCases.Add(useCase.GetBoundType(), useCase);
             }
             else
             {
-                if (!useCases.ContainsKey(typeof(TService)))
+                if (!useCases.ContainsKey(useCase.GetBoundType()))
                 {
                     List<IUseCase> list = new List<IUseCase>();
 
-                    useCases.Add(typeof(TService), list);
+                    useCases.Add(useCase.GetBoundType(), list);
                 }
 
-                IList<IUseCase> selectedCase = (IList<IUseCase>)useCases[typeof(TService)];
+                IList<IUseCase> selectedCase = (IList<IUseCase>)useCases[useCase.GetBoundType()];
 
                 selectedCase.Add(useCase);
             }
 
-            if (!registeredTypes.ContainsKey(typeof(TService))) registeredTypes.Add(typeof(TService), typeof(TService));
+            if (!registeredTypes.ContainsKey(useCase.GetBoundType())) registeredTypes.Add(useCase.GetBoundType(), useCase.GetBoundType());
             if (!registeredImplementors.ContainsKey(useCase.GetType())) registeredImplementors.Add(useCase.GetType(), useCase.GetType());
 
             Type bindingType = useCase.GetUseCaseBindingType().MakeGenericType(useCase.GetType().GetGenericArguments().First());
@@ -115,12 +115,17 @@ namespace Siege.ServiceLocation
 
         public IList<object> Context
         {
-            get { return this.contextStore.Items; }
+            get { return contextStore.Items; }
+        }
+
+        public IList<IUseCase> GetRegisteredUseCasesForType(Type type)
+        {
+            return (IList<IUseCase>)useCases[type];
         }
 
         public void Dispose()
         {
-            this.serviceLocator.Dispose();
+            serviceLocator.Dispose();
         }
 
         public object GetService(Type serviceType)
@@ -130,17 +135,17 @@ namespace Siege.ServiceLocation
 
         public object GetInstance(Type type, string key)
         {
-            return this.serviceLocator.GetInstance(type, key);
+            return serviceLocator.GetInstance(type, key);
         }
 
         public IEnumerable<object> GetAllInstances(Type serviceType)
         {
-            return this.serviceLocator.GetAllInstances(serviceType);
+            return serviceLocator.GetAllInstances(serviceType);
         }
 
         public IEnumerable<TService> GetAllInstances<TService>()
         {
-            return this.serviceLocator.GetAllInstances<TService>();
+            return serviceLocator.GetAllInstances<TService>();
         }
     }
 }

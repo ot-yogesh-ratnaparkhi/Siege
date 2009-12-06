@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Siege.ServiceLocation
 {
@@ -16,7 +17,7 @@ namespace Siege.ServiceLocation
             return implementation;
         }
 
-        protected override IActivationStrategy<TBaseService> GetActivationStrategy()
+        protected override IActivationStrategy GetActivationStrategy()
         {
             return new ImplementationActivationStrategy(implementation);
         }
@@ -26,7 +27,7 @@ namespace Siege.ServiceLocation
             return implementation.GetType();
         }
 
-        public class ImplementationActivationStrategy : IActivationStrategy<TBaseService>
+        public class ImplementationActivationStrategy : IActivationStrategy
         {
             private readonly TBaseService implementation;
 
@@ -35,7 +36,7 @@ namespace Siege.ServiceLocation
                 this.implementation = implementation;
             }
 
-            public TBaseService Resolve(IInstanceResolver locator)
+            public object Resolve(IInstanceResolver locator, IList<object> context)
             {
                 return implementation;
             }

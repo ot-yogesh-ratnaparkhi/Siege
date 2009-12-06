@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Siege.ServiceLocation
@@ -14,31 +13,23 @@ namespace Siege.ServiceLocation
             this.serviceLocator = serviceLocator;
         }
 
-        public List<IConditionalUseCase<TBaseService>> ConditionalUseCases
-        {
-            get { return conditionalUseCases; }
-        }
-
-        public List<IDefaultUseCase<TBaseService>> DefaultUseCases
-        {
-            get { return defaultCases; }
-        }
-
         public void AddCase(IConditionalUseCase<TBaseService> useCase)
         {
-            ConditionalUseCases.Add(useCase);
+            conditionalUseCases.Add(useCase);
         }
 
         public void AddCase(IDefaultUseCase<TBaseService> useCase)
         {
-            DefaultUseCases.Add(useCase);
+            defaultCases.Add(useCase);
         }
 
-        public TBaseService Build(IDictionary constructorArguments)
+        public TBaseService Build()
         {
-            foreach (IConditionalUseCase<TBaseService> useCase in ConditionalUseCases)
+            foreach (IConditionalUseCase<TBaseService> useCase in conditionalUseCases)
             {
-                TBaseService result = (TBaseService)useCase.Resolve(serviceLocator, serviceLocator.Context);
+                TBaseService result = default(TBaseService);
+
+                if(useCase.IsValid(serviceLocator.Context)) result = (TBaseService)useCase.Resolve(serviceLocator, serviceLocator.Context);
 
                 if (!Equals(result, default(TBaseService))) return result;
             }

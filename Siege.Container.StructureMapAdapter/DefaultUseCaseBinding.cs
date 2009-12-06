@@ -27,7 +27,7 @@ namespace Siege.Container.StructureMapAdapter
             var factory = (Factory<TService>)locator.GetFactory<TService>();
             factory.AddCase(useCase);
 
-            if (typeof(TService) != useCase.GetBoundType()) registry.ForRequestedType<TService>().CacheBy(InstanceScope.PerRequest).TheDefault.Is.ConstructedBy(context => factory.Build(null));
+            if (typeof(TService) != useCase.GetBoundType()) registry.ForRequestedType<TService>().CacheBy(InstanceScope.PerRequest).TheDefault.Is.ConstructedBy(context => factory.Build());
             registry.ForRequestedType(useCase.GetBoundType()).CacheBy(InstanceScope.PerRequest).AddType(useCase.GetBoundType());
             container.Configure(configure => configure.AddRegistry(registry));
         }

@@ -4,12 +4,18 @@ namespace Siege.Container.UnitTests.RegistrationExtensions
 {
     public static class RegistrationExtensions
     {
-        public static IDecoratorUseCase<TService> DecorateWith<TService, TDecorator>(this IActivationRule useCase)
+        public static IContextualServiceLocator serviceLocator;
+        public static void Initialize(IContextualServiceLocator locator)
         {
-            var decoratorUseCase = new DecoratorUseCase<TService>();
+            serviceLocator = locator;
+        }
 
-            decoratorUseCase.BindTo<TDecorator>();
-            decoratorUseCase.AddActivationRule(useCase);
+        public static IDecoratorUseCase<TDecorator> DecorateWith<TDecorator>(this IConditionalActivationRule rule)
+        {
+            var decoratorUseCase = new DecoratorUseCase<TDecorator>(serviceLocator);
+
+            decoratorUseCase.BindTo(rule.GetBoundType());
+            decoratorUseCase.SetActivationRule(rule);
             
             return decoratorUseCase;
         }

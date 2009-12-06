@@ -1,4 +1,7 @@
-﻿using Castle.MicroKernel;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Siege.ServiceLocation;
 
@@ -20,13 +23,18 @@ namespace Siege.Container.UnitTests.RegistrationExtensions.Castle
             Bind((IDecoratorUseCase<TService>)useCase);
         }
 
+        public object Resolve(Type typeToResolve, Type argumentType, object rootObject)
+        {
+            string parameterName = typeToResolve.GetConstructor(new[] { argumentType }).GetParameters().Where(parameter => parameter.ParameterType == argumentType).First().Name;
+
+            Dictionary<string, object> dictionary = new Dictionary<string, object> {{parameterName, rootObject}};
+            return kernel.Resolve(typeToResolve, dictionary);
+        }
+
         private void Bind(IDecoratorUseCase<TService> useCase)
         {
-            var factory = (Factory<TService>)locator.GetFactory<TService>();
-            factory.AddCase(useCase);
-
-            if (typeof(TService) != useCase.GetBoundType()) kernel.Register(Component.For<TService>().UsingFactoryMethod(() => factory.Build(null)).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
             kernel.Register(Component.For(useCase.GetBoundType()).ImplementedBy(useCase.GetBoundType()).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
+            kernel.Register(Component.For(useCase.GetDecoratorType()).ImplementedBy(useCase.GetDecoratorType()).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
         }
     }
 }
