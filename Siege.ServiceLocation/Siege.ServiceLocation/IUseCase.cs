@@ -7,6 +7,7 @@ namespace Siege.ServiceLocation
     {
         Type GetBoundType();
         Type GetUseCaseBindingType();
+        Type GetBaseBindingType();
         object Resolve(IInstanceResolver locator, IList<object> context);
         object Resolve(IInstanceResolver locator);
         bool IsValid(IList<object> context);

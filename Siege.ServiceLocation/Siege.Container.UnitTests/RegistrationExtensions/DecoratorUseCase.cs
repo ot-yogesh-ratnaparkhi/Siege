@@ -18,6 +18,11 @@ namespace Siege.Container.UnitTests.RegistrationExtensions
             return typeof (IDecoratorUseCaseBinding<>);
         }
 
+        public override Type GetBaseBindingType()
+        {
+            return GetBoundType();
+        }
+
         protected override IActivationStrategy GetActivationStrategy()
         {
             return new DecoratorActivationStrategy(serviceLocator, GetBoundType());

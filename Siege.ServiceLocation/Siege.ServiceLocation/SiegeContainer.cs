@@ -85,23 +85,23 @@ namespace Siege.ServiceLocation
         {
             if (useCase is IDefaultUseCase<TService>)
             {
-                if(!defaultCases.ContainsKey(useCase.GetBoundType())) defaultCases.Add(useCase.GetBoundType(), useCase);
+                if (!defaultCases.ContainsKey(useCase.GetBaseBindingType())) defaultCases.Add(useCase.GetBaseBindingType(), useCase);
             }
             else
             {
-                if (!useCases.ContainsKey(useCase.GetBoundType()))
+                if (!useCases.ContainsKey(useCase.GetBaseBindingType()))
                 {
                     List<IUseCase> list = new List<IUseCase>();
 
-                    useCases.Add(useCase.GetBoundType(), list);
+                    useCases.Add(useCase.GetBaseBindingType(), list);
                 }
 
-                IList<IUseCase> selectedCase = (IList<IUseCase>)useCases[useCase.GetBoundType()];
+                IList<IUseCase> selectedCase = (IList<IUseCase>)useCases[useCase.GetBaseBindingType()];
 
                 selectedCase.Add(useCase);
             }
 
-            if (!registeredTypes.ContainsKey(useCase.GetBoundType())) registeredTypes.Add(useCase.GetBoundType(), useCase.GetBoundType());
+            if (!registeredTypes.ContainsKey(useCase.GetBaseBindingType())) registeredTypes.Add(useCase.GetBaseBindingType(), useCase.GetBaseBindingType());
             if (!registeredImplementors.ContainsKey(useCase.GetType())) registeredImplementors.Add(useCase.GetType(), useCase.GetType());
 
             Type bindingType = useCase.GetUseCaseBindingType().MakeGenericType(useCase.GetType().GetGenericArguments().First());
@@ -116,6 +116,11 @@ namespace Siege.ServiceLocation
         public IList<object> Context
         {
             get { return contextStore.Items; }
+        }
+
+        public IContextStore ContextStore
+        {
+            get { return this.contextStore; }
         }
 
         public IList<IUseCase> GetRegisteredUseCasesForType(Type type)

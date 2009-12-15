@@ -27,6 +27,11 @@ namespace Siege.ServiceLocation
             return implementation.GetType();
         }
 
+        public override Type GetBaseBindingType()
+        {
+            return typeof (TBaseService);
+        }
+
         public class ImplementationActivationStrategy : IActivationStrategy
         {
             private readonly TBaseService implementation;

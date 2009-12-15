@@ -32,6 +32,11 @@ namespace Siege.ServiceLocation
             return boundType;
         }
 
+        public override Type GetBaseBindingType()
+        {
+            return typeof (TBaseService);
+        }
+
         public class GenericActivationStrategy : IActivationStrategy
         {
             private readonly Type boundType;

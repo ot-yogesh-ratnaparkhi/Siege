@@ -8,6 +8,7 @@ namespace Siege.ServiceLocation
         protected IActivationRule rule;
         public abstract TService GetBinding();
         public abstract Type GetUseCaseBindingType();
+        public abstract Type GetBaseBindingType();
         protected abstract IActivationStrategy GetActivationStrategy();
 
         public void SetActivationRule(IActivationRule rule)
@@ -17,8 +18,6 @@ namespace Siege.ServiceLocation
 
         public bool IsValid(IList<object> context)
         {
-            if(rule == null) return true;
-
             foreach (object contextItem in context)
             {
                 if (rule.Evaluate(contextItem)) return true;
