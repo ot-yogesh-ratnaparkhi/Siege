@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiegeMVCQuickStart", "SiegeMVCQuickStart\SiegeMVCQuickStart.csproj", "{06B6A6F4-B448-426F-A365-8E85EC568957}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocation.HttpIntegration", "..\..\Siege.ServiceLocation\Siege.ServiceLocation.HttpIntegration\Siege.ServiceLocation.HttpIntegration.csproj", "{6A195833-5013-422B-B87D-70FB70A0B79C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocation", "..\..\Siege.ServiceLocation\Siege.ServiceLocation\Siege.ServiceLocation.csproj", "{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,14 +13,6 @@ Global
 		{06B6A6F4-B448-426F-A365-8E85EC568957}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06B6A6F4-B448-426F-A365-8E85EC568957}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06B6A6F4-B448-426F-A365-8E85EC568957}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6A195833-5013-422B-B87D-70FB70A0B79C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6A195833-5013-422B-B87D-70FB70A0B79C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6A195833-5013-422B-B87D-70FB70A0B79C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6A195833-5013-422B-B87D-70FB70A0B79C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

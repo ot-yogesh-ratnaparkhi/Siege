@@ -35,9 +35,21 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject, Version=2.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="Siege.Container.NinjectAdapter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Siege.Container.NinjectAdapter.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.ServiceLocation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Siege.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.ServiceLocation.HttpIntegration, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Siege.ServiceLocation.HttpIntegration.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -107,16 +119,6 @@
     <Content Include="Views\Shared\LogOnUserControl.ascx" />
     <Content Include="Views\Shared\Site.Master" />
     <Content Include="Views\Web.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Siege.ServiceLocation\Siege.ServiceLocation.HttpIntegration\Siege.ServiceLocation.HttpIntegration.csproj">
-      <Project>{6A195833-5013-422B-B87D-70FB70A0B79C}</Project>
-      <Name>Siege.ServiceLocation.HttpIntegration</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Siege.ServiceLocation\Siege.ServiceLocation\Siege.ServiceLocation.csproj">
-      <Project>{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}</Project>
-      <Name>Siege.ServiceLocation</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Admin.css" />
