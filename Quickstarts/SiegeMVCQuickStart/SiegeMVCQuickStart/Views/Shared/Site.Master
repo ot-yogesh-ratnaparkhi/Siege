@@ -12,7 +12,7 @@
 
         <div id="header">
             <div id="title">
-                <h1>My MVC Application</h1>
+                <h1>Welcome to www.mysite.com!</h1>
             </div>
               
             <div id="logindisplay">
@@ -31,7 +31,6 @@
 
         <div id="main">
             <asp:ContentPlaceHolder ID="MainContent" runat="server" />
-
             <div id="footer">
             </div>
         </div>

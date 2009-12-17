@@ -6,5 +6,6 @@ namespace Siege.ServiceLocation
     {
         void Add(object contextItem);
         List<object> Items { get; }
+        void Clear();
     }
 }

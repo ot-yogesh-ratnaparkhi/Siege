@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Siege.ServiceLocation
 {
@@ -14,6 +15,11 @@ namespace Siege.ServiceLocation
         public List<object> Items
         {
             get { return context; }
+        }
+
+        public void Clear()
+        {
+            context.Clear();
         }
     }
 }

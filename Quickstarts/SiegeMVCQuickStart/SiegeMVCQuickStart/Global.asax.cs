@@ -3,7 +3,6 @@ using System.Web.Routing;
 using Siege.Container.NinjectAdapter;
 using Siege.ServiceLocation;
 using Siege.ServiceLocation.HttpIntegration;
-using SiegeMVCQuickStart.Controllers;
 using SiegeMVCQuickStart.SampleClasses;
 
 namespace SiegeMVCQuickStart
@@ -29,10 +28,9 @@ namespace SiegeMVCQuickStart
         protected override void OnApplicationStarted()
         {
             ServiceLocator
-                .Register(Given<HomeController>.Then<HomeController>())
-                .Register(Given<HomeController>
-                            .When<User>(user => user.Role == UserRoles.SuperUser)
-                            .Then<SuperUserHomeController>());
+                .WithControllers()
+                .WithServices()
+                .WithFinders();
 
             base.OnApplicationStarted();
         }

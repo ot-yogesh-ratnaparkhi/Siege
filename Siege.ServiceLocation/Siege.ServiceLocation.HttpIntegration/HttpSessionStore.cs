@@ -25,5 +25,10 @@ namespace Siege.ServiceLocation.HttpIntegration
                 return items;
             }
         }
+
+        public void Clear()
+        {
+            HttpContext.Current.Session.Clear();
+        }
     }
 }

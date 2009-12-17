@@ -66,8 +66,13 @@ namespace SiegeMVCQuickStart.Controllers
 
             User user = new User();
 
-            if(userName == "SuperUser") user.Role = UserRoles.SuperUser;
-            
+            if(userName == "Webmaster") user.Role = UserRoles.Webmaster;
+            else if (userName == "AdminUser") user.Role = UserRoles.Admin;
+            else user.Role = UserRoles.Standard;
+
+            if (userName == "TrialUser") user.Account = new TrialAccount();
+            if (userName == "PaidUser") user.Account = new PaidAccount();
+
             contextStore.Add(user);
 
             if (!String.IsNullOrEmpty(returnUrl))
@@ -82,7 +87,7 @@ namespace SiegeMVCQuickStart.Controllers
 
         public ActionResult LogOff()
         {
-
+            contextStore.Clear();
             FormsAuth.SignOut();
 
             return RedirectToAction("Index", "Home");
