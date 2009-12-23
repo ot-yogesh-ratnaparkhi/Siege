@@ -1,13 +1,13 @@
 ﻿using Castle.MicroKernel;
-using Siege.ServiceLocation;
+using Siege.SeviceLocation.WindsorAdapter;
 
-namespace Siege.Container.UnitTests.ContextualTests
+namespace Siege.ServiceLocation.UnitTests.ContextualTests
 {
     public class WindsorContextTests : BaseContextTests
     {
         protected override IServiceLocatorAdapter GetAdapter()
         {
-            return new WindsorAdapter.WindsorAdapter(new DefaultKernel());
+            return new WindsorAdapter(new DefaultKernel());
         }
     }
 }

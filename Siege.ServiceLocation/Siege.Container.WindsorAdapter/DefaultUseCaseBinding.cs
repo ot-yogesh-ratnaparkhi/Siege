@@ -2,7 +2,7 @@
 using Castle.MicroKernel.Registration;
 using Siege.ServiceLocation;
 
-namespace Siege.Container.WindsorAdapter
+namespace Siege.SeviceLocation.WindsorAdapter
 {
     public class DefaultUseCaseBinding<TService> : IDefaultUseCaseBinding<TService>
     {

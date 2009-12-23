@@ -3,19 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
-using Siege.ServiceLocation;
 
-namespace Siege.Container.UnitTests.RegistrationExtensions.Castle
+namespace Siege.ServiceLocation.UnitTests.RegistrationExtensions.Castle
 {
     public class DecoratorUseCaseBinding<TService> : IDecoratorUseCaseBinding<TService>
     {
         private IKernel kernel;
-        private IServiceLocatorAdapter locator;
 
-        public DecoratorUseCaseBinding(IKernel kernel, IServiceLocatorAdapter locator)
+        public DecoratorUseCaseBinding(IKernel kernel)
         {
             this.kernel = kernel;
-            this.locator = locator;
         }
 
         public void Bind(IUseCase useCase)
@@ -33,7 +30,6 @@ namespace Siege.Container.UnitTests.RegistrationExtensions.Castle
 
         private void Bind(IDecoratorUseCase<TService> useCase)
         {
-            kernel.Register(Component.For(useCase.GetBoundType()).ImplementedBy(useCase.GetBoundType()).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
             kernel.Register(Component.For(useCase.GetDecoratorType()).ImplementedBy(useCase.GetDecoratorType()).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
         }
     }

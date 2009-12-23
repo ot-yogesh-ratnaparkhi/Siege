@@ -2,11 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Siege.ServiceLocation;
 using StructureMap.Attributes;
 using StructureMap.Configuration.DSL;
 
-namespace Siege.Container.StructureMapAdapter
+namespace Siege.ServiceLocation.StructureMapAdapter
 {
     public class StructureMapAdapter : IServiceLocatorAdapter
     {

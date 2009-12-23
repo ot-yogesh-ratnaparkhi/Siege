@@ -2,19 +2,16 @@
 using System.Linq;
 using Ninject;
 using Ninject.Parameters;
-using Siege.ServiceLocation;
 
-namespace Siege.Container.UnitTests.RegistrationExtensions.Ninject
+namespace Siege.ServiceLocation.UnitTests.RegistrationExtensions.Ninject
 {
     public class DecoratorUseCaseBinding<TService> : IDecoratorUseCaseBinding<TService>
     {
         private IKernel kernel;
-        private IServiceLocatorAdapter locator;
 
-        public DecoratorUseCaseBinding(IKernel kernel, IServiceLocatorAdapter locator)
+        public DecoratorUseCaseBinding(IKernel kernel)
         {
             this.kernel = kernel;
-            this.locator = locator;
         }
 
         public void Bind(IUseCase useCase)
@@ -31,7 +28,7 @@ namespace Siege.Container.UnitTests.RegistrationExtensions.Ninject
 
         private void Bind(IDecoratorUseCase<TService> useCase)
         {
-            kernel.Bind(useCase.GetBoundType()).ToSelf();
+            kernel.Bind(useCase.GetDecoratorType()).ToSelf();
         }
     }
 }

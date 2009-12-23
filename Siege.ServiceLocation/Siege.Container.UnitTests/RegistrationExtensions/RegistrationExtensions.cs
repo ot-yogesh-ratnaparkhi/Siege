@@ -1,6 +1,6 @@
 ﻿using Siege.ServiceLocation;
 
-namespace Siege.Container.UnitTests.RegistrationExtensions
+namespace Siege.ServiceLocation.UnitTests.RegistrationExtensions
 {
     public static class RegistrationExtensions
     {

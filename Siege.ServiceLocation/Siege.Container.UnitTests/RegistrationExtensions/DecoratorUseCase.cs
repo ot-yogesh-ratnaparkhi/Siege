@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Siege.ServiceLocation;
 
-namespace Siege.Container.UnitTests.RegistrationExtensions
+namespace Siege.ServiceLocation.UnitTests.RegistrationExtensions
 {
     public class DecoratorUseCase<TService> : GenericUseCase<TService>, IDecoratorUseCase<TService>
     {

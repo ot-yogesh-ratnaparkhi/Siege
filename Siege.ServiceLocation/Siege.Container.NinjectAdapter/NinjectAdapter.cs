@@ -2,9 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Ninject;
-using Siege.ServiceLocation;
 
-namespace Siege.Container.NinjectAdapter
+namespace Siege.ServiceLocation.NinjectAdapter
 {
     public class NinjectAdapter : IServiceLocatorAdapter
     {

@@ -1,4 +1,4 @@
-﻿namespace Siege.Container.UnitTests.ContextualTests.Classes
+﻿namespace Siege.ServiceLocation.UnitTests.ContextualTests.Classes
 {
     public interface IBaseService
     {

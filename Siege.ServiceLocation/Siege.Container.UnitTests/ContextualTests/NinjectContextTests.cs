@@ -1,8 +1,6 @@
 ﻿using Ninject;
-using NUnit.Framework;
-using Siege.ServiceLocation;
 
-namespace Siege.Container.UnitTests.ContextualTests
+namespace Siege.ServiceLocation.UnitTests.ContextualTests
 {
     public class NinjectContextTests : BaseContextTests
     {

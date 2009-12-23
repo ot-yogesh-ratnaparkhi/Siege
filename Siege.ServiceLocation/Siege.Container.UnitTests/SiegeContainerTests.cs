@@ -1,11 +1,10 @@
 ﻿using System;
 using NUnit.Framework;
-using Siege.Container.UnitTests.RegistrationExtensions;
-using Siege.Container.UnitTests.RegistrationExtensions.Classes;
-using Siege.Container.UnitTests.TestClasses;
-using Siege.ServiceLocation;
+using Siege.ServiceLocation.UnitTests.RegistrationExtensions;
+using Siege.ServiceLocation.UnitTests.RegistrationExtensions.Classes;
+using Siege.ServiceLocation.UnitTests.TestClasses;
 
-namespace Siege.Container.UnitTests
+namespace Siege.ServiceLocation.UnitTests
 {
     [TestFixture]
     public abstract class SiegeContainerTests

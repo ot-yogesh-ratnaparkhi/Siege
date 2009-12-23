@@ -19,11 +19,6 @@ namespace Siege.ServiceLocation.HttpIntegration
 
         protected abstract IServiceLocatorAdapter GetServiceLocatorAdapter();
 
-        protected virtual IControllerFactory GetControllerFactory()
-        {
-            return new SiegeControllerFactory(locator);
-        }
-
         public virtual void RegisterRoutes(RouteCollection routes) { }
 
         protected virtual IContextStore GetContextStore()
@@ -58,7 +53,7 @@ namespace Siege.ServiceLocation.HttpIntegration
                 ViewEngines.Engines.Add(new SiegeViewEngine());
                 ViewEngines.Engines.Add(new WebFormViewEngine());
 
-                ControllerBuilder.Current.SetControllerFactory(GetControllerFactory());
+                ControllerBuilder.Current.SetControllerFactory(new SiegeControllerFactory(locator));
 
                 OnApplicationStarted();
             }

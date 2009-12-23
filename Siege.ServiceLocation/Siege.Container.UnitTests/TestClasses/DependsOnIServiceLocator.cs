@@ -1,6 +1,6 @@
 using Siege.ServiceLocation;
 
-namespace Siege.Container.UnitTests.TestClasses
+namespace Siege.ServiceLocation.UnitTests.TestClasses
 {
     public class DependsOnIServiceLocator : ITestInterface
     {

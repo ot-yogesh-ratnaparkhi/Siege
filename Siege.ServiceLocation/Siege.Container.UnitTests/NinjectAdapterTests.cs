@@ -1,11 +1,12 @@
 ﻿using System;
 using Ninject;
 using NUnit.Framework;
-using Siege.Container.UnitTests.RegistrationExtensions.Ninject;
-using Siege.Container.UnitTests.TestClasses;
 using Siege.ServiceLocation;
+using Siege.ServiceLocation.NinjectAdapter;
+using Siege.ServiceLocation.UnitTests.RegistrationExtensions.Ninject;
+using Siege.ServiceLocation.UnitTests.TestClasses;
 
-namespace Siege.Container.UnitTests
+namespace Siege.ServiceLocation.UnitTests
 {
     [TestFixture]
     public class NinjectAdapterTests : SiegeContainerTests

@@ -1,8 +1,7 @@
 ﻿using NUnit.Framework;
-using Siege.Container.UnitTests.ContextualTests.Classes;
-using Siege.ServiceLocation;
+using Siege.ServiceLocation.UnitTests.ContextualTests.Classes;
 
-namespace Siege.Container.UnitTests.ContextualTests
+namespace Siege.ServiceLocation.UnitTests.ContextualTests
 {
     [TestFixture]
     public abstract class BaseContextTests

@@ -1,4 +1,4 @@
-namespace Siege.Container.UnitTests.TestClasses
+namespace Siege.ServiceLocation.UnitTests.TestClasses
 {
     public enum TestEnum
     {

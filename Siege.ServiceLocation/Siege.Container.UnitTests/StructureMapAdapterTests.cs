@@ -1,11 +1,12 @@
 ﻿using System;
 using NUnit.Framework;
-using Siege.Container.UnitTests.RegistrationExtensions.StructureMap;
-using Siege.Container.UnitTests.TestClasses;
 using Siege.ServiceLocation;
+using Siege.ServiceLocation.StructureMapAdapter;
+using Siege.ServiceLocation.UnitTests.RegistrationExtensions.StructureMap;
+using Siege.ServiceLocation.UnitTests.TestClasses;
 using StructureMap;
 
-namespace Siege.Container.UnitTests
+namespace Siege.ServiceLocation.UnitTests
 {
     [TestFixture]
     public class StructureMapAdapterTests : SiegeContainerTests

@@ -1,8 +1,7 @@
-﻿using Siege.ServiceLocation;
-using StructureMap.Attributes;
+﻿using StructureMap.Attributes;
 using StructureMap.Configuration.DSL;
 
-namespace Siege.Container.StructureMapAdapter
+namespace Siege.ServiceLocation.StructureMapAdapter
 {
     public class DefaultUseCaseBinding<TService> : IDefaultUseCaseBinding<TService>
     {

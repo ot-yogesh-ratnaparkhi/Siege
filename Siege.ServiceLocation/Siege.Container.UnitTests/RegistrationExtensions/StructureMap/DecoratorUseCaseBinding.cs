@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Siege.ServiceLocation;
+using StructureMap;
 using StructureMap.Attributes;
 using StructureMap.Configuration.DSL;
 using StructureMap.Pipeline;
 
-namespace Siege.Container.UnitTests.RegistrationExtensions.StructureMap
+namespace Siege.ServiceLocation.UnitTests.RegistrationExtensions.StructureMap
 {
     public class DecoratorUseCaseBinding<TService> : IDecoratorUseCaseBinding<TService>
     {
-        private global::StructureMap.Container container;
-        private IServiceLocatorAdapter locator;
+        private Container container;
 
-        public DecoratorUseCaseBinding(global::StructureMap.Container container, IServiceLocatorAdapter locator)
+        public DecoratorUseCaseBinding(Container container)
         {
             this.container = container;
-            this.locator = locator;
         }
 
         public void Bind(IUseCase useCase)
@@ -36,7 +34,6 @@ namespace Siege.Container.UnitTests.RegistrationExtensions.StructureMap
         {
             Registry registry = new Registry();
 
-            //registry.ForRequestedType(useCase.GetBoundType()).CacheBy(InstanceScope.PerRequest).TheDefaultIsConcreteType(useCase.GetBoundType());
             registry.ForRequestedType(useCase.GetDecoratorType()).CacheBy(InstanceScope.PerRequest).TheDefaultIsConcreteType(useCase.GetDecoratorType());
             
             container.Configure(configure => configure.AddRegistry(registry));

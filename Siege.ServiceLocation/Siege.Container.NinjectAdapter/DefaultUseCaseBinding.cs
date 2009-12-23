@@ -1,7 +1,6 @@
 ﻿using Ninject;
-using Siege.ServiceLocation;
 
-namespace Siege.Container.NinjectAdapter
+namespace Siege.ServiceLocation.NinjectAdapter
 {
     public class DefaultUseCaseBinding<TService> : IDefaultUseCaseBinding<TService>
     {

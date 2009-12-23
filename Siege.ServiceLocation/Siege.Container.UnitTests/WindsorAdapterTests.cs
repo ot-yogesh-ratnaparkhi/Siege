@@ -2,11 +2,12 @@
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using NUnit.Framework;
-using Siege.Container.UnitTests.RegistrationExtensions.Castle;
-using Siege.Container.UnitTests.TestClasses;
 using Siege.ServiceLocation;
+using Siege.ServiceLocation.UnitTests.RegistrationExtensions.Castle;
+using Siege.ServiceLocation.UnitTests.TestClasses;
+using Siege.SeviceLocation.WindsorAdapter;
 
-namespace Siege.Container.UnitTests
+namespace Siege.ServiceLocation.UnitTests
 {
     [TestFixture]
     public class WindsorAdapterTests : SiegeContainerTests
@@ -26,7 +27,7 @@ namespace Siege.Container.UnitTests
 
         protected override IServiceLocatorAdapter GetAdapter()
         {
-            return new WindsorAdapter.WindsorAdapter(kernel);
+            return new WindsorAdapter(kernel);
         }
 
         protected override void RegisterWithoutSiege()
@@ -38,7 +39,7 @@ namespace Siege.Container.UnitTests
         public virtual void Should_Dispose_From_Containers()
         {
             DefaultKernel disposableKernel = new DefaultKernel();
-            using (var disposableLocater = new SiegeContainer(new WindsorAdapter.WindsorAdapter(disposableKernel)))
+            using (var disposableLocater = new SiegeContainer(new WindsorAdapter(disposableKernel)))
             {
                 disposableLocater.Register(Given<ITestInterface>.Then<TestCase1>());
                 Assert.IsTrue(disposableLocater.GetInstance<ITestInterface>() is TestCase1);

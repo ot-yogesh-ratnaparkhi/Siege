@@ -1,4 +1,4 @@
-﻿namespace Siege.Container.UnitTests.RegistrationExtensions.Classes
+﻿namespace Siege.ServiceLocation.UnitTests.RegistrationExtensions.Classes
 {
     public enum Ingredients
     {
