@@ -39,10 +39,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Ninject.dll</HintPath>
     </Reference>
-    <Reference Include="Siege.Container.NinjectAdapter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\Siege.Container.NinjectAdapter.dll</HintPath>
-    </Reference>
     <Reference Include="Siege.ServiceLocation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Siege.ServiceLocation.dll</HintPath>
@@ -50,6 +46,10 @@
     <Reference Include="Siege.ServiceLocation.HttpIntegration, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Siege.ServiceLocation.HttpIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.ServiceLocation.NinjectAdapter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Siege.ServiceLocation.NinjectAdapter.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

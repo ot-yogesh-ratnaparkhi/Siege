@@ -1,8 +1,8 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
-using Siege.Container.NinjectAdapter;
 using Siege.ServiceLocation;
 using Siege.ServiceLocation.HttpIntegration;
+using Siege.ServiceLocation.NinjectAdapter;
 using SiegeMVCQuickStart.SampleClasses;
 
 namespace SiegeMVCQuickStart
