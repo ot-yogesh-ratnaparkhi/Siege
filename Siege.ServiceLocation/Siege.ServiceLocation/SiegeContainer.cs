@@ -129,9 +129,9 @@ namespace Siege.ServiceLocation
             return (TService)GetInstance(typeof(TService), key);
         }
 
-        public IServiceLocator Register<TService>(IUseCase<TService> useCase)
+        public IServiceLocator Register(IUseCase useCase)
         {
-            if (useCase is IDefaultUseCase<TService>)
+            if (useCase is IDefaultUseCase)
             {
                 if (!defaultCases.ContainsKey(useCase.GetBaseBindingType())) defaultCases.Add(useCase.GetBaseBindingType(), useCase);
             }

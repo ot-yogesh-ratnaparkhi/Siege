@@ -15,7 +15,9 @@
 
 namespace Siege.ServiceLocation.UseCases
 {
-    public interface IDefaultUseCase : IUseCase {}
+    public interface IDefaultUseCase : IUseCase
+    {
+    }
 
     public interface IDefaultUseCase<TBaseService> : IDefaultUseCase, IUseCase<TBaseService> {}
 }

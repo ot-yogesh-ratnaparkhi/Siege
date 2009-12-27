@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Security.Principal;
 using System.Web.Mvc;
 using System.Web.Security;
-using Siege.ServiceLocation;
+using Siege.ServiceLocation.Stores;
 using SiegeMVCQuickStart.SampleClasses;
 
 namespace SiegeMVCQuickStart.Controllers
