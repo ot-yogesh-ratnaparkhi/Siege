@@ -24,7 +24,6 @@ namespace Siege.ServiceLocation.UseCases
         public abstract TService GetBinding();
         public abstract Type GetUseCaseBindingType();
         public abstract Type GetBaseBindingType();
-        protected abstract IRuleEvaluationStrategy GetRuleEvaluationStrategy();
         protected abstract IActivationStrategy GetActivationStrategy();
         public abstract Type GetBoundType();
 
@@ -35,12 +34,12 @@ namespace Siege.ServiceLocation.UseCases
 
         public bool IsValid(IStoreAccessor context)
         {
-            return GetRuleEvaluationStrategy().IsValid(rule, context);
+            return rule.GetRuleEvaluationStrategy().IsValid(rule, context);
         }
 
         public object Resolve(IResolutionStrategy strategy, IStoreAccessor accessor)
         {
-            return strategy.Resolve(GetBoundType(), rule, GetActivationStrategy(), GetRuleEvaluationStrategy());
+            return strategy.Resolve(GetBoundType(), rule, GetActivationStrategy());
         }
     }
 }

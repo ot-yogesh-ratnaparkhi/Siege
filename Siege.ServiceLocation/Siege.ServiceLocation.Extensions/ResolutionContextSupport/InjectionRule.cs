@@ -16,9 +16,9 @@
 using System;
 using Siege.ServiceLocation.Rules;
 
-namespace Siege.ServiceLocation.Extensions.DependencyContext
+namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
 {
-    public class InjectionRule<TService> : IActivationRule
+    public class InjectionRule<TService> : IConditionalActivationRule
     {
         private Type basedOnType;
 
@@ -27,9 +27,19 @@ namespace Siege.ServiceLocation.Extensions.DependencyContext
             basedOnType = typeof(TResolvedType);
         }
 
+        public IRuleEvaluationStrategy GetRuleEvaluationStrategy()
+        {
+            return new InjectionRuleEvaluationStrategy();
+        }
+
         public bool Evaluate(object context)
         {
             return context == basedOnType;
+        }
+
+        public Type GetBoundType()
+        {
+            return basedOnType;
         }
 
         public IInjectionUseCase<TService> Then<TImplementingType>() where TImplementingType : TService

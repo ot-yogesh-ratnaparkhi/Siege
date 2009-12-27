@@ -18,11 +18,6 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Rules
 {
-    public interface IConditionalActivationRule : IActivationRule
-    {
-        Type GetBoundType();
-    }
-
     public class ConditionalActivationRule<TBaseService, TContext> : IConditionalActivationRule
     {
         private readonly Predicate<object> evaluation;
@@ -60,6 +55,11 @@ namespace Siege.ServiceLocation.Rules
         public Type GetBoundType()
         {
             return typeof (TBaseService);
+        }
+
+        public IRuleEvaluationStrategy GetRuleEvaluationStrategy()
+        {
+            return new ContextEvaluationStrategy();
         }
     }
 }

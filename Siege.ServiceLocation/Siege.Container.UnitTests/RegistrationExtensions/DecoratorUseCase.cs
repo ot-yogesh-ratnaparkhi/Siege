@@ -56,7 +56,6 @@ namespace Siege.ServiceLocation.UnitTests.RegistrationExtensions
 
             public object Resolve(IInstanceResolver locator, IStoreAccessor context)
             {
-                //context.ExecutionStore.AddRequestedType(decoratedType);
                 var useCaseBinding = (IDecoratorUseCaseBinding)locator.GetInstance(typeof(IDecoratorUseCaseBinding<TService>));
                 var decorators = new List<Type>();
                 var rootObject = locator.GetInstance(decoratedType);

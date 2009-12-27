@@ -13,12 +13,12 @@
      limitations under the License.
 */
 
-using Siege.ServiceLocation.UseCases;
+using System;
 
-namespace Siege.ServiceLocation.Extensions.DependencyContext
+namespace Siege.ServiceLocation.Rules
 {
-    public interface IInjectionUseCase<TService> : IUseCase<TService>
+    public interface IConditionalActivationRule : IActivationRule
     {
-        
+        Type GetBoundType();
     }
 }

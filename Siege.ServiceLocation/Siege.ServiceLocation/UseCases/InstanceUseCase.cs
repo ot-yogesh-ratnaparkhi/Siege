@@ -14,7 +14,6 @@
 */
 
 using System;
-using Siege.ServiceLocation.Rules;
 
 namespace Siege.ServiceLocation.UseCases
 {
@@ -35,11 +34,6 @@ namespace Siege.ServiceLocation.UseCases
         protected override IActivationStrategy GetActivationStrategy()
         {
             return new ImplementationActivationStrategy(implementation);
-        }
-
-        protected override IRuleEvaluationStrategy GetRuleEvaluationStrategy()
-        {
-            return new ContextEvaluationStrategy();
         }
 
         public override Type GetBoundType()
@@ -63,7 +57,6 @@ namespace Siege.ServiceLocation.UseCases
 
             public object Resolve(IInstanceResolver locator, IStoreAccessor context)
             {
-                //context.ExecutionStore.AddRequestedType(implementation.GetType());
                 return implementation;
             }
         }

@@ -29,9 +29,11 @@ namespace Siege.ServiceLocation.UseCases
             this.context = context;
         }
 
-        public object Resolve(Type boundType, IActivationRule rule, IActivationStrategy activator, IRuleEvaluationStrategy ruleEvaluator)
+        public object Resolve(Type boundType, IActivationRule rule, IActivationStrategy activator)
         {
-            if (ruleEvaluator.IsValid(rule, context))
+            if(rule == null) return null;
+
+            if (rule.GetRuleEvaluationStrategy().IsValid(rule, context))
             {
                 context.ExecutionStore.AddRequestedType(boundType);
                 return activator.Resolve(locator, context);

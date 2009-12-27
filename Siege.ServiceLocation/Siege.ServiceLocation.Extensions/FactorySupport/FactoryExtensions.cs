@@ -15,11 +15,21 @@
 
 using System;
 using Siege.ServiceLocation.Rules;
+using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.UseCases
+namespace Siege.ServiceLocation.Extensions.FactorySupport
 {
-    public interface IResolutionStrategy
+    public static class FactoryExtensions
     {
-        object Resolve(Type boundType, IActivationRule rule, IActivationStrategy activator);
+        public static IConditionalUseCase<TService> ConstructWith<TService>(this IConditionalActivationRule rule, Func<IInstanceResolver, TService> factoryMethod)
+        {
+            var useCase = new ConditionalFactoryUseCase<TService>();
+
+            useCase.BindTo<Func<IInstanceResolver, TService>>();
+            useCase.SetActivationRule(rule);
+            useCase.ConstructWith(factoryMethod);
+
+            return useCase;
+        }
     }
 }

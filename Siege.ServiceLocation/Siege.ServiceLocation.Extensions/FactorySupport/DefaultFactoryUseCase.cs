@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,11 +13,12 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocation.Rules
+using Siege.ServiceLocation.UseCases;
+
+namespace Siege.ServiceLocation.Extensions.FactorySupport
 {
-    public interface IActivationRule
+    public class DefaultFactoryUseCase<TService> : FactoryUseCase<TService>, IDefaultUseCase<TService>
     {
-        IRuleEvaluationStrategy GetRuleEvaluationStrategy();
-        bool Evaluate(object context);
+        
     }
 }

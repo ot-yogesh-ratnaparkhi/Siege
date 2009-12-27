@@ -45,12 +45,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DependencyContext\InjectionInstanceUseCase.cs" />
-    <Compile Include="DependencyContext\Given.cs" />
-    <Compile Include="DependencyContext\IInjectionUseCase.cs" />
-    <Compile Include="DependencyContext\InjectionRule.cs" />
-    <Compile Include="DependencyContext\InjectionRuleEvaluationStrategy.cs" />
-    <Compile Include="DependencyContext\InjectionUseCase.cs" />
+    <Compile Include="ResolutionContextSupport\InjectionInstanceUseCase.cs" />
+    <Compile Include="ResolutionContextSupport\Given.cs" />
+    <Compile Include="ResolutionContextSupport\IInjectionUseCase.cs" />
+    <Compile Include="ResolutionContextSupport\InjectionRule.cs" />
+    <Compile Include="ResolutionContextSupport\InjectionRuleEvaluationStrategy.cs" />
+    <Compile Include="ResolutionContextSupport\InjectionUseCase.cs" />
+    <Compile Include="FactorySupport\ConditionalFactoryUseCase.cs" />
+    <Compile Include="FactorySupport\DefaultFactoryUseCase.cs" />
+    <Compile Include="FactorySupport\FactoryExtensions.cs" />
+    <Compile Include="FactorySupport\FactoryUseCase.cs" />
+    <Compile Include="FactorySupport\Given.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -15,21 +15,15 @@
 
 using System;
 using Siege.ServiceLocation.Bindings;
-using Siege.ServiceLocation.Rules;
 using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.Extensions.DependencyContext
+namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
 {
     public class InjectionInstanceUseCase<TService> : InstanceUseCase<TService>, IInjectionUseCase<TService>
     {
         public override Type GetUseCaseBindingType()
         {
             return typeof(IConditionalUseCaseBinding<>);
-        }
-
-        protected override IRuleEvaluationStrategy GetRuleEvaluationStrategy()
-        {
-            return new InjectionRuleEvaluationStrategy();
         }
     }
 }

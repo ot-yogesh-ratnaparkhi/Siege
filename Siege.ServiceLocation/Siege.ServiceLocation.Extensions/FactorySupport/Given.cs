@@ -13,11 +13,21 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocation.Rules
+using System;
+using Siege.ServiceLocation.UseCases;
+
+namespace Siege.ServiceLocation.Extensions.FactorySupport
 {
-    public interface IActivationRule
+    public class Given<TService> : ServiceLocation.Given<TService>
     {
-        IRuleEvaluationStrategy GetRuleEvaluationStrategy();
-        bool Evaluate(object context);
+        public static IDefaultUseCase<TService> ConstructWith(Func<IInstanceResolver, TService> factoryMethod)
+        {
+            var useCase = new DefaultFactoryUseCase<TService>();
+
+            useCase.BindTo<Func<IInstanceResolver, TService>>();
+            useCase.ConstructWith(factoryMethod);
+
+            return useCase;
+        }
     }
 }

@@ -14,20 +14,16 @@
 */
 
 using System;
-using Siege.ServiceLocation.Rules;
+using Siege.ServiceLocation.Bindings;
+using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.Extensions.DependencyContext
+namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
 {
-    public class InjectionRuleEvaluationStrategy : IRuleEvaluationStrategy
+    public class InjectionUseCase<TService> : GenericUseCase<TService>, IInjectionUseCase<TService>
     {
-        public bool IsValid(IActivationRule rule, IStoreAccessor context)
+        public override Type GetUseCaseBindingType()
         {
-            foreach(Type dependency in context.ExecutionStore.RequestedTypes)
-            {
-                if(rule.Evaluate(dependency)) return true;
-            }
-
-            return false;
+            return typeof (IConditionalUseCaseBinding<>);
         }
     }
 }

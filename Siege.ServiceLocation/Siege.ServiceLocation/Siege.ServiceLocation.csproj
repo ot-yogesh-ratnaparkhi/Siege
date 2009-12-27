@@ -53,6 +53,7 @@
     <Compile Include="IFactoryFetcher.cs" />
     <Compile Include="Rules\ConditionalActivationRule.cs" />
     <Compile Include="Factory.cs" />
+    <Compile Include="Rules\IConditionalActivationRule.cs" />
     <Compile Include="Stores\GlobalContextStore.cs" />
     <Compile Include="Bindings\IBindingAdapter.cs" />
     <Compile Include="Bindings\IConditionalUseCaseBinding.cs" />

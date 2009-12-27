@@ -29,7 +29,7 @@ namespace Siege.ServiceLocation.UseCases
             this.accessor = accessor;
         }
 
-        public object Resolve(Type boundType, IActivationRule rule, IActivationStrategy activator, IRuleEvaluationStrategy ruleEvaluator)
+        public object Resolve(Type boundType, IActivationRule rule, IActivationStrategy activator)
         {
             accessor.ExecutionStore.AddRequestedType(boundType);
             return activator.Resolve(locator, accessor);

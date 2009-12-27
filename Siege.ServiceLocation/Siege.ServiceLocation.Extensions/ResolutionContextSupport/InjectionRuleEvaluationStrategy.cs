@@ -13,17 +13,21 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocation.Extensions.DependencyContext
+using System;
+using Siege.ServiceLocation.Rules;
+
+namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
 {
-    public class Given<TService> : ServiceLocation.Given<TService>
+    public class InjectionRuleEvaluationStrategy : IRuleEvaluationStrategy
     {
-        public static InjectionRule<TService> WhenInjectingInto<TResolvedType>()
+        public bool IsValid(IActivationRule rule, IStoreAccessor context)
         {
-            var useCase = new InjectionRule<TService>();
+            foreach(Type dependency in context.ExecutionStore.RequestedTypes)
+            {
+                if(rule.Evaluate(dependency)) return true;
+            }
 
-            useCase.BasedOn<TResolvedType>();
-
-            return useCase;
+            return false;
         }
     }
 }
