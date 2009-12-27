@@ -1,18 +1,31 @@
-﻿using System;
-using System.Collections;
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+*/
+
+using System;
 using System.Collections.Generic;
 using Castle.Facilities.FactorySupport;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Siege.ServiceLocation;
+using Siege.ServiceLocation.Exceptions;
 
 namespace Siege.SeviceLocation.WindsorAdapter
 {
     public class WindsorAdapter : IServiceLocatorAdapter
     {
         private IKernel kernel;
-        private IContextualServiceLocator locator;
-        private readonly Hashtable factories = new Hashtable();
 
         public WindsorAdapter() : this(new DefaultKernel()) {}
 
@@ -20,33 +33,6 @@ namespace Siege.SeviceLocation.WindsorAdapter
         {
             this.kernel = kernel;
             this.kernel.AddFacility<FactorySupportFacility>();
-        }
-
-        public void RegisterParentLocator(IContextualServiceLocator locator)
-        {
-            this.locator = locator;
-            
-            kernel.Register(Component.For<IServiceLocator, IContextualServiceLocator>().Instance(locator));
-            kernel.Register(Component.For<IServiceLocatorAdapter>().Instance(this));
-        }
-
-        public IGenericFactory<TBaseType> GetFactory<TBaseType>()
-        {
-            if (!factories.ContainsKey(typeof(TBaseType)))
-            {
-                lock (factories.SyncRoot)
-                {
-                    if (!factories.ContainsKey(typeof(TBaseType)))
-                    {
-                        Factory<TBaseType> factory = new Factory<TBaseType>(locator);
-                        locator.Register(Given<Factory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
-
-                        factories.Add(typeof(TBaseType), factory);
-                    }
-                }
-            }
-
-            return (Factory<TBaseType>)factories[typeof(TBaseType)];
         }
 
         public void RegisterBinding(Type baseBinding, Type targetBinding)
@@ -71,12 +57,31 @@ namespace Siege.SeviceLocation.WindsorAdapter
 
         public object GetInstance(Type type)
         {
-            return kernel.Resolve(type);
+            try
+            {
+                return kernel.Resolve(type);
+            }
+            catch (Exception)
+            {
+                throw new RegistrationNotFoundException(type);
+            }
+        }
+
+        public bool HasTypeRegistered(Type type)
+        {
+            return kernel.HasComponent(type);
         }
 
         public object GetInstance(Type type, string key)
         {
-            return kernel.Resolve(key, type);
+            try
+            {
+                return kernel.Resolve(key, type);
+            }
+            catch (ComponentNotFoundException)
+            {
+                throw new RegistrationNotFoundException(type, key);
+            }
         }
         
         public Type ConditionalUseCaseBinding

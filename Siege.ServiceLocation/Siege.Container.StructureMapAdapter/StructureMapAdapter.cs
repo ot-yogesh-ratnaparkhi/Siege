@@ -1,7 +1,23 @@
-﻿using System;
-using System.Collections;
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Siege.ServiceLocation.Exceptions;
+using StructureMap;
 using StructureMap.Attributes;
 using StructureMap.Configuration.DSL;
 
@@ -9,48 +25,16 @@ namespace Siege.ServiceLocation.StructureMapAdapter
 {
     public class StructureMapAdapter : IServiceLocatorAdapter
     {
-        private StructureMap.Container container;
-        private Hashtable factories = new Hashtable();
-        private IContextualServiceLocator locator;
-
-        public StructureMapAdapter() : this(new StructureMap.Container(x => x.IncludeConfigurationFromConfigFile = true)) {}
-        public StructureMapAdapter(StructureMap.Container container)
+        private Container container;
+        public StructureMapAdapter() : this(new Container(x => x.IncludeConfigurationFromConfigFile = true)) {}
+        public StructureMapAdapter(Container container)
         {
             this.container = container;
-        }
-
-        public void RegisterParentLocator(IContextualServiceLocator locator)
-        {
-            this.locator = locator;
-
             Registry registry = new Registry();
 
-            registry.ForRequestedType<IServiceLocatorAdapter>().TheDefault.IsThis(this);
-            registry.ForRequestedType<StructureMap.Container>().TheDefault.IsThis(container);
+            registry.ForRequestedType<Container>().TheDefault.IsThis(container);
 
             container.Configure(x => x.AddRegistry(registry));
-
-            locator.Register(Given<IServiceLocator>.Then(locator));
-            locator.Register(Given<IContextualServiceLocator>.Then(locator));
-        }
-
-        public IGenericFactory<TBaseType> GetFactory<TBaseType>()
-        {
-            if (!factories.ContainsKey(typeof(TBaseType)))
-            {
-                lock (factories.SyncRoot)
-                {
-                    if (!factories.ContainsKey(typeof(TBaseType)))
-                    {
-                        Factory<TBaseType> factory = new Factory<TBaseType>(locator);
-                        locator.Register(Given<Factory<TBaseType>>.Then("Factory" + typeof(TBaseType), factory));
-
-                        factories.Add(typeof(TBaseType), factory);
-                    }
-                }
-            }
-
-            return (Factory<TBaseType>)factories[typeof(TBaseType)];
         }
 
         public void RegisterBinding(Type baseBinding, Type targetBinding)
@@ -87,9 +71,34 @@ namespace Siege.ServiceLocation.StructureMapAdapter
             return container.GetInstance(type);
         }
 
+        public bool HasTypeRegistered(Type type)
+        {
+            try
+            {
+                return container.GetInstance(type) != null;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public object GetInstance(Type serviceType, string key)
         {
-            return container.GetInstance(serviceType, key);
+            object instance;
+
+            try
+            {
+                instance = container.GetInstance(serviceType, key);
+            }
+            catch (StructureMapException)
+            {
+                throw new RegistrationNotFoundException(serviceType, key);
+            }
+
+            if (instance == null) throw new RegistrationNotFoundException(serviceType, key);
+
+            return instance;
         }
 
         public Type ConditionalUseCaseBinding

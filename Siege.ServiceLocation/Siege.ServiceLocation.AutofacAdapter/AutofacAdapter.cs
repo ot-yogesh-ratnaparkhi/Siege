@@ -1,17 +1,31 @@
-﻿using System;
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+*/
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
 using Autofac.Builder;
+using Siege.ServiceLocation.Exceptions;
 
 namespace Siege.ServiceLocation.AutofacAdapter
 {
     public class AutofacAdapter : IServiceLocatorAdapter
     {
         private IContainer container;
-        private IContextualServiceLocator locator;
-        private readonly Hashtable factories = new Hashtable();
 
         public AutofacAdapter(IContainer container)
         {
@@ -29,12 +43,24 @@ namespace Siege.ServiceLocation.AutofacAdapter
 
         public object GetInstance(Type type, string key)
         {
-            return container.Resolve(key);
+            try
+            {
+                return container.Resolve(key);
+            }
+            catch (ComponentNotRegisteredException)
+            {
+                throw new RegistrationNotFoundException(type, key);
+            }
         }
 
         public object GetInstance(Type type)
         {
             return container.Resolve(type);
+        }
+
+        public bool HasTypeRegistered(Type type)
+        {
+            return container.IsRegistered(type);
         }
 
         public IEnumerable<object> GetAllInstances(Type serviceType)
@@ -59,38 +85,6 @@ namespace Siege.ServiceLocation.AutofacAdapter
             }
 
             return new List<TService>();
-        }
-
-        public void RegisterParentLocator(IContextualServiceLocator locator)
-        {
-            this.locator = locator;
-
-            var builder = new ContainerBuilder();
-
-            builder.Register<IServiceLocatorAdapter>(c => this);
-            builder.Register<IServiceLocator>(c => locator);
-            builder.Register(c => locator);
-
-            builder.Build(container);
-        }
-
-        public IGenericFactory<TBaseService> GetFactory<TBaseService>()
-        {
-            if (!factories.ContainsKey(typeof(TBaseService)))
-            {
-                lock (factories.SyncRoot)
-                {
-                    if (!factories.ContainsKey(typeof(TBaseService)))
-                    {
-                        Factory<TBaseService> factory = new Factory<TBaseService>(locator);
-                        locator.Register(Given<Factory<TBaseService>>.Then("Factory" + typeof(TBaseService), factory));
-
-                        factories.Add(typeof(TBaseService), factory);
-                    }
-                }
-            }
-
-            return (Factory<TBaseService>)factories[typeof(TBaseService)];
         }
 
         public void RegisterBinding(Type baseBinding, Type targetBinding)

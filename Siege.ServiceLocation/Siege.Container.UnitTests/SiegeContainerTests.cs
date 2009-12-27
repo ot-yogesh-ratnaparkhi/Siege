@@ -1,5 +1,21 @@
-﻿using System;
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+*/
+
+using System;
 using NUnit.Framework;
+using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.UnitTests.RegistrationExtensions;
 using Siege.ServiceLocation.UnitTests.RegistrationExtensions.Classes;
 using Siege.ServiceLocation.UnitTests.TestClasses;
@@ -59,14 +75,14 @@ namespace Siege.ServiceLocation.UnitTests
             Assert.IsInstanceOfType(typeof(TestCase1), locator.GetInstance(typeof(ITestInterface), "test"));
         }
 
-        [Test]
+        [Test, ExpectedException(typeof(RegistrationNotFoundException))]
         public virtual void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>("test"));
             locator.GetInstance<ITestInterface>();
         }
 
-        [Test]
+        [Test, ExpectedException(typeof(RegistrationNotFoundException))]
         public virtual void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>("test"));
@@ -141,6 +157,15 @@ namespace Siege.ServiceLocation.UnitTests
             locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case1).Then<TestCase1>());
             locator.AddContext(CreateContext(TestEnum.Case1));
 
+            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
+        }
+
+        [Test, ExpectedException(typeof(RegistrationNotFoundException))]
+        public void Should_Throw_Exception_When_Type_No_Default_Specified_And_No_Rules_Match()
+        {
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
+            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case1).Then<TestCase1>());
+         
             Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
         }
 
@@ -274,6 +299,31 @@ namespace Siege.ServiceLocation.UnitTests
             var coffee = locator.GetInstance<ICoffee>();
 
             Assert.AreEqual(0.75M, coffee.Total);
+        }
+
+        [Test]
+        public void Should_Choose_Constructor_Argument_Based_On_Type_Injected_Into()
+        {
+            locator
+                .Register(Given<ITestInterface>
+                                .When<TestEnum>(test => test == TestEnum.Case1)
+                                .Then<DependsOnInterface>())
+                .Register(Given<ITestInterface>
+                                .When<TestEnum>(test => test == TestEnum.Case2)
+                                .Then<DependsOnAlternateConstructorImplicitly>())
+                .Register(Extensions.DependencyContext.Given<IConstructorArgument>
+                                .WhenInjectingInto<DependsOnInterface>()
+                                .Then<ConstructorArgument>())
+                .Register(Extensions.DependencyContext.Given<IConstructorArgument>
+                                .WhenInjectingInto<DependsOnAlternateConstructorImplicitly>()
+                                .Then<AlternateConstructorArgument>());
+
+            locator.AddContext(TestEnum.Case2);
+
+            var instance = locator.GetInstance<ITestInterface>();
+
+            Assert.IsInstanceOfType(typeof(DependsOnAlternateConstructorImplicitly), instance);
+            Assert.IsInstanceOfType(typeof(AlternateConstructorArgument), ((DependsOnAlternateConstructorImplicitly)instance).Argument);
         }
 
         private TestContext CreateContext(TestEnum types)

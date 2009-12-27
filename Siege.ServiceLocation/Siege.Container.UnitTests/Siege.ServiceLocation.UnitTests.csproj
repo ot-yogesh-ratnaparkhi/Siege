@@ -124,7 +124,9 @@
     <Compile Include="RegistrationExtensions\Unity\DecoratorUseCaseBinding.cs" />
     <Compile Include="SiegeContainerTests.cs" />
     <Compile Include="StructureMapAdapterTests.cs" />
+    <Compile Include="TestClasses\AlternateConstructorArgument.cs" />
     <Compile Include="TestClasses\ConstructorArgument.cs" />
+    <Compile Include="TestClasses\DependsOnAlternateConstructorImplicitly.cs" />
     <Compile Include="TestClasses\DependsOnInterface.cs" />
     <Compile Include="TestClasses\DependsOnIServiceLocator.cs" />
     <Compile Include="TestClasses\IConstructorArgument.cs" />
@@ -156,6 +158,10 @@
     <ProjectReference Include="..\Siege.ServiceLocation.AutofacAdapter\Siege.ServiceLocation.AutofacAdapter.csproj">
       <Project>{12D1DCC0-8BF9-4DF4-9A18-F3AD4F1A9077}</Project>
       <Name>Siege.ServiceLocation.AutofacAdapter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.ServiceLocation.Extensions\Siege.ServiceLocation.Extensions.csproj">
+      <Project>{7B5B2B4D-B5B6-4427-8DEF-B0D421A0EF96}</Project>
+      <Name>Siege.ServiceLocation.Extensions</Name>
     </ProjectReference>
     <ProjectReference Include="..\Siege.ServiceLocation.UnityAdapter\Siege.ServiceLocation.UnityAdapter.csproj">
       <Project>{B0FAF7F3-2EAC-40BA-995B-06E71BBADB0F}</Project>

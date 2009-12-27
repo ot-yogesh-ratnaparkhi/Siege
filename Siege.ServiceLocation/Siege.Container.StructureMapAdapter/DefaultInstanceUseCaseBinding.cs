@@ -1,4 +1,21 @@
-﻿using StructureMap.Attributes;
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+*/
+
+using Siege.ServiceLocation.Bindings;
+using Siege.ServiceLocation.UseCases;
+using StructureMap.Attributes;
 using StructureMap.Configuration.DSL;
 
 namespace Siege.ServiceLocation.StructureMapAdapter
@@ -6,20 +23,18 @@ namespace Siege.ServiceLocation.StructureMapAdapter
     public class DefaultInstanceUseCaseBinding<TService> : IDefaultInstanceUseCaseBinding<TService>
     {
         private readonly StructureMap.Container container;
-        private IServiceLocatorAdapter locator;
 
-        public DefaultInstanceUseCaseBinding(StructureMap.Container container, IServiceLocatorAdapter locator)
+        public DefaultInstanceUseCaseBinding(StructureMap.Container container)
         {
             this.container = container;
-            this.locator = locator;
         }
 
-        public void Bind(IUseCase useCase)
+        public void Bind(IUseCase useCase, IFactoryFetcher locator)
         {
-            Bind((DefaultInstanceUseCase<TService>)useCase);
+            Bind((DefaultInstanceUseCase<TService>)useCase, locator);
         }
 
-        private void Bind(DefaultInstanceUseCase<TService> useCase)
+        private void Bind(DefaultInstanceUseCase<TService> useCase, IFactoryFetcher locator)
         {
             Registry registry = new Registry();
 

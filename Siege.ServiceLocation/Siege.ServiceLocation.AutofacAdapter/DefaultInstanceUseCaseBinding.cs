@@ -1,26 +1,41 @@
-﻿using System.Collections.Generic;
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+*/
+
+using System.Collections.Generic;
 using Autofac;
 using Autofac.Builder;
+using Siege.ServiceLocation.Bindings;
+using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.AutofacAdapter
 {
     public class DefaultInstanceUseCaseBinding<TService> : IDefaultInstanceUseCaseBinding<TService>
     {
         private IContainer container;
-        private IServiceLocatorAdapter locator;
 
-        public DefaultInstanceUseCaseBinding(IContainer container, IServiceLocatorAdapter locator)
+        public DefaultInstanceUseCaseBinding(IContainer container)
         {
             this.container = container;
-            this.locator = locator;
         }
 
-        public void Bind(IUseCase useCase)
+        public void Bind(IUseCase useCase, IFactoryFetcher locator)
         {
-            Bind((DefaultInstanceUseCase<TService>)useCase);
+            Bind((DefaultInstanceUseCase<TService>)useCase, locator);
         }
 
-        private void Bind(DefaultInstanceUseCase<TService> useCase)
+        private void Bind(DefaultInstanceUseCase<TService> useCase, IFactoryFetcher locator)
         {
             var factory = (Factory<TService>)locator.GetFactory<TService>();
             factory.AddCase(useCase);
