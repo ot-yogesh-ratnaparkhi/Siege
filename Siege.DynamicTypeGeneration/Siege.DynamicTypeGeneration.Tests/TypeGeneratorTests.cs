@@ -190,7 +190,7 @@ namespace Siege.DynamicTypeGeneration.Tests
                 });
             });
 
-            Assert.AreEqual(2, generatedType.GetConstructors().Length);
+            Assert.AreEqual(1, generatedType.GetConstructors().Length);
             Assert.IsNotNull(generatedType.GetConstructor(new[] { typeof(string), typeof(BaseType)}));
         }
     }

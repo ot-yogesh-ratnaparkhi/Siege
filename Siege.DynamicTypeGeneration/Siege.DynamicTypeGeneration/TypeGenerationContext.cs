@@ -28,13 +28,13 @@ namespace Siege.DynamicTypeGeneration
         internal IList<ITypeGenerationAction> TypeGenerationActions { get; private set; }
         internal Type BaseType { get; private set; }
         internal string TypeName { get; private set; }
+        internal bool ConstructorAdded { get; private set; }
 
         public TypeGenerationContext(BuilderBundle bundle)
         {
             BaseType = typeof(object);
             TypeGenerationActions = new List<ITypeGenerationAction>();
             this.Builder = bundle;
-            AddDefaultConstructor();
         }
 
         public void InheritFrom<TBaseType>()
@@ -50,6 +50,7 @@ namespace Siege.DynamicTypeGeneration
         internal void AddDefaultConstructor()
         {
             this.TypeGenerationActions.Add(new AddDefaultConstructorAction(this.Builder));
+            ConstructorAdded = true;
         }
 
         public void AddMethod(Action<MethodGenerationContext> nestedClosure)
@@ -75,6 +76,7 @@ namespace Siege.DynamicTypeGeneration
 
         public void AddConstructor(Action<ConstructorGenerationContext> nestedClosure)
         {
+            ConstructorAdded = true;
             var context = new ConstructorGenerationContext();
             nestedClosure(context);
 

@@ -47,6 +47,8 @@ namespace Siege.DynamicTypeGeneration
             var context = new TypeGenerationContext(bundle);
             nestedClosure(context);
 
+            if(!context.ConstructorAdded) context.AddDefaultConstructor();
+
             bundle.TypeBuilder = bundle.ModuleBuilder.DefineType(context.TypeName,
                                                         TypeAttributes.Public |
                                                         TypeAttributes.Class |
