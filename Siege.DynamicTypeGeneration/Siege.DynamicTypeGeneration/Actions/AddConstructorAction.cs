@@ -23,11 +23,12 @@ namespace Siege.DynamicTypeGeneration.Actions
     public class AddConstructorAction : ITypeGenerationAction
     {
         private readonly BuilderBundle builder;
-        private readonly List<Type> types;
+        private readonly Func<List<Type>> types;
         private ConstructorBuilder constructorBuilder;
-        public ConstructorInfo Constructor { get { return constructorBuilder; } }
+        public ConstructorBuilder Constructor { get { return constructorBuilder; } }
+        public Func<ILGenerator> Builder { get { return () => constructorBuilder.GetILGenerator(); } }
 
-        public AddConstructorAction(BuilderBundle bundle, List<Type> types)
+        public AddConstructorAction(BuilderBundle bundle, Func<List<Type>> types)
         {
             builder = bundle;
             this.types = types;
@@ -40,16 +41,7 @@ namespace Siege.DynamicTypeGeneration.Actions
                 MethodAttributes.SpecialName |
                 MethodAttributes.RTSpecialName,
                 CallingConventions.Standard,
-                this.types.ToArray());
-
-            var constructor = typeof(object).GetConstructor(new Type[0]);
-
-            ILGenerator il = constructorBuilder.GetILGenerator();
-
-
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Call, constructor);
-            il.Emit(OpCodes.Ret);
+                this.types().ToArray());
         }
     }
 }

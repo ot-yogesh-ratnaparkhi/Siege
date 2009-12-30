@@ -46,7 +46,7 @@ namespace Siege.DynamicTypeGeneration.Actions
                                                                TypeAttributes.NestedPrivate |
                                                                TypeAttributes.BeforeFieldInit);
 
-            var localBundle = new BuilderBundle {TypeBuilder = localBuilder, ModuleBuilder = bundle.ModuleBuilder};
+            var localBundle = new BuilderBundle {TypeBuilderDelegate = () => localBuilder, ModuleBuilder = bundle.ModuleBuilder};
             
             var constructorAction = new AddDefaultConstructorAction(localBundle);
             this.constructor = constructorAction.Constructor;

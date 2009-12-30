@@ -30,11 +30,19 @@ namespace Siege.DynamicTypeGeneration
         internal string TypeName { get; private set; }
         internal bool ConstructorAdded { get; private set; }
 
-        public TypeGenerationContext(BuilderBundle bundle)
+        public TypeGenerationContext(BuilderBundle bundle, Action<TypeGenerationContext> nestedClosure)
         {
             BaseType = typeof(object);
             TypeGenerationActions = new List<ITypeGenerationAction>();
+
+            var defineTypeAction = new DefineTypeAction(bundle, () => TypeName, () => BaseType);
+            this.TypeGenerationActions.Add(defineTypeAction);
+
+            bundle.TypeBuilderDelegate = () => defineTypeAction.TypeBuilder;
             this.Builder = bundle;
+
+            nestedClosure(this);
+            if (!ConstructorAdded) AddDefaultConstructor();
         }
 
         public void InheritFrom<TBaseType>()
@@ -77,10 +85,15 @@ namespace Siege.DynamicTypeGeneration
         public void AddConstructor(Action<ConstructorGenerationContext> nestedClosure)
         {
             ConstructorAdded = true;
-            var context = new ConstructorGenerationContext();
-            nestedClosure(context);
+            new ConstructorGenerationContext(this, nestedClosure);
+        }
 
-            this.TypeGenerationActions.Add(new AddConstructorAction(this.Builder, context.Arguments.Select(arg => arg.Type).ToList()));
+        public GeneratedField AddField<TFieldType>(string fieldName)
+        {
+            var action = new AddFieldAction(this.Builder, fieldName, typeof (TFieldType));
+            this.TypeGenerationActions.Add(action);
+
+            return new GeneratedField(action);
         }
     }
 }

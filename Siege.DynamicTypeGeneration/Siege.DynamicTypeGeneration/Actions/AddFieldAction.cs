@@ -21,6 +21,9 @@ namespace Siege.DynamicTypeGeneration.Actions
 {
     public class AddFieldAction : ITypeGenerationAction
     {
+        private readonly BuilderBundle bundle;
+        private readonly string fieldName;
+        private readonly Type fieldType;
         private FieldInfo field;
         private FieldBuilder fieldBuilder;
 
@@ -42,11 +45,14 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         public AddFieldAction(BuilderBundle bundle, string fieldName, Type fieldType)
         {
-            this.field = fieldBuilder = bundle.TypeBuilder.DefineField(fieldName, fieldType, FieldAttributes.Public);
+            this.bundle = bundle;
+            this.fieldName = fieldName;
+            this.fieldType = fieldType;
         }
 
         public void Execute()
         {
+            this.field = fieldBuilder = bundle.TypeBuilder.DefineField(fieldName, fieldType, FieldAttributes.Public);
         }
     }
 }

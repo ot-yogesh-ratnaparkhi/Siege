@@ -13,22 +13,12 @@
      limitations under the License.
 */
 
-using System;
-using System.Reflection;
-using Siege.DynamicTypeGeneration.Actions;
-
 namespace Siege.DynamicTypeGeneration
 {
-    public class GeneratedField
+    public class ConstructorBodyContext : BaseMethodGenerationContext
     {
-        private readonly AddFieldAction action;
-
-        public GeneratedField(AddFieldAction action)
+        public ConstructorBodyContext(TypeGenerationContext typeGenerationContext) : base(typeGenerationContext)
         {
-            this.action = action;
         }
-
-        public Func<FieldInfo> Field { get { return () => action.Field; } }
-        public FieldInfo Source { get { return action.Source; } }
     }
 }

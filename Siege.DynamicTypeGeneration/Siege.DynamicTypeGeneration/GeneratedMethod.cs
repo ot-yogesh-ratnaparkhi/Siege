@@ -84,14 +84,6 @@ namespace Siege.DynamicTypeGeneration
             return action;
         }
 
-        public FieldAssignmentAction Assign(FieldInfo value)
-        {
-            var action = new FieldAssignmentAction(bundle, value);
-            actions.Add(action);
-
-            return action;
-        }
-
         internal void AddLocal(Type item)
         {
             LocalCount++;

@@ -193,6 +193,46 @@ namespace Siege.DynamicTypeGeneration.Tests
             Assert.AreEqual(1, generatedType.GetConstructors().Length);
             Assert.IsNotNull(generatedType.GetConstructor(new[] { typeof(string), typeof(BaseType)}));
         }
+
+        [Test]
+        public void Should_Be_Able_To_Add_Fields()
+        {
+            Type generatedType = new TypeGenerator().CreateType(type =>
+            {
+                type.Named("TestType");
+                type.AddField<string>("field1");
+                type.AddField<BaseType>("field2");
+            });
+
+            Assert.AreEqual(2, generatedType.GetFields().Length);
+            Assert.AreEqual(typeof(string), generatedType.GetField("field1").FieldType);
+            Assert.AreEqual(typeof(BaseType), generatedType.GetField("field2").FieldType);
+        }
+
+        [Test]
+        public void Should_Be_Able_To_Create_Constructor_And_Initialize_Fields()
+        {
+            Type generatedType = new TypeGenerator().CreateType(type =>
+            {
+                type.Named("TestType");
+                var field1 = type.AddField<string>("field1");
+                var field2 = type.AddField<BaseType>("field2");
+                type.AddConstructor(constructor =>
+                {
+                    var parameter1 = constructor.CreateArgument<string>();
+                    var parameter2 = constructor.CreateArgument<BaseType>();
+
+                    constructor.WithBody(body =>
+                    {
+                        parameter1.AssignTo(field1);
+                        parameter2.AssignTo(field2);
+                    });
+                });
+            });
+
+            Assert.AreEqual(1, generatedType.GetConstructors().Length);
+            Assert.IsNotNull(generatedType.GetConstructor(new[] { typeof(string), typeof(BaseType) }));
+        }
     }
 
     public class Processor
@@ -213,6 +253,15 @@ namespace Siege.DynamicTypeGeneration.Tests
 
     public class SubType : BaseType
     {
+        private readonly string value;
+        private readonly BaseType baseType;
+
+        public SubType(string value, BaseType baseType)
+        {
+            this.value = value;
+            this.baseType = baseType;
+        }
+
         public void TestMethod()
         {
             

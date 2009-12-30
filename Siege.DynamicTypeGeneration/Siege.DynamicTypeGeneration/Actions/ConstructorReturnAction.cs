@@ -14,38 +14,27 @@
 */
 
 using System;
-using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class FieldAssignmentAction : ITypeGenerationAction
+    public class ConstructorReturnAction : ITypeGenerationAction
     {
-        private readonly Func<Func<ILGenerator>> bundle;
-        private readonly GeneratedParameter source;
-        private Func<FieldInfo> target;
+        private readonly Func<ConstructorBuilder> constructorBuilder;
 
-        public FieldAssignmentAction(Func<Func<ILGenerator>> bundle, GeneratedParameter source)
+        public ConstructorReturnAction(Func<ConstructorBuilder> constructorBuilder)
         {
-            this.bundle = bundle;
-            this.source = source;
+            this.constructorBuilder = constructorBuilder;
         }
 
         public void Execute()
         {
-            if(target() != null)
-            {
-                var methodBuilder = this.bundle()();
+            var constructor = typeof(object).GetConstructor(new Type[0]);
+            ILGenerator il = constructorBuilder().GetILGenerator();
 
-                methodBuilder.Emit(OpCodes.Ldarg_0);
-                methodBuilder.Emit(OpCodes.Ldarg, source.Index);
-                methodBuilder.Emit(OpCodes.Stfld, target());
-            }
-        }
-
-        public void To(Func<FieldInfo> field)
-        {
-            target = field;
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Call, constructor);
+            il.Emit(OpCodes.Ret);
         }
     }
 }

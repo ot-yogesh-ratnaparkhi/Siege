@@ -44,20 +44,7 @@ namespace Siege.DynamicTypeGeneration
                                                                                    ".dll")
                                        };
 
-            var context = new TypeGenerationContext(bundle);
-            nestedClosure(context);
-
-            if(!context.ConstructorAdded) context.AddDefaultConstructor();
-
-            bundle.TypeBuilder = bundle.ModuleBuilder.DefineType(context.TypeName,
-                                                        TypeAttributes.Public |
-                                                        TypeAttributes.Class |
-                                                        TypeAttributes.AutoClass |
-                                                        TypeAttributes.AnsiClass |
-                                                        TypeAttributes.BeforeFieldInit |
-                                                        TypeAttributes.AutoLayout,
-                                                        context.BaseType);
-
+            var context = new TypeGenerationContext(bundle, nestedClosure);
             
             var type = new GeneratedType(bundle, context.TypeGenerationActions);
             var returnType = type.Create();
@@ -66,42 +53,5 @@ namespace Siege.DynamicTypeGeneration
 
             return returnType;
         }
-
-        //public GeneratedMethod CreateMethod(string methodName, Type returnType, Type[] parameterTypes, bool isOverride)
-        //{
-        //    var action = new AddMethodAction(this.bundle, methodName, returnType, parameterTypes, isOverride);
-
-        //    var methodBundle = new MethodBuilderBundle(bundle) {MethodBuilder = action.MethodBuilder};
-        //    var method = new GeneratedMethod(methodBundle, this.actions);
-
-        //    this.actions.Add(action);
-        //    if (returnType != typeof(void)) method.AddLocal(action.MethodBuilder);
-
-        //    return method;
-        //}
-
-        //public Type Create()
-        //{
-        //    foreach(ITypeGenerationAction action in this.actions)
-        //    {
-        //        action.Execute();
-        //    }
-
-        //    Type type = this.bundle.TypeBuilder.CreateType();
-
-        //    assemblyBuilder.Save(assemblyBuilder.GetName().Name + ".dll");
-
-        //    return type;
-        //}
-
-        //public GeneratedField CreateField(FieldInfo field)
-        //{
-        //    var action = new AddFieldAction(this.bundle, field);
-        //    var generatedField = new GeneratedField(action);
-
-        //    this.actions.Add(action);
-
-        //    return generatedField;
-        //}
     }
 }

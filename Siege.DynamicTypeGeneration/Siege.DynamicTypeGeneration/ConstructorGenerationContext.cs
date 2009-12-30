@@ -13,26 +13,50 @@
      limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Siege.DynamicTypeGeneration.Actions;
 
 namespace Siege.DynamicTypeGeneration
 {
     public class ConstructorGenerationContext
     {
+        private readonly TypeGenerationContext context;
+        private int argCount;
         public List<GeneratedParameter> Arguments { get; private set; }
+        private Func<AddConstructorAction> constructorActionDelegate { get { return () => constructorAction; } } 
+        private AddConstructorAction constructorAction;
 
-        public ConstructorGenerationContext()
+        public ConstructorGenerationContext(TypeGenerationContext context, Action<ConstructorGenerationContext> closure)
         {
             this.Arguments = new List<GeneratedParameter>();
+
+            this.context = context;
+
+            var action = new AddConstructorAction(context.Builder, () => this.Arguments.Select(arg => arg.Type).ToList());
+            context.TypeGenerationActions.Add(action);
+            constructorAction = action;
+
+            closure(this);
+            context.TypeGenerationActions.Add(new ConstructorReturnAction(() => action.Constructor));
         }
 
         public GeneratedParameter CreateArgument<TArgument>()
         {
-            var parameter = new GeneratedParameter(typeof(TArgument));
+            argCount++;
+            var parameter = new GeneratedParameter(typeof(TArgument), argCount, this.context, () => constructorActionDelegate().Builder);
             
             Arguments.Add(parameter);
          
             return parameter;
+        }
+
+        public void WithBody(Action<ConstructorBodyContext> nestedClosure)
+        {
+            var constructorBody = new ConstructorBodyContext(this.context);
+
+            nestedClosure(constructorBody);
         }
     }
 }

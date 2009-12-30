@@ -14,16 +14,31 @@
 */
 
 using System;
+using System.Reflection.Emit;
+using Siege.DynamicTypeGeneration.Actions;
 
 namespace Siege.DynamicTypeGeneration
 {
     public class GeneratedParameter
     {
+        private readonly TypeGenerationContext context;
+        private readonly Func<Func<ILGenerator>> builder;
+        public int Index { get; private set; }
         public Type Type { get; private set; }
 
-        public GeneratedParameter(Type type)
+        public GeneratedParameter(Type type, int parameterIndex, TypeGenerationContext context, Func<Func<ILGenerator>> builder)
         {
+            this.context = context;
+            this.builder = builder;
             Type = type;
+            Index = parameterIndex;
+        }
+
+        public void AssignTo(GeneratedField field)
+        {
+            var action = new FieldAssignmentAction(builder, this);
+            action.To(field.Field);
+            this.context.TypeGenerationActions.Add(action);
         }
     }
 }
