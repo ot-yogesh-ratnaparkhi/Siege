@@ -19,32 +19,24 @@ using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class ReturnAction : ITypeGenerationAction
+    internal class ReturnAction : ITypeGenerationAction
     {
-        private readonly MethodBuilderBundle bundle;
-        protected readonly Func<MethodBuilder> method;
-        private readonly GeneratedMethod generatedMethod;
+        private readonly Func<MethodBuilderBundle> bundle;
+        private readonly Func<ILocalIndexer> localIndex;
 
-        public ReturnAction(MethodBuilderBundle bundle, Func<MethodBuilder> method, GeneratedMethod generatedMethod)
+        public ReturnAction(Func<MethodBuilderBundle> bundle, Func<ILocalIndexer> localIndex)
         {
             this.bundle = bundle;
-            this.method = method;
-            this.generatedMethod = generatedMethod;
+            this.localIndex = localIndex;
         }
 
         public virtual void Execute()
         {
-            var methodGenerator = this.bundle.MethodBuilder.GetILGenerator();
-            MethodInfo info = method();
+            var methodGenerator = this.bundle().MethodBuilder.GetILGenerator();
+            MethodInfo info = this.bundle().MethodBuilder;
             if (info.ReturnType != typeof(void))
             {
-                methodGenerator.Emit(OpCodes.Ldloc, generatedMethod.LocalCount-1);
-
-                //if (generatedMethod.LocalCount > 1)
-                //{
-                //    methodGenerator.Emit(OpCodes.Stloc_0);
-                //    methodGenerator.Emit(OpCodes.Ldloc_0);
-                //}
+                methodGenerator.Emit(OpCodes.Ldloc, this.localIndex().LocalIndex());
             }
 
             methodGenerator.Emit(OpCodes.Ret);

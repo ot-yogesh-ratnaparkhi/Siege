@@ -32,7 +32,7 @@ namespace Siege.DynamicTypeGeneration
 
         public Type Create()
         {
-            foreach (ITypeGenerationAction action in this.actions)
+            foreach(ITypeGenerationAction action in this.actions) 
             {
                 action.Execute();
             }

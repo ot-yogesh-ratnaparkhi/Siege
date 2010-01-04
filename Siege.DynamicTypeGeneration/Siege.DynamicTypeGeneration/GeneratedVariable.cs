@@ -16,34 +16,67 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using Siege.DynamicTypeGeneration.Actions;
 
 namespace Siege.DynamicTypeGeneration
 {
-    public class GeneratedVariable<TType>
+    public class GeneratedVariable : ILocalIndexer
     {
-        private readonly int localIndex;
-        private IList<ITypeGenerationAction> actions;
-        private readonly GeneratedMethod method;
+        protected readonly Func<int> localIndex;
+        protected IList<ITypeGenerationAction> actions;
+        protected readonly GeneratedMethod method;
 
-        public GeneratedVariable(int localIndex, IList<ITypeGenerationAction> actions, GeneratedMethod method)
+        public GeneratedVariable(Func<int> localIndex, IList<ITypeGenerationAction> actions, GeneratedMethod method)
         {
             this.localIndex = localIndex;
             this.actions = actions;
             this.method = method;
         }
 
-        public void AssignFrom(Func<int> item)
+        public void AssignFrom(Func<ILocalIndexer> item)
         {
             item();
-            actions.Add(new VariableAssignmentAction(method.MethodBuilder, localIndex));
+            actions.Add(new VariableAssignmentAction(() => method.MethodBuilder(), localIndex()));
         }
 
-        public void Invoke(Expression<Action<TType>> expression)
+        public Func<int> LocalIndex
         {
-            actions.Add(new VariableLoadAction(method, localIndex));
+            get { return localIndex; }
+        }
+
+        public GeneratedVariable Invoke(Type returnType, MethodInfo methodInfo, List<IGeneratedParameter> parameters)
+        {
+            actions.Add(new VariableLoadAction(method, this.localIndex));
+            
+            return method.Call(() => methodInfo, () => parameters);
+        }
+        
+        public GeneratedVariable Invoke<TType>(Expression<Action<TType>> expression)
+        {
             MethodCallExpression methodCall = expression.Body as MethodCallExpression;
-            method.Call(methodCall.Method);
+            List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
+
+            int argCount = 0;
+            foreach(ParameterInfo info in methodCall.Method.GetParameters())
+            {
+                argCount++;
+                parameters.Add(new ExpressionParameter(info.ParameterType, argCount));
+            }
+
+            return Invoke(typeof(TType), methodCall.Method, parameters);
+        }
+
+        public void AssignFrom(GeneratedField field)
+        {
+            actions.Add(new FieldLoadAction(method, field.Field));
+            actions.Add(new VariableAssignmentAction(() => method.MethodBuilder(), localIndex()));
+        }
+
+        public MethodInfo GetMethod<TType>(Expression<Action<TType>> expression)
+        {
+            MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+            return methodCall.Method;
         }
     }
 }

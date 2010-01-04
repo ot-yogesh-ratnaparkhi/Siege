@@ -15,42 +15,87 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Siege.DynamicTypeGeneration.Actions;
 
 namespace Siege.DynamicTypeGeneration
 {
     public class MethodGenerationContext : BaseMethodGenerationContext
     {
-        internal List<Type> ParameterTypes { get; private set; }
-        internal string Name { get; private set; }
-        internal Type ReturnType { get; private set; }
+        private readonly TypeGenerationContext typeGenerationContext;
+        internal Func<List<IGeneratedParameter>> ParameterTypes { get { return () => parameters; } }
+        internal Func<string> Name { get; private set; }
+        internal Func<Type> ReturnType { get; private set; }
+
+        private List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
+        private int argCount;
+        private AddMethodAction addMethodAction;
 
         public MethodGenerationContext(TypeGenerationContext typeGenerationContext, Action<MethodGenerationContext> closure) : base(typeGenerationContext)
         {
-            ParameterTypes = new List<Type>();
+            this.typeGenerationContext = typeGenerationContext;
 
-            var addMethodAction = new AddMethodAction(typeGenerationContext.Builder, () => Name, () => ReturnType, () => ParameterTypes.ToArray(), false);
+            addMethodAction = new AddMethodAction(typeGenerationContext.Builder, () => Name, () => ReturnType, GetParameters, false);
             typeGenerationContext.TypeGenerationActions.Add(addMethodAction);
 
-            var method = new GeneratedMethod(new MethodBuilderBundle(typeGenerationContext.Builder, addMethodAction.MethodBuilder), typeGenerationContext.TypeGenerationActions);
+            var method = new GeneratedMethod(() => addMethodAction.MethodBuilder, typeGenerationContext.TypeGenerationActions);
             SetMethod(method);
             
             closure(this);
         }
 
+        private Type[] GetParameters()
+        {
+            List<Type> types = new List<Type>();
+            for(int i = 0; i < ParameterTypes().Count(); i++)
+            {
+                types.Add(ParameterTypes()[i].Type);
+            }
+            return types.ToArray();
+        }
+
         public void Named(string name)
+        {
+            Name = () => name;
+        }
+
+        public void Named(Func<string> name)
         {
             Name = name;
         }
 
         public void Returns(Type type)
         {
+            ReturnType = () => type;
+        }
+
+        public void Returns(Func<Type> type)
+        {
             ReturnType = type;
         }
 
-        public void AddParameterType(Type parameterType)
+        public IGeneratedParameter CreateArgument<TArgument>()
         {
-            ParameterTypes.Add(parameterType);
+            return CreateArgument(typeof(TArgument));
+        }
+
+        public IGeneratedParameter CreateArgument(Type argumentType)
+        {
+            argCount++;
+
+            var parameter = new GeneratedParameter(argumentType, () => argCount, typeGenerationContext, () => addMethodAction.MethodBuilder.MethodBuilder.GetILGenerator);
+
+            parameters.Add(parameter);
+
+            return parameter;
+        }
+
+        public void AddArguments(Func<List<IGeneratedParameter>> parameters)
+        {
+            foreach(IGeneratedParameter parameter in parameters())
+            {
+                this.parameters.Add(parameter);
+            }
         }
     }
 }

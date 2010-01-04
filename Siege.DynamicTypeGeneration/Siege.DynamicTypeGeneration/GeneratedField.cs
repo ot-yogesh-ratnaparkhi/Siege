@@ -29,6 +29,5 @@ namespace Siege.DynamicTypeGeneration
         }
 
         public Func<FieldInfo> Field { get { return () => action.Field; } }
-        public FieldInfo Source { get { return action.Source; } }
     }
 }

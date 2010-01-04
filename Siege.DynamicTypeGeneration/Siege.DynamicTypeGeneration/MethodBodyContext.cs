@@ -14,6 +14,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Siege.DynamicTypeGeneration
@@ -22,28 +23,67 @@ namespace Siege.DynamicTypeGeneration
     {
         protected readonly GeneratedMethod method;
         protected readonly TypeGenerationContext typeGenerationContext;
+        private readonly BaseMethodGenerationContext context;
 
-        public MethodBodyContext(GeneratedMethod method, TypeGenerationContext typeGenerationContext)
+        public MethodBodyContext(GeneratedMethod method, TypeGenerationContext typeGenerationContext, BaseMethodGenerationContext context)
         {
             this.method = method;
             this.typeGenerationContext = typeGenerationContext;
+            this.context = context;
         }
 
-        public Func<int> Instantiate<TType>()
+        public Func<ILocalIndexer> Instantiate<TType>()
         {
-            return () => this.method.Instantiate(typeof(TType), new Type[0]);
+            return Instantiate(typeof (TType));
         }
 
-        public GeneratedVariable<TVariable> CreateVariable<TVariable>()
+        public Func<ILocalIndexer> Instantiate(Type type)
+        {
+            return () => new LocalIndexer(method.Instantiate(type, new Type[0]));
+        }
+
+        public GeneratedVariable CreateVariable<TVariable>()
         {
             method.AddLocal(typeof(TVariable));
 
-            return new GeneratedVariable<TVariable>(method.LocalCount - 1, typeGenerationContext.TypeGenerationActions, method);
+            return new GeneratedVariable(() => method.LocalCount() - 1, typeGenerationContext.TypeGenerationActions, method);
         }
 
-        public void CallBase(MethodInfo info)
+        public void TargettingSelf()
         {
-            method.CallBase(info, typeGenerationContext.BaseType);
+            method.TargettingSelf();
+        }
+
+        public GeneratedVariable CallBase(MethodInfo info)
+        {
+            return method.CallBase(info, typeGenerationContext.BaseType);
+        }
+
+        public GeneratedVariable Call(Func<MethodInfo> info, Func<List<IGeneratedParameter>> parameters)
+        {
+            return method.Call(info, parameters);
+        }
+
+        public void Return(ILocalIndexer index)
+        {
+            context.ReturnDeclared = true;
+            method.Return(() => index);
+        }
+
+        public void Return()
+        {
+            context.ReturnDeclared = true;
+            method.ReturnFrom();
+        }
+
+        public GeneratedVariable CreateDelegate<TType>(Action<DelegateBodyContext> closure)
+        {
+            closure(new DelegateBodyContext(typeGenerationContext, this.method));
+            method.CreateDelegate(typeof(TType)); 
+
+            var variable = new GeneratedVariable(() => method.LocalCount() - 1, typeGenerationContext.TypeGenerationActions, method);
+            variable.AssignFrom(() => new LocalIndexer(method.LocalCount() - 1));
+            return variable;
         }
     }
 }

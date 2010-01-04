@@ -13,24 +13,27 @@
      limitations under the License.
 */
 
-using System.Reflection;
+using System;
+using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class OverrideMethodAction : ITypeGenerationAction
+    internal class LoadFunctionAction : ITypeGenerationAction
     {
-        private readonly MethodBuilderBundle bundle;
-        private readonly MethodInfo method;
+        private readonly Func<GeneratedMethod> method;
+        private readonly Func<GeneratedMethod> targetMethod;
 
-        public OverrideMethodAction(MethodBuilderBundle bundle, MethodInfo method)
+        public LoadFunctionAction(Func<GeneratedMethod> method, Func<GeneratedMethod> targetMethod)
         {
-            this.bundle = bundle;
             this.method = method;
+            this.targetMethod = targetMethod;
         }
 
         public void Execute()
         {
-            this.bundle.TypeBuilder.DefineMethodOverride(this.bundle.MethodBuilder, method);
+            ILGenerator generator = method().MethodBuilder().MethodBuilder.GetILGenerator();
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldftn, targetMethod().MethodBuilder().MethodBuilder);
         }
     }
 }

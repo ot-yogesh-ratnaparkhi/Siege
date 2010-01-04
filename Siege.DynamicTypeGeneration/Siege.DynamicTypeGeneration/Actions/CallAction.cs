@@ -13,28 +13,30 @@
      limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class CallAction : ITypeGenerationAction
+    internal class CallAction : ITypeGenerationAction, ILocalIndexer
     {
-        protected readonly MethodBuilderBundle bundle;
-        protected readonly MethodInfo method;
+        protected readonly Func<MethodBuilderBundle> bundle;
+        protected readonly Func<MethodInfo> method;
         protected IList<ITypeGenerationAction> actions;
         protected readonly GeneratedMethod generatedMethod;
+        protected int localIndex;
+        private readonly Func<List<IGeneratedParameter>> parameters;
         protected FieldInfo target;
-        protected MethodInfo parametersFrom;
 
-        public CallAction(MethodBuilderBundle bundle, MethodInfo method, IList<ITypeGenerationAction> actions,
-                          GeneratedMethod generatedMethod)
+        public CallAction(Func<MethodBuilderBundle> bundle, Func<MethodInfo> method, IList<ITypeGenerationAction> actions, GeneratedMethod generatedMethod, Func<List<IGeneratedParameter>> parameters)
         {
             this.bundle = bundle;
             this.method = method;
             this.actions = actions;
             this.generatedMethod = generatedMethod;
+            this.parameters = parameters;
         }
 
         public void On(FieldInfo field)
@@ -44,7 +46,14 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         public virtual void Execute()
         {
-            var methodGenerator = this.bundle.MethodBuilder.GetILGenerator();
+            var methodGenerator = bundle().MethodBuilder.GetILGenerator();
+
+            if (method().ReturnType != typeof(void))
+            {
+                methodGenerator.DeclareLocal(method().ReturnType);
+
+                generatedMethod.AddLocal(new Local { Entry = method().ReturnType, Index = generatedMethod.LocalCount() });
+            }
 
             if (target != null)
             {
@@ -52,30 +61,22 @@ namespace Siege.DynamicTypeGeneration.Actions
                 methodGenerator.Emit(OpCodes.Ldfld, target);
             }
 
-            if (parametersFrom != null)
+            if (parameters != null)
             {
-                var parameters = parametersFrom.GetParameters();
-
-                for (int i = 0; i <= parameters.Length; i++)
+                foreach(IGeneratedParameter parameter in parameters())
                 {
-                    methodGenerator.Emit(OpCodes.Ldarg, i);
+                    methodGenerator.Emit(OpCodes.Ldarg, parameter.LocalIndex());
                 }
             }
-            methodGenerator.Emit(OpCodes.Call, method);
+
+            methodGenerator.Emit(OpCodes.Call, method());
+            localIndex = generatedMethod.LocalCount() - 1;
+            if (method().ReturnType != typeof(void)) methodGenerator.Emit(OpCodes.Stloc, localIndex);
         }
 
-        public CallAction WithParametersFrom(MethodInfo info)
+        public Func<int> LocalIndex
         {
-            parametersFrom = info;
-
-            return this;
-        }
-
-        public CallAction CaptureResult()
-        {
-            this.actions.Add(new CaptureCallResultAction(this.bundle, this.method, this.generatedMethod));
-
-            return this;
+            get { return () => localIndex; }
         }
     }
 }

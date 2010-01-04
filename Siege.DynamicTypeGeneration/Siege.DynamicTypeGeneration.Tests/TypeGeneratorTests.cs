@@ -74,8 +74,8 @@ namespace Siege.DynamicTypeGeneration.Tests
                 type.AddMethod(method =>
                 {
                     method.Named("TestMethod");
-                    method.AddParameterType(typeof(string));
-                    method.AddParameterType(typeof(BaseType));
+                    method.CreateArgument<string>();
+                    method.CreateArgument<BaseType>();
                     method.Returns(typeof(void));
                 });
             });
@@ -112,7 +112,7 @@ namespace Siege.DynamicTypeGeneration.Tests
                 {
                     method.WithBody(body =>
                     {
-                        GeneratedVariable<Processor> variable = body.CreateVariable<Processor>();
+                        GeneratedVariable variable = body.CreateVariable<Processor>();
                         variable.AssignFrom(body.Instantiate<Processor>());
 
                         body.CallBase(method.Method);
@@ -136,10 +136,10 @@ namespace Siege.DynamicTypeGeneration.Tests
                 {
                     method.WithBody(body =>
                     {
-                        GeneratedVariable<Processor> variable = body.CreateVariable<Processor>();
+                        GeneratedVariable variable = body.CreateVariable<Processor>();
 
                         variable.AssignFrom(body.Instantiate<Processor>());
-                        variable.Invoke(processor => processor.Process());
+                        variable.Invoke<Processor>(processor => processor.Process());
 
                         body.CallBase(method.Method);
                     });
@@ -161,13 +161,13 @@ namespace Siege.DynamicTypeGeneration.Tests
                 {
                     method.Named("TestMethod");
                     method.Returns(typeof(void));
-                    method.AddParameterType(typeof(string));
+                    method.CreateArgument<string>();
                     method.WithBody(body =>
                     {
-                        GeneratedVariable<Processor> variable = body.CreateVariable<Processor>();
+                        GeneratedVariable variable = body.CreateVariable<Processor>();
 
                         variable.AssignFrom(body.Instantiate<Processor>());
-                        variable.Invoke(processor => processor.Process());
+                        variable.Invoke<Processor>(processor => processor.Process());
                     });
                 });
             });
@@ -233,13 +233,45 @@ namespace Siege.DynamicTypeGeneration.Tests
             Assert.AreEqual(1, generatedType.GetConstructors().Length);
             Assert.IsNotNull(generatedType.GetConstructor(new[] { typeof(string), typeof(BaseType) }));
         }
+
+        [Test]
+        public void Should_Be_Able_To_Create_A_Func_Wrapping_A_Method()
+        {
+            Type generatedType = new TypeGenerator().CreateType(type =>
+            {
+                type.Named("TestType");
+                type.InheritFrom<BaseType>();
+                type.OverrideMethod<BaseType>(baseType => baseType.DoSomething(null), method =>
+                {
+                    method.WithBody(body =>
+                    {
+                        var processor = body.CreateVariable<Processor>();
+                        processor.AssignFrom(body.Instantiate<Processor>());
+
+                        var variable = body.CreateDelegate<string>(delegateBody =>
+                        {
+                            delegateBody.Target(processor, processor.GetMethod<Processor>(proc => proc.Process()));
+                        });
+
+                        var variable1 = body.CreateDelegate<string>(delegateBody =>
+                        {
+                            delegateBody.Target(variable, variable.GetMethod<Func<string>>(func => func.Invoke()));
+                        });
+
+                        body.Return(variable1.Invoke<Func<string>>(func => func.Invoke()));
+                    });
+                });
+            });
+
+            Assert.AreEqual("test", generatedType.GetMethod("DoSomething").Invoke(Activator.CreateInstance(generatedType), new[] { "yay" }));
+        }
     }
 
     public class Processor
     {
-        public void Process()
+        public string Process()
         {
-            
+            return "test";
         }
     }
 
@@ -253,16 +285,20 @@ namespace Siege.DynamicTypeGeneration.Tests
 
     public class SubType : BaseType
     {
-        private readonly string value;
-        private readonly BaseType baseType;
+        private BaseType value;
 
-        public SubType(string value, BaseType baseType)
+        public BaseType Property
         {
-            this.value = value;
-            this.baseType = baseType;
+            get { return value; } 
+            set { this.value = value;}
         }
 
-        public void TestMethod()
+        public SubType(BaseType baseType)
+        {
+            value = baseType;
+        }
+
+        public void TestMethod(Type type)
         {
             
         }
@@ -270,6 +306,7 @@ namespace Siege.DynamicTypeGeneration.Tests
         public override string DoSomething(string val1)
         {
             var processor = new Processor();
+            TestMethod(processor.GetType()); 
             processor.Process();
             return base.DoSomething(val1);
         }

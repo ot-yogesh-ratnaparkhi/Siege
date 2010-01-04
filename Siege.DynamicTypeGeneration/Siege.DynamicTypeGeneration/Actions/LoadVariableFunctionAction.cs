@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,24 +14,29 @@
 */
 
 using System;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    internal class VariableAssignmentAction : ITypeGenerationAction
+    internal class LoadVariableFunctionAction : ITypeGenerationAction
     {
-        private readonly Func<MethodBuilderBundle> bundle;
+        private readonly Func<GeneratedMethod> method;
         private readonly int localIndex;
+        private readonly MethodInfo targetMethod;
 
-        public VariableAssignmentAction(Func<MethodBuilderBundle> bundle, int localIndex)
+        public LoadVariableFunctionAction(Func<GeneratedMethod> method, int localIndex, MethodInfo targetMethod)
         {
-            this.bundle = bundle;
+            this.method = method;
             this.localIndex = localIndex;
+            this.targetMethod = targetMethod;
         }
 
         public void Execute()
         {
-            bundle().MethodBuilder.GetILGenerator().Emit(OpCodes.Stloc, localIndex);
+            ILGenerator generator = method().MethodBuilder().MethodBuilder.GetILGenerator();
+            generator.Emit(OpCodes.Ldloc, localIndex);
+            generator.Emit(OpCodes.Ldftn, targetMethod);
         }
     }
 }

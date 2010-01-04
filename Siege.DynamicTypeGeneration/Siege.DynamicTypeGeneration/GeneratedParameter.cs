@@ -19,19 +19,24 @@ using Siege.DynamicTypeGeneration.Actions;
 
 namespace Siege.DynamicTypeGeneration
 {
-    public class GeneratedParameter
+    public interface IGeneratedParameter : ILocalIndexer
+    {
+        Type Type { get; }
+    }
+
+    public class GeneratedParameter : IGeneratedParameter
     {
         private readonly TypeGenerationContext context;
         private readonly Func<Func<ILGenerator>> builder;
-        public int Index { get; private set; }
+        public Func<int> LocalIndex { get; private set; }
         public Type Type { get; private set; }
 
-        public GeneratedParameter(Type type, int parameterIndex, TypeGenerationContext context, Func<Func<ILGenerator>> builder)
+        public GeneratedParameter(Type type, Func<int> parameterIndex, TypeGenerationContext context, Func<Func<ILGenerator>> builder)
         {
             this.context = context;
             this.builder = builder;
-            Type = type;
-            Index = parameterIndex;
+            this.Type = type;
+            this.LocalIndex = parameterIndex;
         }
 
         public void AssignTo(GeneratedField field)

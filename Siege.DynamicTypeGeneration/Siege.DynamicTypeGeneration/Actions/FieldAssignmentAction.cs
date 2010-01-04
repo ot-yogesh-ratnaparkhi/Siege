@@ -19,13 +19,13 @@ using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class FieldAssignmentAction : ITypeGenerationAction
+    internal class FieldAssignmentAction : ITypeGenerationAction
     {
         private readonly Func<Func<ILGenerator>> bundle;
-        private readonly GeneratedParameter source;
+        private readonly IGeneratedParameter source;
         private Func<FieldInfo> target;
 
-        public FieldAssignmentAction(Func<Func<ILGenerator>> bundle, GeneratedParameter source)
+        public FieldAssignmentAction(Func<Func<ILGenerator>> bundle, IGeneratedParameter source)
         {
             this.bundle = bundle;
             this.source = source;
@@ -38,7 +38,7 @@ namespace Siege.DynamicTypeGeneration.Actions
                 var methodBuilder = this.bundle()();
 
                 methodBuilder.Emit(OpCodes.Ldarg_0);
-                methodBuilder.Emit(OpCodes.Ldarg, source.Index);
+                methodBuilder.Emit(OpCodes.Ldarg, source.LocalIndex());
                 methodBuilder.Emit(OpCodes.Stfld, target());
             }
         }

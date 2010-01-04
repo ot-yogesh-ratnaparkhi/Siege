@@ -20,7 +20,7 @@ using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class AddConstructorAction : ITypeGenerationAction
+    internal class AddConstructorAction : ITypeGenerationAction
     {
         private readonly BuilderBundle builder;
         private readonly Func<List<Type>> types;

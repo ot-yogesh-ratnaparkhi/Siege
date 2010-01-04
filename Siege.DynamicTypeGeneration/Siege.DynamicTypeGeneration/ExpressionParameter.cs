@@ -13,31 +13,29 @@
      limitations under the License.
 */
 
-using System.Collections.Generic;
-using System.Reflection;
-using Siege.DynamicTypeGeneration.Actions;
+using System;
 
 namespace Siege.DynamicTypeGeneration
 {
-    public class CompletedMethod
+    public class ExpressionParameter : IGeneratedParameter
     {
-        private readonly MethodBuilderBundle bundle;
-        private IList<ITypeGenerationAction> actions;
+        private readonly Type type;
+        private readonly int argIndex;
 
-        public MethodInfo Method
+        public ExpressionParameter(Type type, int argIndex)
         {
-            get { return bundle.MethodBuilder; }
+            this.type = type;
+            this.argIndex = argIndex;
         }
 
-        public CompletedMethod(MethodBuilderBundle bundle, IList<ITypeGenerationAction> actions)
+        public Func<int> LocalIndex
         {
-            this.bundle = bundle;
-            this.actions = actions;
+            get { return () => argIndex; }
         }
 
-        public void Override(MethodInfo method)
+        public Type Type
         {
-            this.actions.Add(new OverrideMethodAction(bundle, method));
+            get { return type; }
         }
     }
 }

@@ -20,21 +20,26 @@ using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class CallBaseAction : CallAction
+    internal class CallBaseAction : CallAction
     {
         private readonly Type baseType;
-        private readonly int localIndex;
 
-        public CallBaseAction(MethodBuilderBundle bundle, MethodInfo method, IList<ITypeGenerationAction> actions, Type baseType, GeneratedMethod generatedMethod, int localIndex)
-            : base(bundle, method, actions, generatedMethod)
+        public CallBaseAction(Func<MethodBuilderBundle> bundle, Func<MethodInfo> method, IList<ITypeGenerationAction> actions, Type baseType, GeneratedMethod generatedMethod)
+            : base(bundle, method, actions, generatedMethod, null)
         {
             this.baseType = baseType;
-            this.localIndex = localIndex;
         }
 
         public override void Execute()
         {
-            var methodGenerator = this.bundle.MethodBuilder.GetILGenerator();
+            var methodGenerator = this.bundle().MethodBuilder.GetILGenerator();
+
+            if (method().ReturnType != typeof(void))
+            {
+                methodGenerator.DeclareLocal(method().ReturnType);
+                localIndex = generatedMethod.LocalCount();
+                generatedMethod.AddLocal(new Local { Entry = method().ReturnType, Index = LocalIndex() });
+            }
 
             if (target != null)
             {
@@ -47,7 +52,7 @@ namespace Siege.DynamicTypeGeneration.Actions
             }
 
             List<Type> parameters = new List<Type>();
-            var methodParameters = method.GetParameters();
+            var methodParameters = method().GetParameters();
             
             for (int i = 0; i < methodParameters.Length; i++)
             {
@@ -55,10 +60,10 @@ namespace Siege.DynamicTypeGeneration.Actions
                 methodGenerator.Emit(OpCodes.Ldarg, i+1);
             }
 
-            MethodInfo baseMethod = baseType.GetMethod(method.Name, parameters.ToArray());
+            MethodInfo baseMethod = baseType.GetMethod(method().Name, parameters.ToArray());
             methodGenerator.Emit(OpCodes.Call, baseMethod);
 
-            if (baseMethod.ReturnType != typeof(void)) methodGenerator.Emit(OpCodes.Stloc, localIndex);
+            if (baseMethod.ReturnType != typeof(void)) methodGenerator.Emit(OpCodes.Stloc, LocalIndex());
         }
     }
 }

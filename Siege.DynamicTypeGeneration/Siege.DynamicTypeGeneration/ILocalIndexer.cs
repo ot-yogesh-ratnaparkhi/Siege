@@ -14,24 +14,11 @@
 */
 
 using System;
-using System.Reflection.Emit;
 
-namespace Siege.DynamicTypeGeneration.Actions
+namespace Siege.DynamicTypeGeneration
 {
-    internal class VariableAssignmentAction : ITypeGenerationAction
+    public interface ILocalIndexer
     {
-        private readonly Func<MethodBuilderBundle> bundle;
-        private readonly int localIndex;
-
-        public VariableAssignmentAction(Func<MethodBuilderBundle> bundle, int localIndex)
-        {
-            this.bundle = bundle;
-            this.localIndex = localIndex;
-        }
-
-        public void Execute()
-        {
-            bundle().MethodBuilder.GetILGenerator().Emit(OpCodes.Stloc, localIndex);
-        }
+        Func<int> LocalIndex { get; }
     }
 }

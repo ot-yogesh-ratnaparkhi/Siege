@@ -17,12 +17,12 @@ using System;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class AddLocalAction : ITypeGenerationAction
+    internal class AddLocalAction : ITypeGenerationAction
     {
-        private readonly MethodBuilderBundle bundle;
+        private readonly Func<MethodBuilderBundle> bundle;
         private readonly Type type;
 
-        public AddLocalAction(MethodBuilderBundle bundle, Type type)
+        public AddLocalAction(Func<MethodBuilderBundle> bundle, Type type)
         {
             this.bundle = bundle;
             this.type = type;
@@ -30,7 +30,7 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         public void Execute()
         {
-            var methodGenerator = this.bundle.MethodBuilder.GetILGenerator();
+            var methodGenerator = this.bundle().MethodBuilder.GetILGenerator();
             methodGenerator.DeclareLocal(type);
         }
     }

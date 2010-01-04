@@ -4,7 +4,7 @@ using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class DefineTypeAction : ITypeGenerationAction
+    internal class DefineTypeAction : ITypeGenerationAction
     {
         private readonly BuilderBundle bundle;
         private readonly Func<string> typeName;

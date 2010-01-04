@@ -13,16 +13,17 @@
      limitations under the License.
 */
 
+using System;
 using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class VariableLoadAction : ITypeGenerationAction
+    internal class VariableLoadAction : ITypeGenerationAction
     {
         private readonly GeneratedMethod method;
-        private readonly int localIndex;
+        private readonly Func<int> localIndex;
 
-        public VariableLoadAction(GeneratedMethod method, int localIndex)
+        public VariableLoadAction(GeneratedMethod method, Func<int> localIndex)
         {
             this.method = method;
             this.localIndex = localIndex;
@@ -30,9 +31,9 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         public void Execute()
         {
-            var methodGenerator = method.MethodBuilder.MethodBuilder.GetILGenerator();
+            var methodGenerator = method.MethodBuilder().MethodBuilder.GetILGenerator();
 
-            methodGenerator.Emit(OpCodes.Ldloc, localIndex);
+            methodGenerator.Emit(OpCodes.Ldloc, localIndex());
         }
     }
 }

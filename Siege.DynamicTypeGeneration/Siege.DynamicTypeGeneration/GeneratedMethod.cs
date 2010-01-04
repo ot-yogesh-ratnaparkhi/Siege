@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
 using Siege.DynamicTypeGeneration.Actions;
 
 namespace Siege.DynamicTypeGeneration
@@ -27,20 +26,35 @@ namespace Siege.DynamicTypeGeneration
         public int Index { get; set; }
     }
 
-    public class GeneratedMethod
+    public class LocalIndexer : ILocalIndexer
     {
-        private readonly MethodBuilderBundle bundle;
-        private IList<ITypeGenerationAction> actions;
-        private List<Local> locals = new List<Local>();
-        internal int LocalCount { get; set; }
-        internal MethodBuilderBundle MethodBuilder { get { return bundle; } }
-        public List<Local> Locals
+        private readonly int localIndex;
+
+        public LocalIndexer(int localIndex)
         {
-            get { return locals; }
+            this.localIndex = localIndex;
         }
 
+        public Func<int> LocalIndex
+        {
+            get { return () => localIndex; }
+        }
+    }
 
-        public GeneratedMethod(MethodBuilderBundle bundle, IList<ITypeGenerationAction> actions)
+    public class GeneratedMethod
+    {
+        private readonly Func<MethodBuilderBundle> bundle;
+        private IList<ITypeGenerationAction> actions;
+        private List<Local> locals = new List<Local>();
+        internal Func<int> LocalCount { get { return () => locals.Count;} }
+        internal Func<MethodBuilderBundle> MethodBuilder { get { return bundle; } }
+        
+        public Func<List<Local>> Locals
+        {
+            get { return () => locals; }
+        }
+
+        public GeneratedMethod(Func<MethodBuilderBundle> bundle, IList<ITypeGenerationAction> actions)
         {
             this.bundle = bundle;
             this.actions = actions;
@@ -50,56 +64,77 @@ namespace Siege.DynamicTypeGeneration
         {
             actions.Add(new InstantiationAction(bundle, type, constructorArguments));
 
-            return LocalCount - 1;
+            return LocalCount() - 1;
         }
 
-        public CallAction Call(MethodInfo method)
+        public GeneratedVariable Call(Func<MethodInfo> method, Func<List<IGeneratedParameter>> parameters)
         {
-            var action = new CallAction(bundle, method, actions, this);
+            var action = new CallAction(bundle, method, actions, this, parameters);
             actions.Add(action);
 
-            return action;
+            return new GeneratedVariable(action.LocalIndex, actions, this);
         }
 
-        public CompletedMethod ReturnFrom(Func<MethodBuilder> method)
+        public void ReturnFrom()
         {
-            actions.Add(new ReturnAction(bundle, method, this));
-
-            return new CompletedMethod(bundle, actions);
+            Return(() => new LocalIndexer(LocalCount() - 1));
         }
 
-        public CallBaseAction CallBase(MethodInfo method, Type baseType)
+        public void Return(Func<ILocalIndexer> localIndex)
         {
-            if (method.ReturnType != typeof(void)) AddLocal(method.ReturnType);
+            actions.Add(new ReturnAction(bundle, localIndex));
+        }
 
-            var action = new CallBaseAction(bundle, method, actions, baseType, this, LocalCount - 1);
+        public void TargettingSelf()
+        {
+            actions.Add(new LoadThisAction(this));
+        }
+
+        public GeneratedVariable CallBase(MethodInfo method, Type baseType)
+        {
+            var action = new CallBaseAction(bundle, () => method, actions, baseType, this);
             actions.Add(action);
 
-            return action;
+            return new GeneratedVariable(action.LocalIndex, actions, this);
         }
 
-        public CreateFuncAction UsingFunc(Type type)
+        public void CreateDelegate(Type type)
         {
-            var action = new CreateFuncAction(bundle, type, actions, this);
-            return action;
+            var action = new CreateDelegateAction(bundle, type);
+
+            AddLocal(action.DelegateType);
+            actions.Add(action);
         }
 
         internal void AddLocal(Type item)
         {
-            LocalCount++;
             var local = new AddLocalAction(bundle, item);
 
-            Locals.Add(new Local { Entry = item, Index = LocalCount });
+            locals.Add(new Local { Entry = item, Index = LocalCount() });
             actions.Add(local);
         }
 
         internal void AddLocal(Func<MethodInfo> item)
         {
-            LocalCount++;
             var local = new AddLocalAction(bundle, item().ReturnType);
 
-            Locals.Add(new Local { Entry = item, Index = LocalCount });
+            locals.Add(new Local { Entry = item, Index = LocalCount() });
             actions.Add(local);
+        }
+
+        internal void AddLocal(Local item)
+        {
+            locals.Add(item);
+        }
+
+        public void Target(Func<GeneratedMethod> method)
+        {
+            actions.Add(new LoadFunctionAction(() => this, method));
+        }
+
+        public void Target(GeneratedVariable variable, MethodInfo method)
+        {
+            actions.Add(new LoadVariableFunctionAction(() => this, variable.LocalIndex(), method));
         }
     }
 }

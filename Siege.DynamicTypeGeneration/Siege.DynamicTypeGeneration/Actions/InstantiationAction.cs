@@ -18,13 +18,13 @@ using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class InstantiationAction : ITypeGenerationAction
+    internal class InstantiationAction : ITypeGenerationAction
     {
-        private readonly MethodBuilderBundle bundle;
+        private readonly Func<MethodBuilderBundle> bundle;
         private readonly Type type;
         private readonly Type[] constructorArguments;
 
-        public InstantiationAction(MethodBuilderBundle bundle, Type type, Type[] constructorArguments)
+        public InstantiationAction(Func<MethodBuilderBundle> bundle, Type type, Type[] constructorArguments)
         {
             this.bundle = bundle;
             this.type = type;
@@ -33,7 +33,7 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         public void Execute()
         {
-            ILGenerator generator = this.bundle.MethodBuilder.GetILGenerator();
+            ILGenerator generator = this.bundle().MethodBuilder.GetILGenerator();
 
             generator.Emit(OpCodes.Newobj, type.GetConstructor(constructorArguments));
         }

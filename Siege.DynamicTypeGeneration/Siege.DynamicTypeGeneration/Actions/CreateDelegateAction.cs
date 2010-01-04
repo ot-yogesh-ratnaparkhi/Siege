@@ -13,25 +13,40 @@
      limitations under the License.
 */
 
+using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class CaptureCallResultAction : ITypeGenerationAction
+    internal class CreateDelegateAction : ITypeGenerationAction
     {
-        private readonly MethodBuilderBundle bundle;
+        private readonly Func<MethodBuilderBundle> bundle;
+        private ConstructorInfo delegateConstructor;
+        internal Type DelegateType { get; private set; }
 
-        public CaptureCallResultAction(MethodBuilderBundle bundle, MethodInfo method, GeneratedMethod generatedMethod)
+        public CreateDelegateAction(Func<MethodBuilderBundle> bundle, Type returnType)
         {
             this.bundle = bundle;
+
+            if (returnType == typeof(void))
+            {
+                DelegateType = typeof(Action);
+            }
+            else
+            {
+                DelegateType = typeof(Func<>).MakeGenericType(returnType);
+            }
+
+            delegateConstructor = DelegateType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
+			
         }
 
         public void Execute()
         {
-            var methodGenerator = this.bundle.MethodBuilder.GetILGenerator();
+            var methodGenerator = bundle().MethodBuilder.GetILGenerator();
 
-            methodGenerator.Emit(OpCodes.Stloc_0);
+            methodGenerator.Emit(OpCodes.Newobj, delegateConstructor);
         }
     }
 }

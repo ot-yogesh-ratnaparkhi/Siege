@@ -19,17 +19,17 @@ using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class AddMethodAction : ITypeGenerationAction
+    internal class AddMethodAction : ITypeGenerationAction
     {
-        private readonly Func<Type> returnType;
+        private readonly Func<Func<Type>> returnType;
         private readonly Func<Type[]> parameterTypes;
         private readonly bool isOverride;
-        private MethodBuilderBundle bundle;
+        internal MethodBuilderBundle MethodBuilder { get; private set; }
         private readonly BuilderBundle builderBundle;
-        private readonly Func<string> methodName;
+        private readonly Func<Func<string>> methodName;
         private MethodBuilder methodBuilder;
 
-        public AddMethodAction(BuilderBundle bundle, Func<string> methodName, Func<Type> returnType, Func<Type[]> parameterTypes, bool isOverride)
+        public AddMethodAction(BuilderBundle bundle, Func<Func<string>> methodName, Func<Func<Type>> returnType, Func<Type[]> parameterTypes, bool isOverride)
         {
             this.builderBundle = bundle;
             this.methodName = methodName;
@@ -38,19 +38,17 @@ namespace Siege.DynamicTypeGeneration.Actions
             this.isOverride = isOverride;
         }
 
-        public Func<MethodBuilder> MethodBuilder { get { return () => bundle.MethodBuilder; } }
-
         public void Execute()
         {
             var methodAttributes = MethodAttributes.Public;
             if (isOverride) methodAttributes |= MethodAttributes.Virtual;
             
             methodBuilder = builderBundle.TypeBuilder.DefineMethod(
-                methodName(),
+                methodName()(),
                 methodAttributes,
-                returnType(), parameterTypes());
+                returnType()(), parameterTypes());
 
-            this.bundle = new MethodBuilderBundle(builderBundle, () => methodBuilder);
+            this.MethodBuilder = new MethodBuilderBundle(builderBundle, methodBuilder);
         }
     }
 }

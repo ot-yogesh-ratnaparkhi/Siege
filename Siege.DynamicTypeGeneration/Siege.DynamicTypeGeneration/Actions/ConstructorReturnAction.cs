@@ -18,7 +18,7 @@ using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class ConstructorReturnAction : ITypeGenerationAction
+    internal class ConstructorReturnAction : ITypeGenerationAction
     {
         private readonly Func<ConstructorBuilder> constructorBuilder;
 

@@ -27,20 +27,21 @@ namespace Siege.DynamicTypeGeneration
 
     public class MethodBuilderBundle : BuilderBundle
     {
-        private readonly Func<MethodBuilder> func;
+        private readonly MethodBuilder builder;
+
         public MethodBuilder MethodBuilder
         {
             get
             {
-                return func();
+                return builder;
             }
         }
 
-        public MethodBuilderBundle(BuilderBundle bundle, Func<MethodBuilder> func)
+        public MethodBuilderBundle(BuilderBundle bundle, MethodBuilder builder)
         {
+            this.builder = builder;
             this.TypeBuilderDelegate = bundle.TypeBuilderDelegate;
             this.ModuleBuilder = bundle.ModuleBuilder;
-            this.func = func;
         }
     }
 }

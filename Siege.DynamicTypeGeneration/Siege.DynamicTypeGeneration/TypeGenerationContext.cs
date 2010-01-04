@@ -45,7 +45,7 @@ namespace Siege.DynamicTypeGeneration
             if (!ConstructorAdded) AddDefaultConstructor();
         }
 
-        public void InheritFrom<TBaseType>()
+        public void InheritFrom<TBaseType>() where TBaseType : class
         {
             BaseType = typeof (TBaseType);
         }
@@ -61,25 +61,31 @@ namespace Siege.DynamicTypeGeneration
             ConstructorAdded = true;
         }
 
-        public void AddMethod(Action<MethodGenerationContext> nestedClosure)
+        public GeneratedMethod AddMethod(Action<MethodGenerationContext> nestedClosure)
         {
             var context = new MethodGenerationContext(this, nestedClosure);
 
-            context.GeneratedMethod.ReturnFrom(() => context.GeneratedMethod.MethodBuilder.MethodBuilder);
+            if(!context.ReturnDeclared) context.GeneratedMethod.ReturnFrom();
+
+            return context.GeneratedMethod;
         }
 
         public void OverrideMethod<TBaseType>(Expression<Action<TBaseType>> expression, Action<OverrideMethodContext> nestedClosure)
         {
-            MethodInfo info = ((MethodCallExpression)expression.Body).Method;
-            var addMethodAction = new AddMethodAction(this.Builder, () => info.Name, () => info.ReturnType, () => info.GetParameters().Select(p => p.ParameterType).ToArray(), true);
+            OverrideMethod(((MethodCallExpression)expression.Body).Method, nestedClosure);
+        }
+
+        public void OverrideMethod(MethodInfo info, Action<OverrideMethodContext> nestedClosure)
+        {
+            var addMethodAction = new AddMethodAction(this.Builder, () => () => info.Name, () => () => info.ReturnType, () => info.GetParameters().Select(p => p.ParameterType).ToArray(), true);
             this.TypeGenerationActions.Add(addMethodAction);
-            
-            var method = new GeneratedMethod(new MethodBuilderBundle(this.Builder, addMethodAction.MethodBuilder), this.TypeGenerationActions);
-            
+
+            var method = new GeneratedMethod(() => addMethodAction.MethodBuilder, this.TypeGenerationActions);
+
             var context = new OverrideMethodContext(info, method, this);
             nestedClosure(context);
 
-            method.ReturnFrom(addMethodAction.MethodBuilder);
+            if (!context.ReturnDeclared) method.ReturnFrom();
         }
 
         public void AddConstructor(Action<ConstructorGenerationContext> nestedClosure)
@@ -90,7 +96,12 @@ namespace Siege.DynamicTypeGeneration
 
         public GeneratedField AddField<TFieldType>(string fieldName)
         {
-            var action = new AddFieldAction(this.Builder, fieldName, typeof (TFieldType));
+            return AddField(typeof (TFieldType), fieldName);
+        }
+
+        public GeneratedField AddField(Type type, string fieldName)
+        {
+            var action = new AddFieldAction(this.Builder, () => fieldName, () => type);
             this.TypeGenerationActions.Add(action);
 
             return new GeneratedField(action);

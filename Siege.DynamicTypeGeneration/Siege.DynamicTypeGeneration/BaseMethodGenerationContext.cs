@@ -21,6 +21,7 @@ namespace Siege.DynamicTypeGeneration
     {
         internal GeneratedMethod GeneratedMethod { get; private set; }
         private readonly TypeGenerationContext typeGenerationContext;
+        internal bool ReturnDeclared { get; set; }
 
         protected BaseMethodGenerationContext(TypeGenerationContext typeGenerationContext)
         {
@@ -34,7 +35,7 @@ namespace Siege.DynamicTypeGeneration
 
         public void WithBody(Action<MethodBodyContext> nestedClosure)
         {
-            var context = new MethodBodyContext(GeneratedMethod, typeGenerationContext);
+            var context = new MethodBodyContext(GeneratedMethod, typeGenerationContext, this);
 
             nestedClosure(context);
         }
