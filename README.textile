@@ -1,5 +1,6 @@
 h1. Siege - A set of general abstraction frameworks for .NET
 
+* "Introduction":http://www.lostechies.com/blogs/marcus_bratton/archive/2009/12/06/introducing-siege.aspx
 * "The Siege Project: Siege.ServiceLocation Part 1 - Introduction and General Use":http://www.lostechies.com/blogs/marcus_bratton/archive/2009/12/06/the-siege-project-siege-servicelocation.aspx
 * "The Siege Project: Siege.ServiceLocation, Part 2 - Contextual Registration and Resolution":http://www.lostechies.com/blogs/marcus_bratton/archive/2009/12/09/the-siege-project-siege-servicelocation-part-2-contextual-registration-and-resolution.aspx
 * "The Siege Project: Siege.ServiceLocation, Part 3 – Extending the container with custom use cases":http://www.lostechies.com/blogs/marcus_bratton/archive/2009/12/10/the-siege-project-siege-servicelocation-part-3-extending-the-container-with-custom-use-cases.aspx
