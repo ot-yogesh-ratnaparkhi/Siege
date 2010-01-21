@@ -22,7 +22,6 @@ namespace Siege.DynamicTypeGeneration
 {
     public class MethodGenerationContext : BaseMethodGenerationContext
     {
-        private readonly TypeGenerationContext typeGenerationContext;
         internal Func<List<IGeneratedParameter>> ParameterTypes { get { return () => parameters; } }
         internal Func<string> Name { get; private set; }
         internal Func<Type> ReturnType { get; private set; }
@@ -31,10 +30,8 @@ namespace Siege.DynamicTypeGeneration
         private int argCount;
         private AddMethodAction addMethodAction;
 
-        public MethodGenerationContext(TypeGenerationContext typeGenerationContext, Action<MethodGenerationContext> closure) : base(typeGenerationContext)
+        public MethodGenerationContext(BaseTypeGenerationContext typeGenerationContext, Action<MethodGenerationContext> closure) : base(typeGenerationContext)
         {
-            this.typeGenerationContext = typeGenerationContext;
-
             addMethodAction = new AddMethodAction(typeGenerationContext.Builder, () => Name, () => ReturnType, GetParameters, false);
             typeGenerationContext.TypeGenerationActions.Add(addMethodAction);
 
@@ -83,7 +80,7 @@ namespace Siege.DynamicTypeGeneration
         {
             argCount++;
 
-            var parameter = new GeneratedParameter(argumentType, () => argCount, typeGenerationContext, () => addMethodAction.MethodBuilder.MethodBuilder.GetILGenerator);
+            var parameter = new GeneratedParameter(argumentType, argCount, typeGenerationContext, () => addMethodAction.MethodBuilder.MethodBuilder.GetILGenerator);
 
             parameters.Add(parameter);
 

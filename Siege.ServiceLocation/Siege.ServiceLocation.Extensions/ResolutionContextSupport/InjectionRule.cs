@@ -15,6 +15,7 @@
 
 using System;
 using Siege.ServiceLocation.Rules;
+using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
 {
@@ -52,7 +53,7 @@ namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
             return useCase;
         }
 
-        public IInjectionUseCase<TService> Then(TService implementation)
+        public IInstanceUseCase Then(TService implementation)
         {
             InjectionInstanceUseCase<TService> useCase = new InjectionInstanceUseCase<TService>();
 

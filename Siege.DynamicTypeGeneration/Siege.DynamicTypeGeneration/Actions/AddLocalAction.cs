@@ -20,9 +20,9 @@ namespace Siege.DynamicTypeGeneration.Actions
     internal class AddLocalAction : ITypeGenerationAction
     {
         private readonly Func<MethodBuilderBundle> bundle;
-        private readonly Type type;
+        private readonly Func<Type> type;
 
-        public AddLocalAction(Func<MethodBuilderBundle> bundle, Type type)
+        public AddLocalAction(Func<MethodBuilderBundle> bundle, Func<Type> type)
         {
             this.bundle = bundle;
             this.type = type;
@@ -31,7 +31,7 @@ namespace Siege.DynamicTypeGeneration.Actions
         public void Execute()
         {
             var methodGenerator = this.bundle().MethodBuilder.GetILGenerator();
-            methodGenerator.DeclareLocal(type);
+            methodGenerator.DeclareLocal(type());
         }
     }
 }

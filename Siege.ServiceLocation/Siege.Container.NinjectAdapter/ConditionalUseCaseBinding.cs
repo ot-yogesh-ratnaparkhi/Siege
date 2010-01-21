@@ -13,6 +13,7 @@
      limitations under the License.
 */
 
+using System;
 using Ninject;
 using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.UseCases;
@@ -35,6 +36,15 @@ namespace Siege.ServiceLocation.NinjectAdapter
 
             kernel.Bind<TService>().ToMethod(context => factory.Build());
             kernel.Bind(useCase.GetBoundType()).ToSelf();
+        }
+
+        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+        {
+            var factory = (Factory<TService>)locator.GetFactory<TService>();
+            factory.AddCase(useCase);
+
+            kernel.Bind<TService>().ToMethod(context => factory.Build());
+            kernel.Bind(useCase.GetBoundType()).ToConstant(useCase.GetBinding());
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Siege.DynamicTypeGeneration.Actions
                 var methodBuilder = this.bundle()();
 
                 methodBuilder.Emit(OpCodes.Ldarg_0);
-                methodBuilder.Emit(OpCodes.Ldarg, source.LocalIndex());
+                methodBuilder.Emit(OpCodes.Ldarg, source.LocalIndex);
                 methodBuilder.Emit(OpCodes.Stfld, target());
             }
         }

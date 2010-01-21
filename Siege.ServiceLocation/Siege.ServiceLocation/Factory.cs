@@ -16,6 +16,8 @@
 using System.Collections.Generic;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Conditional;
+using Siege.ServiceLocation.UseCases.Default;
 
 namespace Siege.ServiceLocation
 {

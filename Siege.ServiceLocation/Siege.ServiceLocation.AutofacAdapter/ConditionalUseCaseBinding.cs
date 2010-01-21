@@ -43,5 +43,19 @@ namespace Siege.ServiceLocation.AutofacAdapter
 
             builder.Build(container);
         }
+
+        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+        {
+            var factory = (Factory<TService>)locator.GetFactory<TService>();
+            factory.AddCase(useCase);
+
+            var builder = new ContainerBuilder();
+
+            if (!container.IsRegistered<IEnumerable<TService>>()) builder.RegisterCollection<TService>().As<IEnumerable<TService>>();
+            builder.Register((c => factory.Build())).As<TService>().FactoryScoped().MemberOf<IEnumerable<TService>>();
+            builder.Register(c => useCase.GetBinding());
+
+            builder.Build(container);
+        }
     }
 }

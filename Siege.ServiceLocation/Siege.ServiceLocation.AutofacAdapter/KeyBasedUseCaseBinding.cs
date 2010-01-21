@@ -17,6 +17,7 @@ using Autofac;
 using Autofac.Builder;
 using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Named;
 
 namespace Siege.ServiceLocation.AutofacAdapter
 {
@@ -34,11 +35,25 @@ namespace Siege.ServiceLocation.AutofacAdapter
             Bind((IKeyBasedUseCase<TService>)useCase);
         }
 
+        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+        {
+            BindInstance((IKeyBasedInstanceUseCase) useCase);
+        }
+
+        private void BindInstance(IKeyBasedInstanceUseCase useCase)
+        {
+            var builder = new ContainerBuilder();
+
+            builder.Register(c => useCase.GetBinding()).Named(useCase.Key);
+
+            builder.Build(container);
+        }
+
         private void Bind(IKeyBasedUseCase<TService> useCase)
         {
             var builder = new ContainerBuilder();
 
-            builder.Register(useCase.GetBoundType()).Named(useCase.Key).FactoryScoped();
+            builder.Register(useCase.GetBoundType()).Named(useCase.Key);
 
             builder.Build(container);
         }

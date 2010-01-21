@@ -15,60 +15,65 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
-using Siege.DynamicTypeGeneration.Actions;
 
 namespace Siege.DynamicTypeGeneration
 {
     public class DelegateBodyContext
     {
-        private readonly TypeGenerationContext context;
-        private readonly GeneratedMethod method;
+        private readonly MethodBodyContext context;
+        private readonly DelegateGenerator generator;
 
-        public DelegateBodyContext(TypeGenerationContext context, GeneratedMethod method)
+        public DelegateBodyContext(MethodBodyContext context, DelegateGenerator generator)
         {
             this.context = context;
-            this.method = method;
+            this.generator = generator;
         }
 
-        public Func<GeneratedMethod> WrappingMethod(MethodInfo methodInfo)
+        public MethodInfo Target<TTarget>(Expression<Action<TTarget>> expression)
         {
-            var action = new WrapMethodAction(context, () => methodInfo, GetParameters(methodInfo));
-            context.TypeGenerationActions.Add(action);
+            MethodCallExpression methodCall = expression.Body as MethodCallExpression;
 
-            return () => action.GeneratedMethod;
-        }
+            List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
 
-        public Func<GeneratedMethod> WrappingMethod(Func<GeneratedMethod> methodInfo, MethodInfo method)
-        {
-            var action = new WrapMethodAction(context, methodInfo().MethodBuilder, GetParameters(method));
-            context.TypeGenerationActions.Add(action);
-
-            return () => action.GeneratedMethod;
-        }
-
-
-        private List<IGeneratedParameter> GetParameters(MethodInfo info)
-        {
-            var parameters = new List<IGeneratedParameter>();
             int counter = 1;
-            foreach (ParameterInfo parameterInfo in info.GetParameters())
+            foreach (ParameterInfo parameter in methodCall.Method.GetParameters())
             {
-                parameters.Add(new ExpressionParameter(parameterInfo.ParameterType, counter));
+                generator.WithArgument(parameter.ParameterType);
+                parameters.Add(new ExpressionParameter(parameter.ParameterType, counter));
+
                 counter++;
             }
 
-            return parameters;
+            Target(null, parameters, methodCall.Method.Name, () => methodCall.Method);
+
+            return methodCall.Method;
         }
 
-        public void Target(Func<GeneratedMethod> generatedMethod)
+        public MethodInfo Target<TTarget>(GeneratedVariable variable, Expression<Action<TTarget>> expression)
         {
-            method.Target(generatedMethod);
+            MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+
+            List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
+
+            int counter = 1;
+            foreach (ParameterInfo parameter in methodCall.Method.GetParameters())
+            {
+                generator.WithArgument(parameter.ParameterType);
+                parameters.Add(new ExpressionParameter(parameter.ParameterType, counter));
+
+                counter++;
+            }
+
+            Target(variable, parameters, methodCall.Method.Name, () => methodCall.Method);
+
+            return methodCall.Method;
         }
 
-        public void Target(GeneratedVariable variable, MethodInfo info)
+        public void Target(GeneratedVariable variable, List<IGeneratedParameter> parameters, string methodName, Func<MethodInfo> info)
         {
-            method.Target(variable, info);
+            generator.AddMethod(methodName, context.WrapMethod(info, parameters));
         }
     }
 }

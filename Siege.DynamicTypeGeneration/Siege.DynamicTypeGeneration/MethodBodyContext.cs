@@ -16,18 +16,21 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
+using Siege.DynamicTypeGeneration.Actions;
 
 namespace Siege.DynamicTypeGeneration
 {
     public class MethodBodyContext
     {
-        protected readonly GeneratedMethod method;
-        protected readonly TypeGenerationContext typeGenerationContext;
+        internal GeneratedMethod GeneratedMethod { get; set; }
+        internal readonly BaseTypeGenerationContext typeGenerationContext;
         private readonly BaseMethodGenerationContext context;
+        private int index;
 
-        public MethodBodyContext(GeneratedMethod method, TypeGenerationContext typeGenerationContext, BaseMethodGenerationContext context)
+        public MethodBodyContext(GeneratedMethod method, BaseTypeGenerationContext typeGenerationContext, BaseMethodGenerationContext context)
         {
-            this.method = method;
+            this.GeneratedMethod = method;
             this.typeGenerationContext = typeGenerationContext;
             this.context = context;
         }
@@ -39,51 +42,103 @@ namespace Siege.DynamicTypeGeneration
 
         public Func<ILocalIndexer> Instantiate(Type type)
         {
-            return () => new LocalIndexer(method.Instantiate(type, new Type[0]));
+            return Instantiate(type, new Type[0]);
+        }
+
+        public Func<ILocalIndexer> Instantiate(Func<ConstructorBuilder> type)
+        {
+            return () => new LocalIndexer(GeneratedMethod.Instantiate(type));
+        }
+
+        public Func<ILocalIndexer> Instantiate(Type type, Type[] constructorArguments)
+        {
+            return () => new LocalIndexer(GeneratedMethod.Instantiate(type, constructorArguments));
+        }
+
+        public Func<ILocalIndexer> Instantiate(Func<BuilderBundle> type, Type[] constructorArguments)
+        {
+            return () => new LocalIndexer(GeneratedMethod.Instantiate(type, constructorArguments));
+        }
+
+        public GeneratedVariable CreateVariable(Type variableType)
+        {
+            GeneratedMethod.AddLocal(variableType);
+
+            return new GeneratedVariable(variableType, GeneratedMethod.LocalCount - 1, typeGenerationContext.TypeGenerationActions, GeneratedMethod);
+        }
+
+        public GeneratedVariable CreateVariable(Func<BuilderBundle> variableType)
+        {
+            GeneratedMethod.AddLocal(variableType);
+
+            return new GeneratedVariable(variableType, GeneratedMethod.LocalCount - 1, typeGenerationContext.TypeGenerationActions, GeneratedMethod);
+        }
+
+        public GeneratedVariable CreateVariable(Func<Type> variableType)
+        {
+            GeneratedMethod.AddLocal(variableType);
+
+            return new GeneratedVariable(variableType, GeneratedMethod.LocalCount - 1, typeGenerationContext.TypeGenerationActions, GeneratedMethod);
         }
 
         public GeneratedVariable CreateVariable<TVariable>()
         {
-            method.AddLocal(typeof(TVariable));
-
-            return new GeneratedVariable(() => method.LocalCount() - 1, typeGenerationContext.TypeGenerationActions, method);
+            return CreateVariable(typeof (TVariable));
         }
 
         public void TargettingSelf()
         {
-            method.TargettingSelf();
+            GeneratedMethod.TargettingSelf();
         }
 
-        public GeneratedVariable CallBase(MethodInfo info)
+        public void Target(GeneratedVariable variable)
         {
-            return method.CallBase(info, typeGenerationContext.BaseType);
+            this.typeGenerationContext.TypeGenerationActions.Add(new VariableLoadAction(GeneratedMethod, variable.LocalIndex));
         }
 
-        public GeneratedVariable Call(Func<MethodInfo> info, Func<List<IGeneratedParameter>> parameters)
+        public ILocalIndexer CallBase(MethodInfo info)
         {
-            return method.Call(info, parameters);
+            return GeneratedMethod.CallBase(info, typeGenerationContext.BaseType);
+        }
+
+        public ILocalIndexer Call(Func<MethodInfo> info, Func<List<IGeneratedParameter>> parameters)
+        {
+            return GeneratedMethod.Call(info, parameters);
+        }
+
+        public ILocalIndexer Call(Func<MethodInfo> info, Func<List<GeneratedField>> fields)
+        {
+            return GeneratedMethod.Call(info, fields);
         }
 
         public void Return(ILocalIndexer index)
         {
             context.ReturnDeclared = true;
-            method.Return(() => index);
+            GeneratedMethod.Return(() => index);
         }
 
         public void Return()
         {
             context.ReturnDeclared = true;
-            method.ReturnFrom();
+            GeneratedMethod.ReturnFrom();
         }
 
-        public GeneratedVariable CreateDelegate<TType>(Action<DelegateBodyContext> closure)
+        public GeneratedDelegate CreateLambda(Type type, Action<DelegateBodyContext> closure)
         {
-            closure(new DelegateBodyContext(typeGenerationContext, this.method));
-            method.CreateDelegate(typeof(TType)); 
+            var generator = new DelegateGenerator(typeGenerationContext);
+            closure(new DelegateBodyContext(this, generator));
+            generator.Build();
 
-            var variable = new GeneratedVariable(() => method.LocalCount() - 1, typeGenerationContext.TypeGenerationActions, method);
-            variable.AssignFrom(() => new LocalIndexer(method.LocalCount() - 1));
-            return variable;
+            return new GeneratedDelegate(this, this.GeneratedMethod, generator);
+        }
+
+        public Func<GeneratedMethod> WrapMethod(Func<MethodInfo> methodInfo, List<IGeneratedParameter> parameters)
+        {
+            index++;
+            var action = new WrapMethodAction(this.typeGenerationContext, methodInfo, parameters, index);
+            this.typeGenerationContext.TypeGenerationActions.Add(action);
+
+            return () => action.GeneratedMethod;
         }
     }
 }

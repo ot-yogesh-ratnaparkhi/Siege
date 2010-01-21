@@ -21,7 +21,7 @@ namespace Siege.DynamicTypeGeneration
     {
         private readonly MethodInfo info;
 
-        public OverrideMethodContext(MethodInfo info, GeneratedMethod method, TypeGenerationContext typeGenerationContext) : base(typeGenerationContext)
+        public OverrideMethodContext(MethodInfo info, GeneratedMethod method, BaseTypeGenerationContext typeGenerationContext) : base(typeGenerationContext)
         {
             this.info = info;
             SetMethod(method);

@@ -15,6 +15,7 @@
 
 using System;
 using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Conditional;
 
 namespace Siege.ServiceLocation.UnitTests.RegistrationExtensions
 {

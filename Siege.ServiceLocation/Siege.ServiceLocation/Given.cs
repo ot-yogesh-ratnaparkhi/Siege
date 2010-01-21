@@ -16,6 +16,8 @@
 using System;
 using Siege.ServiceLocation.Rules;
 using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Default;
+using Siege.ServiceLocation.UseCases.Named;
 
 namespace Siege.ServiceLocation
 {
@@ -44,7 +46,7 @@ namespace Siege.ServiceLocation
             return useCase;
         }
 
-        public static IDefaultUseCase<TBaseService> Then(TBaseService implementation)
+        public static IInstanceUseCase Then(TBaseService implementation)
         {
             DefaultInstanceUseCase<TBaseService> useCase = new DefaultInstanceUseCase<TBaseService>();
 
@@ -53,7 +55,7 @@ namespace Siege.ServiceLocation
             return useCase;
         }
 
-        public static IKeyBasedUseCase<TBaseService> Then(string key, TBaseService implementation)
+        public static IInstanceUseCase Then(string key, TBaseService implementation)
         {
             KeyBasedInstanceUseCase<TBaseService> useCase = new KeyBasedInstanceUseCase<TBaseService>(key);
 

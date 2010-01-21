@@ -22,32 +22,25 @@ using Siege.DynamicTypeGeneration.Actions;
 
 namespace Siege.DynamicTypeGeneration
 {
-    public class TypeGenerationContext
+    public class BaseTypeGenerationContext
     {
-        internal BuilderBundle Builder { get; private set; }
-        internal IList<ITypeGenerationAction> TypeGenerationActions { get; private set; }
-        internal Type BaseType { get; private set; }
-        internal string TypeName { get; private set; }
-        internal bool ConstructorAdded { get; private set; }
+        internal readonly TypeGenerator typeGenerator;
+        internal List<Func<BuilderBundle>> TypesToComplete { get; set; }
+        internal Func<BuilderBundle> Builder { get; set; }
+        internal IList<ITypeGenerationAction> TypeGenerationActions { get; set; }
+        internal Type BaseType { get; set; }
+        internal string TypeName { get; set; }
+        internal bool ConstructorAdded { get; set; }
 
-        public TypeGenerationContext(BuilderBundle bundle, Action<TypeGenerationContext> nestedClosure)
+        public BaseTypeGenerationContext(TypeGenerator generator)
         {
-            BaseType = typeof(object);
-            TypeGenerationActions = new List<ITypeGenerationAction>();
-
-            var defineTypeAction = new DefineTypeAction(bundle, () => TypeName, () => BaseType);
-            this.TypeGenerationActions.Add(defineTypeAction);
-
-            bundle.TypeBuilderDelegate = () => defineTypeAction.TypeBuilder;
-            this.Builder = bundle;
-
-            nestedClosure(this);
-            if (!ConstructorAdded) AddDefaultConstructor();
+            typeGenerator = generator;
+            TypesToComplete = new List<Func<BuilderBundle>>();
         }
 
         public void InheritFrom<TBaseType>() where TBaseType : class
         {
-            BaseType = typeof (TBaseType);
+            BaseType = typeof(TBaseType);
         }
 
         public void Named(string name)
@@ -57,7 +50,7 @@ namespace Siege.DynamicTypeGeneration
 
         internal void AddDefaultConstructor()
         {
-            this.TypeGenerationActions.Add(new AddDefaultConstructorAction(this.Builder));
+            TypeGenerationActions.Add(new AddDefaultConstructorAction(Builder));
             ConstructorAdded = true;
         }
 
@@ -65,7 +58,7 @@ namespace Siege.DynamicTypeGeneration
         {
             var context = new MethodGenerationContext(this, nestedClosure);
 
-            if(!context.ReturnDeclared) context.GeneratedMethod.ReturnFrom();
+            if (!context.ReturnDeclared) context.GeneratedMethod.ReturnFrom();
 
             return context.GeneratedMethod;
         }
@@ -77,10 +70,10 @@ namespace Siege.DynamicTypeGeneration
 
         public void OverrideMethod(MethodInfo info, Action<OverrideMethodContext> nestedClosure)
         {
-            var addMethodAction = new AddMethodAction(this.Builder, () => () => info.Name, () => () => info.ReturnType, () => info.GetParameters().Select(p => p.ParameterType).ToArray(), true);
-            this.TypeGenerationActions.Add(addMethodAction);
+            var addMethodAction = new AddMethodAction(Builder, () => () => info.Name, () => () => info.ReturnType, () => info.GetParameters().Select(p => p.ParameterType).ToArray(), true);
+            TypeGenerationActions.Add(addMethodAction);
 
-            var method = new GeneratedMethod(() => addMethodAction.MethodBuilder, this.TypeGenerationActions);
+            var method = new GeneratedMethod(() => addMethodAction.MethodBuilder, TypeGenerationActions);
 
             var context = new OverrideMethodContext(info, method, this);
             nestedClosure(context);
@@ -88,23 +81,56 @@ namespace Siege.DynamicTypeGeneration
             if (!context.ReturnDeclared) method.ReturnFrom();
         }
 
-        public void AddConstructor(Action<ConstructorGenerationContext> nestedClosure)
+        public AddConstructorAction AddConstructor(Action<ConstructorGenerationContext> nestedClosure)
         {
             ConstructorAdded = true;
-            new ConstructorGenerationContext(this, nestedClosure);
+            var context =  new ConstructorGenerationContext(this, nestedClosure);
+            
+            return context.constructorAction;
         }
 
         public GeneratedField AddField<TFieldType>(string fieldName)
         {
-            return AddField(typeof (TFieldType), fieldName);
+            return AddField(typeof(TFieldType), fieldName);
         }
 
         public GeneratedField AddField(Type type, string fieldName)
         {
-            var action = new AddFieldAction(this.Builder, () => fieldName, () => type);
-            this.TypeGenerationActions.Add(action);
+            var action = new AddFieldAction(Builder, () => fieldName, () => type);
+            TypeGenerationActions.Add(action);
 
-            return new GeneratedField(action);
+            return new GeneratedField(type, action);
+        }
+
+        public GeneratedField AddField(Func<BuilderBundle> type, string fieldName)
+        {
+            var action = new AddFieldAction(Builder, () => fieldName, type);
+            TypeGenerationActions.Add(action);
+
+            return new GeneratedField(type, action);
+        }
+
+        public NestedTypeGenerationContext CreateNestedType(Action<BaseTypeGenerationContext> nestedClosure)
+        {
+            return new NestedTypeGenerationContext(typeGenerator, Builder, nestedClosure, TypeGenerationActions);
+        }
+
+    }
+
+    public class TypeGenerationContext : BaseTypeGenerationContext
+    {
+        public TypeGenerationContext(TypeGenerator generator, Func<BuilderBundle> bundle, Action<TypeGenerationContext> nestedClosure) : base(generator)
+        {
+            BaseType = typeof(object);
+            TypeGenerationActions = new List<ITypeGenerationAction>();
+
+            var defineTypeAction = new DefineTypeAction(bundle(), () => TypeName, () => BaseType);
+            TypeGenerationActions.Add(defineTypeAction);
+
+            Builder = bundle;
+
+            nestedClosure(this);
+            if (!ConstructorAdded) AddDefaultConstructor();
         }
     }
 }

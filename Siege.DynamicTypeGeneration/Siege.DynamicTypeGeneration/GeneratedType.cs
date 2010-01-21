@@ -14,7 +14,6 @@
 */
 
 using System;
-using System.Collections.Generic;
 using Siege.DynamicTypeGeneration.Actions;
 
 namespace Siege.DynamicTypeGeneration
@@ -22,19 +21,24 @@ namespace Siege.DynamicTypeGeneration
     public class GeneratedType
     {
         private readonly BuilderBundle bundle;
-        private IList<ITypeGenerationAction> actions;
+        private readonly TypeGenerationContext context;
 
-        public GeneratedType(BuilderBundle bundle, IList<ITypeGenerationAction> actions)
+        public GeneratedType(BuilderBundle bundle, TypeGenerationContext context)
         {
             this.bundle = bundle;
-            this.actions = actions;
+            this.context = context;
         }
 
         public Type Create()
         {
-            foreach(ITypeGenerationAction action in this.actions) 
+            foreach(ITypeGenerationAction action in context.TypeGenerationActions) 
             {
                 action.Execute();
+            }
+
+            foreach (Func<BuilderBundle> nestedType in context.TypesToComplete)
+            {
+                nestedType().TypeBuilder.CreateType();
             }
 
             return bundle.TypeBuilder.CreateType();

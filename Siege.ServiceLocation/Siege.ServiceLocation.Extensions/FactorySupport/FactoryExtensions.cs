@@ -15,7 +15,7 @@
 
 using System;
 using Siege.ServiceLocation.Rules;
-using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Conditional;
 
 namespace Siege.ServiceLocation.Extensions.FactorySupport
 {

@@ -20,23 +20,22 @@ namespace Siege.DynamicTypeGeneration
     public abstract class BaseMethodGenerationContext
     {
         internal GeneratedMethod GeneratedMethod { get; private set; }
-        private readonly TypeGenerationContext typeGenerationContext;
+        protected readonly BaseTypeGenerationContext typeGenerationContext;
         internal bool ReturnDeclared { get; set; }
 
-        protected BaseMethodGenerationContext(TypeGenerationContext typeGenerationContext)
+        protected BaseMethodGenerationContext(BaseTypeGenerationContext typeGenerationContext)
         {
             this.typeGenerationContext = typeGenerationContext;
         }
 
         internal void SetMethod(GeneratedMethod method)
         {
-            this.GeneratedMethod = method;
+            GeneratedMethod = method;
         }
 
-        public void WithBody(Action<MethodBodyContext> nestedClosure)
+        public virtual void WithBody(Action<MethodBodyContext> nestedClosure)
         {
             var context = new MethodBodyContext(GeneratedMethod, typeGenerationContext, this);
-
             nestedClosure(context);
         }
     }

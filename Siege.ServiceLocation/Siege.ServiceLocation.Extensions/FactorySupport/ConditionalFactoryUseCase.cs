@@ -1,5 +1,5 @@
 using Siege.ServiceLocation.Bindings;
-using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Conditional;
 
 namespace Siege.ServiceLocation.Extensions.FactorySupport
 {

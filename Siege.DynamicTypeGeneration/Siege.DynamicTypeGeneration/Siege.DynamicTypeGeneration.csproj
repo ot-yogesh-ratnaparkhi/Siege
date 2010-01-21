@@ -39,41 +39,95 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actions\AddConstructorAction.cs" />
-    <Compile Include="Actions\AddDefaultConstructorAction.cs" />
-    <Compile Include="Actions\AddFieldAction.cs" />
-    <Compile Include="Actions\AddLocalAction.cs" />
-    <Compile Include="Actions\AddMethodAction.cs" />
-    <Compile Include="Actions\CallAction.cs" />
-    <Compile Include="Actions\CallBaseAction.cs" />
-    <Compile Include="Actions\CreateDelegateAction.cs" />
-    <Compile Include="Actions\DefineTypeAction.cs" />
-    <Compile Include="Actions\FieldAssignmentAction.cs" />
-    <Compile Include="Actions\FieldLoadAction.cs" />
-    <Compile Include="Actions\InstantiationAction.cs" />
-    <Compile Include="Actions\LoadFunctionAction.cs" />
-    <Compile Include="Actions\LoadThisAction.cs" />
-    <Compile Include="Actions\LoadVariableFunctionAction.cs" />
-    <Compile Include="Actions\ReturnAction.cs" />
-    <Compile Include="Actions\VariableAssignmentAction.cs" />
-    <Compile Include="Actions\VariableLoadAction.cs" />
-    <Compile Include="Actions\WrapMethodAction.cs" />
+    <Compile Include="Actions\AddCompletedTypeLocalAction.cs" />
+    <Compile Include="Actions\AddConstructorAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\AddDefaultConstructorAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\AddFieldAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\AddLocalAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\AddMethodAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\CallAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\CallBaseAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\CompleteTypeAction.cs" />
+    <Compile Include="Actions\ConstructorReturnAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\CreateDelegateAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\DefineNestedTypeAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\DefineTypeAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\FieldAssignmentAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\FieldLoadAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\InstantiationAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\ITypeGenerationAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\LoadFunctionAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\LoadParameterAction.cs" />
+    <Compile Include="Actions\LoadThisAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\LoadVariableFunctionAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\PopAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\ReturnAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\VariableAssignmentAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\VariableLoadAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\WrapMethodAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="BaseMethodGenerationContext.cs" />
     <Compile Include="BuilderBundle.cs" />
     <Compile Include="ConstructorBodyContext.cs" />
     <Compile Include="ConstructorGenerationContext.cs" />
-    <Compile Include="Actions\ConstructorReturnAction.cs" />
     <Compile Include="DelegateBodyContext.cs" />
+    <Compile Include="DelegateGenerator.cs" />
     <Compile Include="ExpressionParameter.cs" />
+    <Compile Include="GeneratedDelegate.cs" />
     <Compile Include="GeneratedField.cs" />
     <Compile Include="GeneratedMethod.cs" />
-    <Compile Include="Actions\ITypeGenerationAction.cs" />
     <Compile Include="GeneratedParameter.cs" />
     <Compile Include="GeneratedType.cs" />
     <Compile Include="GeneratedVariable.cs" />
     <Compile Include="ILocalIndexer.cs" />
     <Compile Include="MethodBodyContext.cs" />
     <Compile Include="MethodGenerationContext.cs" />
+    <Compile Include="NestedTypeGenerationContext.cs" />
     <Compile Include="OverrideMethodContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeGenerationContext.cs" />

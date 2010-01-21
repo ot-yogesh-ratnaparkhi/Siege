@@ -25,7 +25,7 @@ namespace Siege.DynamicTypeGeneration.Actions
         private readonly Type baseType;
 
         public CallBaseAction(Func<MethodBuilderBundle> bundle, Func<MethodInfo> method, IList<ITypeGenerationAction> actions, Type baseType, GeneratedMethod generatedMethod)
-            : base(bundle, method, actions, generatedMethod, null)
+            : base(bundle, method, actions, generatedMethod)
         {
             this.baseType = baseType;
         }
@@ -34,23 +34,8 @@ namespace Siege.DynamicTypeGeneration.Actions
         {
             var methodGenerator = this.bundle().MethodBuilder.GetILGenerator();
 
-            if (method().ReturnType != typeof(void))
-            {
-                methodGenerator.DeclareLocal(method().ReturnType);
-                localIndex = generatedMethod.LocalCount();
-                generatedMethod.AddLocal(new Local { Entry = method().ReturnType, Index = LocalIndex() });
-            }
-
-            if (target != null)
-            {
-                methodGenerator.Emit(OpCodes.Ldarg_0);
-                methodGenerator.Emit(OpCodes.Ldfld, target);
-            }
-            else
-            {
-                methodGenerator.Emit(OpCodes.Ldarg_0);
-            }
-
+            methodGenerator.Emit(OpCodes.Ldarg_0);
+            
             List<Type> parameters = new List<Type>();
             var methodParameters = method().GetParameters();
             
@@ -62,8 +47,6 @@ namespace Siege.DynamicTypeGeneration.Actions
 
             MethodInfo baseMethod = baseType.GetMethod(method().Name, parameters.ToArray());
             methodGenerator.Emit(OpCodes.Call, baseMethod);
-
-            if (baseMethod.ReturnType != typeof(void)) methodGenerator.Emit(OpCodes.Stloc, LocalIndex());
         }
     }
 }

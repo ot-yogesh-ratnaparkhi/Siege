@@ -13,7 +13,7 @@
      limitations under the License.
 */
 
-using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Default;
 
 namespace Siege.ServiceLocation.Extensions.FactorySupport
 {

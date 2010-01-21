@@ -54,7 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConditionalUseCaseBinding.cs" />
-    <Compile Include="DefaultInstanceUseCaseBinding.cs" />
     <Compile Include="DefaultUseCaseBinding.cs" />
     <Compile Include="KeyBasedUseCaseBinding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

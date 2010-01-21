@@ -38,6 +38,11 @@ namespace Siege.ServiceLocation.UnitTests.RegistrationExtensions.StructureMap
             Bind((IDecoratorUseCase<TService>)useCase);
         }
 
+        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+        {
+            
+        }
+
         public object Resolve(Type typeToResolve, Type argumentType, object rootObject)
         {
             string parameterName = typeToResolve.GetConstructor(new[] { argumentType }).GetParameters().Where(parameter => parameter.ParameterType == argumentType).First().Name;

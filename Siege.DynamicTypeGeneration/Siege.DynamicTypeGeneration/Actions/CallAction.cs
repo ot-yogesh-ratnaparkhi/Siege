@@ -26,9 +26,18 @@ namespace Siege.DynamicTypeGeneration.Actions
         protected readonly Func<MethodInfo> method;
         protected IList<ITypeGenerationAction> actions;
         protected readonly GeneratedMethod generatedMethod;
+        private readonly Func<List<GeneratedField>> fields;
         protected int localIndex;
         private readonly Func<List<IGeneratedParameter>> parameters;
-        protected FieldInfo target;
+        private GeneratedVariable variable;
+
+        public CallAction(Func<MethodBuilderBundle> bundle, Func<MethodInfo> method, IList<ITypeGenerationAction> actions, GeneratedMethod generatedMethod)
+        {
+            this.bundle = bundle;
+            this.method = method;
+            this.actions = actions;
+            this.generatedMethod = generatedMethod;
+        }
 
         public CallAction(Func<MethodBuilderBundle> bundle, Func<MethodInfo> method, IList<ITypeGenerationAction> actions, GeneratedMethod generatedMethod, Func<List<IGeneratedParameter>> parameters)
         {
@@ -39,44 +48,53 @@ namespace Siege.DynamicTypeGeneration.Actions
             this.parameters = parameters;
         }
 
-        public void On(FieldInfo field)
+        public CallAction(Func<MethodBuilderBundle> bundle, Func<MethodInfo> method, IList<ITypeGenerationAction> actions, GeneratedMethod generatedMethod, Func<List<GeneratedField>> fields)
         {
-            target = field;
+            this.bundle = bundle;
+            this.method = method;
+            this.actions = actions;
+            this.generatedMethod = generatedMethod;
+            this.fields = fields;
+        }
+
+        public void WithArgument(GeneratedVariable variable)
+        {
+            this.variable = variable;
         }
 
         public virtual void Execute()
         {
             var methodGenerator = bundle().MethodBuilder.GetILGenerator();
 
-            if (method().ReturnType != typeof(void))
+            if (fields != null)
             {
-                methodGenerator.DeclareLocal(method().ReturnType);
-
-                generatedMethod.AddLocal(new Local { Entry = method().ReturnType, Index = generatedMethod.LocalCount() });
-            }
-
-            if (target != null)
-            {
-                methodGenerator.Emit(OpCodes.Ldarg_0);
-                methodGenerator.Emit(OpCodes.Ldfld, target);
+                foreach(GeneratedField field in fields())
+                {
+                    methodGenerator.Emit(OpCodes.Ldarg_0);
+                    methodGenerator.Emit(OpCodes.Ldfld, field.Field());
+                }
             }
 
             if (parameters != null)
             {
                 foreach(IGeneratedParameter parameter in parameters())
                 {
-                    methodGenerator.Emit(OpCodes.Ldarg, parameter.LocalIndex());
+                    methodGenerator.Emit(OpCodes.Ldarg, parameter.LocalIndex);
                 }
             }
 
+            if (variable != null)
+            {
+                methodGenerator.Emit(OpCodes.Ldloc, variable.LocalIndex);
+            }
+
             methodGenerator.Emit(OpCodes.Call, method());
-            localIndex = generatedMethod.LocalCount() - 1;
-            if (method().ReturnType != typeof(void)) methodGenerator.Emit(OpCodes.Stloc, localIndex);
+            localIndex = generatedMethod.LocalCount - 1;
         }
 
-        public Func<int> LocalIndex
+        public int LocalIndex
         {
-            get { return () => localIndex; }
+            get { return localIndex; }
         }
     }
 }

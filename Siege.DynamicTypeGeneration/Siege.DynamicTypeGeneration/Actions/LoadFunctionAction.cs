@@ -14,6 +14,7 @@
 */
 
 using System;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
@@ -21,6 +22,7 @@ namespace Siege.DynamicTypeGeneration.Actions
     internal class LoadFunctionAction : ITypeGenerationAction
     {
         private readonly Func<GeneratedMethod> method;
+        private readonly MethodInfo methodInfo;
         private readonly Func<GeneratedMethod> targetMethod;
 
         public LoadFunctionAction(Func<GeneratedMethod> method, Func<GeneratedMethod> targetMethod)
@@ -29,11 +31,20 @@ namespace Siege.DynamicTypeGeneration.Actions
             this.targetMethod = targetMethod;
         }
 
+        public LoadFunctionAction(Func<GeneratedMethod> method, MethodInfo methodInfo)
+        {
+            this.method = method;
+            this.methodInfo = methodInfo;
+        }
+
         public void Execute()
         {
             ILGenerator generator = method().MethodBuilder().MethodBuilder.GetILGenerator();
             generator.Emit(OpCodes.Ldarg_0);
-            generator.Emit(OpCodes.Ldftn, targetMethod().MethodBuilder().MethodBuilder);
+            
+            if(targetMethod != null) generator.Emit(OpCodes.Ldftn, targetMethod().MethodBuilder().MethodBuilder);
+            if (methodInfo != null) generator.Emit(OpCodes.Ldftn, methodInfo);
+            
         }
     }
 }

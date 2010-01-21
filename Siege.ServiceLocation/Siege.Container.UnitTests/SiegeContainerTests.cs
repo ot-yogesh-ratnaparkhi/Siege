@@ -108,6 +108,14 @@ namespace Siege.ServiceLocation.UnitTests
         }
 
         [Test]
+        public void Should_Be_Able_To_Bind_An_Interface_To_An_Implementation_With_A_Name()
+        {
+            locator.Register(Given<ITestInterface>.Then("Test", new TestCase1()));
+
+            Assert.IsTrue(locator.GetInstance<ITestInterface>("Test") is TestCase1);
+        }
+
+        [Test]
         public void Should_Be_Able_To_Bind_An_Interface_To_An_Implementation_Based_On_Rule()
         {
             locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then(new TestCase2()));

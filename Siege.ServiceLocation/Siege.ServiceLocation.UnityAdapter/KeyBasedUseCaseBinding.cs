@@ -16,6 +16,7 @@
 using Microsoft.Practices.Unity;
 using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Named;
 
 namespace Siege.ServiceLocation.UnityAdapter
 {
@@ -31,6 +32,16 @@ namespace Siege.ServiceLocation.UnityAdapter
         public void Bind(IUseCase useCase, IFactoryFetcher locator)
         {
             Bind((IKeyBasedUseCase<TService>)useCase);
+        }
+
+        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+        {
+            BindInstance((IKeyBasedInstanceUseCase)useCase);
+        }
+
+        private void BindInstance(IKeyBasedInstanceUseCase useCase)
+        {
+            container.RegisterInstance(useCase.GetBaseBindingType(), useCase.Key, useCase.GetBinding(), new ContainerControlledLifetimeManager());
         }
 
         private void Bind(IKeyBasedUseCase<TService> useCase)

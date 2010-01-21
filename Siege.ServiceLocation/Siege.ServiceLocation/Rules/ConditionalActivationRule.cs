@@ -15,6 +15,7 @@
 
 using System;
 using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Conditional;
 
 namespace Siege.ServiceLocation.Rules
 {
@@ -37,7 +38,7 @@ namespace Siege.ServiceLocation.Rules
             return useCase;
         }
 
-        public IConditionalUseCase<TBaseService> Then(TBaseService implementation)
+        public IInstanceUseCase Then(TBaseService implementation)
         {
             ConditionalInstanceUseCase<TBaseService> useCase = new ConditionalInstanceUseCase<TBaseService>();
 

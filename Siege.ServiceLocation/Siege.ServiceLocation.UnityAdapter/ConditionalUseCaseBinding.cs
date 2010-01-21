@@ -38,5 +38,15 @@ namespace Siege.ServiceLocation.UnityAdapter
             container.RegisterType<TService>(Guid.NewGuid().ToString(), new TransientLifetimeManager(), new InjectionFactory(f => factory.Build()));
             container.RegisterType(useCase.GetBoundType(), Guid.NewGuid().ToString(), new TransientLifetimeManager());
         }
+
+        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+        {
+            var factory = (Factory<TService>)locator.GetFactory<TService>();
+            factory.AddCase(useCase);
+
+            container.RegisterType<TService>(new TransientLifetimeManager(), new InjectionFactory(f => factory.Build()));
+            container.RegisterType<TService>(Guid.NewGuid().ToString(), new TransientLifetimeManager(), new InjectionFactory(f => factory.Build()));
+            container.RegisterInstance(useCase.GetBoundType(), useCase.GetBinding(), new TransientLifetimeManager());
+        }
     }
 }

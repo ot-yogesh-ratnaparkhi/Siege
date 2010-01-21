@@ -22,13 +22,13 @@ namespace Siege.DynamicTypeGeneration
 {
     public class ConstructorGenerationContext
     {
-        private readonly TypeGenerationContext context;
+        private readonly BaseTypeGenerationContext context;
         private int argCount;
         public List<IGeneratedParameter> Arguments { get; private set; }
         private Func<AddConstructorAction> constructorActionDelegate { get { return () => constructorAction; } } 
-        private AddConstructorAction constructorAction;
-
-        public ConstructorGenerationContext(TypeGenerationContext context, Action<ConstructorGenerationContext> closure)
+        internal AddConstructorAction constructorAction;
+        
+        public ConstructorGenerationContext(BaseTypeGenerationContext context, Action<ConstructorGenerationContext> closure)
         {
             this.Arguments = new List<IGeneratedParameter>();
 
@@ -50,10 +50,20 @@ namespace Siege.DynamicTypeGeneration
         public GeneratedParameter CreateArgument(Type type)
         {
             argCount++;
-            var parameter = new GeneratedParameter(type, () => argCount, this.context, () => constructorActionDelegate().Builder);
+            var parameter = new GeneratedParameter(type, argCount, this.context, () => constructorActionDelegate().Builder);
             
             Arguments.Add(parameter);
          
+            return parameter;
+        }
+
+        public GeneratedParameter CreateArgument(Func<GeneratedField> field)
+        {
+            argCount++;
+            var parameter = new GeneratedParameter(field, argCount, this.context, () => constructorActionDelegate().Builder);
+
+            Arguments.Add(parameter);
+
             return parameter;
         }
 

@@ -21,19 +21,19 @@ namespace Siege.DynamicTypeGeneration.Actions
 {
     internal class AddDefaultConstructorAction : ITypeGenerationAction
     {
-        private readonly BuilderBundle builder;
+        private readonly Func<BuilderBundle> builder;
         private ConstructorInfo constructor;
         private ConstructorBuilder constructorBuilder;
 		public ConstructorInfo Constructor { get { return this.constructorBuilder; } }
 
-        public AddDefaultConstructorAction(BuilderBundle bundle)
+        public AddDefaultConstructorAction(Func<BuilderBundle> bundle)
         {
             this.builder = bundle;
         }
 
         public void Execute()
         {
-            constructorBuilder = builder.TypeBuilder.DefineConstructor(
+            constructorBuilder = builder().TypeBuilder.DefineConstructor(
                 MethodAttributes.Public |
                 MethodAttributes.SpecialName |
                 MethodAttributes.RTSpecialName,

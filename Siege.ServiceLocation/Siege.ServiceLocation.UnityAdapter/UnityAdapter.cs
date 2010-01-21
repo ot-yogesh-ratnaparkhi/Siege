@@ -93,11 +93,6 @@ namespace Siege.ServiceLocation.UnityAdapter
             get { return typeof (DefaultUseCaseBinding<>); }
         }
 
-        public Type DefaultInstanceUseCaseBinding
-        {
-            get { return typeof (DefaultInstanceUseCaseBinding<>); }
-        }
-
         public Type KeyBasedUseCaseBinding
         {
             get { return typeof (KeyBasedUseCaseBinding<>); }

@@ -21,13 +21,23 @@ namespace Siege.DynamicTypeGeneration
 {
     public class GeneratedField
     {
+        private readonly Type type;
+        private readonly Func<BuilderBundle> bundle;
         private readonly AddFieldAction action;
 
-        public GeneratedField(AddFieldAction action)
+        public GeneratedField(Type type, AddFieldAction action)
         {
+            this.type = type;
+            this.action = action;
+        }
+
+        public GeneratedField(Func<BuilderBundle> bundle, AddFieldAction action)
+        {
+            this.bundle = bundle;
             this.action = action;
         }
 
         public Func<FieldInfo> Field { get { return () => action.Field; } }
+        public Type Type { get { return type ?? bundle().TypeBuilder; } }
     }
 }

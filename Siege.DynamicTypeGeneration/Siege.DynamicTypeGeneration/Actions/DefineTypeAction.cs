@@ -6,9 +6,9 @@ namespace Siege.DynamicTypeGeneration.Actions
 {
     internal class DefineTypeAction : ITypeGenerationAction
     {
-        private readonly BuilderBundle bundle;
-        private readonly Func<string> typeName;
-        private readonly Func<Type> baseType;
+        protected readonly BuilderBundle bundle;
+        protected readonly Func<string> typeName;
+        protected readonly Func<Type> baseType;
         internal TypeBuilder TypeBuilder { get; private set; }
 
         public DefineTypeAction(BuilderBundle bundle, Func<string> typeName, Func<Type> baseType)
@@ -20,15 +20,19 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         public void Execute()
         {
-            TypeBuilder = bundle.ModuleBuilder.DefineType(typeName(),
-                                                TypeAttributes.Public |
-                                                TypeAttributes.Class |
-                                                TypeAttributes.AutoClass |
-                                                TypeAttributes.AnsiClass |
-                                                TypeAttributes.BeforeFieldInit |
-                                                TypeAttributes.AutoLayout,
-                                                baseType());
+            TypeBuilder = DefineType();
+        }
 
+        protected virtual TypeBuilder DefineType()
+        {
+            return bundle.TypeBuilder = bundle.ModuleBuilder.DefineType(typeName(),
+                                                   TypeAttributes.Public |
+                                                   TypeAttributes.Class |
+                                                   TypeAttributes.AutoClass |
+                                                   TypeAttributes.AnsiClass |
+                                                   TypeAttributes.BeforeFieldInit |
+                                                   TypeAttributes.AutoLayout,
+                                                   baseType());
         }
     }
 }

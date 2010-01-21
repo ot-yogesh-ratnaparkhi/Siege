@@ -26,16 +26,26 @@ namespace Siege.DynamicTypeGeneration
 
     public class GeneratedParameter : IGeneratedParameter
     {
-        private readonly TypeGenerationContext context;
+        private readonly Func<GeneratedField> field;
+        private readonly BaseTypeGenerationContext context;
         private readonly Func<Func<ILGenerator>> builder;
-        public Func<int> LocalIndex { get; private set; }
-        public Type Type { get; private set; }
+        private Type type;
+        public int LocalIndex { get; private set; }
+        public Type Type { get { return type ?? field().Type; } }
 
-        public GeneratedParameter(Type type, Func<int> parameterIndex, TypeGenerationContext context, Func<Func<ILGenerator>> builder)
+        public GeneratedParameter(Type type, int parameterIndex, BaseTypeGenerationContext context, Func<Func<ILGenerator>> builder)
         {
             this.context = context;
             this.builder = builder;
-            this.Type = type;
+            this.type = type;
+            this.LocalIndex = parameterIndex;
+        }
+
+        public GeneratedParameter(Func<GeneratedField> field, int parameterIndex, BaseTypeGenerationContext context, Func<Func<ILGenerator>> builder)
+        {
+            this.field = field;
+            this.context = context;
+            this.builder = builder;
             this.LocalIndex = parameterIndex;
         }
 

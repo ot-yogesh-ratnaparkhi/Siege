@@ -23,11 +23,11 @@ namespace Siege.DynamicTypeGeneration.Actions
     {
         public GeneratedMethod GeneratedMethod { get; private set; }
 
-        public WrapMethodAction(TypeGenerationContext context, Func<MethodBuilderBundle> methodBuilder, List<IGeneratedParameter> parameters)
+        public WrapMethodAction(BaseTypeGenerationContext context, Func<MethodBuilderBundle> methodBuilder, List<IGeneratedParameter> parameters, int index)
         {
             var generatedMethod = context.AddMethod(method =>
             {
-                method.Named(() => methodBuilder().MethodBuilder.Name + "_" + Guid.NewGuid());
+                method.Named(() => methodBuilder().MethodBuilder.Name + "_" + index);
                 method.AddArguments(() => parameters);
                 method.Returns(() => methodBuilder().MethodBuilder.ReturnType);
 
@@ -41,18 +41,20 @@ namespace Siege.DynamicTypeGeneration.Actions
             GeneratedMethod = generatedMethod;
         }
 
-        public WrapMethodAction(TypeGenerationContext context, Func<MethodInfo> methodInfo, List<IGeneratedParameter> parameters)
+        public WrapMethodAction(BaseTypeGenerationContext context, Func<MethodInfo> methodInfo, List<IGeneratedParameter> parameters, int index)
         {
             var generatedMethod = context.AddMethod(method =>
             {
-                method.Named(() => methodInfo().Name + "_" + Guid.NewGuid());
+                method.Named(() => methodInfo().Name + "_" + index);
                 method.AddArguments(() => parameters);
                 method.Returns(() => methodInfo().ReturnType);
 
                 method.WithBody(body =>
                 {
                     body.TargettingSelf();
-                    body.Return(body.Call(methodInfo, () => parameters));
+                    var variable = body.CreateVariable(method.ReturnType());
+                    variable.AssignFrom(() => body.Call(methodInfo, () => parameters));
+                    body.Return(variable);
                 });
             });
 

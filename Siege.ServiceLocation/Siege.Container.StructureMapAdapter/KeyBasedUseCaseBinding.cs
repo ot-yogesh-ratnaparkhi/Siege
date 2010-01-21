@@ -15,6 +15,7 @@
 
 using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Named;
 using StructureMap.Attributes;
 using StructureMap.Configuration.DSL;
 
@@ -38,6 +39,15 @@ namespace Siege.ServiceLocation.StructureMapAdapter
         {
             Registry registry = new Registry();
             registry.ForRequestedType<TService>().CacheBy(InstanceScope.PerRequest).AddInstances(ex => ex.OfConcreteType(useCase.GetBoundType()).WithName(useCase.Key));
+            container.Configure(configure => configure.AddRegistry(registry));
+        }
+
+        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+        {
+            Registry registry = new Registry();
+
+            registry.ForRequestedType<TService>().CacheBy(InstanceScope.PerRequest).AddInstances(ex => ex.IsThis((TService)useCase.GetBinding()).WithName(((IKeyBasedInstanceUseCase)useCase).Key));
+
             container.Configure(configure => configure.AddRegistry(registry));
         }
     }

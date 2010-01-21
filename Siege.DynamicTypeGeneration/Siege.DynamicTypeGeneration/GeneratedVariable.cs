@@ -23,54 +23,105 @@ namespace Siege.DynamicTypeGeneration
 {
     public class GeneratedVariable : ILocalIndexer
     {
-        protected readonly Func<int> localIndex;
+        private readonly Func<Type> type;
+        private readonly Func<MethodInfo> methodInfo;
+        private readonly Func<BuilderBundle> builderBundle;
+        protected readonly int localIndex;
         protected IList<ITypeGenerationAction> actions;
         protected readonly GeneratedMethod method;
 
-        public GeneratedVariable(Func<int> localIndex, IList<ITypeGenerationAction> actions, GeneratedMethod method)
+        public GeneratedVariable(Func<Type> type, int localIndex, IList<ITypeGenerationAction> actions, GeneratedMethod method)
         {
+            this.type = type;
             this.localIndex = localIndex;
             this.actions = actions;
             this.method = method;
         }
 
+        public GeneratedVariable(Type type, int localIndex, IList<ITypeGenerationAction> actions, GeneratedMethod method)
+        {
+            this.type = () => type;
+            this.localIndex = localIndex;
+            this.actions = actions;
+            this.method = method;
+        }
+
+        public GeneratedVariable(Func<MethodInfo> methodInfo, int localIndex, IList<ITypeGenerationAction> actions, GeneratedMethod method)
+        {
+            this.methodInfo = methodInfo;
+            this.localIndex = localIndex;
+            this.actions = actions;
+            this.method = method;
+        }
+
+        public GeneratedVariable(Func<BuilderBundle> builderBundle, int localIndex, IList<ITypeGenerationAction> actions, GeneratedMethod method)
+        {
+            this.builderBundle = builderBundle;
+            this.localIndex = localIndex;
+            this.actions = actions;
+            this.method = method;
+        }
+
+        public Type Type
+        {
+            get { return type() ?? builderBundle().TypeBuilder ?? methodInfo().ReturnType; }
+        }
+
         public void AssignFrom(Func<ILocalIndexer> item)
         {
             item();
-            actions.Add(new VariableAssignmentAction(() => method.MethodBuilder(), localIndex()));
+            actions.Add(new VariableAssignmentAction(() => method.MethodBuilder(), localIndex));
         }
 
-        public Func<int> LocalIndex
+        public void Pop(Func<ILocalIndexer> item)
+        {
+            item();
+            actions.Add(new PopAction(method));
+        }
+
+        public int LocalIndex
         {
             get { return localIndex; }
         }
 
-        public GeneratedVariable Invoke(Type returnType, MethodInfo methodInfo, List<IGeneratedParameter> parameters)
-        {
-            actions.Add(new VariableLoadAction(method, this.localIndex));
-            
-            return method.Call(() => methodInfo, () => parameters);
-        }
-        
-        public GeneratedVariable Invoke<TType>(Expression<Action<TType>> expression)
+        public ILocalIndexer Invoke<TType>(Expression<Action<TType>> expression)
         {
             MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+            return Invoke(methodCall.Method);
+        }
+
+        public ILocalIndexer Invoke<TType>(Expression<Action<TType>> expression, GeneratedVariable variable)
+        {
+            MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+            
+            return Invoke(methodCall.Method, variable);
+        }
+
+        public ILocalIndexer Invoke(MethodInfo methodInfo)
+        {
             List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
 
             int argCount = 0;
-            foreach(ParameterInfo info in methodCall.Method.GetParameters())
+            foreach (ParameterInfo info in methodInfo.GetParameters())
             {
                 argCount++;
                 parameters.Add(new ExpressionParameter(info.ParameterType, argCount));
             }
 
-            return Invoke(typeof(TType), methodCall.Method, parameters);
+            actions.Add(new VariableLoadAction(method, this.LocalIndex));
+            return method.Call(() => methodInfo, () => parameters);
+        }
+
+        public ILocalIndexer Invoke(MethodInfo methodInfo, GeneratedVariable variable)
+        {
+            actions.Add(new VariableLoadAction(method, this.LocalIndex));
+            return method.Call(() => methodInfo, variable);
         }
 
         public void AssignFrom(GeneratedField field)
         {
             actions.Add(new FieldLoadAction(method, field.Field));
-            actions.Add(new VariableAssignmentAction(() => method.MethodBuilder(), localIndex()));
+            actions.Add(new VariableAssignmentAction(() => method.MethodBuilder(), localIndex));
         }
 
         public MethodInfo GetMethod<TType>(Expression<Action<TType>> expression)

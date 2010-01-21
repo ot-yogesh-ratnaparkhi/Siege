@@ -17,7 +17,7 @@ using System;
 
 namespace Siege.ServiceLocation.UseCases
 {
-    public abstract class InstanceUseCase<TBaseService> : UseCase<TBaseService, TBaseService>
+    public abstract class InstanceUseCase<TBaseService> : UseCase<TBaseService, TBaseService>, IInstanceUseCase
     {
         protected TBaseService implementation;
 
@@ -29,6 +29,11 @@ namespace Siege.ServiceLocation.UseCases
         public override TBaseService GetBinding()
         {
             return implementation;
+        }
+
+        object IInstanceUseCase.GetBinding()
+        {
+            return this.GetBinding();
         }
 
         protected override IActivationStrategy GetActivationStrategy()

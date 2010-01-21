@@ -23,17 +23,20 @@ namespace Siege.ServiceLocation.UnitTests.RegistrationExtensions.Unity
     public class DecoratorUseCaseBinding<TService> : IDecoratorUseCaseBinding<TService>
     {
         private IUnityContainer container;
-        private IServiceLocatorAdapter locator;
 
-        public DecoratorUseCaseBinding(IUnityContainer container, IServiceLocatorAdapter locator)
+        public DecoratorUseCaseBinding(IUnityContainer container)
         {
             this.container = container;
-            this.locator = locator;
         }
 
         public void Bind(IUseCase useCase, IFactoryFetcher locator)
         {
             Bind((IDecoratorUseCase<TService>)useCase);
+        }
+
+        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+        {
+            
         }
 
         public object Resolve(Type typeToResolve, Type argumentType, object rootObject)

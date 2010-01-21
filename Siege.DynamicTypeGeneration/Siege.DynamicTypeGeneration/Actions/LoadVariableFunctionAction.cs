@@ -23,6 +23,7 @@ namespace Siege.DynamicTypeGeneration.Actions
     {
         private readonly Func<GeneratedMethod> method;
         private readonly int localIndex;
+        private readonly Func<MethodBuilderBundle> bundle;
         private readonly MethodInfo targetMethod;
 
         public LoadVariableFunctionAction(Func<GeneratedMethod> method, int localIndex, MethodInfo targetMethod)
@@ -32,11 +33,20 @@ namespace Siege.DynamicTypeGeneration.Actions
             this.targetMethod = targetMethod;
         }
 
+        public LoadVariableFunctionAction(Func<GeneratedMethod> method, int localIndex, Func<MethodBuilderBundle> bundle)
+        {
+            this.method = method;
+            this.localIndex = localIndex;
+            this.bundle = bundle;
+        }
+
         public void Execute()
         {
             ILGenerator generator = method().MethodBuilder().MethodBuilder.GetILGenerator();
             generator.Emit(OpCodes.Ldloc, localIndex);
-            generator.Emit(OpCodes.Ldftn, targetMethod);
+
+            if (bundle != null) generator.Emit(OpCodes.Ldftn, bundle().MethodBuilder);
+            if (targetMethod != null) generator.Emit(OpCodes.Ldftn, targetMethod);
         }
     }
 }

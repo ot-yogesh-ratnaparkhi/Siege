@@ -22,7 +22,6 @@ namespace Siege.ServiceLocation
         void RegisterBinding(Type baseBinding, Type targetBinding);
         Type ConditionalUseCaseBinding { get; }
         Type DefaultUseCaseBinding { get; }
-        Type DefaultInstanceUseCaseBinding { get; }
         Type KeyBasedUseCaseBinding { get; }
     }
 }

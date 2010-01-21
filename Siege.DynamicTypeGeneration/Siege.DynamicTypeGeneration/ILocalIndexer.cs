@@ -13,12 +13,10 @@
      limitations under the License.
 */
 
-using System;
-
 namespace Siege.DynamicTypeGeneration
 {
     public interface ILocalIndexer
     {
-        Func<int> LocalIndex { get; }
+        int LocalIndex { get; }
     }
 }

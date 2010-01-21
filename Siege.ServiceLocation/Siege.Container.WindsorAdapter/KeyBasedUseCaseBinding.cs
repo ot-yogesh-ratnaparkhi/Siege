@@ -18,6 +18,7 @@ using Castle.MicroKernel.Registration;
 using Siege.ServiceLocation;
 using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Named;
 
 namespace Siege.SeviceLocation.WindsorAdapter
 {
@@ -33,6 +34,16 @@ namespace Siege.SeviceLocation.WindsorAdapter
         public void Bind(IUseCase useCase, IFactoryFetcher locator)
         {
             Bind((IKeyBasedUseCase<TService>)useCase);
+        }
+
+        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+        {
+            BindInstance((IKeyBasedInstanceUseCase)useCase);
+        }
+
+        private void BindInstance(IKeyBasedInstanceUseCase useCase)
+        {
+            kernel.Register(Component.For(useCase.GetBoundType()).Instance(useCase.GetBinding()).Named(useCase.Key));
         }
 
         private void Bind(IKeyBasedUseCase<TService> useCase)

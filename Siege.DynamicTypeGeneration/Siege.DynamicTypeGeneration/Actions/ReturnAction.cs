@@ -36,7 +36,7 @@ namespace Siege.DynamicTypeGeneration.Actions
             MethodInfo info = this.bundle().MethodBuilder;
             if (info.ReturnType != typeof(void))
             {
-                methodGenerator.Emit(OpCodes.Ldloc, this.localIndex().LocalIndex());
+                methodGenerator.Emit(OpCodes.Ldloc, this.localIndex().LocalIndex);
             }
 
             methodGenerator.Emit(OpCodes.Ret);

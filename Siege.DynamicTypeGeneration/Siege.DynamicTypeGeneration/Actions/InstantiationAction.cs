@@ -21,6 +21,8 @@ namespace Siege.DynamicTypeGeneration.Actions
     internal class InstantiationAction : ITypeGenerationAction
     {
         private readonly Func<MethodBuilderBundle> bundle;
+        private readonly Func<ConstructorBuilder> constructor;
+        private readonly Func<BuilderBundle> typeBuilder;
         private readonly Type type;
         private readonly Type[] constructorArguments;
 
@@ -31,11 +33,35 @@ namespace Siege.DynamicTypeGeneration.Actions
             this.constructorArguments = constructorArguments;
         }
 
+        public InstantiationAction(Func<MethodBuilderBundle> bundle, Func<BuilderBundle> typeBuilder, Type[] constructorArguments)
+        {
+            this.bundle = bundle;
+            this.typeBuilder = typeBuilder;
+            this.constructorArguments = constructorArguments;
+        }
+
+        public InstantiationAction(Func<MethodBuilderBundle> bundle, Func<ConstructorBuilder> constructor)
+        {
+            this.bundle = bundle;
+            this.constructor = constructor;
+        }
+
         public void Execute()
         {
             ILGenerator generator = this.bundle().MethodBuilder.GetILGenerator();
 
-            generator.Emit(OpCodes.Newobj, type.GetConstructor(constructorArguments));
+            if(type != null)
+            {
+                generator.Emit(OpCodes.Newobj, type.GetConstructor(constructorArguments));
+            }
+            else if(typeBuilder != null)
+            {
+                generator.Emit(OpCodes.Newobj, typeBuilder().TypeBuilder.GetConstructor(constructorArguments));
+            }
+            else if (constructor != null)
+            {
+                generator.Emit(OpCodes.Newobj, constructor());
+            }
         }
     }
 }

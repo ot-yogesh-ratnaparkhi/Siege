@@ -21,6 +21,8 @@ using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.Stores;
 using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Conditional;
+using Siege.ServiceLocation.UseCases.Default;
 
 namespace Siege.ServiceLocation
 {
@@ -43,7 +45,6 @@ namespace Siege.ServiceLocation
 
             AddBinding(typeof(IConditionalUseCaseBinding<>), this.serviceLocator.ConditionalUseCaseBinding);
             AddBinding(typeof(IDefaultUseCaseBinding<>), this.serviceLocator.DefaultUseCaseBinding);
-            AddBinding(typeof(IDefaultInstanceUseCaseBinding<>), this.serviceLocator.DefaultInstanceUseCaseBinding);
             AddBinding(typeof(IKeyBasedUseCaseBinding<>), this.serviceLocator.KeyBasedUseCaseBinding);
 
             Register(Given<IFactoryFetcher>.Then(this));
@@ -156,7 +157,14 @@ namespace Siege.ServiceLocation
 
             var binding = GetInstance<IUseCaseBinding>(bindingType);
 
-            binding.Bind(useCase, this);
+            if(useCase is IInstanceUseCase)
+            {
+                binding.BindInstance((IInstanceUseCase)useCase, this);
+            }
+            else
+            {
+                binding.Bind(useCase, this);
+            }
 
             return this;
         }

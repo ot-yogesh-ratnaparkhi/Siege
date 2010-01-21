@@ -23,7 +23,8 @@ namespace Siege.DynamicTypeGeneration
     public class TypeGenerator
     {
         private static AssemblyBuilder assemblyBuilder;
-        
+        private ModuleBuilder module;
+
         public TypeGenerator()
         {
             const string dllName = "Siege.DynamicTypes";
@@ -31,27 +32,31 @@ namespace Siege.DynamicTypeGeneration
             AppDomain thisDomain = Thread.GetDomain();
 
             assemblyBuilder = thisDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave);
+            this.module = assemblyBuilder.DefineDynamicModule(assemblyBuilder.GetName().Name,
+                                                         assemblyBuilder.GetName().Name +
+                                                         ".dll");
         }
 
         public Type CreateType(Action<TypeGenerationContext> nestedClosure)
         {
-            
+
             BuilderBundle bundle = new BuilderBundle
                                        {
-                                           ModuleBuilder =
-                                               assemblyBuilder.DefineDynamicModule(assemblyBuilder.GetName().Name,
-                                                                                   assemblyBuilder.GetName().Name +
-                                                                                   ".dll")
+                                           ModuleBuilder = module
                                        };
 
-            var context = new TypeGenerationContext(bundle, nestedClosure);
+            var context = new TypeGenerationContext(this, () => bundle, nestedClosure);
             
-            var type = new GeneratedType(bundle, context.TypeGenerationActions);
+            var type = new GeneratedType(bundle, context);
+
             var returnType = type.Create();
 
-            assemblyBuilder.Save(assemblyBuilder.GetName().Name + ".dll");
-
             return returnType;
+        }
+
+        public void Save()
+        {
+            assemblyBuilder.Save(assemblyBuilder.GetName().Name + ".dll");
         }
     }
 }

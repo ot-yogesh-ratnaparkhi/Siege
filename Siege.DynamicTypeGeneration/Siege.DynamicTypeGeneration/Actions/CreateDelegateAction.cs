@@ -14,21 +14,15 @@
 */
 
 using System;
-using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
     internal class CreateDelegateAction : ITypeGenerationAction
     {
-        private readonly Func<MethodBuilderBundle> bundle;
-        private ConstructorInfo delegateConstructor;
         internal Type DelegateType { get; private set; }
 
-        public CreateDelegateAction(Func<MethodBuilderBundle> bundle, Type returnType)
+        public CreateDelegateAction(Type returnType)
         {
-            this.bundle = bundle;
-
             if (returnType == typeof(void))
             {
                 DelegateType = typeof(Action);
@@ -37,16 +31,11 @@ namespace Siege.DynamicTypeGeneration.Actions
             {
                 DelegateType = typeof(Func<>).MakeGenericType(returnType);
             }
-
-            delegateConstructor = DelegateType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
-			
         }
 
         public void Execute()
         {
-            var methodGenerator = bundle().MethodBuilder.GetILGenerator();
-
-            methodGenerator.Emit(OpCodes.Newobj, delegateConstructor);
+            
         }
     }
 }

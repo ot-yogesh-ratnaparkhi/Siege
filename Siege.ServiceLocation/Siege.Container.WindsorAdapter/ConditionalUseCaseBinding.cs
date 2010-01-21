@@ -38,5 +38,14 @@ namespace Siege.SeviceLocation.WindsorAdapter
             kernel.Register(Component.For<TService>().UsingFactoryMethod(() => factory.Build()).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
             kernel.Register(Component.For(useCase.GetBoundType()).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
         }
+
+        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+        {
+            var factory = (Factory<TService>)locator.GetFactory<TService>();
+            factory.AddCase(useCase);
+
+            kernel.Register(Component.For<TService>().UsingFactoryMethod(() => factory.Build()).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
+            kernel.Register(Component.For(useCase.GetBoundType()).Instance(useCase.GetBinding()).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
+        }
     }
 }

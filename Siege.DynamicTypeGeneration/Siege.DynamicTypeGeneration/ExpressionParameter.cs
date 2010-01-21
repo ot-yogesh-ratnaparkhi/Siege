@@ -28,9 +28,9 @@ namespace Siege.DynamicTypeGeneration
             this.argIndex = argIndex;
         }
 
-        public Func<int> LocalIndex
+        public int LocalIndex
         {
-            get { return () => argIndex; }
+            get { return argIndex; }
         }
 
         public Type Type

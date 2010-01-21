@@ -17,7 +17,7 @@ namespace Siege.DynamicTypeGeneration
 {
     public class ConstructorBodyContext : BaseMethodGenerationContext
     {
-        public ConstructorBodyContext(TypeGenerationContext typeGenerationContext) : base(typeGenerationContext)
+        public ConstructorBodyContext(BaseTypeGenerationContext typeGenerationContext) : base(typeGenerationContext)
         {
         }
     }

@@ -21,8 +21,9 @@ namespace Siege.DynamicTypeGeneration.Actions
 {
     public class AddFieldAction : ITypeGenerationAction
     {
-        private readonly BuilderBundle bundle;
+        private readonly Func<BuilderBundle> bundle;
         private readonly Func<string> fieldName;
+        private readonly Func<BuilderBundle> fieldBundle;
         private readonly Func<Type> fieldType;
         private FieldBuilder fieldBuilder;
 
@@ -31,16 +32,30 @@ namespace Siege.DynamicTypeGeneration.Actions
             get { return fieldBuilder; }
         }
 
-        public AddFieldAction(BuilderBundle bundle, Func<string> fieldName, Func<Type> fieldType)
+        public AddFieldAction(Func<BuilderBundle> bundle, Func<string> fieldName, Func<Type> fieldType)
         {
             this.bundle = bundle;
             this.fieldName = fieldName;
             this.fieldType = fieldType;
         }
 
+        public AddFieldAction(Func<BuilderBundle> bundle, Func<string> fieldName, Func<BuilderBundle> fieldBundle)
+        {
+            this.bundle = bundle;
+            this.fieldName = fieldName;
+            this.fieldBundle = fieldBundle;
+        }
+
         public void Execute()
         {
-            fieldBuilder = bundle.TypeBuilder.DefineField(fieldName(), fieldType(), FieldAttributes.Public);
+            if(fieldType != null)
+            {
+                fieldBuilder = bundle().TypeBuilder.DefineField(fieldName(), fieldType(), FieldAttributes.Public);
+            }
+            else if(fieldBundle != null)
+            {
+                fieldBuilder = bundle().TypeBuilder.DefineField(fieldName(), fieldBundle().TypeBuilder, FieldAttributes.Public);
+            }
         }
     }
 }

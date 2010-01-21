@@ -13,16 +13,14 @@
      limitations under the License.
 */
 
-using System;
 using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration
 {
     public class BuilderBundle
     {
-        public TypeBuilder TypeBuilder { get { return TypeBuilderDelegate(); } }
+        public TypeBuilder TypeBuilder { get; set; }
         public ModuleBuilder ModuleBuilder { get; set; }
-        internal Func<TypeBuilder> TypeBuilderDelegate { get; set; }
     }
 
     public class MethodBuilderBundle : BuilderBundle
@@ -40,8 +38,7 @@ namespace Siege.DynamicTypeGeneration
         public MethodBuilderBundle(BuilderBundle bundle, MethodBuilder builder)
         {
             this.builder = builder;
-            this.TypeBuilderDelegate = bundle.TypeBuilderDelegate;
-            this.ModuleBuilder = bundle.ModuleBuilder;
+            ModuleBuilder = bundle.ModuleBuilder;
         }
     }
 }

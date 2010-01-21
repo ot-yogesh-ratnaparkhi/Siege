@@ -20,15 +20,15 @@ using System.Reflection.Emit;
 
 namespace Siege.DynamicTypeGeneration.Actions
 {
-    internal class AddConstructorAction : ITypeGenerationAction
+    public class AddConstructorAction : ITypeGenerationAction
     {
-        private readonly BuilderBundle builder;
+        private readonly Func<BuilderBundle> builder;
         private readonly Func<List<Type>> types;
         private ConstructorBuilder constructorBuilder;
         public ConstructorBuilder Constructor { get { return constructorBuilder; } }
         public Func<ILGenerator> Builder { get { return () => constructorBuilder.GetILGenerator(); } }
 
-        public AddConstructorAction(BuilderBundle bundle, Func<List<Type>> types)
+        public AddConstructorAction(Func<BuilderBundle> bundle, Func<List<Type>> types)
         {
             builder = bundle;
             this.types = types;
@@ -36,7 +36,7 @@ namespace Siege.DynamicTypeGeneration.Actions
 
         public void Execute()
         {
-            constructorBuilder = builder.TypeBuilder.DefineConstructor(
+            constructorBuilder = builder().TypeBuilder.DefineConstructor(
                 MethodAttributes.Public |
                 MethodAttributes.SpecialName |
                 MethodAttributes.RTSpecialName,

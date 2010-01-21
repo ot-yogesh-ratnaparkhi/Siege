@@ -36,5 +36,14 @@ namespace Siege.ServiceLocation.NinjectAdapter
             if (typeof(TService) != useCase.GetBoundType()) kernel.Bind<TService>().ToMethod(context => factory.Build());
             kernel.Bind(useCase.GetBoundType()).ToSelf();
         }
+
+        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+        {
+            var factory = (Factory<TService>)locator.GetFactory<TService>();
+            factory.AddCase(useCase);
+
+            if (typeof(TService) != useCase.GetBoundType()) kernel.Bind<TService>().ToMethod(context => factory.Build());
+            kernel.Bind(useCase.GetBoundType()).ToConstant(useCase.GetBinding());
+        }
     }
 }
