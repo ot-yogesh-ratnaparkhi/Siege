@@ -38,6 +38,7 @@ namespace Siege.DynamicTypeGeneration
             List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
 
             int counter = 1;
+            generator.Returns(methodCall.Method.ReturnType);
             foreach (ParameterInfo parameter in methodCall.Method.GetParameters())
             {
                 generator.WithArgument(parameter.ParameterType);
@@ -58,6 +59,7 @@ namespace Siege.DynamicTypeGeneration
             List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
 
             int counter = 1;
+            generator.Returns(methodCall.Method.ReturnType);
             foreach (ParameterInfo parameter in methodCall.Method.GetParameters())
             {
                 generator.WithArgument(parameter.ParameterType);
@@ -69,6 +71,26 @@ namespace Siege.DynamicTypeGeneration
             Target(variable, parameters, methodCall.Method.Name, () => methodCall.Method);
 
             return methodCall.Method;
+        }
+
+        public MethodInfo Target(MethodInfo info)
+        {
+
+            List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
+
+            int counter = 1;
+            generator.Returns(info.ReturnType);
+            foreach (ParameterInfo parameter in info.GetParameters())
+            {
+                generator.WithArgument(parameter.ParameterType);
+                parameters.Add(new ExpressionParameter(parameter.ParameterType, counter));
+
+                counter++;
+            }
+
+            Target(null, parameters, info.Name, () => info);
+
+            return info;
         }
 
         public void Target(GeneratedVariable variable, List<IGeneratedParameter> parameters, string methodName, Func<MethodInfo> info)

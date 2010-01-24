@@ -263,7 +263,7 @@ namespace Siege.DynamicTypeGeneration.Tests
 
                         var del = body.CreateVariable(typeof(Delegate1));
                         del.AssignFrom(body.Instantiate<Delegate1>());
-                        var variable = body.CreateLambda(typeof(string), lambda =>
+                        var variable = body.CreateLambda(lambda =>
                         {
                             target = lambda.Target<BaseType>(p => p.DoSomething(null));
                         });

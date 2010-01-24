@@ -12,6 +12,7 @@ namespace Siege.DynamicTypeGeneration
         private List<Type> argumentTypes = new List<Type>();
         internal NestedTypeGenerationContext NestedType { get; set; }
         internal Func<ConstructorBuilder> Constructor { get; set; }
+        private Type returnType;
 
         public DelegateGenerator(BaseTypeGenerationContext context)
         {
@@ -21,6 +22,11 @@ namespace Siege.DynamicTypeGeneration
         public void WithArgument(Type argumentType)
         {
             argumentTypes.Add(argumentType);
+        }
+
+        public void Returns(Type returnType)
+        {
+            this.returnType = returnType;
         }
 
         public void Build()
@@ -67,9 +73,17 @@ namespace Siege.DynamicTypeGeneration
                         method.Returns(() => info.Method().MethodBuilder().MethodBuilder.ReturnType);
                         method.WithBody(body =>
                         {
-                            var variable = body.CreateVariable(() => info.Method().MethodBuilder().MethodBuilder.ReturnType);
-                            variable.AssignFrom(() => body.Call(() => info.Method().MethodBuilder().MethodBuilder, () => fields));
-                            body.Return(variable);
+                            if (returnType != (typeof(void)))
+                            {
+                                var variable = body.CreateVariable(() => info.Method().MethodBuilder().MethodBuilder.ReturnType);
+                                variable.AssignFrom(() => body.Call(() => info.Method().MethodBuilder().MethodBuilder, () => fields));
+                                body.Return(variable);
+                            }
+                            else
+                            {
+                                body.Call(() => info.Method().MethodBuilder().MethodBuilder, () => fields);
+                                body.Return();
+                            }
                         });
                     });
                 }

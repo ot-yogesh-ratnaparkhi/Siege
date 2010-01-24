@@ -123,7 +123,7 @@ namespace Siege.DynamicTypeGeneration
             GeneratedMethod.ReturnFrom();
         }
 
-        public GeneratedDelegate CreateLambda(Type type, Action<DelegateBodyContext> closure)
+        public GeneratedDelegate CreateLambda(Action<DelegateBodyContext> closure)
         {
             var generator = new DelegateGenerator(typeGenerationContext);
             closure(new DelegateBodyContext(this, generator));
