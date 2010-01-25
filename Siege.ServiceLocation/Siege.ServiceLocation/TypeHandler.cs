@@ -14,12 +14,22 @@
 */
 
 using System;
+using Siege.ServiceLocation.TypeBuilders;
 
-namespace Siege.ServiceLocation.AOP
+namespace Siege.ServiceLocation
 {
-    public interface IProcessEncapsulatingAttribute : IAopAttribute
+    internal class TypeHandler
     {
-        TResponseType Process<TResponseType>(Func<TResponseType> func);
-        void Process(Action action);
+        private static ITypeBuilder builder;
+
+        internal static void Initialize(ITypeBuilder builder)
+        {
+            TypeHandler.builder = builder;
+        }
+
+        internal static Type Build(Type typeToBuild)
+        {
+            return builder.Build(typeToBuild);
+        }
     }
 }

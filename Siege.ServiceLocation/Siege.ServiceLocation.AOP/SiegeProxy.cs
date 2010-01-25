@@ -18,7 +18,6 @@ using System.Collections;
 using System.Linq;
 using System.Reflection;
 using Siege.DynamicTypeGeneration;
-using Siege.ServiceLocation.Aop;
 
 namespace Siege.ServiceLocation.AOP
 {
@@ -27,20 +26,25 @@ namespace Siege.ServiceLocation.AOP
         private static readonly Hashtable definedTypes = new Hashtable();
         public Type Create<TProxy>() where TProxy : class
         {
-            if (definedTypes.ContainsKey(typeof(TProxy))) return (Type)definedTypes[typeof(TProxy)];
-            if (typeof(TProxy).GetMethods().Where(methodInfo => methodInfo.GetCustomAttributes(typeof(IAopAttribute), true).Count() > 0).Count() == 0) return typeof(TProxy);
+            return Create(typeof (TProxy));
+        }
+
+        public Type Create(Type typeToProxy)
+        {
+            if (definedTypes.ContainsKey(typeToProxy)) return (Type)definedTypes[typeToProxy];
+            if (typeToProxy.GetMethods().Where(methodInfo => methodInfo.GetCustomAttributes(typeof(IAopAttribute), true).Count() > 0).Count() == 0) return typeToProxy;
 
             var generator = new TypeGenerator();
             
             Type generatedType = generator.CreateType(type =>
             {
-                type.Named(typeof(TProxy).Name);
-                type.InheritFrom<TProxy>();
+                type.Named(typeToProxy.Name);
+                type.InheritFrom(typeToProxy);
                 var field = type.AddField<IServiceLocator>("serviceLocator");
 
                 type.AddConstructor(constructor => constructor.CreateArgument<IServiceLocator>().AssignTo(field));
 
-                foreach(MethodInfo methodInfo in typeof(TProxy).GetMethods(BindingFlags.Public | BindingFlags.Instance))
+                foreach (MethodInfo methodInfo in typeToProxy.GetMethods(BindingFlags.Public | BindingFlags.Instance))
                 {
                     if (methodInfo.IsVirtual && methodInfo.GetBaseDefinition().DeclaringType != typeof(object))
                     {

@@ -20,6 +20,7 @@ using System.Linq;
 using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.Stores;
+using Siege.ServiceLocation.TypeBuilders;
 using Siege.ServiceLocation.UseCases;
 using Siege.ServiceLocation.UseCases.Conditional;
 using Siege.ServiceLocation.UseCases.Default;
@@ -37,11 +38,12 @@ namespace Siege.ServiceLocation
         private readonly Hashtable defaultCases = new Hashtable();
         private readonly Hashtable factories = new Hashtable();
 
-        protected SiegeContainer(IServiceLocatorAdapter serviceLocator, IContextStore contextStore, IExecutionStore executionStore)
+        protected SiegeContainer(IServiceLocatorAdapter serviceLocator, IContextStore contextStore, IExecutionStore executionStore, ITypeBuilder typeBuilder)
         {
             this.serviceLocator = serviceLocator;
             this.contextStore = contextStore;
             this.executionStore = executionStore;
+            TypeHandler.Initialize(typeBuilder);
 
             AddBinding(typeof(IConditionalUseCaseBinding<>), this.serviceLocator.ConditionalUseCaseBinding);
             AddBinding(typeof(IDefaultUseCaseBinding<>), this.serviceLocator.DefaultUseCaseBinding);
@@ -53,14 +55,26 @@ namespace Siege.ServiceLocation
             Register(Given<IServiceLocatorAdapter>.Then(serviceLocator));
         }
 
-        public SiegeContainer(IServiceLocatorAdapter serviceLocator, IContextStore contextStore) : this(serviceLocator, contextStore, ThreadedExecutionStore.New())
+        public SiegeContainer(IServiceLocatorAdapter serviceLocator, IContextStore contextStore, ITypeBuilder typeBuilder) : this(serviceLocator, contextStore, ThreadedExecutionStore.New(), typeBuilder)
         {
             
         }
 
-        public SiegeContainer(IServiceLocatorAdapter serviceLocator) : this(serviceLocator, new GlobalContextStore())
+        public SiegeContainer(IServiceLocatorAdapter serviceLocator, ITypeBuilder typeBuilder) : this(serviceLocator, new GlobalContextStore(), typeBuilder)
         {
             
+        }
+
+        public SiegeContainer(IServiceLocatorAdapter serviceLocator, IContextStore contextStore)
+            : this(serviceLocator, contextStore, ThreadedExecutionStore.New(), new DefaultTypeBuilder())
+        {
+
+        }
+
+        public SiegeContainer(IServiceLocatorAdapter serviceLocator)
+            : this(serviceLocator, new GlobalContextStore(), new DefaultTypeBuilder())
+        {
+
         }
 
         public void AddContext(object contextItem)

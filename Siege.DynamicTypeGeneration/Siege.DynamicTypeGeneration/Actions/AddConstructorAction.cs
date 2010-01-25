@@ -42,6 +42,13 @@ namespace Siege.DynamicTypeGeneration.Actions
                 MethodAttributes.RTSpecialName,
                 CallingConventions.Standard,
                 this.types().ToArray());
+
+            int counter = 1;
+            foreach(Type type in this.types())
+            {
+                constructorBuilder.DefineParameter(counter, ParameterAttributes.None, type.Name + "_" + counter);
+                counter++;
+            }
         }
     }
 }

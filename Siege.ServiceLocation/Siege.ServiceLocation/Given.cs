@@ -21,7 +21,7 @@ using Siege.ServiceLocation.UseCases.Named;
 
 namespace Siege.ServiceLocation
 {
-    public class Given<TBaseService> 
+    public class Given<TBaseService>
     {
         public static ConditionalActivationRule<TBaseService, TContext> When<TContext>(Func<TContext, bool> evaluation)
         {

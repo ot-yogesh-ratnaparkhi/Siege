@@ -28,7 +28,7 @@ namespace Siege.ServiceLocation.UseCases
 
         public void BindTo(Type implementationType)
         {
-            boundType = implementationType;
+            boundType = TypeHandler.Build(implementationType);
         }
 
         public override Type GetBinding()

@@ -155,6 +155,10 @@
       <Project>{20AE3922-30F4-47C5-A86B-C27E320BDE65}</Project>
       <Name>Siege.ServiceLocation.WindsorAdapter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Siege.ServiceLocation.AOP\Siege.ServiceLocation.AOP.csproj">
+      <Project>{2EDF2E1D-C65C-4246-99A8-217B7CB38810}</Project>
+      <Name>Siege.ServiceLocation.AOP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Siege.ServiceLocation.AutofacAdapter\Siege.ServiceLocation.AutofacAdapter.csproj">
       <Project>{12D1DCC0-8BF9-4DF4-9A18-F3AD4F1A9077}</Project>
       <Name>Siege.ServiceLocation.AutofacAdapter</Name>

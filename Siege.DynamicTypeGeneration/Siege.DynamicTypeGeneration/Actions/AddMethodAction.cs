@@ -48,8 +48,15 @@ namespace Siege.DynamicTypeGeneration.Actions
                 methodAttributes,
                 returnType()(), parameterTypes());
 
-            this.MethodBuilder = new MethodBuilderBundle(builderBundle(), methodBuilder);
-            this.MethodBuilder.TypeBuilder = builderBundle().TypeBuilder;
+            int counter = 1;
+            foreach (Type type in this.parameterTypes())
+            {
+                methodBuilder.DefineParameter(counter, ParameterAttributes.None, type.Name + "_" + counter);
+                counter++;
+            }
+
+            this.MethodBuilder = new MethodBuilderBundle(builderBundle(), methodBuilder)
+                                     {TypeBuilder = builderBundle().TypeBuilder};
         }
     }
 }

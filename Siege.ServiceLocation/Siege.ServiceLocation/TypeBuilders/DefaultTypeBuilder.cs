@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,11 +15,13 @@
 
 using System;
 
-namespace Siege.ServiceLocation.AOP
+namespace Siege.ServiceLocation.TypeBuilders
 {
-    public interface IProcessEncapsulatingAttribute : IAopAttribute
+    public class DefaultTypeBuilder : ITypeBuilder
     {
-        TResponseType Process<TResponseType>(Func<TResponseType> func);
-        void Process(Action action);
+        public Type Build(Type typeToBuild)
+        {
+            return typeToBuild;
+        }
     }
 }

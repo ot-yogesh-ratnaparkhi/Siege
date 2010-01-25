@@ -15,7 +15,6 @@
 
 using System;
 using NUnit.Framework;
-using Siege.ServiceLocation.Aop;
 
 namespace Siege.ServiceLocation.AOP.Tests
 {
@@ -69,82 +68,7 @@ namespace Siege.ServiceLocation.AOP.Tests
         }
     }
 
-    public class TestBase
-    {
-        protected readonly IContextualServiceLocator locator;
-
-        public TestBase(IContextualServiceLocator locator)
-        {
-            this.locator = locator;
-        }
-
-        public virtual string Test(object arg1, object arg2)
-        {
-            return "yay";
-        }
-    }
-
-    public class TestClass : TestBase
-    {
-        public TestClass(IContextualServiceLocator locator)
-            : base(locator)
-        {
-        }
-
-        public override string Test(object arg1, object arg2)
-        {
-            return new SampleEncapsulatingAttribute().Process(() => base.Test(arg1, arg2));
-        }
-
-        public string Test2(object arg1, object arg2)
-        {
-            return base.Test(arg1, arg2);
-        }
-    }
-
-    public class AOPExample
-    {
-        [SampleEncapsulating]
-        public virtual string Test()
-        {
-            return "yay";
-        }
-    }
-
-    public class SampleBase
-    {
-        protected readonly IContextualServiceLocator locator;
-
-        public SampleBase(IContextualServiceLocator locator)
-        {
-            this.locator = locator;
-        }
-
-        public virtual string Test()
-        {
-            return "yay";
-        }
-    }
-
-    public class SampleClass : SampleBase
-    {
-        public SampleClass(IContextualServiceLocator locator)
-            : base(locator)
-        {
-        }
-
-        public override string Test()
-        {
-            var attribute1 = new SampleEncapsulatingAttribute();
-            var attribute2 = new SampleEncapsulatingAttribute();
-            var attribute3 = new SampleEncapsulatingAttribute();
-
-            return attribute3.Process(() => attribute2.Process(() => attribute1.Process(() => base.Test())));
-
-            //return locator.GetInstance<SampleEncapsulatingAttribute>().Process(() => base.Test());
-        }
-    }
-
+    
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
     public class SampleEncapsulatingAttribute : Attribute, IProcessEncapsulatingAttribute
     {

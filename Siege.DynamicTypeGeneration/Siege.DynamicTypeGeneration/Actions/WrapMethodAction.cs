@@ -52,9 +52,17 @@ namespace Siege.DynamicTypeGeneration.Actions
                 method.WithBody(body =>
                 {
                     body.TargettingSelf();
-                    var variable = body.CreateVariable(method.ReturnType());
-                    variable.AssignFrom(() => body.Call(methodInfo, () => parameters));
-                    body.Return(variable);
+                    if (method.ReturnType() != typeof(void))
+                    {
+                        var variable = body.CreateVariable(method.ReturnType());
+
+                        variable.AssignFrom(() => body.Call(methodInfo, () => parameters));
+                        body.Return(variable);
+                    }
+                    else
+                    {
+                        body.Call(methodInfo, () => parameters);
+                    }
                 });
             });
 

@@ -40,7 +40,12 @@ namespace Siege.DynamicTypeGeneration
 
         public void InheritFrom<TBaseType>() where TBaseType : class
         {
-            BaseType = typeof(TBaseType);
+            InheritFrom(typeof(TBaseType));
+        }
+
+        public void InheritFrom(Type baseType)
+        {
+            BaseType = baseType;
         }
 
         public void Named(string name)
