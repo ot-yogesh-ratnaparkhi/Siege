@@ -24,6 +24,14 @@ namespace Siege.ServiceLocation.AOP
     public class SiegeProxy
     {
         private static readonly Hashtable definedTypes = new Hashtable();
+        private bool useServiceLocator;
+
+        public SiegeProxy WithServiceLocator()
+        {
+            useServiceLocator = true;
+            return this;
+        }
+
         public Type Create<TProxy>() where TProxy : class
         {
             return Create(typeof (TProxy));
@@ -40,9 +48,12 @@ namespace Siege.ServiceLocation.AOP
             {
                 type.Named(typeToProxy.Name);
                 type.InheritFrom(typeToProxy);
-                var field = type.AddField<IServiceLocator>("serviceLocator");
-
-                type.AddConstructor(constructor => constructor.CreateArgument<IServiceLocator>().AssignTo(field));
+                GeneratedField field = null;
+                if(useServiceLocator)
+                {
+                    field = type.AddField<Microsoft.Practices.ServiceLocation.IServiceLocator>("serviceLocator");
+                    type.AddConstructor(constructor => constructor.CreateArgument<Microsoft.Practices.ServiceLocation.IServiceLocator>().AssignTo(field));
+                }
 
                 foreach (MethodInfo methodInfo in typeToProxy.GetMethods(BindingFlags.Public | BindingFlags.Instance))
                 {
@@ -55,9 +66,14 @@ namespace Siege.ServiceLocation.AOP
                                 body.CallBase(methodInfo);
                                 return;
                             }
+                            
+                            GeneratedVariable serviceLocator = null;
 
-                            var serviceLocator = body.CreateVariable<IServiceLocator>();
-                            serviceLocator.AssignFrom(field);
+                            if (useServiceLocator)
+                            {
+                                serviceLocator = body.CreateVariable<Microsoft.Practices.ServiceLocation.IServiceLocator>();
+                                serviceLocator.AssignFrom(field);
+                            }
 
                             GeneratePreProcessors(body, methodInfo, serviceLocator);
 
@@ -80,7 +96,14 @@ namespace Siege.ServiceLocation.AOP
             foreach (Attribute attribute in methodInfo.GetCustomAttributes(typeof(IPreProcessingAttribute), true))
             {
                 var preProcessor = body.CreateVariable<IPreProcessingAttribute>();
-                preProcessor.AssignFrom(() => serviceLocator.Invoke(typeof(Microsoft.Practices.ServiceLocation.IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attribute.GetType())));
+                if(useServiceLocator)
+                {
+                    preProcessor.AssignFrom(() => serviceLocator.Invoke(typeof(Microsoft.Practices.ServiceLocation.IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attribute.GetType())));
+                }
+                else
+                {
+                    preProcessor.AssignFrom(body.Instantiate(attribute.GetType()));
+                }
 
                 preProcessor.Invoke<IPreProcessingAttribute>(processor => processor.Process());
             }
@@ -91,7 +114,14 @@ namespace Siege.ServiceLocation.AOP
             foreach (Attribute attribute in methodInfo.GetCustomAttributes(typeof(IPostProcessingAttribute), true))
             {
                 var postProcessor = body.CreateVariable<IPostProcessingAttribute>();
-                postProcessor.AssignFrom(() => serviceLocator.Invoke(typeof(Microsoft.Practices.ServiceLocation.IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attribute.GetType())));
+                if (useServiceLocator)
+                {
+                    postProcessor.AssignFrom(() => serviceLocator.Invoke(typeof(Microsoft.Practices.ServiceLocation.IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attribute.GetType())));
+                }
+                else
+                {
+                    postProcessor.AssignFrom(body.Instantiate(attribute.GetType()));
+                }
 
                 postProcessor.Invoke<IPostProcessingAttribute>(processor => processor.Process());
             }
@@ -119,7 +149,14 @@ namespace Siege.ServiceLocation.AOP
             }
 
             var encapsulating = body.CreateVariable<IProcessEncapsulatingAttribute>();
-            encapsulating.AssignFrom(() => serviceLocator.Invoke(typeof(Microsoft.Practices.ServiceLocation.IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attributes[0].GetType())));
+            if(useServiceLocator)
+            {
+                encapsulating.AssignFrom(() => serviceLocator.Invoke(typeof(Microsoft.Practices.ServiceLocation.IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attributes[0].GetType())));
+            }
+            else
+            {
+                encapsulating.AssignFrom(body.Instantiate(attributes[0].GetType()));
+            }
             
             var lambdaVariable = body.CreateLambda(lambda =>
             {

@@ -24,14 +24,14 @@ namespace Siege.ServiceLocation.AOP.Tests
         protected IContextualServiceLocator locator;
 
         [Test]
-        public void Should_Override_Virtual_Methods_With_Return_Types()
+        public void Should_Override_Virtual_Methods_With_Return_Types_With_ServiceLocator()
         {
             locator = new SiegeContainer(new NinjectAdapter.NinjectAdapter());
             locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
 
-            Type type = new SiegeProxy().Create<TestType>();
+            Type type = new SiegeProxy().WithServiceLocator().Create<TestType>();
 
             var instance = Activator.CreateInstance(type, locator);
 
@@ -39,7 +39,22 @@ namespace Siege.ServiceLocation.AOP.Tests
         }
 
         [Test]
-        public void Should_Override_Virtual_Methods_Without_Return_Types()
+        public void Should_Override_Virtual_Methods_Without_Return_Types_With_ServiceLocator()
+        {
+            locator = new SiegeContainer(new NinjectAdapter.NinjectAdapter());
+            locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
+            locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
+            locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
+
+            Type type = new SiegeProxy().WithServiceLocator().Create<TestType>();
+
+            var instance = Activator.CreateInstance(type, locator);
+
+            type.GetMethod("TestNoReturn").Invoke(instance, new[] { "arg1", "arg2" });
+        }
+
+        [Test]
+        public void Should_Override_Virtual_Methods_With_Return_Types_Without_ServiceLocator()
         {
             locator = new SiegeContainer(new NinjectAdapter.NinjectAdapter());
             locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
@@ -48,7 +63,22 @@ namespace Siege.ServiceLocation.AOP.Tests
 
             Type type = new SiegeProxy().Create<TestType>();
 
-            var instance = Activator.CreateInstance(type, locator);
+            var instance = Activator.CreateInstance(type);
+
+            Assert.AreEqual("lolarg1", type.GetMethod("Test").Invoke(instance, new[] { "arg1", "arg2" }));
+        }
+
+        [Test]
+        public void Should_Override_Virtual_Methods_Without_Return_Types_Without_ServiceLocator()
+        {
+            locator = new SiegeContainer(new NinjectAdapter.NinjectAdapter());
+            locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
+            locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
+            locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
+
+            Type type = new SiegeProxy().Create<TestType>();
+
+            var instance = Activator.CreateInstance(type);
 
             type.GetMethod("TestNoReturn").Invoke(instance, new[] { "arg1", "arg2" });
         }
