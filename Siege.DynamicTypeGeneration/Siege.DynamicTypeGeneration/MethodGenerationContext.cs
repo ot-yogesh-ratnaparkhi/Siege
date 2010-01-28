@@ -24,7 +24,7 @@ namespace Siege.DynamicTypeGeneration
     {
         internal Func<List<IGeneratedParameter>> ParameterTypes { get { return () => parameters; } }
         internal Func<string> Name { get; private set; }
-        internal Func<Type> ReturnType { get; private set; }
+        internal Func<Type> ReturnType { get; private set;}
 
         private List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
         private int argCount;

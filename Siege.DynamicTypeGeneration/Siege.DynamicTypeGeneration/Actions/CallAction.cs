@@ -23,6 +23,8 @@ namespace Siege.DynamicTypeGeneration.Actions
     internal class CallAction : ITypeGenerationAction, ILocalIndexer
     {
         protected readonly Func<MethodBuilderBundle> bundle;
+        private readonly Func<GeneratedMethod> targetMethod;
+        private readonly Func<DelegateMethod> delegateMethod;
         protected readonly Func<MethodInfo> method;
         protected IList<ITypeGenerationAction> actions;
         protected readonly GeneratedMethod generatedMethod;
@@ -52,6 +54,24 @@ namespace Siege.DynamicTypeGeneration.Actions
         {
             this.bundle = bundle;
             this.method = method;
+            this.actions = actions;
+            this.generatedMethod = generatedMethod;
+            this.fields = fields;
+        }
+
+        public CallAction(Func<MethodBuilderBundle> bundle, Func<GeneratedMethod> targetMethod, IList<ITypeGenerationAction> actions, GeneratedMethod generatedMethod, Func<List<GeneratedField>> fields)
+        {
+            this.bundle = bundle;
+            this.targetMethod = targetMethod;
+            this.actions = actions;
+            this.generatedMethod = generatedMethod;
+            this.fields = fields;
+        }
+
+        public CallAction(Func<MethodBuilderBundle> bundle, Func<DelegateMethod> targetMethod, IList<ITypeGenerationAction> actions, GeneratedMethod generatedMethod, Func<List<GeneratedField>> fields)
+        {
+            this.bundle = bundle;
+            this.delegateMethod = targetMethod;
             this.actions = actions;
             this.generatedMethod = generatedMethod;
             this.fields = fields;
@@ -88,7 +108,9 @@ namespace Siege.DynamicTypeGeneration.Actions
                 methodGenerator.Emit(OpCodes.Ldloc, variable.LocalIndex);
             }
 
-            methodGenerator.Emit(OpCodes.Call, method());
+            if (method != null) methodGenerator.Emit(OpCodes.Call, method());
+            if (targetMethod != null) methodGenerator.Emit(OpCodes.Call, targetMethod().MethodBuilder().MethodBuilder);
+            if (delegateMethod != null) methodGenerator.Emit(OpCodes.Call, delegateMethod().Method().MethodBuilder().MethodBuilder);
             localIndex = generatedMethod.LocalCount - 1;
         }
 

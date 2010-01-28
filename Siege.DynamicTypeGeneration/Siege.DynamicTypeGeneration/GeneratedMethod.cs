@@ -83,7 +83,31 @@ namespace Siege.DynamicTypeGeneration
             return new GeneratedVariable(method().ReturnType, action.LocalIndex, actions, this);
         }
 
+        public GeneratedVariable Call(Func<GeneratedMethod> method, Type returnType)
+        {
+            var action = new CallAction(bundle, method, actions, this, () => new List<GeneratedField>());
+            actions.Add(action);
+
+            return new GeneratedVariable(returnType, action.LocalIndex, actions, this);
+        }
+
         public GeneratedVariable Call(Func<MethodInfo> method, Func<List<GeneratedField>> parameters)
+        {
+            var action = new CallAction(bundle, method, actions, this, parameters);
+            actions.Add(action);
+
+            return new GeneratedVariable(method, action.LocalIndex, actions, this);
+        }
+
+        public GeneratedVariable Call(Func<DelegateMethod> method, Func<List<GeneratedField>> parameters)
+        {
+            var action = new CallAction(bundle, method, actions, this, parameters);
+            actions.Add(action);
+
+            return new GeneratedVariable(method, action.LocalIndex, actions, this);
+        }
+
+        public GeneratedVariable Call(Func<GeneratedMethod> method, Func<List<GeneratedField>> parameters)
         {
             var action = new CallAction(bundle, method, actions, this, parameters);
             actions.Add(action);

@@ -28,7 +28,10 @@ namespace Siege.DynamicTypeGeneration
                 counter++;
             }
 
-            context.typeGenerationContext.TypesToComplete.Add(generator.NestedType.Builder);
+            if (!context.TypeGenerationContext.TypesToComplete.Contains(generator.NestedType.Builder))
+            {
+                context.TypeGenerationContext.TypesToComplete.Add(generator.NestedType.Builder);
+            }
             var variable = context.CreateVariable(generator.NestedType.Builder);
             variable.AssignFrom(context.Instantiate(generator.Constructor));
 

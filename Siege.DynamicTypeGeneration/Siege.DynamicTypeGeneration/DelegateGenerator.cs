@@ -65,23 +65,43 @@ namespace Siege.DynamicTypeGeneration
 
                 Constructor = () => constructorAction.Constructor;
 
-                foreach (DelegateMethod info in methods)
+                for (int i = 0; i < methods.Count; i++)
                 {
+                    var info = methods[i];
                     entryPoint = type.AddMethod(method =>
                     {
-                        method.Named(() => info.Name);
-                        method.Returns(() => info.Method().MethodBuilder().MethodBuilder.ReturnType);
+                        method.Named(info.Name);
+                        method.Returns(returnType);
                         method.WithBody(body =>
                         {
+                            if(info.Body != null) info.Body(body);
+
                             if (returnType != (typeof(void)))
                             {
-                                var variable = body.CreateVariable(() => info.Method().MethodBuilder().MethodBuilder.ReturnType);
-                                variable.AssignFrom(() => body.Call(() => info.Method().MethodBuilder().MethodBuilder, () => fields));
+                                var variable = body.CreateVariable(returnType);
+                                
+                                if(entryPoint == null)
+                                {
+                                    variable.AssignFrom(() => body.Call(() => info.Method().MethodBuilder().MethodBuilder, () => fields));
+                                }
+                                else
+                                {
+                                    body.TargettingSelf();
+                                    variable.AssignFrom(() => body.Call(entryPoint, returnType));
+                                }
                                 body.Return(variable);
                             }
                             else
                             {
-                                body.Call(() => info.Method().MethodBuilder().MethodBuilder, () => fields);
+                                if(entryPoint == null)
+                                {
+                                    body.Call(() => info.Method().MethodBuilder().MethodBuilder, () => fields);
+                                }
+                                else
+                                {
+                                    body.TargettingSelf();
+                                    body.Call(() => entryPoint, () => fields);
+                                }
                                 body.Return();
                             }
                         });
@@ -96,11 +116,17 @@ namespace Siege.DynamicTypeGeneration
         {
             methods.Add(new DelegateMethod { Name = name, Method = info});
         }
+
+        public void AddMethod(string name, Func<GeneratedMethod> info, Action<MethodBodyContext> closure)
+        {
+            methods.Add(new DelegateMethod { Name = name, Method = info, Body = closure });
+        }
     }
 
-    internal class DelegateMethod
+    public class DelegateMethod
     {
         public string Name { get; set; }
         public Func<GeneratedMethod> Method { get; set; }
+        public Action<MethodBodyContext> Body { get; set; }
     }
 }

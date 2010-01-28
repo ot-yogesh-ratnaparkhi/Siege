@@ -24,6 +24,8 @@ namespace Siege.DynamicTypeGeneration
     public class GeneratedVariable : ILocalIndexer
     {
         private readonly Func<Type> type;
+        private readonly Func<GeneratedMethod> generatedMethod;
+        private readonly Func<DelegateMethod> delegateMethod;
         private readonly Func<MethodInfo> methodInfo;
         private readonly Func<BuilderBundle> builderBundle;
         protected readonly int localIndex;
@@ -54,6 +56,22 @@ namespace Siege.DynamicTypeGeneration
             this.method = method;
         }
 
+        public GeneratedVariable(Func<GeneratedMethod> methodInfo, int localIndex, IList<ITypeGenerationAction> actions, GeneratedMethod method)
+        {
+            this.generatedMethod = methodInfo;
+            this.localIndex = localIndex;
+            this.actions = actions;
+            this.method = method;
+        }
+
+        public GeneratedVariable(Func<DelegateMethod> methodInfo, int localIndex, IList<ITypeGenerationAction> actions, GeneratedMethod method)
+        {
+            this.delegateMethod = methodInfo;
+            this.localIndex = localIndex;
+            this.actions = actions;
+            this.method = method;
+        }
+
         public GeneratedVariable(Func<BuilderBundle> builderBundle, int localIndex, IList<ITypeGenerationAction> actions, GeneratedMethod method)
         {
             this.builderBundle = builderBundle;
@@ -64,7 +82,7 @@ namespace Siege.DynamicTypeGeneration
 
         public Type Type
         {
-            get { return type() ?? builderBundle().TypeBuilder ?? methodInfo().ReturnType; }
+            get { return type() ?? builderBundle().TypeBuilder ?? methodInfo().ReturnType ?? generatedMethod().MethodBuilder().MethodBuilder.ReturnType ?? delegateMethod().Method().MethodBuilder().MethodBuilder.ReturnType; }
         }
 
         public void AssignFrom(Func<ILocalIndexer> item)

@@ -24,6 +24,7 @@ namespace Siege.DynamicTypeGeneration
     {
         private readonly MethodBodyContext context;
         private readonly DelegateGenerator generator;
+        private int nestedCounter;
 
         public DelegateBodyContext(MethodBodyContext context, DelegateGenerator generator)
         {
@@ -75,7 +76,6 @@ namespace Siege.DynamicTypeGeneration
 
         public MethodInfo Target(MethodInfo info)
         {
-
             List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
 
             int counter = 1;
@@ -96,6 +96,14 @@ namespace Siege.DynamicTypeGeneration
         public void Target(GeneratedVariable variable, List<IGeneratedParameter> parameters, string methodName, Func<MethodInfo> info)
         {
             generator.AddMethod(methodName, context.WrapMethod(info, parameters));
+        }
+
+        public GeneratedDelegate CreateNestedLambda(Action<MethodBodyContext> closure)
+        {
+            nestedCounter++;
+            generator.AddMethod("Lambda_" + nestedCounter, () => this.context.GeneratedMethod, closure);
+
+            return new GeneratedDelegate(this.context, this.context.GeneratedMethod, this.generator);
         }
     }
 }

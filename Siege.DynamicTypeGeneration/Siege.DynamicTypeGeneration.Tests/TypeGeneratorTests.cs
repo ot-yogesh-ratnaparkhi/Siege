@@ -248,6 +248,43 @@ namespace Siege.DynamicTypeGeneration.Tests
         }
 
         [Test]
+        public void Should_Be_Able_To_Create_A_Func_Wrapping_A_Method()
+        {
+            TypeGenerator generator = new TypeGenerator();
+            Type generatedType = generator.CreateType(type =>
+            {
+                type.Named("TestType");
+                type.InheritFrom<BaseType>();
+                type.OverrideMethod<BaseType>(baseType => baseType.DoSomething(null), method =>
+                {
+                    method.WithBody(body =>
+                    {
+                        MethodInfo target = null;
+
+                        var del = body.CreateVariable(typeof(Delegate1));
+                        del.AssignFrom(body.Instantiate<Delegate1>());
+                        var variable = body.CreateLambda(lambda =>
+                        {
+                            target = lambda.Target<BaseType>(p => p.DoSomething(null));
+                        });
+
+                        var func = variable.CreateFunc(target);
+                        var returnValue = body.CreateVariable(method.Method.ReturnType);
+                        returnValue.AssignFrom(() => del.Invoke<Delegate1>(d => d.Process(null), func));
+
+                        body.Return(returnValue);
+                    });
+                });
+            });
+
+            generator.Save();
+
+            var obj = Activator.CreateInstance(generatedType);
+            var result = generatedType.GetMethod("DoSomething").Invoke(obj, new[] { "" });
+            Assert.AreEqual("yay", result);
+        }
+
+        [Test]
         public void Should_Be_Able_To_Create_A_Nested_Func_Wrapping_A_Method()
         {
             TypeGenerator generator = new TypeGenerator();
@@ -266,6 +303,17 @@ namespace Siege.DynamicTypeGeneration.Tests
                         var variable = body.CreateLambda(lambda =>
                         {
                             target = lambda.Target<BaseType>(p => p.DoSomething(null));
+                            lambda.CreateNestedLambda(nestedLambda =>
+                            {
+                                var stringVariable = nestedLambda.CreateVariable<Delegate1>();
+                                stringVariable.AssignFrom(nestedLambda.Instantiate<Delegate1>());
+
+                                lambda.CreateNestedLambda(nestedLambda1 =>
+                                {
+                                    var stringVariable1 = nestedLambda1.CreateVariable<Delegate1>();
+                                    stringVariable1.AssignFrom(nestedLambda1.Instantiate<Delegate1>());
+                                });
+                            });
                         });
 
                         var func = variable.CreateFunc(target);
