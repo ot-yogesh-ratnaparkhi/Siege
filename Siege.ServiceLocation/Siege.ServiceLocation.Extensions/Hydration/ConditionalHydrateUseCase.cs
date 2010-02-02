@@ -13,14 +13,11 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocation.UseCases.Conditional
-{
-    public interface IConditionalUseCase : IUseCase
-    {
-        
-    }
+using Siege.ServiceLocation.UseCases.Actions;
 
-    public interface IConditionalUseCase<TBaseService> : IUseCase<TBaseService>, IConditionalUseCase
+namespace Siege.ServiceLocation.Extensions.Hydration
+{
+    public class ConditionalHydrateUseCase<TService> : ActionUseCase<TService>, IHydrateUseCase<TService>, IConditionalActionUseCase
     {
     }
 }

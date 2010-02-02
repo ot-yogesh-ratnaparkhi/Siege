@@ -14,11 +14,14 @@
 */
 
 using System;
+using Siege.ServiceLocation.Extensions.FactorySupport;
+using Siege.ServiceLocation.Extensions.Hydration;
+using Siege.ServiceLocation.Extensions.ResolutionContextSupport;
 using Siege.ServiceLocation.UseCases.Default;
 
-namespace Siege.ServiceLocation.Extensions.FactorySupport
+namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
 {
-    public class Given<TService> : ServiceLocation.Given<TService>
+    public class Given<TService> : Syntax.Given<TService>
     {
         public static IDefaultUseCase<TService> ConstructWith(Func<IInstanceResolver, TService> factoryMethod)
         {
@@ -26,6 +29,24 @@ namespace Siege.ServiceLocation.Extensions.FactorySupport
 
             useCase.BindTo<Func<IInstanceResolver, TService>>();
             useCase.ConstructWith(factoryMethod);
+
+            return useCase;
+        }
+        public static InjectionRule<TService> WhenInjectingInto<TResolvedType>()
+        {
+            var useCase = new InjectionRule<TService>();
+
+            useCase.BasedOn<TResolvedType>();
+
+            return useCase;
+        }
+
+        public static IHydrateUseCase<TService> HydrateWith(Action<TService> action)
+        {
+            HydrateUseCase<TService> useCase = new HydrateUseCase<TService>();
+
+            useCase.BindTo<TService>();
+            useCase.Associate(action);
 
             return useCase;
         }

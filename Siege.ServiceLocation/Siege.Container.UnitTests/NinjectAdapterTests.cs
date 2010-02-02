@@ -16,6 +16,7 @@
 using System;
 using Ninject;
 using NUnit.Framework;
+using Siege.ServiceLocation.Syntax;
 using Siege.ServiceLocation.UnitTests.RegistrationExtensions.Ninject;
 using Siege.ServiceLocation.UnitTests.TestClasses;
 

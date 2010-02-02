@@ -33,12 +33,12 @@ namespace Siege.ServiceLocation.UseCases
 
         public override Type GetBinding()
         {
-            return boundType;
+            return GetBoundType();
         }
 
         protected override IActivationStrategy GetActivationStrategy()
         {
-            return new GenericActivationStrategy(boundType);
+            return new GenericActivationStrategy(GetBoundType());
         }
 
         public override Type GetBoundType()

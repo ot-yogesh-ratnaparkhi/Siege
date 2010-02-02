@@ -19,7 +19,7 @@ using Siege.ServiceLocation.UseCases;
 using Siege.ServiceLocation.UseCases.Default;
 using Siege.ServiceLocation.UseCases.Named;
 
-namespace Siege.ServiceLocation
+namespace Siege.ServiceLocation.Syntax
 {
     public class Given<TBaseService>
     {

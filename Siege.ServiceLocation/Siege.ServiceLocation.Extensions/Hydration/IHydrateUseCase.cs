@@ -14,22 +14,12 @@
 */
 
 using System;
-using Siege.ServiceLocation.Rules;
-using Siege.ServiceLocation.UseCases.Conditional;
+using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.Extensions.FactorySupport
+namespace Siege.ServiceLocation.Extensions.Hydration
 {
-    public static class FactoryExtensions
+    public interface IHydrateUseCase<TService> : IUseCase<TService>
     {
-        public static IConditionalUseCase<TService> ConstructWith<TService>(this IConditionalActivationRule rule, Func<IInstanceResolver, TService> factoryMethod)
-        {
-            var useCase = new ConditionalFactoryUseCase<TService>();
-
-            useCase.BindTo<Func<IInstanceResolver, TService>>();
-            useCase.SetActivationRule(rule);
-            useCase.ConstructWith(factoryMethod);
-
-            return useCase;
-        }
+        void Associate(Action<TService> action);
     }
 }

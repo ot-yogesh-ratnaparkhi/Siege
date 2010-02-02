@@ -15,6 +15,7 @@
 
 using System;
 using NUnit.Framework;
+using Siege.ServiceLocation.Syntax;
 using Siege.ServiceLocation.UnitTests.ContextualTests.Classes;
 
 namespace Siege.ServiceLocation.UnitTests.ContextualTests

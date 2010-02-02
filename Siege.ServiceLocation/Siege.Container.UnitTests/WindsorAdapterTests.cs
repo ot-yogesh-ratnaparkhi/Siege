@@ -18,6 +18,7 @@ using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using NUnit.Framework;
 using Siege.ServiceLocation.Exceptions;
+using Siege.ServiceLocation.Syntax;
 using Siege.ServiceLocation.UnitTests.RegistrationExtensions.Castle;
 using Siege.ServiceLocation.UnitTests.TestClasses;
 using Siege.SeviceLocation.WindsorAdapter;

@@ -20,8 +20,10 @@ using System.Linq;
 using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.Stores;
+using Siege.ServiceLocation.Syntax;
 using Siege.ServiceLocation.TypeBuilders;
 using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Actions;
 using Siege.ServiceLocation.UseCases.Conditional;
 using Siege.ServiceLocation.UseCases.Default;
 
@@ -37,6 +39,8 @@ namespace Siege.ServiceLocation
         private readonly Hashtable registeredTypes = new Hashtable();
         private readonly Hashtable defaultCases = new Hashtable();
         private readonly Hashtable factories = new Hashtable();
+        private readonly Hashtable defaultActionUseCases = new Hashtable();
+        private readonly Hashtable conditionalActionUseCases = new Hashtable();
 
         protected SiegeContainer(IServiceLocatorAdapter serviceLocator, IContextStore contextStore, IExecutionStore executionStore, ITypeBuilder typeBuilder)
         {
@@ -44,7 +48,8 @@ namespace Siege.ServiceLocation
             this.contextStore = contextStore;
             this.executionStore = executionStore;
             TypeHandler.Initialize(typeBuilder);
-
+            
+            AddBinding(typeof(IActionUseCaseBinding<>), typeof(ActionUseCaseBinding<>));
             AddBinding(typeof(IConditionalUseCaseBinding<>), this.serviceLocator.ConditionalUseCaseBinding);
             AddBinding(typeof(IDefaultUseCaseBinding<>), this.serviceLocator.DefaultUseCaseBinding);
             AddBinding(typeof(IKeyBasedUseCaseBinding<>), this.serviceLocator.KeyBasedUseCaseBinding);
@@ -112,6 +117,27 @@ namespace Siege.ServiceLocation
                     {
                         executionStore.Decrement();
                         this.executionStore = executionStore.Create();
+
+                        IList<IUseCase> defaultActions = (IList<IUseCase>)defaultActionUseCases[useCase.GetBoundType()];
+
+                        if (defaultActions != null)
+                        {
+                            foreach (IDefaultActionUseCase actionUseCase in defaultActions)
+                            {
+                                actionUseCase.Invoke(value);
+                            }
+                        }
+
+                        IList<IUseCase> conditionalActions = (IList<IUseCase>)conditionalActionUseCases[useCase.GetBoundType()];
+
+                        if (conditionalActions != null)
+                        {
+                            foreach (IConditionalActionUseCase actionUseCase in conditionalActions)
+                            {
+                                if (actionUseCase.IsValid(this)) actionUseCase.Invoke(value);
+                            }
+                        }
+                        
                         return value;
                     }
                 }
@@ -123,6 +149,27 @@ namespace Siege.ServiceLocation
                 var value = useCase.Resolve(new DefaultResolutionStrategy(serviceLocator, this), this); 
                 executionStore.Decrement();
                 this.executionStore = executionStore.Create();
+
+                IList<IUseCase> defaultActions = (IList<IUseCase>)defaultActionUseCases[useCase.GetBoundType()];
+
+                if (defaultActions != null)
+                {
+                    foreach (IDefaultActionUseCase actionUseCase in defaultActions)
+                    {
+                        actionUseCase.Invoke(value);
+                    }
+                }
+
+                IList<IUseCase> conditionalActions = (IList<IUseCase>)conditionalActionUseCases[useCase.GetBoundType()];
+
+                if (conditionalActions != null)
+                {
+                    foreach (IConditionalActionUseCase actionUseCase in conditionalActions)
+                    {
+                        if (actionUseCase.IsValid(this)) actionUseCase.Invoke(value);
+                    }
+                }
+
                 return value;
             }
 
@@ -146,6 +193,32 @@ namespace Siege.ServiceLocation
 
         public IServiceLocator Register(IUseCase useCase)
         {
+            if(useCase is IDefaultActionUseCase)
+            {
+                if (!defaultActionUseCases.ContainsKey(useCase.GetBoundType()))
+                {
+                    List<IUseCase> list = new List<IUseCase>();
+                    defaultActionUseCases.Add(useCase.GetBoundType(), list);
+                }
+
+                IList<IUseCase> selectedCase = (IList<IUseCase>)defaultActionUseCases[useCase.GetBoundType()];
+
+                selectedCase.Add(useCase);
+            }
+
+            if (useCase is IConditionalActionUseCase)
+            {
+                if (!conditionalActionUseCases.ContainsKey(useCase.GetBoundType()))
+                {
+                    List<IUseCase> list = new List<IUseCase>();
+                    conditionalActionUseCases.Add(useCase.GetBoundType(), list);
+                }
+
+                IList<IUseCase> selectedCase = (IList<IUseCase>)conditionalActionUseCases[useCase.GetBoundType()];
+
+                selectedCase.Add(useCase);
+            }
+
             if (useCase is IDefaultUseCase)
             {
                 if (!defaultCases.ContainsKey(useCase.GetBaseBindingType())) defaultCases.Add(useCase.GetBaseBindingType(), useCase);

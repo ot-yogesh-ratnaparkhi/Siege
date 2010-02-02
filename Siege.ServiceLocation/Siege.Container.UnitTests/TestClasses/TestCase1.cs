@@ -15,5 +15,8 @@
 
 namespace Siege.ServiceLocation.UnitTests.TestClasses
 {
-    public class TestCase1 : ITestInterface { }
+    public class TestCase1 : ITestInterface
+    {
+        public string Property1 { get; set; }
+    }
 }

@@ -45,17 +45,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtendedSyntax\SyntaxExtensions.cs" />
+    <Compile Include="Hydration\ConditionalHydrateUseCase.cs" />
+    <Compile Include="Hydration\HydrateUseCase.cs" />
+    <Compile Include="Hydration\IHydrateUseCase.cs" />
     <Compile Include="ResolutionContextSupport\InjectionInstanceUseCase.cs" />
-    <Compile Include="ResolutionContextSupport\Given.cs" />
     <Compile Include="ResolutionContextSupport\IInjectionUseCase.cs" />
     <Compile Include="ResolutionContextSupport\InjectionRule.cs" />
     <Compile Include="ResolutionContextSupport\InjectionRuleEvaluationStrategy.cs" />
     <Compile Include="ResolutionContextSupport\InjectionUseCase.cs" />
     <Compile Include="FactorySupport\ConditionalFactoryUseCase.cs" />
     <Compile Include="FactorySupport\DefaultFactoryUseCase.cs" />
-    <Compile Include="FactorySupport\FactoryExtensions.cs" />
     <Compile Include="FactorySupport\FactoryUseCase.cs" />
-    <Compile Include="FactorySupport\Given.cs" />
+    <Compile Include="ExtendedSyntax\Given.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

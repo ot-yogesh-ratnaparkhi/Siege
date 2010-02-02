@@ -13,17 +13,11 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
+using Siege.ServiceLocation.UseCases.Actions;
+
+namespace Siege.ServiceLocation.Extensions.Hydration
 {
-    public class Given<TService> : ServiceLocation.Given<TService>
+    public class HydrateUseCase<TService> : ActionUseCase<TService>, IHydrateUseCase<TService>, IDefaultActionUseCase
     {
-        public static InjectionRule<TService> WhenInjectingInto<TResolvedType>()
-        {
-            var useCase = new InjectionRule<TService>();
-
-            useCase.BasedOn<TResolvedType>();
-
-            return useCase;
-        }
     }
 }

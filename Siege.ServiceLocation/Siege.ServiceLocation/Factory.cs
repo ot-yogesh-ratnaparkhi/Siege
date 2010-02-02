@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Actions;
 using Siege.ServiceLocation.UseCases.Conditional;
 using Siege.ServiceLocation.UseCases.Default;
 
@@ -34,8 +35,14 @@ namespace Siege.ServiceLocation
 
         public void AddCase(IUseCase useCase)
         {
-            if(useCase is IDefaultUseCase<TBaseService>) defaultCases.Add(useCase);
-            else conditionalUseCases.Add(useCase);
+            if(useCase is IDefaultUseCase<TBaseService>)
+            {
+                defaultCases.Add(useCase);
+            }
+            else 
+            {
+                conditionalUseCases.Add(useCase);
+            }
         }
 
         public TBaseService Build()

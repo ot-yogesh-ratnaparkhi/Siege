@@ -17,6 +17,7 @@ using System;
 using NUnit.Framework;
 using Siege.ServiceLocation.AOP;
 using Siege.ServiceLocation.Exceptions;
+using Siege.ServiceLocation.Extensions.ExtendedSyntax;
 using Siege.ServiceLocation.Extensions.FactorySupport;
 using Siege.ServiceLocation.UnitTests.RegistrationExtensions;
 using Siege.ServiceLocation.UnitTests.RegistrationExtensions.Classes;
@@ -37,12 +38,46 @@ namespace Siege.ServiceLocation.UnitTests
         {
             locator = new SiegeContainer(GetAdapter());
         }
+
         [Test]
         public void Should_Be_Able_To_Bind_An_Interface_To_A_Type()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
 
             Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
+        }
+
+        [Test]
+        public void Should_Initialize_Property_After_Resolution()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>());
+            locator.Register(Given<TestCase1>.HydrateWith(testCase1 => testCase1.Property1 = "lulz"));
+
+            TestCase1 instance = (TestCase1)locator.GetInstance<ITestInterface>();
+            Assert.AreEqual("lulz", instance.Property1);
+        }
+
+        [Test]
+        public void Should_Initialize_Property_After_Resolution_Depending_On_Context()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>());
+            locator.Register(Given<TestCase1>.When<TestEnum>(x => x == TestEnum.Case2).HydrateWith<TestCase1>(testCase1 => testCase1.Property1 = "lulz"));
+
+            locator.AddContext(TestEnum.Case2);
+
+            TestCase1 instance = (TestCase1)locator.GetInstance<ITestInterface>();
+            Assert.AreEqual("lulz", instance.Property1);
+        }
+
+        [Test]
+        public void Should_Initialize_Property_After_Resolution_With_No_Context()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>());
+            locator.Register(Given<TestCase1>.HydrateWith(testCase1 => testCase1.Property1 = "lulz"));
+            locator.Register(Given<TestCase1>.When<TestEnum>(x => x == TestEnum.Case2).HydrateWith<TestCase1>(testCase1 => testCase1.Property1 = "rofl"));
+
+            TestCase1 instance = (TestCase1)locator.GetInstance<ITestInterface>();
+            Assert.AreEqual("lulz", instance.Property1);
         }
 
         [Test]
@@ -321,10 +356,10 @@ namespace Siege.ServiceLocation.UnitTests
                 .Register(Given<ITestInterface>
                                 .When<TestEnum>(test => test == TestEnum.Case2)
                                 .Then<DependsOnAlternateConstructorImplicitly>())
-                .Register(Extensions.ResolutionContextSupport.Given<IConstructorArgument>
+                .Register(Given<IConstructorArgument>
                                 .WhenInjectingInto<DependsOnInterface>()
                                 .Then<ConstructorArgument>())
-                .Register(Extensions.ResolutionContextSupport.Given<IConstructorArgument>
+                .Register(Given<IConstructorArgument>
                                 .WhenInjectingInto<DependsOnAlternateConstructorImplicitly>()
                                 .Then<AlternateConstructorArgument>());
 
@@ -348,10 +383,10 @@ namespace Siege.ServiceLocation.UnitTests
                 .Register(Given<ITestInterface>
                                 .When<TestEnum>(test => test == TestEnum.Case2)
                                 .Then<DependsOnAlternateConstructorImplicitly>())
-                .Register(Extensions.ResolutionContextSupport.Given<IConstructorArgument>
+                .Register(Given<IConstructorArgument>
                                 .WhenInjectingInto<DependsOnInterface>()
                                 .Then<ConstructorArgument>())
-                .Register(Extensions.ResolutionContextSupport.Given<IConstructorArgument>
+                .Register(Given<IConstructorArgument>
                                 .WhenInjectingInto<DependsOnAlternateConstructorImplicitly>()
                                 .Then(arg));
 
@@ -374,7 +409,7 @@ namespace Siege.ServiceLocation.UnitTests
                 return new TestCase1();
             };
 
-            locator.Register(Extensions.FactorySupport.Given<ITestInterface>.ConstructWith(func));
+            locator.Register(Given<ITestInterface>.ConstructWith(func));
 
             locator.GetInstance<ITestInterface>();
 
@@ -442,10 +477,10 @@ namespace Siege.ServiceLocation.UnitTests
                 .Register(Given<ITestInterface>
                               .When<TestEnum>(test => test == TestEnum.Case2)
                               .Then<DependsOnAlternateConstructorImplicitly>())
-                .Register(Extensions.ResolutionContextSupport.Given<IConstructorArgument>
+                .Register(Given<IConstructorArgument>
                               .WhenInjectingInto<DependsOnInterface>()
                               .Then<ConstructorArgument>())
-                .Register(Extensions.ResolutionContextSupport.Given<IConstructorArgument>
+                .Register(Given<IConstructorArgument>
                               .WhenInjectingInto<DependsOnAlternateConstructorImplicitly>()
                               .ConstructWith(func));
 
@@ -473,10 +508,10 @@ namespace Siege.ServiceLocation.UnitTests
                 .Register(Given<ITestInterface>
                               .When<TestEnum>(test => test == TestEnum.Case2)
                               .Then<DependsOnAlternateConstructorImplicitly>())
-                .Register(Extensions.ResolutionContextSupport.Given<IConstructorArgument>
+                .Register(Given<IConstructorArgument>
                               .WhenInjectingInto<DependsOnInterface>()
                               .Then<ConstructorArgument>())
-                .Register(Extensions.ResolutionContextSupport.Given<IConstructorArgument>
+                .Register(Given<IConstructorArgument>
                               .WhenInjectingInto<DependsOnAlternateConstructorImplicitly>()
                               .ConstructWith(func));
 

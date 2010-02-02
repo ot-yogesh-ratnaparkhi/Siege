@@ -37,7 +37,7 @@ namespace Siege.ServiceLocation.UseCases
             return rule.GetRuleEvaluationStrategy().IsValid(rule, context);
         }
 
-        public object Resolve(IResolutionStrategy strategy, IStoreAccessor accessor)
+        public virtual object Resolve(IResolutionStrategy strategy, IStoreAccessor accessor)
         {
             return strategy.Resolve(GetBoundType(), rule, GetActivationStrategy());
         }

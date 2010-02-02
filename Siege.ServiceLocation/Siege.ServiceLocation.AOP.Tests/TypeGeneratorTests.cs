@@ -15,6 +15,7 @@
 
 using System;
 using NUnit.Framework;
+using Siege.ServiceLocation.Syntax;
 
 namespace Siege.ServiceLocation.AOP.Tests
 {
