@@ -5,11 +5,11 @@ namespace Siege.ServiceLocation.UseCases.Actions
 {
     public interface IDefaultActionUseCase : IDefaultUseCase
     {
-        void Invoke(object item);
+        object Invoke(object item);
     }
     
     public interface IConditionalActionUseCase : IConditionalUseCase
     {
-        void Invoke(object item);
+        object Invoke(object item);
     } 
 }

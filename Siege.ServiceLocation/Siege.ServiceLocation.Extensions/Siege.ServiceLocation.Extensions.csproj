@@ -45,6 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Decorator\ConditionalDecoratorUseCase.cs" />
+    <Compile Include="Decorator\DecoratorUseCase.cs" />
+    <Compile Include="Decorator\IDecoratorUseCase.cs" />
+    <Compile Include="ExtendedSyntax\ActivationRule.cs" />
     <Compile Include="ExtendedSyntax\SyntaxExtensions.cs" />
     <Compile Include="Hydration\ConditionalHydrateUseCase.cs" />
     <Compile Include="Hydration\HydrateUseCase.cs" />

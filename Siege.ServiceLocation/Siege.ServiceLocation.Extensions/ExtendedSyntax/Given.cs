@@ -32,6 +32,7 @@ namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
 
             return useCase;
         }
+
         public static InjectionRule<TService> WhenInjectingInto<TResolvedType>()
         {
             var useCase = new InjectionRule<TService>();
@@ -41,12 +42,28 @@ namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
             return useCase;
         }
 
+        public new static ConditionalActivationRule<TService, TContext> When<TContext>(Func<TContext, bool> evaluation)
+        {
+            var rule = new ConditionalActivationRule<TService, TContext>();
+
+            rule.SetEvaluation(evaluation);
+
+            return rule;
+        }
+
         public static IHydrateUseCase<TService> HydrateWith(Action<TService> action)
         {
             HydrateUseCase<TService> useCase = new HydrateUseCase<TService>();
 
             useCase.BindTo<TService>();
-            useCase.Associate(action);
+
+            Func<TService, TService> func = service => 
+            {
+                action(service);
+                return service; 
+            };
+            
+            useCase.Associate(func);
 
             return useCase;
         }

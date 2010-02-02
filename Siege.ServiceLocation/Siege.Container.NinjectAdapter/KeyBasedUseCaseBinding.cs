@@ -13,7 +13,6 @@
      limitations under the License.
 */
 
-using System;
 using Ninject;
 using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.UseCases;

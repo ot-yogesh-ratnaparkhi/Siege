@@ -25,7 +25,9 @@ namespace Siege.ServiceLocation.Syntax
     {
         public static ConditionalActivationRule<TBaseService, TContext> When<TContext>(Func<TContext, bool> evaluation)
         {
-            return new ConditionalActivationRule<TBaseService, TContext>(evaluation);
+            var rule = new ConditionalActivationRule<TBaseService, TContext>();
+            rule.SetEvaluation(evaluation);
+            return rule;
         }
 
         public static IDefaultUseCase<TBaseService> Then<TImplementingType>() where TImplementingType : TBaseService

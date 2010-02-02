@@ -13,13 +13,12 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Actions;
 
-namespace Siege.ServiceLocation.Extensions.Hydration
+namespace Siege.ServiceLocation.Extensions.Decorator
 {
-    public interface IHydrateUseCase<TService> : IUseCase<TService>
+    public class ConditionalDecoratorUseCase<TService> : ActionUseCase<TService>, IDecoratorUseCase<TService>, IConditionalActionUseCase
     {
-        void Associate(Func<TService, TService> action);
+        
     }
 }

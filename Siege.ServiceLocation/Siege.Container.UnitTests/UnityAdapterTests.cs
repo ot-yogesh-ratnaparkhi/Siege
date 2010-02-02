@@ -13,10 +13,8 @@
      limitations under the License.
 */
 
-using System;
 using Microsoft.Practices.Unity;
 using NUnit.Framework;
-using Siege.ServiceLocation.UnitTests.RegistrationExtensions.Unity;
 using Siege.ServiceLocation.UnitTests.TestClasses;
 
 namespace Siege.ServiceLocation.UnitTests
@@ -40,11 +38,6 @@ namespace Siege.ServiceLocation.UnitTests
         protected override void RegisterWithoutSiege()
         {
             container.RegisterType<IUnregisteredInterface, UnregisteredClass>();
-        }
-
-        protected override Type GetDecoratorUseCaseBinding()
-        {
-            return typeof (DecoratorUseCaseBinding<>);
         }
     }
 }

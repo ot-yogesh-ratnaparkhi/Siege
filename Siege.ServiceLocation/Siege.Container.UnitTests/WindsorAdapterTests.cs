@@ -13,13 +13,11 @@
      limitations under the License.
 */
 
-using System;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using NUnit.Framework;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.Syntax;
-using Siege.ServiceLocation.UnitTests.RegistrationExtensions.Castle;
 using Siege.ServiceLocation.UnitTests.TestClasses;
 using Siege.SeviceLocation.WindsorAdapter;
 
@@ -29,11 +27,6 @@ namespace Siege.ServiceLocation.UnitTests
     public class WindsorAdapterTests : SiegeContainerTests
     {
         private IKernel kernel;
-
-        protected override Type GetDecoratorUseCaseBinding()
-        {
-            return typeof(DecoratorUseCaseBinding<>);
-        }
 
         public override void SetUp()
         {

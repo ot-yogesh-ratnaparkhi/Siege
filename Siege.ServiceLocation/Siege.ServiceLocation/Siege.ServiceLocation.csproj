@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bindings\ActionUseCaseBinding.cs" />
     <Compile Include="Bindings\IActionUseCaseBinding.cs" />
     <Compile Include="Exceptions\RegistrationNotFoundException.cs" />
     <Compile Include="IFactoryFetcher.cs" />

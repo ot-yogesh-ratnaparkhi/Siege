@@ -18,7 +18,6 @@ using Autofac;
 using Autofac.Builder;
 using NUnit.Framework;
 using Siege.ServiceLocation.Exceptions;
-using Siege.ServiceLocation.UnitTests.RegistrationExtensions.Autofac;
 using Siege.ServiceLocation.UnitTests.TestClasses;
 
 namespace Siege.ServiceLocation.UnitTests
@@ -43,11 +42,6 @@ namespace Siege.ServiceLocation.UnitTests
             var builder = new ContainerBuilder();
             builder.Register<UnregisteredClass>().As<IUnregisteredInterface>();
             builder.Build(container);
-        }
-
-        protected override Type GetDecoratorUseCaseBinding()
-        {
-            return typeof (DecoratorUseCaseBinding<>);
         }
 
         [ExpectedException(typeof(RegistrationNotFoundException))]

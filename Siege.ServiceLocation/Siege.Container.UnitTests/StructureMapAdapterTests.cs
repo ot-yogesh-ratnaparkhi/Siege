@@ -13,9 +13,7 @@
      limitations under the License.
 */
 
-using System;
 using NUnit.Framework;
-using Siege.ServiceLocation.UnitTests.RegistrationExtensions.StructureMap;
 using Siege.ServiceLocation.UnitTests.TestClasses;
 using StructureMap;
 
@@ -34,11 +32,6 @@ namespace Siege.ServiceLocation.UnitTests
         protected override void RegisterWithoutSiege()
         {
             container.Configure(registry => registry.ForRequestedType<IUnregisteredInterface>().TheDefaultIsConcreteType<UnregisteredClass>());
-        }
-
-        protected override Type GetDecoratorUseCaseBinding()
-        {
-            return typeof (DecoratorUseCaseBinding<>);
         }
 
         public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()

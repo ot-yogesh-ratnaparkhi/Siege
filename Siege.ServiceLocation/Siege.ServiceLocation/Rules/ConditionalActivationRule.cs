@@ -21,9 +21,9 @@ namespace Siege.ServiceLocation.Rules
 {
     public class ConditionalActivationRule<TBaseService, TContext> : IConditionalActivationRule
     {
-        private readonly Predicate<object> evaluation;
+        private Predicate<object> evaluation;
 
-        public ConditionalActivationRule(Func<TContext, bool> evaluation)
+        public void SetEvaluation(Func<TContext, bool> evaluation)
         {
             this.evaluation = x => (x is TContext) ? evaluation.Invoke((TContext)x) : false;
         }
@@ -48,17 +48,17 @@ namespace Siege.ServiceLocation.Rules
             return useCase;
         }
 
-        public bool Evaluate(object context)
+        public virtual bool Evaluate(object context)
         {
             return evaluation.Invoke(context);
         }
 
-        public Type GetBoundType()
+        public virtual Type GetBoundType()
         {
             return typeof (TBaseService);
         }
 
-        public IRuleEvaluationStrategy GetRuleEvaluationStrategy()
+        public virtual IRuleEvaluationStrategy GetRuleEvaluationStrategy()
         {
             return new ContextEvaluationStrategy();
         }

@@ -20,16 +20,16 @@ namespace Siege.ServiceLocation.UseCases.Actions
 {
     public abstract class ActionUseCase<TService> : GenericUseCase<TService>
     {
-        private Action<TService> action;
+        private Func<TService, TService> action;
 
-        public void Associate(Action<TService> action)
+        public void Associate(Func<TService, TService> action)
         {
             this.action = action;
         }
 
-        public void Invoke(object item)
+        public object Invoke(object item)
         {
-            action.Invoke((TService)item);
+            return action.Invoke((TService)item);
         }
 
         public override Type GetUseCaseBindingType()

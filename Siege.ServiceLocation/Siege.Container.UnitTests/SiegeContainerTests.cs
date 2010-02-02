@@ -18,8 +18,6 @@ using NUnit.Framework;
 using Siege.ServiceLocation.AOP;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.Extensions.ExtendedSyntax;
-using Siege.ServiceLocation.Extensions.FactorySupport;
-using Siege.ServiceLocation.UnitTests.RegistrationExtensions;
 using Siege.ServiceLocation.UnitTests.RegistrationExtensions.Classes;
 using Siege.ServiceLocation.UnitTests.TestClasses;
 
@@ -31,7 +29,6 @@ namespace Siege.ServiceLocation.UnitTests
         protected IContextualServiceLocator locator;
         protected abstract IServiceLocatorAdapter GetAdapter();
         protected abstract void RegisterWithoutSiege();
-        protected abstract Type GetDecoratorUseCaseBinding();
 
         [SetUp]
         public virtual void SetUp()
@@ -61,7 +58,7 @@ namespace Siege.ServiceLocation.UnitTests
         public void Should_Initialize_Property_After_Resolution_Depending_On_Context()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<TestCase1>.When<TestEnum>(x => x == TestEnum.Case2).HydrateWith<TestCase1>(testCase1 => testCase1.Property1 = "lulz"));
+            locator.Register(Given<TestCase1>.When<TestEnum>(x => x == TestEnum.Case2).HydrateWith(testCase1 => testCase1.Property1 = "lulz"));
 
             locator.AddContext(TestEnum.Case2);
 
@@ -69,12 +66,14 @@ namespace Siege.ServiceLocation.UnitTests
             Assert.AreEqual("lulz", instance.Property1);
         }
 
+
+
         [Test]
         public void Should_Initialize_Property_After_Resolution_With_No_Context()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
             locator.Register(Given<TestCase1>.HydrateWith(testCase1 => testCase1.Property1 = "lulz"));
-            locator.Register(Given<TestCase1>.When<TestEnum>(x => x == TestEnum.Case2).HydrateWith<TestCase1>(testCase1 => testCase1.Property1 = "rofl"));
+            locator.Register(Given<TestCase1>.When<TestEnum>(x => x == TestEnum.Case2).HydrateWith(testCase1 => testCase1.Property1 = "rofl"));
 
             TestCase1 instance = (TestCase1)locator.GetInstance<ITestInterface>();
             Assert.AreEqual("lulz", instance.Property1);
@@ -284,66 +283,57 @@ namespace Siege.ServiceLocation.UnitTests
         [Test]
         public void Extended_Registration_Should_Work_With_All_Conditions_Met()
         {
-            RegistrationExtensions.RegistrationExtensions.Initialize(locator);
-
             locator
-                .AddBinding(typeof (IDecoratorUseCaseBinding<>), GetDecoratorUseCaseBinding())
                 .Register(Given<ICoffee>.Then<Coffee>())
                 .Register(Given<ICoffee>
                               .When<Ingredients>(ingredients => ingredients == Ingredients.WhippedCream)
-                              .DecorateWith<WhippedCreamDecorator>())
+                              .DecorateWith(coffee => new WhippedCreamDecorator(coffee)))
                 .Register(Given<ICoffee>
                               .When<Ingredients>(ingredients => ingredients == Ingredients.Espresso)
-                              .DecorateWith<EspressoShotDecorator>());
+                              .DecorateWith(coffee => new EspressoShotDecorator(coffee)));
 
             locator.AddContext(Ingredients.WhippedCream);
             locator.AddContext(Ingredients.Espresso);
 
-            var coffee = locator.GetInstance<ICoffee>();
+            var instance = locator.GetInstance<ICoffee>();
 
-            Assert.AreEqual(1.5M, coffee.Total);
+            Assert.AreEqual(1.5M, instance.Total);
         }
 
         [Test]
         public void Extended_Registration_Should_Work_With_Some_Conditions_Met()
         {
-            RegistrationExtensions.RegistrationExtensions.Initialize(locator);
-
             locator
-                .AddBinding(typeof(IDecoratorUseCaseBinding<>), GetDecoratorUseCaseBinding())
                 .Register(Given<ICoffee>.Then<Coffee>())
                 .Register(Given<ICoffee>
                               .When<Ingredients>(ingredients => ingredients == Ingredients.WhippedCream)
-                              .DecorateWith<WhippedCreamDecorator>())
+                              .DecorateWith(coffee => new WhippedCreamDecorator(coffee)))
                 .Register(Given<ICoffee>
                               .When<Ingredients>(ingredients => ingredients == Ingredients.Espresso)
-                              .DecorateWith<EspressoShotDecorator>());
+                              .DecorateWith(coffee => new EspressoShotDecorator(coffee)));
 
             locator.AddContext(Ingredients.WhippedCream);
             
-            var coffee = locator.GetInstance<ICoffee>();
+            var instance = locator.GetInstance<ICoffee>();
 
-            Assert.AreEqual(1M, coffee.Total);
+            Assert.AreEqual(1M, instance.Total);
         }
 
         [Test]
         public void Extended_Registration_Should_Work_With_No_Conditions_Met()
         {
-            RegistrationExtensions.RegistrationExtensions.Initialize(locator);
-
             locator
-                .AddBinding(typeof(IDecoratorUseCaseBinding<>), GetDecoratorUseCaseBinding())
                 .Register(Given<ICoffee>.Then<Coffee>())
                 .Register(Given<ICoffee>
                               .When<Ingredients>(ingredients => ingredients == Ingredients.WhippedCream)
-                              .DecorateWith<WhippedCreamDecorator>())
+                              .DecorateWith(coffee => new WhippedCreamDecorator(coffee)))
                 .Register(Given<ICoffee>
                               .When<Ingredients>(ingredients => ingredients == Ingredients.Espresso)
-                              .DecorateWith<EspressoShotDecorator>());
+                              .DecorateWith(coffee => new EspressoShotDecorator(coffee)));
 
-            var coffee = locator.GetInstance<ICoffee>();
+            var instance = locator.GetInstance<ICoffee>();
 
-            Assert.AreEqual(0.75M, coffee.Total);
+            Assert.AreEqual(0.75M, instance.Total);
         }
 
         [Test]

@@ -13,36 +13,10 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.Extensions.FactorySupport;
-using Siege.ServiceLocation.Extensions.Hydration;
-using Siege.ServiceLocation.Rules;
-using Siege.ServiceLocation.UseCases.Conditional;
-
 namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
 {
-    public static class SyntaxExtensions
+    public class ConditionalActivationRule<TBaseService, TContext> : ActivationRule<TBaseService, TContext>
     {
-        public static IConditionalUseCase<TService> ConstructWith<TService>(this IConditionalActivationRule rule, Func<IInstanceResolver, TService> factoryMethod)
-        {
-            var useCase = new ConditionalFactoryUseCase<TService>();
 
-            useCase.BindTo<Func<IInstanceResolver, TService>>();
-            useCase.SetActivationRule(rule);
-            useCase.ConstructWith(factoryMethod);
-
-            return useCase;
-        }
-
-        public static IConditionalUseCase HydrateWith<TService>(this IConditionalActivationRule rule, Action<TService> action)
-        {
-            var useCase = new ConditionalHydrateUseCase<TService>();
-
-            useCase.BindTo<TService>();
-            useCase.SetActivationRule(rule);
-            useCase.Associate(action);
-
-            return useCase;
-        }
     }
 }

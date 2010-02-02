@@ -124,7 +124,7 @@ namespace Siege.ServiceLocation
                         {
                             foreach (IDefaultActionUseCase actionUseCase in defaultActions)
                             {
-                                actionUseCase.Invoke(value);
+                                value = actionUseCase.Invoke(value);
                             }
                         }
 
@@ -134,7 +134,7 @@ namespace Siege.ServiceLocation
                         {
                             foreach (IConditionalActionUseCase actionUseCase in conditionalActions)
                             {
-                                if (actionUseCase.IsValid(this)) actionUseCase.Invoke(value);
+                                if (actionUseCase.IsValid(this)) value = actionUseCase.Invoke(value);
                             }
                         }
                         
@@ -156,7 +156,7 @@ namespace Siege.ServiceLocation
                 {
                     foreach (IDefaultActionUseCase actionUseCase in defaultActions)
                     {
-                        actionUseCase.Invoke(value);
+                        value = actionUseCase.Invoke(value);
                     }
                 }
 
@@ -166,7 +166,7 @@ namespace Siege.ServiceLocation
                 {
                     foreach (IConditionalActionUseCase actionUseCase in conditionalActions)
                     {
-                        if (actionUseCase.IsValid(this)) actionUseCase.Invoke(value);
+                        if (actionUseCase.IsValid(this)) value = actionUseCase.Invoke(value);
                     }
                 }
 

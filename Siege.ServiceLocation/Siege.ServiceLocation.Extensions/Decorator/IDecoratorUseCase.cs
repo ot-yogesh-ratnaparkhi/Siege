@@ -16,9 +16,9 @@
 using System;
 using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.Extensions.Hydration
+namespace Siege.ServiceLocation.Extensions.Decorator
 {
-    public interface IHydrateUseCase<TService> : IUseCase<TService>
+    public interface IDecoratorUseCase<TService> : IUseCase<TService>
     {
         void Associate(Func<TService, TService> action);
     }

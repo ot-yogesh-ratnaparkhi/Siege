@@ -13,18 +13,11 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.Bindings;
+using Siege.ServiceLocation.UseCases.Actions;
 
-namespace Siege.ServiceLocation.UnitTests.RegistrationExtensions
+namespace Siege.ServiceLocation.Extensions.Decorator
 {
-    public interface IDecoratorUseCaseBinding : IUseCaseBinding
+    public class DecoratorUseCase<TService> : ActionUseCase<TService>, IDecoratorUseCase<TService>, IDefaultActionUseCase
     {
-        object Resolve(Type typeToResolve, Type argumentType, object rootObject);
-    }
-
-    public interface IDecoratorUseCaseBinding<TService> : IDecoratorUseCaseBinding
-    {
-        
     }
 }

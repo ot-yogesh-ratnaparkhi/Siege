@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,15 +13,19 @@
      limitations under the License.
 */
 
-using System;
 using Siege.ServiceLocation.UseCases;
-using Siege.ServiceLocation.UseCases.Conditional;
 
-namespace Siege.ServiceLocation.UnitTests.RegistrationExtensions
+namespace Siege.ServiceLocation.Bindings
 {
-    public interface IDecoratorUseCase : IUseCase
+    public class ActionUseCaseBinding<TService> : IActionUseCaseBinding<TService> 
     {
-        Type GetDecoratorType();
+        public void Bind(IUseCase useCase, IFactoryFetcher locator)
+        {
+            
+        }
+
+        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+        {
+        }
     }
-    public interface IDecoratorUseCase<TService> : IDecoratorUseCase, IConditionalUseCase<TService> {}
 }
