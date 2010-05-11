@@ -13,10 +13,12 @@
      limitations under the License.
 */
 
+using Siege.ServiceLocation.Stores;
+
 namespace Siege.ServiceLocation.UseCases
 {
     public interface IActivationStrategy
     {
-        object Resolve(IInstanceResolver locator, IStoreAccessor context);
+        object Resolve(IInstanceResolver locator, IServiceLocatorStore context);
     }
 }

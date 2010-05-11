@@ -23,5 +23,6 @@ namespace Siege.ServiceLocation
         Type ConditionalUseCaseBinding { get; }
         Type DefaultUseCaseBinding { get; }
         Type KeyBasedUseCaseBinding { get; }
+		Type OpenGenericUseCaseBinding { get; }
     }
 }

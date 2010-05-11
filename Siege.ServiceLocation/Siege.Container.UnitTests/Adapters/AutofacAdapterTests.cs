@@ -13,31 +13,47 @@
      limitations under the License.
 */
 
+using Autofac;
+using Autofac.Builder;
 using NUnit.Framework;
+using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.UnitTests.TestClasses;
-using StructureMap;
 
-namespace Siege.ServiceLocation.UnitTests
+namespace Siege.ServiceLocation.UnitTests.Adapters
 {
     [TestFixture]
-    public class StructureMapAdapterTests : SiegeContainerTests
+    public class AutofacAdapterTests : SiegeContainerTests
     {
-        private Container container;
-        protected override IServiceLocatorAdapter GetAdapter()
+        private IContainer container;
+
+        public override void SetUp()
         {
             container = new Container();
-            return new StructureMapAdapter.StructureMapAdapter(container);
+            base.SetUp();
+        }
+
+        protected override IServiceLocatorAdapter GetAdapter()
+        {
+            return new AutofacAdapter.AutofacAdapter(container);
         }
 
         protected override void RegisterWithoutSiege()
         {
-            container.Configure(registry => registry.ForRequestedType<IUnregisteredInterface>().TheDefaultIsConcreteType<UnregisteredClass>());
+            var builder = new ContainerBuilder();
+            builder.Register<UnregisteredClass>().As<IUnregisteredInterface>();
+            builder.Build(container);
         }
 
+        [ExpectedException(typeof (RegistrationNotFoundException))]
+        public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided()
+        {
+            base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided();
+        }
+
+        [ExpectedException(typeof (RegistrationNotFoundException))]
         public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
         {
             base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
         }
     }
 }

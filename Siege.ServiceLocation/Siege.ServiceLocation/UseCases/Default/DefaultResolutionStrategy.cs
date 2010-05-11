@@ -15,15 +15,16 @@
 
 using System;
 using Siege.ServiceLocation.Rules;
+using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.UseCases.Default
 {
     public class DefaultResolutionStrategy : IResolutionStrategy
     {
         private readonly IInstanceResolver locator;
-        private readonly IStoreAccessor accessor;
+        private readonly IServiceLocatorStore accessor;
 
-        public DefaultResolutionStrategy(IInstanceResolver locator, IStoreAccessor accessor)
+        public DefaultResolutionStrategy(IInstanceResolver locator, IServiceLocatorStore accessor)
         {
             this.locator = locator;
             this.accessor = accessor;

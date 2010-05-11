@@ -26,8 +26,8 @@ namespace Siege.ServiceLocation.HttpIntegration
         {
             this.locator = locator;
         }
-        
-        protected override IController GetControllerInstance(Type controllerType)
+
+        protected override IController GetControllerInstance(System.Web.Routing.RequestContext requestContext, Type controllerType)
         {
             if (controllerType == null) return null;
 

@@ -19,14 +19,24 @@ namespace Siege.ServiceLocation.Exceptions
 {
     public class RegistrationNotFoundException : ApplicationException
     {
-        public RegistrationNotFoundException(Type type) : base("Type not registered: " + type)
+        public RegistrationNotFoundException(Type type)
+            : base("Type not registered: " + type)
         {
-            
         }
 
-        public RegistrationNotFoundException(Type type, string key) : base("Type not registered: " + type + " with key: " + key)
+        public RegistrationNotFoundException(Type type, Exception innerException)
+            : base("Type not registered: " + type, innerException)
         {
-            
+        }
+
+        public RegistrationNotFoundException(Type type, string key)
+            : base("Type not registered: " + type + " with key: " + key)
+        {
+        }
+
+        public RegistrationNotFoundException(Type type, string key, Exception innerException)
+            : base("Type not registered: " + type + " with key: " + key, innerException)
+        {
         }
     }
 }

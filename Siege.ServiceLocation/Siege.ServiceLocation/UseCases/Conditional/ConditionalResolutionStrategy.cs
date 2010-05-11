@@ -15,15 +15,16 @@
 
 using System;
 using Siege.ServiceLocation.Rules;
+using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.UseCases.Conditional
 {
     public class ConditionalResolutionStrategy : IResolutionStrategy
     {
         private readonly IInstanceResolver locator;
-        private readonly IStoreAccessor context;
+        private readonly IServiceLocatorStore context;
 
-        public ConditionalResolutionStrategy(IInstanceResolver locator, IStoreAccessor context)
+        public ConditionalResolutionStrategy(IInstanceResolver locator, IServiceLocatorStore context)
         {
             this.locator = locator;
             this.context = context;
@@ -31,7 +32,7 @@ namespace Siege.ServiceLocation.UseCases.Conditional
 
         public object Resolve(Type boundType, IActivationRule rule, IActivationStrategy activator)
         {
-            if(rule == null) return null;
+            if (rule == null) return null;
 
             if (rule.GetRuleEvaluationStrategy().IsValid(rule, context))
             {

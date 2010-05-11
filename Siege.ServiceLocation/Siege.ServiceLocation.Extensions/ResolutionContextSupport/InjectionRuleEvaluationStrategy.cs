@@ -15,16 +15,17 @@
 
 using System;
 using Siege.ServiceLocation.Rules;
+using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
 {
     public class InjectionRuleEvaluationStrategy : IRuleEvaluationStrategy
     {
-        public bool IsValid(IActivationRule rule, IStoreAccessor context)
+        public bool IsValid(IActivationRule rule, IServiceLocatorStore context)
         {
-            foreach(Type dependency in context.ExecutionStore.RequestedTypes)
+            foreach (Type dependency in context.ExecutionStore.RequestedTypes)
             {
-                if(rule.Evaluate(dependency)) return true;
+                if (rule.Evaluate(dependency)) return true;
             }
 
             return false;

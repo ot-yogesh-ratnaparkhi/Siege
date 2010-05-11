@@ -57,6 +57,7 @@
     <Compile Include="ConditionalUseCaseBinding.cs" />
     <Compile Include="DefaultUseCaseBinding.cs" />
     <Compile Include="KeyBasedUseCaseBinding.cs" />
+    <Compile Include="OpenGenericUseCaseBinding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

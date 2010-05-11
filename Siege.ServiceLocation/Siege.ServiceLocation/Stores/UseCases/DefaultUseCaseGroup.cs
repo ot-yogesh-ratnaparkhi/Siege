@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,11 +13,15 @@
      limitations under the License.
 */
 
-using Siege.ServiceLocation.UseCases.Actions;
-
-namespace Siege.ServiceLocation.Extensions.Hydration
+namespace Siege.ServiceLocation.Stores.UseCases
 {
-    public class HydrateUseCase<TService> : ActionUseCase<TService>, IHydrateUseCase<TService>, IDefaultActionUseCase
+    public class DefaultUseCaseGroup : UseCaseGroup
     {
+        public DefaultUseCaseList ResolutionCases { get; set; }
+
+        public DefaultUseCaseGroup()
+        {
+            this.ResolutionCases = new DefaultUseCaseList();
+        }
     }
 }

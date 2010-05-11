@@ -33,7 +33,7 @@ namespace Siege.ServiceLocation.HttpIntegration
             {
                 List<object> items = new List<object>();
 
-                foreach(string item in HttpContext.Current.Session)
+                foreach (string item in HttpContext.Current.Session)
                 {
                     items.Add(HttpContext.Current.Session[item]);
                 }
@@ -45,6 +45,11 @@ namespace Siege.ServiceLocation.HttpIntegration
         public void Clear()
         {
             HttpContext.Current.Session.Clear();
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }

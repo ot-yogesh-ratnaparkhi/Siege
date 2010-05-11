@@ -36,7 +36,7 @@ namespace Siege.ServiceLocation.UnityAdapter
 
         public void Dispose()
         {
-            container.Dispose();
+            //container.Dispose();
         }
 
         public object GetInstance(Type type, string key)
@@ -96,6 +96,11 @@ namespace Siege.ServiceLocation.UnityAdapter
         public Type KeyBasedUseCaseBinding
         {
             get { return typeof (KeyBasedUseCaseBinding<>); }
+        }
+
+        public Type OpenGenericUseCaseBinding
+        {
+            get { return typeof (OpenGenericUseCaseBinding); }
         }
     }
 }

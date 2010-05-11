@@ -90,7 +90,14 @@ namespace Siege.ServiceLocation.AutofacAdapter
         public void RegisterBinding(Type baseBinding, Type targetBinding)
         {
             var builder = new ContainerBuilder();
-            builder.RegisterGeneric(targetBinding).As(baseBinding);
+            if(baseBinding.IsGenericType)
+            {
+                builder.RegisterGeneric(targetBinding).As(baseBinding);
+            }
+            else
+            {
+                builder.Register(targetBinding).As(baseBinding);
+            }
             builder.Build(container);
         }
 
@@ -107,6 +114,11 @@ namespace Siege.ServiceLocation.AutofacAdapter
         public Type KeyBasedUseCaseBinding
         {
             get { return typeof (KeyBasedUseCaseBinding<>); }
+        }
+
+        public Type OpenGenericUseCaseBinding
+        {
+            get { return typeof (OpenGenericUseCaseBinding); }
         }
     }
 }

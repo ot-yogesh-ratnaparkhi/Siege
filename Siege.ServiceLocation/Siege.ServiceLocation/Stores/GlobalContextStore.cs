@@ -35,5 +35,9 @@ namespace Siege.ServiceLocation.Stores
         {
             context.Clear();
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

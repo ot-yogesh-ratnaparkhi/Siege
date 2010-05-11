@@ -13,31 +13,20 @@
      limitations under the License.
 */
 
-using Microsoft.Practices.Unity;
-using NUnit.Framework;
-using Siege.ServiceLocation.UnitTests.TestClasses;
-
-namespace Siege.ServiceLocation.UnitTests
+namespace Siege.ServiceLocation.Resolution
 {
-    [TestFixture]
-    public class UnityAdapterTests : SiegeContainerTests
+    internal class ContextArgument : IResolutionArgument
     {
-        private UnityContainer container;
+        private readonly object contextItem;
 
-        public override void SetUp()
+        public ContextArgument(object contextItem)
         {
-            container = new UnityContainer();
-            base.SetUp();
+            this.contextItem = contextItem;
         }
 
-        protected override IServiceLocatorAdapter GetAdapter()
+        public object ContextItem
         {
-            return new UnityAdapter.UnityAdapter(container);
-        }
-
-        protected override void RegisterWithoutSiege()
-        {
-            container.RegisterType<IUnregisteredInterface, UnregisteredClass>();
+            get { return contextItem; }
         }
     }
 }

@@ -15,6 +15,7 @@
 
 using System;
 using Siege.ServiceLocation.Bindings;
+using Siege.ServiceLocation.Stores;
 using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Extensions.FactorySupport
@@ -25,7 +26,7 @@ namespace Siege.ServiceLocation.Extensions.FactorySupport
 
         public override Type GetUseCaseBindingType()
         {
-            return typeof (IDefaultUseCaseBinding<>);
+            return typeof(IDefaultUseCaseBinding<>);
         }
 
         public void ConstructWith(Func<IInstanceResolver, TService> factoryMethod)
@@ -47,7 +48,7 @@ namespace Siege.ServiceLocation.Extensions.FactorySupport
                 this.factoryMethod = factoryMethod;
             }
 
-            public object Resolve(IInstanceResolver locator, IStoreAccessor context)
+            public object Resolve(IInstanceResolver locator, IServiceLocatorStore context)
             {
                 return factoryMethod(locator);
             }

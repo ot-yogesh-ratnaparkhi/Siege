@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -51,8 +51,27 @@
   <ItemGroup>
     <Compile Include="Bindings\ActionUseCaseBinding.cs" />
     <Compile Include="Bindings\IActionUseCaseBinding.cs" />
+    <Compile Include="Bindings\IInstanceUseCaseBinding.cs" />
+    <Compile Include="Bindings\IOpenGenericUseCaseBinding.cs" />
     <Compile Include="Exceptions\RegistrationNotFoundException.cs" />
     <Compile Include="IFactoryFetcher.cs" />
+    <Compile Include="UseCases\IGenericUseCase.cs" />
+    <Compile Include="UseCases\OpenGenerics\IOpenGenericUseCase.cs" />
+    <Compile Include="UseCases\OpenGenerics\OpenGenericUseCase.cs" />
+    <Compile Include="Resolution\ConstructorArgument.cs" />
+    <Compile Include="Resolution\ContextArgument.cs" />
+    <Compile Include="Resolution\IResolutionArgument.cs" />
+    <Compile Include="Stores\IResolutionStore.cs" />
+    <Compile Include="Stores\IServiceLocatorStore.cs" />
+    <Compile Include="Stores\ThreadedResolutionStore.cs" />
+    <Compile Include="Stores\ThreadedServiceLocatorStore.cs" />
+    <Compile Include="Stores\ThreadLocalStore.cs" />
+    <Compile Include="Stores\UseCases\CompositeUseCaseGroup.cs" />
+    <Compile Include="Stores\UseCases\ConditionalUseCaseGroup.cs" />
+    <Compile Include="Stores\UseCases\DefaultUseCaseGroup.cs" />
+    <Compile Include="Stores\UseCases\DefaultUseCaseList.cs" />
+    <Compile Include="Stores\UseCases\UseCaseGroup.cs" />
+    <Compile Include="Stores\UseCases\UseCaseStore.cs" />
     <Compile Include="TypeBuilders\DefaultTypeBuilder.cs" />
     <Compile Include="TypeBuilders\ITypeBuilder.cs" />
     <Compile Include="Rules\ConditionalActivationRule.cs" />
@@ -69,6 +88,8 @@
     <Compile Include="TypeHandler.cs" />
     <Compile Include="UseCases\Actions\ActionUseCase.cs" />
     <Compile Include="UseCases\Actions\IActionUseCase.cs" />
+    <Compile Include="UseCases\Actions\IConditionalActionUseCase.cs" />
+    <Compile Include="UseCases\Actions\IDefaultActionUseCase.cs" />
     <Compile Include="UseCases\Conditional\ConditionalGenericUseCase.cs" />
     <Compile Include="UseCases\Conditional\ConditionalImplementationUseCase.cs" />
     <Compile Include="Rules\ContextEvaluationStrategy.cs" />
@@ -100,6 +121,7 @@
     <Compile Include="UseCases\Named\KeyBasedUseCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiegeContainer.cs" />
+    <Compile Include="UseCases\UntypedUseCase.cs" />
     <Compile Include="UseCases\UseCase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -26,7 +26,14 @@ namespace Siege.ServiceLocation.StructureMapAdapter
     public class StructureMapAdapter : IServiceLocatorAdapter
     {
         private Container container;
-        public StructureMapAdapter() : this(new Container(x => x.IncludeConfigurationFromConfigFile = true)) {}
+
+        public StructureMapAdapter()
+            : this(new Container(x => x.IncludeConfigurationFromConfigFile = true))
+        {
+        }
+
+        public StructureMapAdapter(string configFileName) : this(new StructureMap.Container(x => x.AddConfigurationFromXmlFile(configFileName))) { }
+
         public StructureMapAdapter(Container container)
         {
             this.container = container;
@@ -46,7 +53,6 @@ namespace Siege.ServiceLocation.StructureMapAdapter
 
         public void Dispose()
         {
-            
         }
 
         public IEnumerable<object> GetAllInstances(Type serviceType)
@@ -91,9 +97,9 @@ namespace Siege.ServiceLocation.StructureMapAdapter
             {
                 instance = container.GetInstance(serviceType, key);
             }
-            catch (StructureMapException)
+            catch (StructureMapException ex)
             {
-                throw new RegistrationNotFoundException(serviceType, key);
+                throw new RegistrationNotFoundException(serviceType, key, ex);
             }
 
             if (instance == null) throw new RegistrationNotFoundException(serviceType, key);
@@ -114,6 +120,11 @@ namespace Siege.ServiceLocation.StructureMapAdapter
         public Type KeyBasedUseCaseBinding
         {
             get { return typeof(KeyBasedUseCaseBinding<>); }
+        }
+
+        public Type OpenGenericUseCaseBinding
+        {
+            get { return typeof(OpenGenericUseCaseBinding); }
         }
     }
 }

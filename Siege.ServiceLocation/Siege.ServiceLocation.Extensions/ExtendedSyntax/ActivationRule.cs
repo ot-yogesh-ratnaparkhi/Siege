@@ -34,9 +34,9 @@ namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
             return useCase;
         }
 
-        public IConditionalUseCase HydrateWith(Action<TBaseService> action)
+        public IConditionalUseCase InitializeWith(Action<TBaseService> action)
         {
-            var useCase = new ConditionalHydrateUseCase<TBaseService>();
+            var useCase = new ConditionalInitializationUseCase<TBaseService>();
 
             useCase.BindTo<TBaseService>();
             useCase.SetActivationRule(this);

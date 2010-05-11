@@ -62,7 +62,7 @@ namespace Siege.ServiceLocation.HttpIntegration
                 locator = new HttpSiegeContainer(GetServiceLocatorAdapter());
                 locator
                     .Register(Given<RouteCollection>.Then(RouteTable.Routes))
-                    .Register(Given<IContextStore>.Then(locator.ContextStore));
+                    .Register(Given<IContextStore>.Then(locator.Store.ContextStore));
 
 
                 RegisterRoutes(RouteTable.Routes);

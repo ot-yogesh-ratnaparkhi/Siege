@@ -13,60 +13,55 @@
      limitations under the License.
 */
 
-using Castle.MicroKernel;
-using Castle.MicroKernel.Registration;
+using System;
+using Ninject;
 using NUnit.Framework;
-using Siege.ServiceLocation.Exceptions;
+using Siege.ServiceLocation.Stores;
 using Siege.ServiceLocation.Syntax;
 using Siege.ServiceLocation.UnitTests.TestClasses;
-using Siege.SeviceLocation.WindsorAdapter;
 
-namespace Siege.ServiceLocation.UnitTests
+namespace Siege.ServiceLocation.UnitTests.Adapters
 {
     [TestFixture]
-    public class WindsorAdapterTests : SiegeContainerTests
+    public class NinjectAdapterTests : SiegeContainerTests
     {
         private IKernel kernel;
-
         public override void SetUp()
         {
-            kernel = new DefaultKernel();
+            kernel = new StandardKernel();
             base.SetUp();
         }
 
         protected override IServiceLocatorAdapter GetAdapter()
         {
-            return new WindsorAdapter(kernel);
+            return new NinjectAdapter.NinjectAdapter(kernel);
         }
 
         protected override void RegisterWithoutSiege()
         {
-            kernel.Register(Component.For<IUnregisteredInterface>().ImplementedBy<UnregisteredClass>());
+            Type type = typeof(UnregisteredClass);
+
+            kernel.Bind<IUnregisteredInterface>().To(type);
         }
-        
+
         [Test]
         public virtual void Should_Dispose_From_Containers()
         {
-            DefaultKernel disposableKernel = new DefaultKernel();
-            using (var disposableLocater = new SiegeContainer(new WindsorAdapter(disposableKernel)))
+            var disposableContainer = new StandardKernel();
+            using (var disposableLocater = new SiegeContainer(new NinjectAdapter.NinjectAdapter(disposableContainer), new ThreadedServiceLocatorStore()))
             {
                 disposableLocater.Register(Given<ITestInterface>.Then<TestCase1>());
                 Assert.IsTrue(disposableLocater.GetInstance<ITestInterface>() is TestCase1);
             }
-            
-            Assert.IsFalse(disposableKernel.HasComponent(typeof(ITestInterface)));
+
+            Assert.IsTrue(disposableContainer.IsDisposed);
         }
 
-        [ExpectedException(typeof(RegistrationNotFoundException))]
-        public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided()
-        {
-            base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided();
-        }
-
-        [ExpectedException(typeof(RegistrationNotFoundException))]
         public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
         {
             base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
+
+            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
         }
     }
 }

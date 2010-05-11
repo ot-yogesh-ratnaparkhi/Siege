@@ -15,6 +15,7 @@
 
 using System;
 using NUnit.Framework;
+using Siege.ServiceLocation.Stores;
 using Siege.ServiceLocation.Syntax;
 
 namespace Siege.ServiceLocation.AOP.Tests
@@ -27,7 +28,7 @@ namespace Siege.ServiceLocation.AOP.Tests
         [Test]
         public void Should_Override_Virtual_Methods_With_Return_Types_With_ServiceLocator()
         {
-            locator = new SiegeContainer(new NinjectAdapter.NinjectAdapter());
+            locator = new SiegeContainer(new NinjectAdapter.NinjectAdapter(), new ThreadedServiceLocatorStore());
             locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
@@ -42,7 +43,7 @@ namespace Siege.ServiceLocation.AOP.Tests
         [Test]
         public void Should_Override_Virtual_Methods_Without_Return_Types_With_ServiceLocator()
         {
-            locator = new SiegeContainer(new NinjectAdapter.NinjectAdapter());
+            locator = new SiegeContainer(new NinjectAdapter.NinjectAdapter(), new ThreadedServiceLocatorStore());
             locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
@@ -57,7 +58,7 @@ namespace Siege.ServiceLocation.AOP.Tests
         [Test]
         public void Should_Override_Virtual_Methods_With_Return_Types_Without_ServiceLocator()
         {
-            locator = new SiegeContainer(new NinjectAdapter.NinjectAdapter());
+            locator = new SiegeContainer(new NinjectAdapter.NinjectAdapter(), new ThreadedServiceLocatorStore());
             locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
@@ -72,7 +73,7 @@ namespace Siege.ServiceLocation.AOP.Tests
         [Test]
         public void Should_Override_Virtual_Methods_Without_Return_Types_Without_ServiceLocator()
         {
-            locator = new SiegeContainer(new NinjectAdapter.NinjectAdapter());
+            locator = new SiegeContainer(new NinjectAdapter.NinjectAdapter(), new ThreadedServiceLocatorStore());
             locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());

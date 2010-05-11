@@ -15,84 +15,55 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Siege.ServiceLocation.Stores
 {
     public class ThreadedExecutionStore : IExecutionStore
     {
+        [ThreadStatic] private static List<Type> requestedTypes;
+        [ThreadStatic] private static int index;
+
         public List<Type> RequestedTypes
         {
-            get
-            {
-                var slot = Thread.GetNamedDataSlot("executionContext");
-                return (List<Type>) Thread.GetData(slot);
-            }
-            private set
-            {
-                var slot = Thread.GetNamedDataSlot("executionContext");
-
-                Thread.SetData(slot, value);
-            }
+            get { return requestedTypes; }
+            private set { requestedTypes = value; }
         }
 
         private int Index
         {
-            get
-            {
-                var slot = Thread.GetNamedDataSlot("recursionCount");
-                return (int) Thread.GetData(slot);
-            }
-            set
-            {
-                var slot = Thread.GetNamedDataSlot("recursionCount");
-
-                Thread.SetData(slot, value);
-            }
+            get { return index; }
+            set { index = value; }
         }
 
         public void AddRequestedType(Type type)
         {
-            List<Type> types = RequestedTypes;
-            types.Add(type);
-            RequestedTypes = types;
+            RequestedTypes.Add(type);
             Increment();
         }
 
         public void Increment()
         {
-            int count = Index;
-            count++;
-            Index = count;
+            Index++;
         }
 
         public void Decrement()
         {
-            int count = Index;
-            count--;
-            Index = count;
+            Index--;
         }
 
         private ThreadedExecutionStore()
         {
-            Thread.FreeNamedDataSlot("executionContext");
-            var slot = Thread.AllocateNamedDataSlot("executionContext");
-
-            Thread.SetData(slot, new List<Type>());
-
-            Thread.FreeNamedDataSlot("recursionCount");
-            slot = Thread.AllocateNamedDataSlot("recursionCount");
-
-            Thread.SetData(slot, 0);
+            RequestedTypes = new List<Type>();
+            Index = 0;
         }
 
         public IExecutionStore Create()
         {
-            if(Index == 0)
+            if (Index == 0)
             {
                 return new ThreadedExecutionStore();
             }
-            
+
             return this;
         }
 

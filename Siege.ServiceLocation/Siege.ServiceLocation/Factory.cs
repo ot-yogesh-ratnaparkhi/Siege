@@ -16,7 +16,6 @@
 using System.Collections.Generic;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.UseCases;
-using Siege.ServiceLocation.UseCases.Actions;
 using Siege.ServiceLocation.UseCases.Conditional;
 using Siege.ServiceLocation.UseCases.Default;
 
@@ -35,41 +34,37 @@ namespace Siege.ServiceLocation
 
         public void AddCase(IUseCase useCase)
         {
-            if(useCase is IDefaultUseCase<TBaseService>)
-            {
-                defaultCases.Add(useCase);
-            }
-            else 
-            {
-                conditionalUseCases.Add(useCase);
-            }
+            if (useCase is IDefaultUseCase) defaultCases.Add(useCase);
+            else conditionalUseCases.Add(useCase);
         }
 
         public TBaseService Build()
         {
-            foreach (IUseCase<TBaseService> useCase in conditionalUseCases)
+            foreach (IGenericUseCase useCase in conditionalUseCases)
             {
                 TBaseService result = default(TBaseService);
 
-                if(useCase.IsValid(serviceLocator))
+                if (useCase.IsValid(serviceLocator.Store))
                 {
-                    result = (TBaseService)useCase.Resolve(new ConditionalResolutionStrategy(serviceLocator, serviceLocator), serviceLocator);
+                    result =
+                        (TBaseService)useCase.Resolve(new ConditionalResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
                 }
 
                 if (!Equals(result, default(TBaseService)))
                 {
-                    serviceLocator.ExecutionStore.Decrement();
+                    serviceLocator.Store.ExecutionStore.Decrement();
                     return result;
                 }
             }
 
-            foreach (IUseCase<TBaseService> useCase in defaultCases)
+            foreach (IGenericUseCase useCase in defaultCases)
             {
-                TBaseService result = (TBaseService)useCase.Resolve(new DefaultResolutionStrategy(serviceLocator, serviceLocator), serviceLocator);
+                TBaseService result =
+                    (TBaseService)useCase.Resolve(new DefaultResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
 
                 if (!Equals(result, default(TBaseService)))
                 {
-                    serviceLocator.ExecutionStore.Decrement();
+                    serviceLocator.Store.ExecutionStore.Decrement();
                     return result;
                 }
             }

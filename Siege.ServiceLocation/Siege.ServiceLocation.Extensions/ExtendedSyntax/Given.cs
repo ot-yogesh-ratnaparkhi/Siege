@@ -14,13 +14,24 @@
 */
 
 using System;
+using Siege.ServiceLocation.Extensions.Decorator;
 using Siege.ServiceLocation.Extensions.FactorySupport;
 using Siege.ServiceLocation.Extensions.Hydration;
 using Siege.ServiceLocation.Extensions.ResolutionContextSupport;
+using Siege.ServiceLocation.UseCases.Actions;
 using Siege.ServiceLocation.UseCases.Default;
+using Siege.ServiceLocation.UseCases.OpenGenerics;
 
 namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
 {
+    public class Given
+    {
+        public static IOpenGenericUseCase OpenType(Type type)
+        {
+            return new OpenGenericUseCase(type);
+        }
+    }
+
     public class Given<TService> : Syntax.Given<TService>
     {
         public static IDefaultUseCase<TService> ConstructWith(Func<IInstanceResolver, TService> factoryMethod)
@@ -51,9 +62,9 @@ namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
             return rule;
         }
 
-        public static IHydrateUseCase<TService> HydrateWith(Action<TService> action)
+        public static IInitializationUseCase<TService> InitializeWith(Action<TService> action)
         {
-            HydrateUseCase<TService> useCase = new HydrateUseCase<TService>();
+            InitializationUseCase<TService> useCase = new InitializationUseCase<TService>();
 
             useCase.BindTo<TService>();
 
@@ -63,6 +74,17 @@ namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
                 return service; 
             };
             
+            useCase.Associate(func);
+
+            return useCase;
+        }
+
+        public IDefaultActionUseCase DecorateWith(Func<TService, TService> func)
+        {
+            var useCase = new DecoratorUseCase<TService>();
+
+            useCase.BindTo<TService>();
+
             useCase.Associate(func);
 
             return useCase;

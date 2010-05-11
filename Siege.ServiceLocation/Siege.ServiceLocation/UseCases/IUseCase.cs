@@ -22,11 +22,9 @@ namespace Siege.ServiceLocation.UseCases
         Type GetBoundType();
         Type GetUseCaseBindingType();
         Type GetBaseBindingType();
-        object Resolve(IResolutionStrategy strategy, IStoreAccessor accessor);
-        bool IsValid(IStoreAccessor context);
     }
 
-    public interface IUseCase<TBaseService> : IUseCase
+    public interface IUseCase<TBaseService> : IGenericUseCase
     {
     }
 }

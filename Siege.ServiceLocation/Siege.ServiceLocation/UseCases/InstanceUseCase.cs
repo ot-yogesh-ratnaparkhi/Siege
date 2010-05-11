@@ -14,6 +14,7 @@
 */
 
 using System;
+using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.UseCases
 {
@@ -26,14 +27,9 @@ namespace Siege.ServiceLocation.UseCases
             this.implementation = implementation;
         }
 
-        public override TBaseService GetBinding()
-        {
-            return implementation;
-        }
-
         object IInstanceUseCase.GetBinding()
         {
-            return this.GetBinding();
+            return implementation;
         }
 
         protected override IActivationStrategy GetActivationStrategy()
@@ -48,7 +44,7 @@ namespace Siege.ServiceLocation.UseCases
 
         public override Type GetBaseBindingType()
         {
-            return typeof (TBaseService);
+            return typeof(TBaseService);
         }
 
         public class ImplementationActivationStrategy : IActivationStrategy
@@ -60,7 +56,7 @@ namespace Siege.ServiceLocation.UseCases
                 this.implementation = implementation;
             }
 
-            public object Resolve(IInstanceResolver locator, IStoreAccessor context)
+            public object Resolve(IInstanceResolver locator, IServiceLocatorStore context)
             {
                 return implementation;
             }

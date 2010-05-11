@@ -13,22 +13,13 @@
      limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
 using Siege.ServiceLocation.Stores;
-using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation
 {
-    public interface IContextualServiceLocator : IServiceLocator, IStoreAccessor
+    public interface IContextualServiceLocator : IServiceLocator
     {
         void AddContext(object contextItem);
-        IList<IUseCase> GetRegisteredUseCasesForType(Type type);
-    }
-
-    public interface IStoreAccessor
-    {
-        IContextStore ContextStore { get; }
-        IExecutionStore ExecutionStore { get; }
+        IServiceLocatorStore Store { get; }
     }
 }

@@ -13,11 +13,12 @@
      limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 
 namespace Siege.ServiceLocation.Stores
 {
-    public interface IContextStore
+    public interface IContextStore : IDisposable
     {
         void Add(object contextItem);
         List<object> Items { get; }

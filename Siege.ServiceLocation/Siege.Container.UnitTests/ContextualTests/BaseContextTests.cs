@@ -15,6 +15,7 @@
 
 using System;
 using NUnit.Framework;
+using Siege.ServiceLocation.Stores;
 using Siege.ServiceLocation.Syntax;
 using Siege.ServiceLocation.UnitTests.ContextualTests.Classes;
 
@@ -29,7 +30,13 @@ namespace Siege.ServiceLocation.UnitTests.ContextualTests
         [SetUp]
         public virtual void SetUp()
         {
-            locator = new SiegeContainer(GetAdapter());
+            locator = new SiegeContainer(GetAdapter(), new ThreadedServiceLocatorStore());
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            locator.Dispose();
         }
 
         [Test]
@@ -134,7 +141,7 @@ namespace Siege.ServiceLocation.UnitTests.ContextualTests
         [Test]
         public void Should_Change_Selection_As_Context_Is_Applied()
         {
-            Assert.AreEqual(0, locator.ExecutionStore.RequestedTypes.Count);
+            Assert.AreEqual(0, locator.Store.ExecutionStore.RequestedTypes.Count);
 
             locator.Register(Given<ITestController>.Then<TestController>())
                      .Register(Given<IBaseService>.Then<DefaultTestService>())
@@ -161,7 +168,7 @@ namespace Siege.ServiceLocation.UnitTests.ContextualTests
             Assert.IsInstanceOfType(typeof(TestRepository2), controller.Service.Repository);
 
 
-            foreach (Type dependency in locator.ExecutionStore.RequestedTypes)
+            foreach (Type dependency in locator.Store.ExecutionStore.RequestedTypes)
             {
                 Console.WriteLine(dependency);
             }

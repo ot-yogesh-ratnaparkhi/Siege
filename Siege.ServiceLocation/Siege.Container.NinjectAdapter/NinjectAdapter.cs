@@ -24,7 +24,11 @@ namespace Siege.ServiceLocation.NinjectAdapter
     {
         private IKernel kernel;
 
-        public NinjectAdapter() : this(new StandardKernel()) {}
+        public NinjectAdapter()
+            : this(new StandardKernel())
+        {
+        }
+
         public NinjectAdapter(IKernel kernel)
         {
             this.kernel = kernel;
@@ -37,17 +41,22 @@ namespace Siege.ServiceLocation.NinjectAdapter
 
         public Type ConditionalUseCaseBinding
         {
-            get { return typeof (ConditionalUseCaseBinding<>); }
+            get { return typeof(ConditionalUseCaseBinding<>); }
         }
 
         public Type DefaultUseCaseBinding
         {
-            get { return typeof (DefaultUseCaseBinding<>); }
+            get { return typeof(DefaultUseCaseBinding<>); }
         }
 
         public Type KeyBasedUseCaseBinding
         {
-            get { return typeof (KeyBasedUseCaseBinding<>); }
+            get { return typeof(KeyBasedUseCaseBinding<>); }
+        }
+
+        public Type OpenGenericUseCaseBinding
+        {
+            get { return typeof(OpenGenericUseCaseBinding); }
         }
 
         public void Dispose()
@@ -80,7 +89,7 @@ namespace Siege.ServiceLocation.NinjectAdapter
             var instance = kernel.Get(serviceType, key);
 
             if (instance == null) throw new RegistrationNotFoundException(serviceType, key);
-            
+
             return instance;
         }
     }

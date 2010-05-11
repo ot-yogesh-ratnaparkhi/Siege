@@ -13,18 +13,16 @@
      limitations under the License.
 */
 
-using System;
 using NUnit.Framework;
-using Siege.ServiceLocation.AOP;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.Extensions.ExtendedSyntax;
-using Siege.ServiceLocation.UnitTests.RegistrationExtensions.Classes;
+using Siege.ServiceLocation.Stores;
 using Siege.ServiceLocation.UnitTests.TestClasses;
 
 namespace Siege.ServiceLocation.UnitTests
 {
     [TestFixture]
-    public abstract class SiegeContainerTests
+    public abstract partial class SiegeContainerTests
     {
         protected IContextualServiceLocator locator;
         protected abstract IServiceLocatorAdapter GetAdapter();
@@ -33,7 +31,13 @@ namespace Siege.ServiceLocation.UnitTests
         [SetUp]
         public virtual void SetUp()
         {
-            locator = new SiegeContainer(GetAdapter());
+            locator = new SiegeContainer(GetAdapter(), new ThreadedServiceLocatorStore());
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            locator.Dispose();
         }
 
         [Test]
@@ -45,46 +49,11 @@ namespace Siege.ServiceLocation.UnitTests
         }
 
         [Test]
-        public void Should_Initialize_Property_After_Resolution()
-        {
-            locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<TestCase1>.HydrateWith(testCase1 => testCase1.Property1 = "lulz"));
-
-            TestCase1 instance = (TestCase1)locator.GetInstance<ITestInterface>();
-            Assert.AreEqual("lulz", instance.Property1);
-        }
-
-        [Test]
-        public void Should_Initialize_Property_After_Resolution_Depending_On_Context()
-        {
-            locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<TestCase1>.When<TestEnum>(x => x == TestEnum.Case2).HydrateWith(testCase1 => testCase1.Property1 = "lulz"));
-
-            locator.AddContext(TestEnum.Case2);
-
-            TestCase1 instance = (TestCase1)locator.GetInstance<ITestInterface>();
-            Assert.AreEqual("lulz", instance.Property1);
-        }
-
-
-
-        [Test]
-        public void Should_Initialize_Property_After_Resolution_With_No_Context()
-        {
-            locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<TestCase1>.HydrateWith(testCase1 => testCase1.Property1 = "lulz"));
-            locator.Register(Given<TestCase1>.When<TestEnum>(x => x == TestEnum.Case2).HydrateWith(testCase1 => testCase1.Property1 = "rofl"));
-
-            TestCase1 instance = (TestCase1)locator.GetInstance<ITestInterface>();
-            Assert.AreEqual("lulz", instance.Property1);
-        }
-
-        [Test]
         public void Should_Be_Able_To_Bind_An_Interface_To_A_Type_Non_Generic()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
 
-            Assert.IsTrue(locator.GetInstance(typeof(ITestInterface)) is TestCase1);
+            Assert.IsTrue(locator.GetInstance(typeof (ITestInterface)) is TestCase1);
         }
 
         [Test]
@@ -92,7 +61,7 @@ namespace Siege.ServiceLocation.UnitTests
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
 
-            Assert.IsTrue(locator.GetService(typeof(ITestInterface)) is TestCase1);
+            Assert.IsTrue(locator.GetService(typeof (ITestInterface)) is TestCase1);
         }
 
         [Test]
@@ -108,30 +77,21 @@ namespace Siege.ServiceLocation.UnitTests
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>("test"));
 
-            Assert.IsInstanceOfType(typeof(TestCase1), locator.GetInstance(typeof(ITestInterface), "test"));
+            Assert.IsInstanceOfType(typeof (TestCase1), locator.GetInstance(typeof (ITestInterface), "test"));
         }
 
-        [Test, ExpectedException(typeof(RegistrationNotFoundException))]
+        [Test, ExpectedException(typeof (RegistrationNotFoundException))]
         public virtual void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>("test"));
             locator.GetInstance<ITestInterface>();
         }
 
-        [Test, ExpectedException(typeof(RegistrationNotFoundException))]
+        [Test, ExpectedException(typeof (RegistrationNotFoundException))]
         public virtual void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>("test"));
             locator.GetInstance<ITestInterface>("test15");
-        }
-
-        [Test]
-        public void Should_Be_Able_To_Bind_An_Interface_To_A_Type_Based_On_Rule()
-        {
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
-            locator.AddContext(CreateContext(TestEnum.Case2));
-
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase2);
         }
 
         [Test]
@@ -150,79 +110,7 @@ namespace Siege.ServiceLocation.UnitTests
             Assert.IsTrue(locator.GetInstance<ITestInterface>("Test") is TestCase1);
         }
 
-        [Test]
-        public void Should_Be_Able_To_Bind_An_Interface_To_An_Implementation_Based_On_Rule()
-        {
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then(new TestCase2()));
-            locator.AddContext(CreateContext(TestEnum.Case2));
-
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase2);
-        }
-
-        [Test]
-        public void Should_Use_Rule_When_Satisfied()
-        {
-            locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
-            locator.AddContext(CreateContext(TestEnum.Case2));
-
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase2);
-        }
-
-        [Test]
-        public void Should_Use_Correct_Rule_Given_Multiple_Rules()
-        {
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case1).Then<TestCase1>());
-            locator.AddContext(CreateContext(TestEnum.Case1));
-
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
-        }
-
-        [Test]
-        public void Should_Change_Implementation_When_Context_Is_Added()
-        {
-            locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case1).Then<TestCase1>());
-
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
-
-            locator.AddContext(CreateContext(TestEnum.Case2));
-
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase2);
-        }
-
-        [Test]
-        public void Should_Use_Correct_Rule_Given_Multiple_Rules_And_Default()
-        {
-            locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case1).Then<TestCase1>());
-            locator.AddContext(CreateContext(TestEnum.Case1));
-
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
-        }
-
-        [Test, ExpectedException(typeof(RegistrationNotFoundException))]
-        public void Should_Throw_Exception_When_Type_No_Default_Specified_And_No_Rules_Match()
-        {
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case1).Then<TestCase1>());
-         
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
-        }
-
-        [Test]
-        public void Should_Not_Use_Rule_When_Not_Satisfied()
-        {
-            locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
-            locator.AddContext(CreateContext(TestEnum.Case3));
-
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
-        }
-
+        
         [Test]
         public void Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container()
         {
@@ -249,339 +137,12 @@ namespace Siege.ServiceLocation.UnitTests
             var resolution = locator.GetInstance<ITestInterface>();
 
             Assert.IsTrue(resolution is DependsOnInterface);
-            Assert.AreSame(arg, ((DependsOnInterface)resolution).Argument);
-        }
-
-        [Test]
-        public void Should_Resolve_All_From_Service_Locator_Regardless_Of_Context()
-        {
-            locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
-
-            var instances = locator.GetAllInstances<ITestInterface>();
-            
-            foreach(ITestInterface item in instances)
-            {
-                Assert.IsInstanceOfType(typeof(ITestInterface), item);
-            }
-        }
-
-        [Test]
-        public void Should_Resolve_All_From_Service_Locator_Regardless_Of_Context_Non_Generic()
-        {
-            locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>());
-
-            var instances = locator.GetAllInstances(typeof(ITestInterface));
-
-            foreach (ITestInterface item in instances)
-            {
-                Assert.IsInstanceOfType(typeof(ITestInterface), item);
-            }
-        }
-
-        [Test]
-        public void Extended_Registration_Should_Work_With_All_Conditions_Met()
-        {
-            locator
-                .Register(Given<ICoffee>.Then<Coffee>())
-                .Register(Given<ICoffee>
-                              .When<Ingredients>(ingredients => ingredients == Ingredients.WhippedCream)
-                              .DecorateWith(coffee => new WhippedCreamDecorator(coffee)))
-                .Register(Given<ICoffee>
-                              .When<Ingredients>(ingredients => ingredients == Ingredients.Espresso)
-                              .DecorateWith(coffee => new EspressoShotDecorator(coffee)));
-
-            locator.AddContext(Ingredients.WhippedCream);
-            locator.AddContext(Ingredients.Espresso);
-
-            var instance = locator.GetInstance<ICoffee>();
-
-            Assert.AreEqual(1.5M, instance.Total);
-        }
-
-        [Test]
-        public void Extended_Registration_Should_Work_With_Some_Conditions_Met()
-        {
-            locator
-                .Register(Given<ICoffee>.Then<Coffee>())
-                .Register(Given<ICoffee>
-                              .When<Ingredients>(ingredients => ingredients == Ingredients.WhippedCream)
-                              .DecorateWith(coffee => new WhippedCreamDecorator(coffee)))
-                .Register(Given<ICoffee>
-                              .When<Ingredients>(ingredients => ingredients == Ingredients.Espresso)
-                              .DecorateWith(coffee => new EspressoShotDecorator(coffee)));
-
-            locator.AddContext(Ingredients.WhippedCream);
-            
-            var instance = locator.GetInstance<ICoffee>();
-
-            Assert.AreEqual(1M, instance.Total);
-        }
-
-        [Test]
-        public void Extended_Registration_Should_Work_With_No_Conditions_Met()
-        {
-            locator
-                .Register(Given<ICoffee>.Then<Coffee>())
-                .Register(Given<ICoffee>
-                              .When<Ingredients>(ingredients => ingredients == Ingredients.WhippedCream)
-                              .DecorateWith(coffee => new WhippedCreamDecorator(coffee)))
-                .Register(Given<ICoffee>
-                              .When<Ingredients>(ingredients => ingredients == Ingredients.Espresso)
-                              .DecorateWith(coffee => new EspressoShotDecorator(coffee)));
-
-            var instance = locator.GetInstance<ICoffee>();
-
-            Assert.AreEqual(0.75M, instance.Total);
-        }
-
-        [Test]
-        public void Should_Choose_Constructor_Argument_Based_On_Type_Injected_Into()
-        {
-            locator
-                .Register(Given<ITestInterface>
-                                .When<TestEnum>(test => test == TestEnum.Case1)
-                                .Then<DependsOnInterface>())
-                .Register(Given<ITestInterface>
-                                .When<TestEnum>(test => test == TestEnum.Case2)
-                                .Then<DependsOnAlternateConstructorImplicitly>())
-                .Register(Given<IConstructorArgument>
-                                .WhenInjectingInto<DependsOnInterface>()
-                                .Then<ConstructorArgument>())
-                .Register(Given<IConstructorArgument>
-                                .WhenInjectingInto<DependsOnAlternateConstructorImplicitly>()
-                                .Then<AlternateConstructorArgument>());
-
-            locator.AddContext(TestEnum.Case2);
-
-            var instance = locator.GetInstance<ITestInterface>();
-
-            Assert.IsInstanceOfType(typeof(DependsOnAlternateConstructorImplicitly), instance);
-            Assert.IsInstanceOfType(typeof(AlternateConstructorArgument), ((DependsOnAlternateConstructorImplicitly)instance).Argument);
-        }
-
-        [Test]
-        public void Should_Choose_Constructor_Argument_Based_On_Type_Injected_Into_And_Use_Instance()
-        {
-            var arg = new AlternateConstructorArgument();
-
-            locator
-                .Register(Given<ITestInterface>
-                                .When<TestEnum>(test => test == TestEnum.Case1)
-                                .Then<DependsOnInterface>())
-                .Register(Given<ITestInterface>
-                                .When<TestEnum>(test => test == TestEnum.Case2)
-                                .Then<DependsOnAlternateConstructorImplicitly>())
-                .Register(Given<IConstructorArgument>
-                                .WhenInjectingInto<DependsOnInterface>()
-                                .Then<ConstructorArgument>())
-                .Register(Given<IConstructorArgument>
-                                .WhenInjectingInto<DependsOnAlternateConstructorImplicitly>()
-                                .Then(arg));
-
-            locator.AddContext(TestEnum.Case2);
-
-            var instance = locator.GetInstance<ITestInterface>();
-
-            Assert.IsInstanceOfType(typeof(DependsOnAlternateConstructorImplicitly), instance);
-            Assert.IsInstanceOfType(typeof(AlternateConstructorArgument), ((DependsOnAlternateConstructorImplicitly)instance).Argument);
-            Assert.AreSame(arg, ((DependsOnAlternateConstructorImplicitly)instance).Argument);
-        }
-
-        [Test]
-        public void Should_Construct_With_A_Factory()
-        {
-            bool factoryMethodInvoked = false;
-            Func<IInstanceResolver, ITestInterface> func = container => 
-            { 
-                factoryMethodInvoked = true;
-                return new TestCase1();
-            };
-
-            locator.Register(Given<ITestInterface>.ConstructWith(func));
-
-            locator.GetInstance<ITestInterface>();
-
-            Assert.IsTrue(factoryMethodInvoked);
-        }
-
-        [Test]
-        public void Should_Construct_With_A_Factory_When_Context_Is_Satisfied()
-        {
-            bool factoryMethodInvoked = false;
-            Func<IInstanceResolver, ITestInterface> func = container =>
-            {
-                factoryMethodInvoked = true;
-                return new TestCase1();
-            };
-
-            locator.Register(Given<ITestInterface>
-                                .When<TestEnum>(test => test == TestEnum.Case1)
-                                .ConstructWith(func));
-
-            locator.AddContext(TestEnum.Case1);
-
-            locator.GetInstance<ITestInterface>();
-
-            Assert.IsTrue(factoryMethodInvoked);
-        }
-
-        [Test]
-        public void Should_Not_Construct_With_A_Factory_When_Context_Is_Satisfied()
-        {
-            bool factoryMethodInvoked = false;
-            Func<IInstanceResolver, ITestInterface> func = container =>
-            {
-                factoryMethodInvoked = true;
-                return new TestCase1();
-            };
-
-            locator
-                .Register(Given<ITestInterface>.Then<TestCase2>())
-                .Register(Given<ITestInterface>
-                                .When<TestEnum>(test => test == TestEnum.Case1)
-                                .ConstructWith(func));
-
-            locator.AddContext(TestEnum.Case2);
-
-            locator.GetInstance<ITestInterface>();
-
-            Assert.IsFalse(factoryMethodInvoked);
-        }
-
-        [Test]
-        public void Should_Construct_With_A_Factory_When_Injected_Into_Particular_Type()
-        {
-            bool factoryMethodInvoked = false;
-            Func<IInstanceResolver, IConstructorArgument> func = container =>
-            {
-                factoryMethodInvoked = true;
-                return new AlternateConstructorArgument();
-            };
-
-            locator
-                .Register(Given<ITestInterface>
-                              .When<TestEnum>(test => test == TestEnum.Case1)
-                              .Then<DependsOnInterface>())
-                .Register(Given<ITestInterface>
-                              .When<TestEnum>(test => test == TestEnum.Case2)
-                              .Then<DependsOnAlternateConstructorImplicitly>())
-                .Register(Given<IConstructorArgument>
-                              .WhenInjectingInto<DependsOnInterface>()
-                              .Then<ConstructorArgument>())
-                .Register(Given<IConstructorArgument>
-                              .WhenInjectingInto<DependsOnAlternateConstructorImplicitly>()
-                              .ConstructWith(func));
-
-            locator.AddContext(TestEnum.Case2);
-
-            locator.GetInstance<ITestInterface>();
-
-            Assert.IsTrue(factoryMethodInvoked);
-        }
-
-        [Test]
-        public void Should_Not_Construct_With_A_Factory_When_Not_Injected_Into_Particular_Type()
-        {
-            bool factoryMethodInvoked = false;
-            Func<IInstanceResolver, IConstructorArgument> func = container =>
-            {
-                factoryMethodInvoked = true;
-                return new AlternateConstructorArgument();
-            };
-
-            locator
-                .Register(Given<ITestInterface>
-                              .When<TestEnum>(test => test == TestEnum.Case1)
-                              .Then<DependsOnInterface>())
-                .Register(Given<ITestInterface>
-                              .When<TestEnum>(test => test == TestEnum.Case2)
-                              .Then<DependsOnAlternateConstructorImplicitly>())
-                .Register(Given<IConstructorArgument>
-                              .WhenInjectingInto<DependsOnInterface>()
-                              .Then<ConstructorArgument>())
-                .Register(Given<IConstructorArgument>
-                              .WhenInjectingInto<DependsOnAlternateConstructorImplicitly>()
-                              .ConstructWith(func));
-
-            locator.AddContext(TestEnum.Case1);
-
-            locator.GetInstance<ITestInterface>();
-
-            Assert.IsFalse(factoryMethodInvoked);
-        }
-
-        [Test]
-        public void Should_Use_SiegeProxy_TypeBuilder()
-        {
-            locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
-            locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
-            locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
-            locator.Register(Given<TestType>.Then<TestType>());
-
-            var instance = locator.GetInstance<TestType>();
-
-            Assert.AreEqual("lolarg1", instance.Test("arg1", "arg2"));
+            Assert.AreSame(arg, ((DependsOnInterface) resolution).Argument);
         }
 
         private TestContext CreateContext(TestEnum types)
         {
             return new TestContext(types);
-        }
-    }
-
-    public class TestType
-    {
-        [SamplePreProcessing, SampleEncapsulating, SamplePostProcessing]
-        public virtual string Test(object arg1, object arg2)
-        {
-            return "lol" + arg1;
-        }
-
-        [SamplePreProcessing, SampleEncapsulating, SamplePostProcessing]
-        public virtual void TestNoReturn(object arg1, object arg2)
-        {
-        }
-    }
-
-
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
-    public class SampleEncapsulatingAttribute : Attribute, IProcessEncapsulatingAttribute
-    {
-        private readonly IContextualServiceLocator locator;
-
-        public SampleEncapsulatingAttribute() { }
-
-        public SampleEncapsulatingAttribute(IContextualServiceLocator locator)
-        {
-            this.locator = locator;
-        }
-
-        public TResponseType Process<TResponseType>(Func<TResponseType> func)
-        {
-            return func();
-        }
-
-        public void Process(Action action)
-        {
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
-    public class SamplePreProcessingAttribute : Attribute, IPreProcessingAttribute
-    {
-        public void Process()
-        {
-
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
-    public class SamplePostProcessingAttribute : Attribute, IPostProcessingAttribute
-    {
-        public void Process()
-        {
         }
     }
 }

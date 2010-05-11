@@ -20,24 +20,24 @@ namespace Siege.ServiceLocation.HttpIntegration
 {
     public class HttpSiegeContainer : SiegeContainer
     {
-        protected HttpSiegeContainer(IServiceLocatorAdapter serviceLocator, IContextStore contextStore, IExecutionStore executionStore, ITypeBuilder typeBuilder) : base(serviceLocator, contextStore, executionStore, typeBuilder)
+        protected HttpSiegeContainer(IServiceLocatorAdapter serviceLocator, IServiceLocatorStore store, ITypeBuilder typeBuilder)
+            : base(serviceLocator, store, typeBuilder)
         {
         }
 
-        public HttpSiegeContainer(IServiceLocatorAdapter serviceLocator, IContextStore contextStore) : this(serviceLocator, contextStore, HttpContextExecutionStore.New(), new DefaultTypeBuilder())
+        public HttpSiegeContainer(IServiceLocatorAdapter serviceLocator, IContextStore store)
+            : this(serviceLocator, new HttpSiegeContainerStore(store), new DefaultTypeBuilder())
         {
         }
 
-        public HttpSiegeContainer(IServiceLocatorAdapter serviceLocator) : this(serviceLocator, new HttpSessionStore())
+        public HttpSiegeContainer(IServiceLocatorAdapter serviceLocator, ITypeBuilder typeBuilder)
+            : this(serviceLocator, new HttpSiegeContainerStore(new HttpSessionStore()), typeBuilder)
         {
         }
-        
-        public HttpSiegeContainer(IServiceLocatorAdapter serviceLocator, IContextStore contextStore, ITypeBuilder typeBuilder) : this(serviceLocator, contextStore, ThreadedExecutionStore.New(), typeBuilder)
-        {   
-        }
 
-        public HttpSiegeContainer(IServiceLocatorAdapter serviceLocator, ITypeBuilder typeBuilder) : this(serviceLocator, new GlobalContextStore(), typeBuilder)
-        {   
+        public HttpSiegeContainer(IServiceLocatorAdapter serviceLocator)
+            : this(serviceLocator, new HttpSiegeContainerStore(new HttpSessionStore()), new DefaultTypeBuilder())
+        {
         }
     }
 }

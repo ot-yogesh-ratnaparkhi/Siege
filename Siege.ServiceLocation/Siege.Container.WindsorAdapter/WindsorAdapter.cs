@@ -27,7 +27,10 @@ namespace Siege.SeviceLocation.WindsorAdapter
     {
         private IKernel kernel;
 
-        public WindsorAdapter() : this(new DefaultKernel()) {}
+        public WindsorAdapter()
+            : this(new DefaultKernel())
+        {
+        }
 
         public WindsorAdapter(IKernel kernel)
         {
@@ -42,7 +45,8 @@ namespace Siege.SeviceLocation.WindsorAdapter
 
         public void Dispose()
         {
-            kernel.Dispose();
+            //bug in windsor lol
+            //kernel.Dispose();
         }
 
         public IEnumerable<object> GetAllInstances(Type serviceType)
@@ -61,9 +65,9 @@ namespace Siege.SeviceLocation.WindsorAdapter
             {
                 return kernel.Resolve(type);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new RegistrationNotFoundException(type);
+                throw new RegistrationNotFoundException(type, ex);
             }
         }
 
@@ -78,12 +82,12 @@ namespace Siege.SeviceLocation.WindsorAdapter
             {
                 return kernel.Resolve(key, type);
             }
-            catch (ComponentNotFoundException)
+            catch (ComponentNotFoundException ex)
             {
-                throw new RegistrationNotFoundException(type, key);
+                throw new RegistrationNotFoundException(type, key, ex);
             }
         }
-        
+
         public Type ConditionalUseCaseBinding
         {
             get { return typeof(ConditionalUseCaseBinding<>); }
@@ -97,6 +101,11 @@ namespace Siege.SeviceLocation.WindsorAdapter
         public Type KeyBasedUseCaseBinding
         {
             get { return typeof(KeyBasedUseCaseBinding<>); }
+        }
+
+        public Type OpenGenericUseCaseBinding
+        {
+            get { return typeof(OpenGenericUseCaseBinding); }
         }
     }
 }

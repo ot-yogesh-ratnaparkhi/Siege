@@ -13,10 +13,12 @@
      limitations under the License.
 */
 
+using Siege.ServiceLocation.Stores;
+
 namespace Siege.ServiceLocation.Rules
 {
     public interface IRuleEvaluationStrategy
     {
-        bool IsValid(IActivationRule rule, IStoreAccessor context);
+        bool IsValid(IActivationRule rule, IServiceLocatorStore context);
     }
 }

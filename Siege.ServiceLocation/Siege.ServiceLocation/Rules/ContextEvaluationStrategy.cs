@@ -13,18 +13,38 @@
      limitations under the License.
 */
 
+using System.Collections.Generic;
+using Siege.ServiceLocation.Resolution;
+using Siege.ServiceLocation.Stores;
+
 namespace Siege.ServiceLocation.Rules
 {
     public class ContextEvaluationStrategy : IRuleEvaluationStrategy
     {
-        public bool IsValid(IActivationRule rule, IStoreAccessor context)
+        public bool IsValid(IActivationRule rule, IServiceLocatorStore context)
         {
-            foreach (object contextItem in context.ContextStore.Items)
+            foreach (object contextItem in MergeContextItems(context))
             {
                 if (rule.Evaluate(contextItem)) return true;
             }
 
             return false;
+        }
+
+        private List<object> MergeContextItems(IServiceLocatorStore context)
+        {
+            List<object> contextItems = new List<object>();
+
+            foreach (IResolutionArgument argument in context.ResolutionStore.Items)
+            {
+                if (argument is ContextArgument) contextItems.Add(((ContextArgument)argument).ContextItem);
+            }
+
+            foreach (object item in context.ContextStore.Items)
+            {
+                contextItems.Add(item);
+            }
+            return contextItems;
         }
     }
 }
