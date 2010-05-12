@@ -17,9 +17,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Siege.ServiceLocation.Exceptions;
+using Siege.ServiceLocation.Resolution;
 using StructureMap;
 using StructureMap.Attributes;
 using StructureMap.Configuration.DSL;
+using System.Linq;
 
 namespace Siege.ServiceLocation.StructureMapAdapter
 {
@@ -72,11 +74,6 @@ namespace Siege.ServiceLocation.StructureMapAdapter
             return container.GetAllInstances<TService>();
         }
 
-        public object GetInstance(Type type)
-        {
-            return container.GetInstance(type);
-        }
-
         public bool HasTypeRegistered(Type type)
         {
             try
@@ -89,23 +86,67 @@ namespace Siege.ServiceLocation.StructureMapAdapter
             }
         }
 
-        public object GetInstance(Type serviceType, string key)
-        {
-            object instance;
+		public object GetInstance(Type type, string key, params IResolutionArgument[] parameters)
+		{
+			object instance;
 
-            try
-            {
-                instance = container.GetInstance(serviceType, key);
-            }
-            catch (StructureMapException ex)
-            {
-                throw new RegistrationNotFoundException(serviceType, key, ex);
-            }
+			try
+			{
+				//ExplicitArgsExpression expression = null;
 
-            if (instance == null) throw new RegistrationNotFoundException(serviceType, key);
+				if (parameters.OfType<ConstructorParameter>().Count() > 0)
+				{
+					throw new Exception("Not currently supported.");
+					//var parameter1 = parameters.OfType<ConstructorParameter>().First();
 
-            return instance;
-        }
+					//expression = container.With(parameter1.Name).EqualTo(parameter1.Value);
+
+					//if (parameters.Count() > 1)
+					//{
+					//    var constructorArgs = parameters.OfType<ConstructorParameter>();
+
+					//    for (int i = 1; i < constructorArgs.Count(); i++)
+					//    {
+					//        expression.With(constructorArgs.ElementAt(i).Name).EqualTo(constructorArgs.ElementAt(i).Value);
+					//    }
+					//}
+				}
+
+				instance = container.GetInstance(type, key);
+			}
+			catch (StructureMapException ex)
+			{
+				throw new RegistrationNotFoundException(type, key, ex);
+			}
+
+			if (instance == null) throw new RegistrationNotFoundException(type, key);
+
+			return instance;
+		}
+
+		public object GetInstance(Type type, params IResolutionArgument[] parameters)
+		{
+			ExplicitArgsExpression expression = null;
+
+			if (parameters.OfType<ConstructorParameter>().Count() > 0)
+			{
+				var parameter1 = parameters.OfType<ConstructorParameter>().First();
+
+				expression = container.With(parameter1.Name).EqualTo(parameter1.Value);
+
+				if (parameters.Count() > 1)
+				{
+					var constructorArgs = parameters.OfType<ConstructorParameter>();
+
+					for (int i = 1; i < constructorArgs.Count(); i++)
+					{
+						expression.With(constructorArgs.ElementAt(i).Name).EqualTo(constructorArgs.ElementAt(i).Value);
+					}
+				}
+			}
+
+			return expression != null ? expression.GetInstance(type) : container.GetInstance(type);
+		}
 
         public Type ConditionalUseCaseBinding
         {

@@ -15,7 +15,7 @@
 
 namespace Siege.ServiceLocation.Resolution
 {
-    internal class ContextArgument : IResolutionArgument
+    public class ContextArgument : IResolutionArgument
     {
         private readonly object contextItem;
 

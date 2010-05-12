@@ -16,6 +16,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.Resolution;
@@ -92,7 +93,8 @@ namespace Siege.ServiceLocation
         }
 
         public object GetInstance(Type type, params IResolutionArgument[] arguments)
-        {
+		{
+			this.store.ExecutionStore = this.store.ExecutionStore.Create(this.store);
             this.store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
 
             IList<IUseCase> selectedCase = this.useCaseStore.Conditional.ResolutionCases.GetUseCasesForType(type);
@@ -108,8 +110,7 @@ namespace Siege.ServiceLocation
             }
             else if (this.useCaseStore.Default.ResolutionCases.Contains(type))
             {
-                IGenericUseCase useCase =
-                    (IGenericUseCase) this.useCaseStore.Default.ResolutionCases.GetUseCaseForType(type);
+                IGenericUseCase useCase = (IGenericUseCase) this.useCaseStore.Default.ResolutionCases.GetUseCaseForType(type);
                 var value = Resolve(useCase, new DefaultResolutionStrategy(serviceLocator, this.store));
 
                 if (value != null) return value;
@@ -117,7 +118,7 @@ namespace Siege.ServiceLocation
 
             if (HasTypeRegistered(type) || type.IsGenericType)
             {
-                return serviceLocator.GetInstance(type);
+				return serviceLocator.GetInstance(type, this.store.ResolutionStore.Items.OfType<ConstructorParameter>().ToArray());
             }
 
             throw new RegistrationNotFoundException(type);
@@ -133,16 +134,12 @@ namespace Siege.ServiceLocation
             return (TService) GetInstance(typeof (TService), key, arguments);
         }
 
-        public object GetService(Type serviceType, params IResolutionArgument[] arguments)
-        {
-            return GetInstance(serviceType, arguments);
-        }
-
         public object GetInstance(Type type, string key, params IResolutionArgument[] arguments)
         {
-            this.store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
-            this.store.ExecutionStore = this.store.ExecutionStore.Create();
-            return serviceLocator.GetInstance(type, key);
+			this.store.ExecutionStore = this.store.ExecutionStore.Create(this.store);
+			this.store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
+
+			return serviceLocator.GetInstance(type, key, this.store.ResolutionStore.Items.OfType<ConstructorParameter>().ToArray());
         }
 
         public object GetService(Type serviceType)
@@ -157,7 +154,7 @@ namespace Siege.ServiceLocation
 
         public IEnumerable<object> GetAllInstances(Type serviceType)
         {
-            this.store.ExecutionStore = this.store.ExecutionStore.Create();
+            this.store.ExecutionStore = this.store.ExecutionStore.Create(this.store);
             return serviceLocator.GetAllInstances(serviceType);
         }
 
@@ -233,18 +230,14 @@ namespace Siege.ServiceLocation
             if (value != null)
             {
                 this.store.ExecutionStore.Decrement();
-                this.store.ExecutionStore = this.store.ExecutionStore.Create();
+                this.store.ExecutionStore = this.store.ExecutionStore.Create(this.store);
 
-                ExecutePostConditions(this.useCaseStore.Default, useCase,
-                                      actionUseCase => value = actionUseCase.Invoke(value));
+                ExecutePostConditions(this.useCaseStore.Default, useCase, actionUseCase => value = actionUseCase.Invoke(value));
                 ExecutePostConditions(this.useCaseStore.Conditional, useCase, actionUseCase =>
-                                                                                  {
-                                                                                      if (
-                                                                                          actionUseCase.IsValid(
-                                                                                              this.store))
-                                                                                          value =
-                                                                                              actionUseCase.Invoke(value);
-                                                                                  });
+				{
+					if (actionUseCase.IsValid(this.store)) 
+						value = actionUseCase.Invoke(value);
+				});
             }
 
             return value;

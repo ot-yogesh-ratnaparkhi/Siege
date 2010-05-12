@@ -22,8 +22,9 @@ namespace Siege.ServiceLocation.HttpIntegration
 {
     public class HttpContextExecutionStore : IExecutionStore
     {
-        protected HttpContextExecutionStore()
-        {
+		protected HttpContextExecutionStore(IServiceLocatorStore store)
+		{
+			store.ResolutionStore = new HttpResolutionStore();
             HttpContext.Current.Items["executionCount"] = 0;
         }
         
@@ -37,16 +38,16 @@ namespace Siege.ServiceLocation.HttpIntegration
             }
         }
 
-        public IExecutionStore Create()
+		public IExecutionStore Create(IServiceLocatorStore store)
         {
-            if(Count == 0) return new HttpContextExecutionStore();
+            if(Count == 0) return new HttpContextExecutionStore(store);
 
             return this;
         }
 
-        public static IExecutionStore New()
+		public static IExecutionStore New(IServiceLocatorStore store)
         {
-            return new HttpContextExecutionStore();
+            return new HttpContextExecutionStore(store);
         }
 
         public List<Type> RequestedTypes

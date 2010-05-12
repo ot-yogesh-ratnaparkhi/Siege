@@ -20,7 +20,7 @@ namespace Siege.ServiceLocation.Stores
     public interface IServiceLocatorStore : IDisposable
     {
         IContextStore ContextStore { get; }
-        IResolutionStore ResolutionStore { get; }
+		IResolutionStore ResolutionStore { get; set; }
         IExecutionStore ExecutionStore { get; set; }
     }
 }

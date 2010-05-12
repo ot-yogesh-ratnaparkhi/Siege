@@ -20,7 +20,7 @@ namespace Siege.ServiceLocation.Stores
 {
     public interface IExecutionStore
     {
-        IExecutionStore Create();
+		IExecutionStore Create(IServiceLocatorStore store);
         List<Type> RequestedTypes{ get; }
         void AddRequestedType(Type type);
         void Increment();

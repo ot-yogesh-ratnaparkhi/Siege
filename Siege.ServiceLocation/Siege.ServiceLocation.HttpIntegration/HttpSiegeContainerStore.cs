@@ -27,7 +27,7 @@ namespace Siege.ServiceLocation.HttpIntegration
         {
             this.contextStore = store;
             this.resolutionStore = new HttpResolutionStore();
-            this.executionStore = HttpContextExecutionStore.New();
+            this.executionStore = HttpContextExecutionStore.New(this);
         }
 
         public IContextStore ContextStore
@@ -38,6 +38,7 @@ namespace Siege.ServiceLocation.HttpIntegration
         public IResolutionStore ResolutionStore
         {
             get { return this.resolutionStore; }
+			set { this.resolutionStore = value; }
         }
 
         public IExecutionStore ExecutionStore
@@ -50,7 +51,7 @@ namespace Siege.ServiceLocation.HttpIntegration
         {
             this.contextStore.Clear();
             this.resolutionStore.Clear();
-            this.executionStore = HttpContextExecutionStore.New();
+            this.executionStore = HttpContextExecutionStore.New(this);
         }
     }
 }

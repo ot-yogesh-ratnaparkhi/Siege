@@ -15,8 +15,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ninject;
+using Ninject.Parameters;
 using Siege.ServiceLocation.Exceptions;
+using Siege.ServiceLocation.Resolution;
 
 namespace Siege.ServiceLocation.NinjectAdapter
 {
@@ -74,23 +77,37 @@ namespace Siege.ServiceLocation.NinjectAdapter
             return kernel.GetAll<TService>();
         }
 
-        public object GetInstance(Type type)
-        {
-            return kernel.Get(type);
-        }
+		public object GetInstance(Type type, params IResolutionArgument[] parameters)
+		{
+			List<ConstructorArgument> args = new List<ConstructorArgument>();
 
-        public bool HasTypeRegistered(Type type)
-        {
-            return kernel.TryGet(type) != null;
-        }
+			foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+			{
+				args.Add(new ConstructorArgument(parameter.Name, parameter.Value));
+			}
 
-        public object GetInstance(Type serviceType, string key)
-        {
-            var instance = kernel.Get(serviceType, key);
+			return kernel.Get(type, args.ToArray());
+		}
 
-            if (instance == null) throw new RegistrationNotFoundException(serviceType, key);
+		public bool HasTypeRegistered(Type type)
+		{
+			return kernel.TryGet(type) != null;
+		}
 
-            return instance;
-        }
+		public object GetInstance(Type serviceType, string key, params IResolutionArgument[] parameters)
+		{
+			List<ConstructorArgument> args = new List<ConstructorArgument>();
+
+			foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+			{
+				args.Add(new ConstructorArgument(parameter.Name, parameter.Value));
+			}
+
+			var instance = kernel.Get(serviceType, key, args.ToArray());
+
+			if (instance == null) throw new RegistrationNotFoundException(serviceType, key);
+
+			return instance;
+		}
     }
 }

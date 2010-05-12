@@ -51,25 +51,26 @@ namespace Siege.ServiceLocation.Stores
             Index--;
         }
 
-        private ThreadedExecutionStore()
+		private ThreadedExecutionStore(IServiceLocatorStore store)
         {
             RequestedTypes = new List<Type>();
-            Index = 0;
+			Index = 0;
+			store.ResolutionStore = new ThreadedResolutionStore();
         }
 
-        public IExecutionStore Create()
+		public IExecutionStore Create(IServiceLocatorStore store)
         {
             if (Index == 0)
             {
-                return new ThreadedExecutionStore();
+                return new ThreadedExecutionStore(store);
             }
 
             return this;
         }
 
-        public static IExecutionStore New()
+		public static IExecutionStore New(IServiceLocatorStore store)
         {
-            return new ThreadedExecutionStore();
+            return new ThreadedExecutionStore(store);
         }
     }
 }

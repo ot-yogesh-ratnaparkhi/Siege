@@ -15,7 +15,9 @@
 
 namespace Siege.ServiceLocation.Resolution
 {
-    public class ConstructorArgument : IResolutionArgument
-    {
-    }
+	public class ConstructorParameter : IResolutionArgument
+	{
+		public string Name { get; set; }
+		public object Value { get; set; }
+	}
 }

@@ -20,6 +20,7 @@ using System.Linq;
 using Autofac;
 using Autofac.Builder;
 using Siege.ServiceLocation.Exceptions;
+using Siege.ServiceLocation.Resolution;
 
 namespace Siege.ServiceLocation.AutofacAdapter
 {
@@ -41,11 +42,18 @@ namespace Siege.ServiceLocation.AutofacAdapter
             container.Dispose();
         }
 
-        public object GetInstance(Type type, string key)
+		public object GetInstance(Type type, string key, params IResolutionArgument[] parameters)
         {
             try
-            {
-                return container.Resolve(key);
+			{
+				List<NamedParameter> args = new List<NamedParameter>();
+
+				foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+				{
+					args.Add(new NamedParameter(parameter.Name, parameter.Value));
+				}
+				
+				return container.Resolve(key, args.ToArray());
             }
             catch (ComponentNotRegisteredException)
             {
@@ -53,9 +61,16 @@ namespace Siege.ServiceLocation.AutofacAdapter
             }
         }
 
-        public object GetInstance(Type type)
-        {
-            return container.Resolve(type);
+		public object GetInstance(Type type, params IResolutionArgument[] parameters)
+		{
+			List<NamedParameter> args = new List<NamedParameter>();
+
+			foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+			{
+				args.Add(new NamedParameter(parameter.Name, parameter.Value));
+			}
+
+			return container.Resolve(type, args.ToArray());
         }
 
         public bool HasTypeRegistered(Type type)

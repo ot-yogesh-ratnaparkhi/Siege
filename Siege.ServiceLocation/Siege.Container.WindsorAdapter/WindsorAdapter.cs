@@ -15,11 +15,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Castle.Facilities.FactorySupport;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Siege.ServiceLocation;
 using Siege.ServiceLocation.Exceptions;
+using Siege.ServiceLocation.Resolution;
 
 namespace Siege.SeviceLocation.WindsorAdapter
 {
@@ -35,7 +37,10 @@ namespace Siege.SeviceLocation.WindsorAdapter
         public WindsorAdapter(IKernel kernel)
         {
             this.kernel = kernel;
-            this.kernel.AddFacility<FactorySupportFacility>();
+            if(this.kernel.GetFacilities().OfType<FactorySupportFacility>().Count() == 0)
+            {
+            	this.kernel.AddFacility<FactorySupportFacility>();
+            }
         }
 
         public void RegisterBinding(Type baseBinding, Type targetBinding)
@@ -59,33 +64,47 @@ namespace Siege.SeviceLocation.WindsorAdapter
             return kernel.ResolveAll<TService>();
         }
 
-        public object GetInstance(Type type)
-        {
-            try
-            {
-                return kernel.Resolve(type);
-            }
-            catch (Exception ex)
-            {
-                throw new RegistrationNotFoundException(type, ex);
-            }
-        }
+		public object GetInstance(Type type, string key, params IResolutionArgument[] parameters)
+		{
+			try
+			{
+				Dictionary<string, object> args = new Dictionary<string, object>();
+
+				foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+				{
+					args.Add(parameter.Name, parameter.Value);
+				}
+
+				return kernel.Resolve(key, type, args);
+			}
+			catch (ComponentNotFoundException ex)
+			{
+				throw new RegistrationNotFoundException(type, key, ex);
+			}
+		}
+
+		public object GetInstance(Type type, params IResolutionArgument[] parameters)
+		{
+			try
+			{
+				Dictionary<string, object> args = new Dictionary<string, object>();
+
+				foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+				{
+					args.Add(parameter.Name, parameter.Value);
+				}
+
+				return kernel.Resolve(type, args);
+			}
+			catch (Exception ex)
+			{
+				throw new RegistrationNotFoundException(type, ex);
+			}
+		}
 
         public bool HasTypeRegistered(Type type)
         {
             return kernel.HasComponent(type);
-        }
-
-        public object GetInstance(Type type, string key)
-        {
-            try
-            {
-                return kernel.Resolve(key, type);
-            }
-            catch (ComponentNotFoundException ex)
-            {
-                throw new RegistrationNotFoundException(type, key, ex);
-            }
         }
 
         public Type ConditionalUseCaseBinding

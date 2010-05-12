@@ -13,15 +13,27 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.Resolution;
-
-namespace Siege.ServiceLocation
+namespace Siege.ServiceLocation.UnitTests.TestClasses
 {
-    public interface IInstanceResolver
+	public class DependsOnMultipleInterface : ITestInterface
 	{
-		object GetInstance(Type type, string key, params IResolutionArgument[] parameters);
-		object GetInstance(Type type, params IResolutionArgument[] parameters);
-        bool HasTypeRegistered(Type type);
-    }
+		private readonly IConstructorArgument argument1;
+		private readonly IConstructorArgument argument2;
+
+		public DependsOnMultipleInterface(IConstructorArgument argument1, IConstructorArgument argument2)
+		{
+			this.argument1 = argument1;
+			this.argument2 = argument2;
+		}
+
+		public IConstructorArgument Argument2
+		{
+			get { return argument2; }
+		}
+
+		public IConstructorArgument Argument
+		{
+			get { return argument1; }
+		}
+	}
 }

@@ -58,7 +58,7 @@ namespace Siege.ServiceLocation.UseCases
 
             public object Resolve(IInstanceResolver locator, IServiceLocatorStore context)
             {
-                return locator.GetInstance(boundType);
+				return locator.GetInstance(boundType, context.ResolutionStore.Items.ToArray());
             }
         }
     }

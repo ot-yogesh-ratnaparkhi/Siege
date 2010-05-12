@@ -29,7 +29,7 @@ namespace Siege.ServiceLocation.Stores
         {
             this.store = store;
             this.resolutionStore = new ThreadedResolutionStore();
-            this.ExecutionStore = ThreadedExecutionStore.New();
+            this.ExecutionStore = ThreadedExecutionStore.New(this);
         }
 
         public IContextStore ContextStore
@@ -40,6 +40,7 @@ namespace Siege.ServiceLocation.Stores
         public IResolutionStore ResolutionStore
         {
             get { return this.resolutionStore; }
+			set { this.resolutionStore = value; }
         }
 
         public IExecutionStore ExecutionStore { get; set; }

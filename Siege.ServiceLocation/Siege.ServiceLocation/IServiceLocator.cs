@@ -23,11 +23,9 @@ namespace Siege.ServiceLocation
     public interface IServiceLocator : Microsoft.Practices.ServiceLocation.IServiceLocator, IDisposable, IInstanceResolver, IBindingAdapter, IFactoryFetcher
     {
         IServiceLocator Register(IUseCase useCase);
-        TService GetInstance<TService>(Type type, params IResolutionArgument[] arguments);
-        object GetInstance(Type type, params IResolutionArgument[] arguments);
-        object GetInstance(Type type, string key, params IResolutionArgument[] arguments);
         new object GetInstance(Type type);
-        new object GetInstance(Type type, string key);
+		new object GetInstance(Type type, string key);
+		TService GetInstance<TService>(Type type, params IResolutionArgument[] arguments);
         TService GetInstance<TService>(string key, params IResolutionArgument[] arguments);
         TService GetInstance<TService>(params IResolutionArgument[] arguments);
     }
