@@ -203,10 +203,15 @@ namespace Siege.DynamicTypeGeneration
             actions.Add(new LoadVariableFunctionAction(() => this, variable.LocalIndex, method));
         }
 
-        public ILocalIndexer Call(Func<MethodInfo> method, GeneratedVariable variable)
+        public ILocalIndexer Call(Func<MethodInfo> method, params ILocalIndexer[] variables)
         {
             var action = new CallAction(bundle, method, actions, this);
-            action.WithArgument(variable);
+            
+            foreach(ILocalIndexer variable in variables)
+            {
+                action.WithArgument(variable);
+            }
+
             actions.Add(action);
 
             return new GeneratedVariable(method, action.LocalIndex, actions, this);
@@ -220,6 +225,13 @@ namespace Siege.DynamicTypeGeneration
         public int Instantiate(Func<ConstructorBuilder> type)
         {
             actions.Add(new InstantiationAction(bundle, type));
+
+            return LocalCount - 1;
+        }
+
+        public int InstantiateArray(Type type, int size)
+        {
+            actions.Add(new InstantiateArrayAction(bundle, type, size));
 
             return LocalCount - 1;
         }

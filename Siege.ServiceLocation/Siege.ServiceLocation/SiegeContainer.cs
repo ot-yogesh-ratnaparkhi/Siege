@@ -110,7 +110,7 @@ namespace Siege.ServiceLocation
             }
             else if (this.useCaseStore.Default.ResolutionCases.Contains(type))
             {
-                IGenericUseCase useCase = (IGenericUseCase) this.useCaseStore.Default.ResolutionCases.GetUseCaseForType(type);
+                var useCase = (IGenericUseCase) this.useCaseStore.Default.ResolutionCases.GetUseCaseForType(type);
                 var value = Resolve(useCase, new DefaultResolutionStrategy(serviceLocator, this.store));
 
                 if (value != null) return value;
@@ -187,16 +187,9 @@ namespace Siege.ServiceLocation
                 this.useCaseStore.Conditional.ResolutionCases.Add(useCase.GetBaseBindingType(), useCase);
             }
 
-            Type bindingType;
-
-            if (useCase.GetUseCaseBindingType().IsGenericType)
-            {
-                bindingType = useCase.GetUseCaseBindingType().MakeGenericType(useCase.GetBaseBindingType());
-            }
-            else
-            {
-                bindingType = useCase.GetUseCaseBindingType();
-            }
+            Type bindingType = useCase.GetUseCaseBindingType().IsGenericType ? 
+                useCase.GetUseCaseBindingType().MakeGenericType(useCase.GetBaseBindingType()) 
+                : useCase.GetUseCaseBindingType();
 
             if (useCase is IInstanceUseCase)
             {
@@ -243,13 +236,11 @@ namespace Siege.ServiceLocation
             return value;
         }
 
-        private void ExecutePostConditions(UseCaseGroup useCaseGroup, IGenericUseCase useCase,
+        private void ExecutePostConditions(UseCaseGroup useCaseGroup, IUseCase useCase,
                                            Action<IActionUseCase> action)
         {
-            IList<IUseCase> actions = useCaseGroup.PostResolutionCases.GetUseCasesForType(useCase.GetBoundType());
-
-            if (actions == null)
-                actions = useCaseGroup.PostResolutionCases.GetUseCasesForType(useCase.GetBaseBindingType());
+            IList<IUseCase> actions = useCaseGroup.PostResolutionCases.GetUseCasesForType(useCase.GetBoundType()) ??
+                                      useCaseGroup.PostResolutionCases.GetUseCasesForType(useCase.GetBaseBindingType());
 
             if (actions != null)
             {
@@ -268,7 +259,7 @@ namespace Siege.ServiceLocation
                 {
                     if (!factories.ContainsKey(typeof (TBaseService)))
                     {
-                        Factory<TBaseService> factory = new Factory<TBaseService>(this);
+                        var factory = new Factory<TBaseService>(this);
                         Register(Given<Factory<TBaseService>>.Then("Factory" + typeof (TBaseService), factory));
 
                         factories.Add(typeof (TBaseService), factory);

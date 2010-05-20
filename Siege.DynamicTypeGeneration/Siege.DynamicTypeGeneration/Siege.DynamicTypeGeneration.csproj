@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{D9F74E30-B6F0-481D-A7AA-C7D30C0EA43C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -55,6 +55,7 @@
     <Compile Include="Actions\AddMethodAction.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Actions\SetValueAtIndexAction.cs" />
     <Compile Include="Actions\CallAction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -80,6 +81,7 @@
     <Compile Include="Actions\FieldLoadAction.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Actions\InstantiateArrayAction.cs" />
     <Compile Include="Actions\InstantiationAction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -102,6 +104,7 @@
     <Compile Include="Actions\ReturnAction.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Actions\SetValueOnObjectAction.cs" />
     <Compile Include="Actions\VariableAssignmentAction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -118,6 +121,7 @@
     <Compile Include="DelegateBodyContext.cs" />
     <Compile Include="DelegateGenerator.cs" />
     <Compile Include="ExpressionParameter.cs" />
+    <Compile Include="GeneratedArray.cs" />
     <Compile Include="GeneratedDelegate.cs" />
     <Compile Include="GeneratedField.cs" />
     <Compile Include="GeneratedMethod.cs" />
@@ -127,6 +131,7 @@
     <Compile Include="ILocalIndexer.cs" />
     <Compile Include="MethodBodyContext.cs" />
     <Compile Include="MethodGenerationContext.cs" />
+    <Compile Include="MethodParameter.cs" />
     <Compile Include="NestedTypeGenerationContext.cs" />
     <Compile Include="OverrideMethodContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

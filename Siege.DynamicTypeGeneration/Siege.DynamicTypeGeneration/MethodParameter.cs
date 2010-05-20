@@ -13,23 +13,20 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.TypeBuilders;
-
-namespace Siege.ServiceLocation.AOP
+namespace Siege.DynamicTypeGeneration
 {
-    public class SiegeProxyTypeBuilder : ITypeBuilder
+    public class MethodParameter
     {
-        private SiegeProxy proxy;
-        
-        public SiegeProxyTypeBuilder()
+        private readonly int index;
+
+        public MethodParameter(int index)
         {
-            proxy = new SiegeProxy().WithServiceLocator();
+            this.index = index;
         }
 
-        public Type Build(Type typeToBuild)
+        public int Index
         {
-            return proxy.Create(typeToBuild);
+            get { return index; }
         }
     }
 }

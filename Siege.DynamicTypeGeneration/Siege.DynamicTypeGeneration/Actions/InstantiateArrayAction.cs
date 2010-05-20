@@ -14,22 +14,29 @@
 */
 
 using System;
-using Siege.ServiceLocation.TypeBuilders;
+using System.Reflection.Emit;
 
-namespace Siege.ServiceLocation.AOP
+namespace Siege.DynamicTypeGeneration.Actions
 {
-    public class SiegeProxyTypeBuilder : ITypeBuilder
+    public class InstantiateArrayAction : ITypeGenerationAction
     {
-        private SiegeProxy proxy;
-        
-        public SiegeProxyTypeBuilder()
+        private readonly Func<MethodBuilderBundle> bundle;
+        private readonly int size;
+        private readonly Type type;
+
+        public InstantiateArrayAction(Func<MethodBuilderBundle> bundle, Type type, int size)
         {
-            proxy = new SiegeProxy().WithServiceLocator();
+            this.bundle = bundle;
+            this.type = type;
+            this.size = size;
         }
 
-        public Type Build(Type typeToBuild)
+        public void Execute()
         {
-            return proxy.Create(typeToBuild);
+            ILGenerator generator = bundle().MethodBuilder.GetILGenerator();
+
+            generator.Emit(OpCodes.Ldc_I4, size);
+            generator.Emit(OpCodes.Newarr, type);
         }
     }
 }

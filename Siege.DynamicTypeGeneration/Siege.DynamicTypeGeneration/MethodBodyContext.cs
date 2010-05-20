@@ -42,6 +42,11 @@ namespace Siege.DynamicTypeGeneration
             return Instantiate(typeof (TType));
         }
 
+        public Func<ILocalIndexer> InstantiateArray<TType>(int size)
+        {
+            return () => new LocalIndexer(GeneratedMethod.InstantiateArray(typeof (TType), size));
+        }
+
         public Func<ILocalIndexer> Instantiate(Type type)
         {
             return Instantiate(type, new Type[0]);
@@ -67,6 +72,13 @@ namespace Siege.DynamicTypeGeneration
             GeneratedMethod.AddLocal(variableType);
 
             return new GeneratedVariable(variableType, GeneratedMethod.LocalCount - 1, TypeGenerationContext.TypeGenerationActions, GeneratedMethod);
+        }
+
+        public GeneratedArray CreateArray(Type variableType)
+        {
+            GeneratedMethod.AddLocal(variableType.MakeArrayType());
+            
+            return new GeneratedArray(GeneratedMethod.LocalCount - 1, TypeGenerationContext.TypeGenerationActions, GeneratedMethod);
         }
 
         public GeneratedVariable CreateVariable(Func<BuilderBundle> variableType)

@@ -331,6 +331,118 @@ namespace Siege.DynamicTypeGeneration.Tests
             var result = generatedType.GetMethod("DoSomething").Invoke(obj, new[] { "" });
             Assert.AreEqual("yay", result);
         }
+
+        [Test]
+        public void Should_Pass_Method_Arguments()
+        {
+            TypeGenerator generator = new TypeGenerator();
+            Type generatedType = generator.CreateType(type =>
+            {
+                type.Named("TestType");
+                type.InheritFrom<BaseTypeWithMultipleArgs>();
+                type.OverrideMethod<BaseTypeWithMultipleArgs>(baseType => baseType.DoSomething(null, null), method =>
+                {
+                    method.WithBody(body =>
+                    {
+                        MethodInfo target = null;
+
+                        var del = body.CreateVariable(typeof(DelegateWithArguments));
+                        var args = body.CreateArray(typeof (MethodArgument));
+
+                        args.AssignFrom(body.InstantiateArray<MethodArgument>(2));
+                        
+                        var arg1 = body.CreateVariable(typeof(MethodArgument));
+                        arg1.AssignFrom(body.Instantiate<MethodArgument>());
+
+                        arg1.SetValue<MethodArgument, int>(x => x.Index, 0);
+                        arg1.SetValue<MethodArgument, string>(x => x.Name, method.Method.GetParameters()[0].Name);
+                        arg1.SetValue<MethodArgument, object>(x => x.Value, new MethodParameter(0));
+
+                        args.SetValueAtIndex(arg1, 0);
+
+                        var arg2 = body.CreateVariable(typeof(MethodArgument));
+                        arg2.AssignFrom(body.Instantiate<MethodArgument>());
+
+                        arg2.SetValue<MethodArgument, int>(x => x.Index, 1);
+                        arg2.SetValue<MethodArgument, string>(x => x.Name, method.Method.GetParameters()[1].Name);
+                        arg2.SetValue<MethodArgument, object>(x => x.Value, new MethodParameter(1));
+
+                        args.SetValueAtIndex(arg2, 1);
+
+                        del.AssignFrom(body.Instantiate<DelegateWithArguments>());
+                        var variable = body.CreateLambda(lambda =>
+                        {
+                            target = lambda.Target<BaseType>(p => p.DoSomething(null));
+                        });
+
+                        var func = variable.CreateFunc(target);
+                        var returnValue = body.CreateVariable(method.Method.ReturnType);
+                        returnValue.AssignFrom(() => del.Invoke<DelegateWithArguments>(d => d.Process(null, null), func, args));
+
+                        body.Return(returnValue);
+                    });
+                });
+            });
+
+            generator.Save();
+
+            var obj = Activator.CreateInstance(generatedType);
+            var result = generatedType.GetMethod("DoSomething").Invoke(obj, new object[] { "hurr", new SampleClass() });
+            Assert.AreEqual("yay: hurr, val1, sample", result);
+        }
+    }
+
+    public class MethodArgument
+    {
+        public string Name { get; set; }
+        public int Index { get; set; }
+        public object Value { get; set; }
+    }
+
+    public class SampleClass
+    {
+        
+    }
+
+    public class Simulator
+    {
+        public string Simulate(string stringArg, SampleClass sample)
+        {
+            var del = new DelegateWithArguments();
+            var args = new MethodArgument[2];
+            
+            var arg = new MethodArgument();
+            
+            arg.Index = 0;
+            arg.Name = "stringArg";
+            arg.Value = stringArg;
+            args[0] = arg;
+
+            var arg1 = new MethodArgument();
+
+            arg1.Index = 1;
+            arg1.Name = "sample";
+            arg1.Value = sample;
+            
+            args[1] = arg1;
+
+            return del.Process(() => "lol", args);
+        }
+    }
+
+    public class DelegateWithArguments
+    {
+        public string Process(Func<string> func, MethodArgument[] arguments)
+        {
+            var val = "yay: " + func();
+
+            foreach(MethodArgument arg in arguments)
+            {
+                val += ", " + arg.Name;
+            }
+
+            return val;
+        }
     }
 
     public class Delegate1
@@ -352,6 +464,14 @@ namespace Siege.DynamicTypeGeneration.Tests
     public class BaseType
     {
         public virtual string DoSomething(string val1)
+        {
+            return val1;
+        }
+    }
+
+    public class BaseTypeWithMultipleArgs
+    {
+        public virtual string DoSomething(string val1, SampleClass sample)
         {
             return val1;
         }

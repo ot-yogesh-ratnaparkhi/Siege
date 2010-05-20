@@ -91,7 +91,7 @@ namespace Siege.ServiceLocation.AOP
             return generatedType;
         }
 
-        private void GeneratePreProcessors(MethodBodyContext body, MethodInfo methodInfo, GeneratedVariable serviceLocator)
+        private void GeneratePreProcessors(MethodBodyContext body, ICustomAttributeProvider methodInfo, GeneratedVariable serviceLocator)
         {
             foreach (Attribute attribute in methodInfo.GetCustomAttributes(typeof(IPreProcessingAttribute), true))
             {
@@ -109,7 +109,7 @@ namespace Siege.ServiceLocation.AOP
             }
         }
 
-        private void GeneratePostProcessors(MethodBodyContext body, MethodInfo methodInfo, GeneratedVariable serviceLocator)
+        private void GeneratePostProcessors(MethodBodyContext body, ICustomAttributeProvider methodInfo, GeneratedVariable serviceLocator)
         {
             foreach (Attribute attribute in methodInfo.GetCustomAttributes(typeof(IPostProcessingAttribute), true))
             {
@@ -158,10 +158,7 @@ namespace Siege.ServiceLocation.AOP
                 encapsulating.AssignFrom(body.Instantiate(attributes[0].GetType()));
             }
             
-            var lambdaVariable = body.CreateLambda(lambda =>
-            {
-                lambda.Target(methodInfo);
-            });
+            var lambdaVariable = body.CreateLambda(lambda => lambda.Target(methodInfo));
 
             var func = lambdaVariable.CreateFunc(methodInfo);
             

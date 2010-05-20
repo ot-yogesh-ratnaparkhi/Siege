@@ -113,6 +113,11 @@ namespace Siege.ServiceLocation.AOP.Tests
             this.locator = locator;
         }
 
+        public IContextualServiceLocator Locator
+        {
+            get { return locator; }
+        }
+
         public TResponseType Process<TResponseType>(Func<TResponseType> func)
         {
             return func();

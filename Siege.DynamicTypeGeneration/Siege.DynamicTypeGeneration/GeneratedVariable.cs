@@ -91,12 +91,6 @@ namespace Siege.DynamicTypeGeneration
             actions.Add(new VariableAssignmentAction(() => method.MethodBuilder(), localIndex));
         }
 
-        public void Pop(Func<ILocalIndexer> item)
-        {
-            item();
-            actions.Add(new PopAction(method));
-        }
-
         public int LocalIndex
         {
             get { return localIndex; }
@@ -108,7 +102,7 @@ namespace Siege.DynamicTypeGeneration
             return Invoke(methodCall.Method);
         }
 
-        public ILocalIndexer Invoke<TType>(Expression<Action<TType>> expression, GeneratedVariable variable)
+        public ILocalIndexer Invoke<TType>(Expression<Action<TType>> expression, params ILocalIndexer[] variable)
         {
             MethodCallExpression methodCall = expression.Body as MethodCallExpression;
             
@@ -130,10 +124,10 @@ namespace Siege.DynamicTypeGeneration
             return method.Call(() => methodInfo, () => parameters);
         }
 
-        public ILocalIndexer Invoke(MethodInfo methodInfo, GeneratedVariable variable)
+        public ILocalIndexer Invoke(MethodInfo methodInfo, params ILocalIndexer[] variables)
         {
             actions.Add(new VariableLoadAction(method, this.LocalIndex));
-            return method.Call(() => methodInfo, variable);
+            return method.Call(() => methodInfo, variables);
         }
 
         public void AssignFrom(GeneratedField field)
@@ -144,8 +138,17 @@ namespace Siege.DynamicTypeGeneration
 
         public MethodInfo GetMethod<TType>(Expression<Action<TType>> expression)
         {
-            MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+            var methodCall = expression.Body as MethodCallExpression;
             return methodCall.Method;
+        }
+
+        public void SetValue<TType, TValue>(Expression<Func<TType, TValue>> expression, TValue value)
+        {
+            var property = expression.Body as MemberExpression;
+            var info = (PropertyInfo) property.Member;
+            var setMethod = info.GetSetMethod();
+
+            actions.Add(new SetValueOnObjectAction(method, this, value, setMethod));
         }
     }
 }

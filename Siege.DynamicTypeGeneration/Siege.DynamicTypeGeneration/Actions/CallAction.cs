@@ -31,7 +31,7 @@ namespace Siege.DynamicTypeGeneration.Actions
         private readonly Func<List<GeneratedField>> fields;
         protected int localIndex;
         private readonly Func<List<IGeneratedParameter>> parameters;
-        private GeneratedVariable variable;
+        private List<ILocalIndexer> variables = new List<ILocalIndexer>();
 
         public CallAction(Func<MethodBuilderBundle> bundle, Func<MethodInfo> method, IList<ITypeGenerationAction> actions, GeneratedMethod generatedMethod)
         {
@@ -77,9 +77,9 @@ namespace Siege.DynamicTypeGeneration.Actions
             this.fields = fields;
         }
 
-        public void WithArgument(GeneratedVariable variable)
+        public void WithArgument(ILocalIndexer variable)
         {
-            this.variable = variable;
+            this.variables.Add(variable);
         }
 
         public virtual void Execute()
@@ -103,7 +103,7 @@ namespace Siege.DynamicTypeGeneration.Actions
                 }
             }
 
-            if (variable != null)
+            foreach(ILocalIndexer variable in variables)
             {
                 methodGenerator.Emit(OpCodes.Ldloc, variable.LocalIndex);
             }
