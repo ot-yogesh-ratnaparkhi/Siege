@@ -13,10 +13,31 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocation.AOP
+namespace Siege.DynamicTypeGeneration.Tests
 {
-    public interface IPostProcessingAttribute : IAopAttribute
-    {
-        void Process();
-    }
+	public class Simulator
+	{
+		public string Simulate(string stringArg, SampleClass sample)
+		{
+			var del = new DelegateWithArguments();
+			var args = new MethodArgument[2];
+            
+			var arg = new MethodArgument();
+            
+			arg.Index = 0;
+			arg.Name = "stringArg";
+			arg.Value = stringArg;
+			args[0] = arg;
+
+			var arg1 = new MethodArgument();
+
+			arg1.Index = 1;
+			arg1.Name = "sample";
+			arg1.Value = sample;
+            
+			args[1] = arg1;
+
+			return del.Process(() => "lol", args);
+		}
+	}
 }

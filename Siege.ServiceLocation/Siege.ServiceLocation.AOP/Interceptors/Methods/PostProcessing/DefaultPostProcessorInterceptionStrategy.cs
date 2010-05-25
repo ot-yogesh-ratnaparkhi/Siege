@@ -13,23 +13,16 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.TypeBuilders;
+using Siege.DynamicTypeGeneration;
+using Siege.ServiceLocation.AOP.Attributes;
 
-namespace Siege.ServiceLocation.AOP
+namespace Siege.ServiceLocation.AOP.Interceptors.Methods.PostProcessing
 {
-    public class SiegeProxyTypeBuilder : ITypeBuilder
-    {
-        private SiegeProxy proxy;
-        
-        public SiegeProxyTypeBuilder(IServiceLocator serviceLocator)
-        {
-			proxy = new SiegeProxy(serviceLocator).WithServiceLocator();
-        }
-
-        public Type Build(Type typeToBuild)
-        {
-            return proxy.Create(typeToBuild);
-        }
-    }
+	public class DefaultPostProcessorInterceptionStrategy : IPostProcessorInterceptionStrategy
+	{
+		public void Intercept(GeneratedVariable postProcessor)
+		{
+			postProcessor.Invoke<IDefaultPostProcessingAttribute>(processor => processor.Process());
+		}
+	}
 }

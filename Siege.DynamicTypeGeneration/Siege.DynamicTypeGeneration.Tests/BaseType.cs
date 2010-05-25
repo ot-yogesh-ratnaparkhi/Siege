@@ -13,13 +13,13 @@
      limitations under the License.
 */
 
-using System;
-
-namespace Siege.ServiceLocation.AOP
+namespace Siege.DynamicTypeGeneration.Tests
 {
-    public interface IProcessEncapsulatingAttribute : IAopAttribute
-    {
-        TResponseType Process<TResponseType>(Func<TResponseType> func);
-        void Process(Action action);
-    }
+	public class BaseType
+	{
+		public virtual string DoSomething(string val1)
+		{
+			return val1;
+		}
+	}
 }

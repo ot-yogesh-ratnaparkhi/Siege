@@ -1,6 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
-using Siege.ServiceLocation.AOP;
+using Siege.ServiceLocation.AOP.Attributes;
 using Siege.ServiceLocation.Syntax;
 
 namespace Siege.ServiceLocation.UnitTests
@@ -58,7 +58,7 @@ namespace Siege.ServiceLocation.UnitTests
     }
 
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
-    public class SamplePreProcessingAttribute : Attribute, IPreProcessingAttribute
+    public class SamplePreProcessingAttribute : Attribute, IDefaultPreProcessingAttribute
     {
         public void Process()
         {

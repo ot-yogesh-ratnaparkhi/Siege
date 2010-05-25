@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,23 +13,19 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.TypeBuilders;
-
-namespace Siege.ServiceLocation.AOP
+namespace Siege.ServiceLocation.AOP.Tests
 {
-    public class SiegeProxyTypeBuilder : ITypeBuilder
-    {
-        private SiegeProxy proxy;
-        
-        public SiegeProxyTypeBuilder(IServiceLocator serviceLocator)
-        {
-			proxy = new SiegeProxy(serviceLocator).WithServiceLocator();
-        }
+	public class TestType
+	{
+		[SamplePreProcessing, SampleEncapsulating, SamplePostProcessing]
+		public virtual string Test(object arg1, object arg2)
+		{
+			return "lol" + arg1;
+		}
 
-        public Type Build(Type typeToBuild)
-        {
-            return proxy.Create(typeToBuild);
-        }
-    }
+		[SamplePreProcessing, SampleEncapsulating, SamplePostProcessing]
+		public virtual void TestNoReturn(object arg1, object arg2)
+		{
+		}
+	}
 }

@@ -13,23 +13,13 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.TypeBuilders;
+using System.Reflection;
+using Siege.DynamicTypeGeneration;
 
-namespace Siege.ServiceLocation.AOP
+namespace Siege.ServiceLocation.AOP.Interceptors.Methods.ProcessEncapsulating
 {
-    public class SiegeProxyTypeBuilder : ITypeBuilder
-    {
-        private SiegeProxy proxy;
-        
-        public SiegeProxyTypeBuilder(IServiceLocator serviceLocator)
-        {
-			proxy = new SiegeProxy(serviceLocator).WithServiceLocator();
-        }
-
-        public Type Build(Type typeToBuild)
-        {
-            return proxy.Create(typeToBuild);
-        }
-    }
+	public interface IProcessEncapsulatingInterceptionStrategy
+	{
+		void Intercept(MethodInfo methodInfo, object attribute, GeneratedVariable processor, GeneratedVariable variable, GeneratedVariable encapsulating);
+	}
 }

@@ -20,90 +20,100 @@ using System.Reflection;
 
 namespace Siege.DynamicTypeGeneration
 {
-    public class DelegateBodyContext
-    {
-        private readonly MethodBodyContext context;
-        private readonly DelegateGenerator generator;
-        private int nestedCounter;
+	public class DelegateBodyContext
+	{
+		private readonly MethodBodyContext context;
+		private readonly DelegateGenerator generator;
+		private int nestedCounter;
 
-        public DelegateBodyContext(MethodBodyContext context, DelegateGenerator generator)
-        {
-            this.context = context;
-            this.generator = generator;
-        }
+		public DelegateBodyContext(MethodBodyContext context, DelegateGenerator generator)
+		{
+			this.context = context;
+			this.generator = generator;
+		}
 
-        public MethodInfo Target<TTarget>(Expression<Action<TTarget>> expression)
-        {
-            MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+		public MethodInfo Target<TTarget>(Expression<Action<TTarget>> expression)
+		{
+			MethodCallExpression methodCall = expression.Body as MethodCallExpression;
 
-            List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
+			List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
 
-            int counter = 1;
-            generator.Returns(methodCall.Method.ReturnType);
-            foreach (ParameterInfo parameter in methodCall.Method.GetParameters())
-            {
-                generator.WithArgument(parameter.ParameterType);
-                parameters.Add(new ExpressionParameter(parameter.ParameterType, counter));
+			int counter = 1;
+			generator.Returns(methodCall.Method.ReturnType);
+			foreach (ParameterInfo parameter in methodCall.Method.GetParameters())
+			{
+				generator.WithArgument(parameter.ParameterType);
+				parameters.Add(new ExpressionParameter(parameter.ParameterType, counter));
 
-                counter++;
-            }
+				counter++;
+			}
 
-            Target(null, parameters, methodCall.Method.Name, () => methodCall.Method);
+			Target(null, parameters, methodCall.Method.Name, () => methodCall.Method);
 
-            return methodCall.Method;
-        }
+			return methodCall.Method;
+		}
 
-        public MethodInfo Target<TTarget>(GeneratedVariable variable, Expression<Action<TTarget>> expression)
-        {
-            MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+		public MethodInfo Target<TTarget>(GeneratedVariable variable, Expression<Action<TTarget>> expression)
+		{
+			MethodCallExpression methodCall = expression.Body as MethodCallExpression;
 
-            List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
+			List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
 
-            int counter = 1;
-            generator.Returns(methodCall.Method.ReturnType);
-            foreach (ParameterInfo parameter in methodCall.Method.GetParameters())
-            {
-                generator.WithArgument(parameter.ParameterType);
-                parameters.Add(new ExpressionParameter(parameter.ParameterType, counter));
+			int counter = 1;
+			generator.Returns(methodCall.Method.ReturnType);
+			foreach (ParameterInfo parameter in methodCall.Method.GetParameters())
+			{
+				generator.WithArgument(parameter.ParameterType);
+				parameters.Add(new ExpressionParameter(parameter.ParameterType, counter));
 
-                counter++;
-            }
+				counter++;
+			}
 
-            Target(variable, parameters, methodCall.Method.Name, () => methodCall.Method);
+			Target(variable, parameters, methodCall.Method.Name, () => methodCall.Method);
 
-            return methodCall.Method;
-        }
+			return methodCall.Method;
+		}
 
-        public MethodInfo Target(MethodInfo info)
-        {
-            List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
+		public MethodInfo Target(MethodInfo info)
+		{
+			List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
 
-            int counter = 1;
-            generator.Returns(info.ReturnType);
-            foreach (ParameterInfo parameter in info.GetParameters())
-            {
-                generator.WithArgument(parameter.ParameterType);
-                parameters.Add(new ExpressionParameter(parameter.ParameterType, counter));
+			int counter = 1;
+			generator.Returns(info.ReturnType);
+			foreach (ParameterInfo parameter in info.GetParameters())
+			{
+				generator.WithArgument(parameter.ParameterType);
+				parameters.Add(new ExpressionParameter(parameter.ParameterType, counter));
 
-                counter++;
-            }
+				counter++;
+			}
 
-            Target(null, parameters, info.Name, () => info);
+			Target(null, parameters, info.Name, () => info);
 
-            return info;
-        }
+			return info;
+		}
 
-        public void Target(GeneratedVariable variable, List<IGeneratedParameter> parameters, string methodName, Func<MethodInfo> info)
-        {
-            generator.AddMethod(methodName, context.WrapMethod(info, parameters));
-        }
+		public void Target(Func<GeneratedMethod> method)
+		{
+			this.context.GeneratedMethod.Target(method);
+		}
 
-        public GeneratedDelegate CreateNestedLambda(Action<MethodBodyContext> closure)
-        {
-            nestedCounter++;
-            generator.AddMethod("Lambda_" + nestedCounter, () => this.context.GeneratedMethod, closure);
+		public void Target(GeneratedVariable variable, List<IGeneratedParameter> parameters, string methodName, Func<MethodInfo> info)
+		{
+			generator.AddMethod(methodName, context.WrapMethod(info, parameters));
+		}
 
-            return new GeneratedDelegate(this.context, this.context.GeneratedMethod, this.generator);
-        }
-    }
+		public GeneratedDelegate CreateNestedLambda(Action<MethodBodyContext> closure)
+		{
+			return CreateNestedLambda(closure, null);
+		}
+
+		public GeneratedDelegate CreateNestedLambda(Action<MethodBodyContext> closure, Action<MethodBodyContext, GeneratedVariable, Func<GeneratedMethod>, GeneratedField> exitClosure)
+		{
+			nestedCounter++;
+			generator.AddMethod("Lambda_" + nestedCounter, () => this.context.GeneratedMethod, closure, exitClosure);
+
+			return new GeneratedDelegate(this.context, this.context.GeneratedMethod, this.generator);
+		}
+	}
 }

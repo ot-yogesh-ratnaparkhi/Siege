@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2EDF2E1D-C65C-4246-99A8-217B7CB38810}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -53,10 +53,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\IDefaultPostProcessingAttribute.cs" />
+    <Compile Include="Attributes\IDefaultPreProcessingAttribute.cs" />
+    <Compile Include="Attributes\IDefaultProcessEncapsulatingActionAttribute.cs" />
+    <Compile Include="Attributes\IDefaultProcessEncapsulatingAttribute.cs" />
+    <Compile Include="Attributes\IPostProcessingWithArgumentsAttribute.cs" />
+    <Compile Include="Attributes\IPreProcessingWithArgumentsAttribute.cs" />
+    <Compile Include="Interceptors\Methods\PostProcessing\DefaultPostProcessorInterceptionStrategy.cs" />
+    <Compile Include="Interceptors\Methods\PostProcessing\IPostProcessorInterceptionStrategy.cs" />
+    <Compile Include="Interceptors\Methods\PreProcessing\DefaultPreProcessorInterceptionStrategy.cs" />
+    <Compile Include="Interceptors\Methods\PreProcessing\IPreProcessorInterceptionStrategy.cs" />
+    <Compile Include="Interceptors\Methods\ProcessEncapsulating\DefaultProcessEncapsulatingActionInterceptionStrategy.cs" />
+    <Compile Include="Interceptors\Methods\ProcessEncapsulating\DefaultProcessEncapsulatingInterceptionStrategy.cs" />
+    <Compile Include="Interceptors\Methods\ProcessEncapsulating\IProcessEncapsulatingInterceptionStrategy.cs" />
+    <Compile Include="MethodArgument.cs" />
     <Compile Include="IAopAttribute.cs" />
-    <Compile Include="IPostProcessingAttribute.cs" />
-    <Compile Include="IPreProcessingAttribute.cs" />
-    <Compile Include="IProcessEncapsulatingAttribute.cs" />
+    <Compile Include="Attributes\IPostProcessingAttribute.cs" />
+    <Compile Include="Attributes\IPreProcessingAttribute.cs" />
+    <Compile Include="Attributes\IProcessEncapsulatingAttribute.cs" />
+    <Compile Include="MethodCall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiegeProxy.cs" />
     <Compile Include="SiegeProxyTypeBuilder.cs" />

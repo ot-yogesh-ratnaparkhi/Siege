@@ -40,7 +40,7 @@ namespace Siege.DynamicTypeGeneration.Actions
         public void Execute()
         {
             ILGenerator generator = method().MethodBuilder().MethodBuilder.GetILGenerator();
-            generator.Emit(OpCodes.Ldarg_0);
+            //generator.Emit(OpCodes.Ldarg_0);
             
             if(targetMethod != null) generator.Emit(OpCodes.Ldftn, targetMethod().MethodBuilder().MethodBuilder);
             if (methodInfo != null) generator.Emit(OpCodes.Ldftn, methodInfo);

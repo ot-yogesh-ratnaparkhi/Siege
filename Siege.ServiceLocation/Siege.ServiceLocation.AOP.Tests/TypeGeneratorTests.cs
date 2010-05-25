@@ -25,6 +25,12 @@ namespace Siege.ServiceLocation.AOP.Tests
     {
         protected IContextualServiceLocator locator;
 
+		[SetUp]
+		public void SetUp()
+		{
+			Counter.Count = 0;
+		}
+
         [Test]
         public void Should_Override_Virtual_Methods_With_Return_Types_With_ServiceLocator()
         {
@@ -33,11 +39,12 @@ namespace Siege.ServiceLocation.AOP.Tests
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
 
-            Type type = new SiegeProxy().WithServiceLocator().Create<TestType>();
+            Type type = new SiegeProxy(locator).WithServiceLocator().Create<TestType>();
 
             var instance = Activator.CreateInstance(type, locator);
 
-            Assert.AreEqual("lolarg1", type.GetMethod("Test").Invoke(instance, new[] { "arg1", "arg2"}));
+			Assert.AreEqual("lolarg1", type.GetMethod("Test").Invoke(instance, new[] { "arg1", "arg2" }));
+			Assert.AreEqual(1, Counter.Count);
         }
 
         [Test]
@@ -48,11 +55,12 @@ namespace Siege.ServiceLocation.AOP.Tests
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
 
-            Type type = new SiegeProxy().WithServiceLocator().Create<TestType>();
+			Type type = new SiegeProxy(locator).WithServiceLocator().Create<TestType>();
 
             var instance = Activator.CreateInstance(type, locator);
 
-            type.GetMethod("TestNoReturn").Invoke(instance, new[] { "arg1", "arg2" });
+			type.GetMethod("TestNoReturn").Invoke(instance, new[] { "arg1", "arg2" });
+			Assert.AreEqual(1, Counter.Count);
         }
 
         [Test]
@@ -63,11 +71,12 @@ namespace Siege.ServiceLocation.AOP.Tests
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
 
-            Type type = new SiegeProxy().Create<TestType>();
+			Type type = new SiegeProxy(locator).Create<TestType>();
 
             var instance = Activator.CreateInstance(type);
 
-            Assert.AreEqual("lolarg1", type.GetMethod("Test").Invoke(instance, new[] { "arg1", "arg2" }));
+			Assert.AreEqual("lolarg1", type.GetMethod("Test").Invoke(instance, new[] { "arg1", "arg2" }));
+			Assert.AreEqual(1, Counter.Count);
         }
 
         [Test]
@@ -78,70 +87,28 @@ namespace Siege.ServiceLocation.AOP.Tests
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
 
-            Type type = new SiegeProxy().Create<TestType>();
+			Type type = new SiegeProxy(locator).Create<TestType>();
 
             var instance = Activator.CreateInstance(type);
 
-            type.GetMethod("TestNoReturn").Invoke(instance, new[] { "arg1", "arg2" });
-        }
-    }
-
-    public class TestType
-    {
-        [SamplePreProcessing, SampleEncapsulating, SamplePostProcessing]
-        public virtual string Test(object arg1, object arg2)
-        {
-            return "lol" + arg1;
+			type.GetMethod("TestNoReturn").Invoke(instance, new[] { "arg1", "arg2" });
+			Assert.AreEqual(1, Counter.Count);
         }
 
-        [SamplePreProcessing, SampleEncapsulating, SamplePostProcessing]
-        public virtual void TestNoReturn(object arg1, object arg2)
-        {
-        }
-    }
+		[Test]
+		public void Should_Override_Virtual_Methods_With_Return_Types_With_ServiceLocator_Multiple_Encapsulation()
+		{
+			locator = new SiegeContainer(new NinjectAdapter.NinjectAdapter(), new ThreadedServiceLocatorStore());
+			locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
+			locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
+			locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
 
-    
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
-    public class SampleEncapsulatingAttribute : Attribute, IProcessEncapsulatingAttribute
-    {
-        private readonly IContextualServiceLocator locator;
+			Type type = new SiegeProxy(locator).WithServiceLocator().Create<TestType2>();
 
-        public SampleEncapsulatingAttribute() { }
+			var instance = Activator.CreateInstance(type, locator);
 
-        public SampleEncapsulatingAttribute(IContextualServiceLocator locator)
-        {
-            this.locator = locator;
-        }
-
-        public IContextualServiceLocator Locator
-        {
-            get { return locator; }
-        }
-
-        public TResponseType Process<TResponseType>(Func<TResponseType> func)
-        {
-            return func();
-        }
-
-        public void Process(Action action)
-        {
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
-    public class SamplePreProcessingAttribute : Attribute, IPreProcessingAttribute
-    {
-        public void Process()
-        {
-
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
-    public class SamplePostProcessingAttribute : Attribute, IPostProcessingAttribute
-    {
-        public void Process()
-        {
-        }
-    }
+			Assert.AreEqual("lolarg1", type.GetMethod("Test").Invoke(instance, new[] { "arg1", "arg2" }));
+			Assert.AreEqual(3, Counter.Count);
+		}
+	}
 }

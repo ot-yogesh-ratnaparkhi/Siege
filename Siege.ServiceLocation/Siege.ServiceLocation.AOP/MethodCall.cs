@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,22 +14,12 @@
 */
 
 using System;
-using Siege.ServiceLocation.TypeBuilders;
 
 namespace Siege.ServiceLocation.AOP
 {
-    public class SiegeProxyTypeBuilder : ITypeBuilder
-    {
-        private SiegeProxy proxy;
-        
-        public SiegeProxyTypeBuilder(IServiceLocator serviceLocator)
-        {
-			proxy = new SiegeProxy(serviceLocator).WithServiceLocator();
-        }
-
-        public Type Build(Type typeToBuild)
-        {
-            return proxy.Create(typeToBuild);
-        }
-    }
+	public class MethodCall
+	{
+		public Type ReturnType { get; set; }
+		public object Attribute { get; set; }
+	}
 }

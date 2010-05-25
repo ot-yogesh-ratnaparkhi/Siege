@@ -13,10 +13,10 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocation.AOP
+namespace Siege.ServiceLocation.AOP.Tests
 {
-    public interface IPreProcessingAttribute : IAopAttribute
-    {
-        void Process();
-    }
+	public class Counter
+	{
+		public static int Count = 0;
+	}
 }

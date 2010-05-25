@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,22 +14,15 @@
 */
 
 using System;
-using Siege.ServiceLocation.TypeBuilders;
+using Siege.ServiceLocation.AOP.Attributes;
 
-namespace Siege.ServiceLocation.AOP
+namespace Siege.ServiceLocation.AOP.Tests
 {
-    public class SiegeProxyTypeBuilder : ITypeBuilder
-    {
-        private SiegeProxy proxy;
-        
-        public SiegeProxyTypeBuilder(IServiceLocator serviceLocator)
-        {
-			proxy = new SiegeProxy(serviceLocator).WithServiceLocator();
-        }
-
-        public Type Build(Type typeToBuild)
-        {
-            return proxy.Create(typeToBuild);
-        }
-    }
+	[AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
+	public class SamplePostProcessingAttribute : Attribute, IDefaultPostProcessingAttribute
+	{
+		public void Process()
+		{
+		}
+	}
 }

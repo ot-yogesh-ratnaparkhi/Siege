@@ -146,6 +146,20 @@ namespace Siege.DynamicTypeGeneration
             return action.DelegateType;
         }
 
+		public Type CreateDelegate(MethodInfo info)
+		{
+			var action = new CreateDelegateAction(info.ReturnType);
+			this.actions.Add(action);
+			return action.DelegateType;
+		}
+
+		public Type CreateDelegate(Type returnType)
+		{
+			var action = new CreateDelegateAction(returnType);
+			this.actions.Add(action);
+			return action.DelegateType;
+		}
+
         public Type CreateDelegate(GeneratedVariable variable, Func<MethodBuilderBundle> info, Type returnType)
         {
             this.actions.Add(new LoadVariableFunctionAction(() => this, variable.LocalIndex, info));
@@ -153,6 +167,14 @@ namespace Siege.DynamicTypeGeneration
             this.actions.Add(action);
             return action.DelegateType;
         }
+
+		public Type CreateDelegate(Func<GeneratedMethod> info, Type returnType)
+		{
+			this.actions.Add(new LoadFunctionAction(() => this, info));
+			var action = new CreateDelegateAction(returnType);
+			this.actions.Add(action);
+			return action.DelegateType;
+		}
 
         internal void AddLocal(Type item)
         {

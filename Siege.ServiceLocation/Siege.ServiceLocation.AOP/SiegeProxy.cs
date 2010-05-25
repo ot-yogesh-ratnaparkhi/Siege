@@ -18,15 +18,41 @@ using System.Collections;
 using System.Linq;
 using System.Reflection;
 using Siege.DynamicTypeGeneration;
+using Siege.ServiceLocation.AOP.Attributes;
+using Siege.ServiceLocation.AOP.Interceptors.Methods.PostProcessing;
+using Siege.ServiceLocation.AOP.Interceptors.Methods.PreProcessing;
+using Siege.ServiceLocation.AOP.Interceptors.Methods.ProcessEncapsulating;
+using Siege.ServiceLocation.Resolution;
+using Siege.ServiceLocation.Syntax;
 
 namespace Siege.ServiceLocation.AOP
 {
     public class SiegeProxy
     {
-        private static readonly Hashtable definedTypes = new Hashtable();
+    	private IServiceLocator serviceLocator;
+    	private static readonly Hashtable definedTypes = new Hashtable();
         private bool useServiceLocator;
 
-        public SiegeProxy WithServiceLocator()
+		public SiegeProxy(IServiceLocator serviceLocator)
+		{
+			this.serviceLocator = serviceLocator;
+
+			this.serviceLocator
+				.Register(Given<IPreProcessorInterceptionStrategy>
+							.When<IPreProcessingAttribute>(attribute => attribute is IDefaultPreProcessingAttribute)
+							.Then<DefaultPreProcessorInterceptionStrategy>())
+				.Register(Given<IProcessEncapsulatingInterceptionStrategy>
+							.When<MethodCall>(method => method.ReturnType != typeof(void) && method.Attribute is IDefaultProcessEncapsulatingAttribute)
+							.Then<DefaultProcessEncapsulatingInterceptionStrategy>())
+				.Register(Given<IProcessEncapsulatingInterceptionStrategy>
+							.When<MethodCall>(method => method.ReturnType == typeof(void) && method.Attribute is IDefaultProcessEncapsulatingActionAttribute)
+							.Then<DefaultProcessEncapsulatingActionInterceptionStrategy>())
+				.Register(Given<IPostProcessorInterceptionStrategy>
+							.When<IPostProcessingAttribute>(attribute => attribute is IDefaultPostProcessingAttribute)
+							.Then<DefaultPostProcessorInterceptionStrategy>());
+		}
+
+    	public SiegeProxy WithServiceLocator()
         {
             useServiceLocator = true;
             return this;
@@ -55,43 +81,48 @@ namespace Siege.ServiceLocation.AOP
                     type.AddConstructor(constructor => constructor.CreateArgument<Microsoft.Practices.ServiceLocation.IServiceLocator>().AssignTo(field));
                 }
 
-                foreach (MethodInfo methodInfo in typeToProxy.GetMethods(BindingFlags.Public | BindingFlags.Instance))
-                {
-                    if (methodInfo.IsVirtual && methodInfo.GetBaseDefinition().DeclaringType != typeof(object))
-                    {
-                        type.OverrideMethod(methodInfo, method => method.WithBody(body =>
-                        {
-                            if (methodInfo.GetCustomAttributes(typeof(IAopAttribute), true).Count() == 0)
-                            {
-                                body.CallBase(methodInfo);
-                                return;
-                            }
-                            
-                            GeneratedVariable serviceLocator = null;
-
-                            if (useServiceLocator)
-                            {
-                                serviceLocator = body.CreateVariable<Microsoft.Practices.ServiceLocation.IServiceLocator>();
-                                serviceLocator.AssignFrom(field);
-                            }
-
-                            GeneratePreProcessors(body, methodInfo, serviceLocator);
-
-                            var returnValue = GenerateEncapsulatedCalls(methodInfo, body, serviceLocator);
-
-                            GeneratePostProcessors(body, methodInfo, serviceLocator);
-
-                            if(returnValue != null) body.Return(returnValue);
-                        }));
-                    }
-                }
+                ProxyMethods(type, typeToProxy, field);
             });
 
             generator.Save();
             return generatedType;
         }
 
-        private void GeneratePreProcessors(MethodBodyContext body, ICustomAttributeProvider methodInfo, GeneratedVariable serviceLocator)
+    	private void ProxyMethods(TypeGenerationContext type, Type typeToProxy, GeneratedField field)
+    	{
+    		foreach (MethodInfo methodInfo in typeToProxy.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+    		{
+    			if (methodInfo.IsVirtual && methodInfo.GetBaseDefinition().DeclaringType != typeof(object))
+    			{
+    				type.OverrideMethod(methodInfo, method => method.WithBody(body =>
+                  	{
+                  		if (methodInfo.GetCustomAttributes(typeof(IAopAttribute), true).Count() == 0)
+                  		{
+                  			body.CallBase(methodInfo);
+                  			return;
+                  		}
+
+                  		GeneratedVariable locator = null;
+
+                  		if (useServiceLocator)
+                  		{
+							locator = body.CreateVariable<Microsoft.Practices.ServiceLocation.IServiceLocator>();
+							locator.AssignFrom(field);
+                  		}
+
+						GeneratePreProcessors(body, methodInfo, locator);
+
+                  		var returnValue = GenerateEncapsulatedCalls(methodInfo, body, locator, field);
+
+						GeneratePostProcessors(body, methodInfo, locator);
+
+                  		if(returnValue != null) body.Return(returnValue);
+                  	}));
+    			}
+    		}
+    	}
+
+    	private void GeneratePreProcessors(MethodBodyContext body, ICustomAttributeProvider methodInfo, GeneratedVariable serviceLocator)
         {
             foreach (Attribute attribute in methodInfo.GetCustomAttributes(typeof(IPreProcessingAttribute), true))
             {
@@ -103,9 +134,9 @@ namespace Siege.ServiceLocation.AOP
                 else
                 {
                     preProcessor.AssignFrom(body.Instantiate(attribute.GetType()));
-                }
-
-                preProcessor.Invoke<IPreProcessingAttribute>(processor => processor.Process());
+				} 
+				
+				this.serviceLocator.GetInstance<IPreProcessorInterceptionStrategy>(new ContextArgument(attribute)).Intercept(preProcessor);
             }
         }
 
@@ -123,11 +154,11 @@ namespace Siege.ServiceLocation.AOP
                     postProcessor.AssignFrom(body.Instantiate(attribute.GetType()));
                 }
 
-                postProcessor.Invoke<IPostProcessingAttribute>(processor => processor.Process());
-            }
+				this.serviceLocator.GetInstance<IPostProcessorInterceptionStrategy>(new ContextArgument(attribute)).Intercept(postProcessor);
+			}
         }
 
-        private GeneratedVariable GenerateEncapsulatedCalls(MethodInfo methodInfo, MethodBodyContext body, GeneratedVariable serviceLocator)
+        private GeneratedVariable GenerateEncapsulatedCalls(MethodInfo methodInfo, MethodBodyContext body, GeneratedVariable serviceLocator, GeneratedField field)
         {
             var attributes = methodInfo.GetCustomAttributes(typeof(IProcessEncapsulatingAttribute), true);
 
@@ -148,41 +179,82 @@ namespace Siege.ServiceLocation.AOP
                 return variable;
             }
 
-            var encapsulating = body.CreateVariable<IProcessEncapsulatingAttribute>();
-            if(useServiceLocator)
-            {
-                encapsulating.AssignFrom(() => serviceLocator.Invoke(typeof(Microsoft.Practices.ServiceLocation.IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attributes[0].GetType())));
-            }
-            else
-            {
-                encapsulating.AssignFrom(body.Instantiate(attributes[0].GetType()));
-            }
-            
-            var lambdaVariable = body.CreateLambda(lambda => lambda.Target(methodInfo));
+			var encapsulating = body.CreateVariable<IProcessEncapsulatingAttribute>();
+            if (useServiceLocator)
+			{
+				encapsulating.AssignFrom(() => serviceLocator.Invoke(typeof (Microsoft.Practices.ServiceLocation.IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attributes[0].GetType())));
+			}
+			else
+			{
+				encapsulating.AssignFrom(body.Instantiate(attributes[0].GetType()));
+			}
+        	MethodInfo target = null;
+        	var lambdaVariable = body.CreateLambda(lambda =>
+   			{
+				target = lambda.Target(methodInfo);
+				
+   				RecursivelyGenerateCalls(attributes, 1, lambda, methodInfo, field);
+   			});
 
-            var func = lambdaVariable.CreateFunc(methodInfo);
-            
-            if (methodInfo.ReturnType != typeof(void))
-            {
-                var funcProcessor = attributes[0].GetType().GetMethods().Where(
-                    memberInfo => memberInfo.Name == "Process" &&
-                                  memberInfo.GetParameters()
-                                  .Where(parameter => parameter.ParameterType != typeof(Action))
-                                  .Count() > 0).First().MakeGenericMethod(methodInfo.ReturnType);
-                variable = body.CreateVariable(methodInfo.ReturnType);
-                variable.AssignFrom(() => encapsulating.Invoke(funcProcessor, func));
-            }
-            else
-            {
-                var actionProcessor = attributes[0].GetType().GetMethods().Where(
-                    memberInfo => memberInfo.Name == "Process" &&
-                                  memberInfo.GetParameters()
-                                      .Where(parameter => parameter.ParameterType == typeof(Action))
-                                      .Count() > 0).First();
-                encapsulating.Invoke(actionProcessor, func);
-            }
+			var methodCall = new MethodCall
+			{
+				ReturnType = methodInfo.ReturnType,
+				Attribute = attributes[0]
+			};
 
-            return variable;
+			var func = lambdaVariable.CreateFunc(target);
+
+			if (methodInfo.ReturnType != typeof(void))
+			{
+				variable = body.CreateVariable(methodInfo.ReturnType);
+				this.serviceLocator.GetInstance<IProcessEncapsulatingInterceptionStrategy>(new ContextArgument(methodCall)).Intercept(methodInfo, attributes[0], func, variable, encapsulating);
+			}
+			else
+			{
+				this.serviceLocator.GetInstance<IProcessEncapsulatingInterceptionStrategy>(new ContextArgument(methodCall)).Intercept(methodInfo, attributes[0], func, null, encapsulating);
+			}
+
+        	return variable;
         }
+
+    	private void RecursivelyGenerateCalls(object[] attributes, int currentIndex, DelegateBodyContext lambda, MethodInfo methodInfo, GeneratedField field)
+    	{
+			if (currentIndex >= attributes.Length) return;
+    		var attribute = attributes[currentIndex];
+			var methodCall = new MethodCall
+			{
+				ReturnType = methodInfo.ReturnType,
+				Attribute = attribute
+			};
+			
+			lambda.CreateNestedLambda(nestedLambda => RecursivelyGenerateCalls(attributes, currentIndex + 1, lambda, methodInfo, field),
+			(exitContext, exitVariable, function, callingType) =>
+			{
+				var encapsulating = exitContext.CreateVariable<IProcessEncapsulatingAttribute>();
+
+				if (useServiceLocator)
+				{
+				    var locator = exitContext.CreateVariable<Microsoft.Practices.ServiceLocation.IServiceLocator>();
+				    locator.AssignFrom(field, callingType);
+				    encapsulating.AssignFrom(() => locator.Invoke(typeof(Microsoft.Practices.ServiceLocation.IServiceLocator).GetMethod("GetInstance", new Type[0]).MakeGenericMethod(attribute.GetType())));
+				}
+				else
+				{
+				    encapsulating.AssignFrom(exitContext.Instantiate(attribute.GetType()));
+				}
+
+				var func = exitContext.CreateFunc(methodInfo.ReturnType, function());
+
+				if (methodInfo.ReturnType != typeof(void))
+				{
+					this.serviceLocator.GetInstance<IProcessEncapsulatingInterceptionStrategy>(new ContextArgument(methodCall)).Intercept(methodInfo, attribute, func, exitVariable, encapsulating);
+				}
+				else
+				{
+					this.serviceLocator.GetInstance<IProcessEncapsulatingInterceptionStrategy>(new ContextArgument(methodCall)).Intercept(methodInfo, attribute, func, null, encapsulating);
+				}
+			});
+			
+    	}
     }
 }
