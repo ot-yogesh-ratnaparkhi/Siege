@@ -14,20 +14,23 @@
 */
 
 using System;
+using Siege.ServiceLocation.EventHandlers;
 using Siege.ServiceLocation.Rules;
 using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.UseCases.Conditional
 {
-    public class ConditionalResolutionStrategy : IResolutionStrategy
+    public class ConditionalResolutionStrategy : IResolutionStrategy, ITypeRequester
     {
         private readonly IInstanceResolver locator;
         private readonly IServiceLocatorStore context;
+        public event TypeRequestedEventHandler TypeRequested;
 
         public ConditionalResolutionStrategy(IInstanceResolver locator, IServiceLocatorStore context)
         {
             this.locator = locator;
             this.context = context;
+            this.context.ExecutionStore.WireEvent(this);
         }
 
         public object Resolve(Type boundType, IActivationRule rule, IActivationStrategy activator)
@@ -36,11 +39,16 @@ namespace Siege.ServiceLocation.UseCases.Conditional
 
             if (rule.GetRuleEvaluationStrategy().IsValid(rule, context))
             {
-                context.ExecutionStore.AddRequestedType(boundType);
+                RaiseTypeRequestedEvent(boundType);
                 return activator.Resolve(locator, context);
             }
 
             return null;
+        }
+
+        private void RaiseTypeRequestedEvent(Type type)
+        {
+            if (this.TypeRequested != null) this.TypeRequested(type);
         }
     }
 }

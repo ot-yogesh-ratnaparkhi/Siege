@@ -14,15 +14,17 @@
 */
 
 using System;
+using Siege.ServiceLocation.EventHandlers;
 using Siege.ServiceLocation.Rules;
 using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.UseCases.Default
 {
-    public class DefaultResolutionStrategy : IResolutionStrategy
+    public class DefaultResolutionStrategy : IResolutionStrategy, ITypeRequester
     {
         private readonly IInstanceResolver locator;
         private readonly IServiceLocatorStore accessor;
+        public event TypeRequestedEventHandler TypeRequested;
 
         public DefaultResolutionStrategy(IInstanceResolver locator, IServiceLocatorStore accessor)
         {
@@ -32,8 +34,13 @@ namespace Siege.ServiceLocation.UseCases.Default
 
         public object Resolve(Type boundType, IActivationRule rule, IActivationStrategy activator)
         {
-            accessor.ExecutionStore.AddRequestedType(boundType);
+            RaiseTypeRequestedEvent(boundType);
             return activator.Resolve(locator, accessor);
+        }
+
+        private void RaiseTypeRequestedEvent(Type type)
+        {
+            if (this.TypeRequested != null) this.TypeRequested(type);
         }
     }
 }

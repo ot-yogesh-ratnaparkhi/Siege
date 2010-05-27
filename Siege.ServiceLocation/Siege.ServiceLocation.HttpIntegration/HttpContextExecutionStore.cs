@@ -38,13 +38,6 @@ namespace Siege.ServiceLocation.HttpIntegration
             }
         }
 
-		public IExecutionStore Create(IServiceLocatorStore store)
-        {
-            if(Count == 0) return new HttpContextExecutionStore(store);
-
-            return this;
-        }
-
 		public static IExecutionStore New(IServiceLocatorStore store)
         {
             return new HttpContextExecutionStore(store);
@@ -64,18 +57,38 @@ namespace Siege.ServiceLocation.HttpIntegration
             }
         }
 
-        public void AddRequestedType(Type type)
+        public void WireEvent(ITypeResolver typeResolver)
+        {
+            typeResolver.TypeResolved += OnTypeResolved;
+        }
+
+        public void WireEvent(ITypeRequester typeRequestor)
+        {
+            typeRequestor.TypeRequested += OnTypeRequested;
+        }
+
+        void OnTypeResolved(Type type)
+        {
+            Decrement();
+        }
+
+        void OnTypeRequested(Type type)
+        {
+            AddRequestedType(type);
+        }
+
+        private void AddRequestedType(Type type)
         {
             HttpContext.Current.Items.Add("ExecutionStore" + Guid.NewGuid(), type);
             Increment();
         }
 
-        public void Increment()
+        private void Increment()
         {
             HttpContext.Current.Items["executionCount"] = Count + 1;
         }
 
-        public void Decrement()
+        private void Decrement()
         {
             HttpContext.Current.Items["executionCount"] = Count - 1;
         }

@@ -13,7 +13,9 @@
      limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
+using Siege.ServiceLocation.EventHandlers;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.UseCases;
 using Siege.ServiceLocation.UseCases.Conditional;
@@ -21,21 +23,29 @@ using Siege.ServiceLocation.UseCases.Default;
 
 namespace Siege.ServiceLocation
 {
-    public class Factory<TBaseService> : IGenericFactory<TBaseService>
+    public class Factory<TBaseService> : IGenericFactory<TBaseService>, ITypeResolver
     {
         private IContextualServiceLocator serviceLocator;
         private readonly List<IUseCase> conditionalUseCases = new List<IUseCase>();
         private readonly List<IUseCase> defaultCases = new List<IUseCase>();
 
+        public event TypeResolvedEventHandler TypeResolved;
+
         public Factory(IContextualServiceLocator serviceLocator)
         {
             this.serviceLocator = serviceLocator;
+            this.serviceLocator.Store.ExecutionStore.WireEvent(this);
         }
 
         public void AddCase(IUseCase useCase)
         {
             if (useCase is IDefaultUseCase) defaultCases.Add(useCase);
             else conditionalUseCases.Add(useCase);
+        }
+
+        private void RaiseTypeResolvedEvent(Type type)
+        {
+            if (this.TypeResolved != null) this.TypeResolved(type);
         }
 
         public TBaseService Build()
@@ -46,25 +56,23 @@ namespace Siege.ServiceLocation
 
                 if (useCase.IsValid(serviceLocator.Store))
                 {
-                    result =
-                        (TBaseService)useCase.Resolve(new ConditionalResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
+                    result = (TBaseService)useCase.Resolve(new ConditionalResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
                 }
 
                 if (!Equals(result, default(TBaseService)))
                 {
-                    serviceLocator.Store.ExecutionStore.Decrement();
+                    RaiseTypeResolvedEvent(typeof(TBaseService));
                     return result;
                 }
             }
 
             foreach (IGenericUseCase useCase in defaultCases)
             {
-                TBaseService result =
-                    (TBaseService)useCase.Resolve(new DefaultResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
+                TBaseService result = (TBaseService)useCase.Resolve(new DefaultResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
 
                 if (!Equals(result, default(TBaseService)))
                 {
-                    serviceLocator.Store.ExecutionStore.Decrement();
+                    RaiseTypeResolvedEvent(typeof(TBaseService));
                     return result;
                 }
             }

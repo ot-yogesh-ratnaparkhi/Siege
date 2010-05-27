@@ -22,11 +22,32 @@ namespace Siege.ServiceLocation.Stores
     {
         [ThreadStatic] private static List<Type> requestedTypes;
         [ThreadStatic] private static int index;
+        private readonly IServiceLocatorStore store;
 
         public List<Type> RequestedTypes
         {
             get { return requestedTypes; }
             private set { requestedTypes = value; }
+        }
+
+        public void WireEvent(ITypeResolver typeResolver)
+        {
+            typeResolver.TypeResolved += OnTypeResolved;
+        }
+
+        public void WireEvent(ITypeRequester typeRequestor)
+        {
+            typeRequestor.TypeRequested += OnTypeRequested;
+        }
+
+        void OnTypeResolved(Type type)
+        {
+            Decrement();
+        }
+
+        void OnTypeRequested(Type type)
+        {
+            AddRequestedType(type);
         }
 
         private int Index
@@ -35,25 +56,32 @@ namespace Siege.ServiceLocation.Stores
             set { index = value; }
         }
 
-        public void AddRequestedType(Type type)
+        private void AddRequestedType(Type type)
         {
             RequestedTypes.Add(type);
             Increment();
         }
 
-        public void Increment()
+        private void Increment()
         {
             Index++;
         }
 
-        public void Decrement()
+        private void Decrement()
         {
-            Index--;
+            Index--; 
+            
+            if (Index == 0)
+            {
+                store.ResolutionStore = new ThreadedResolutionStore();
+                RequestedTypes = new List<Type>();
+            }
         }
 
 		private ThreadedExecutionStore(IServiceLocatorStore store)
         {
-            RequestedTypes = new List<Type>();
+		    this.store = store;
+		    RequestedTypes = new List<Type>();
 			Index = 0;
 			store.ResolutionStore = new ThreadedResolutionStore();
         }

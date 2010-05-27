@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -53,7 +53,10 @@
     <Compile Include="Bindings\IActionUseCaseBinding.cs" />
     <Compile Include="Bindings\IInstanceUseCaseBinding.cs" />
     <Compile Include="Bindings\IOpenGenericUseCaseBinding.cs" />
+    <Compile Include="EventHandlers\TypeRequestedEventHandler.cs" />
+    <Compile Include="EventHandlers\TypeResolvedEventHandler.cs" />
     <Compile Include="Exceptions\RegistrationNotFoundException.cs" />
+    <Compile Include="ITypeResolver.cs" />
     <Compile Include="IFactoryFetcher.cs" />
     <Compile Include="UseCases\IGenericUseCase.cs" />
     <Compile Include="UseCases\OpenGenerics\IOpenGenericUseCase.cs" />

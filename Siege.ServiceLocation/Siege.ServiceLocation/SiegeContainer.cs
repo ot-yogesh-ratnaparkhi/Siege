@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Siege.ServiceLocation.Bindings;
+using Siege.ServiceLocation.EventHandlers;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.Stores;
@@ -31,17 +32,21 @@ using Siege.ServiceLocation.UseCases.Default;
 
 namespace Siege.ServiceLocation
 {
-    public class SiegeContainer : IContextualServiceLocator
+    public class SiegeContainer : IContextualServiceLocator, ITypeResolver
     {
         private IServiceLocatorAdapter serviceLocator;
         private IServiceLocatorStore store;
         private UseCaseStore useCaseStore = new UseCaseStore();
         private readonly Hashtable factories = new Hashtable();
 
+        public event TypeResolvedEventHandler TypeResolved;
+
         public SiegeContainer(IServiceLocatorAdapter serviceLocator, IServiceLocatorStore store, ITypeBuilder typeBuilder)
         {
             this.serviceLocator = serviceLocator;
             this.store = store;
+
+            this.store.ExecutionStore.WireEvent(this);
             TypeHandler.Initialize(typeBuilder);
 
             AddBinding(typeof (IActionUseCaseBinding<>), typeof (ActionUseCaseBinding<>));
@@ -94,7 +99,6 @@ namespace Siege.ServiceLocation
 
         public object GetInstance(Type type, params IResolutionArgument[] arguments)
 		{
-			this.store.ExecutionStore = this.store.ExecutionStore.Create(this.store);
             this.store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
 
             IList<IUseCase> selectedCase = this.useCaseStore.Conditional.ResolutionCases.GetUseCasesForType(type);
@@ -105,7 +109,10 @@ namespace Siege.ServiceLocation
                 {
                     var value = Resolve(useCase, new ConditionalResolutionStrategy(serviceLocator, this.store));
 
-                    if (value != null) return value;
+                    if (value != null)
+                    {
+                        return value;
+                    }
                 }
             }
             else if (this.useCaseStore.Default.ResolutionCases.Contains(type))
@@ -113,12 +120,15 @@ namespace Siege.ServiceLocation
                 var useCase = (IGenericUseCase) this.useCaseStore.Default.ResolutionCases.GetUseCaseForType(type);
                 var value = Resolve(useCase, new DefaultResolutionStrategy(serviceLocator, this.store));
 
-                if (value != null) return value;
+                if (value != null)
+                {
+                    return value;
+                }
             }
 
             if (HasTypeRegistered(type) || type.IsGenericType)
             {
-				return serviceLocator.GetInstance(type, this.store.ResolutionStore.Items.OfType<ConstructorParameter>().ToArray());
+                return serviceLocator.GetInstance(type, this.store.ResolutionStore.Items.OfType<ConstructorParameter>().ToArray());
             }
 
             throw new RegistrationNotFoundException(type);
@@ -136,10 +146,9 @@ namespace Siege.ServiceLocation
 
         public object GetInstance(Type type, string key, params IResolutionArgument[] arguments)
         {
-			this.store.ExecutionStore = this.store.ExecutionStore.Create(this.store);
 			this.store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
 
-			return serviceLocator.GetInstance(type, key, this.store.ResolutionStore.Items.OfType<ConstructorParameter>().ToArray());
+            return serviceLocator.GetInstance(type, key, this.store.ResolutionStore.Items.OfType<ConstructorParameter>().ToArray());
         }
 
         public object GetService(Type serviceType)
@@ -154,7 +163,6 @@ namespace Siege.ServiceLocation
 
         public IEnumerable<object> GetAllInstances(Type serviceType)
         {
-            this.store.ExecutionStore = this.store.ExecutionStore.Create(this.store);
             return serviceLocator.GetAllInstances(serviceType);
         }
 
@@ -216,15 +224,18 @@ namespace Siege.ServiceLocation
             this.store.Dispose();
         }
 
+        private void RaiseTypeResolvedEvent(Type type)
+        {
+            if (this.TypeResolved != null) this.TypeResolved(type);
+        }
+
         private object Resolve(IGenericUseCase useCase, IResolutionStrategy strategy)
         {
             var value = useCase.Resolve(strategy, this.store);
 
             if (value != null)
             {
-                this.store.ExecutionStore.Decrement();
-                this.store.ExecutionStore = this.store.ExecutionStore.Create(this.store);
-
+                RaiseTypeResolvedEvent(useCase.GetBoundType());
                 ExecutePostConditions(this.useCaseStore.Default, useCase, actionUseCase => value = actionUseCase.Invoke(value));
                 ExecutePostConditions(this.useCaseStore.Conditional, useCase, actionUseCase =>
 				{
