@@ -168,5 +168,17 @@ namespace Siege.DynamicTypeGeneration
 
             return () => action.GeneratedMethod;
         }
+
+		public GeneratedVariable CreateFunc(Type returnType, GeneratedMethod method)
+		{
+			GeneratedMethod.TargettingSelf();
+
+			Type delegateType = GeneratedMethod.CreateDelegate(() => method, returnType);
+			var returnValue = CreateVariable(delegateType);
+
+			returnValue.AssignFrom(Instantiate(delegateType, new[] { typeof(object), typeof(IntPtr) }));
+
+			return returnValue;
+		}
     }
 }

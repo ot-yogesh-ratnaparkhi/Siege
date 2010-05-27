@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,22 +14,21 @@
 */
 
 using System;
-using Siege.ServiceLocation.TypeBuilders;
 
-namespace Siege.ServiceLocation.AOP
+namespace Siege.DynamicTypeGeneration.Tests
 {
-    public class SiegeProxyTypeBuilder : ITypeBuilder
-    {
-        private SiegeProxy proxy;
-        
-        public SiegeProxyTypeBuilder(IServiceLocator serviceLocator)
-        {
-			proxy = new SiegeProxy(serviceLocator).WithServiceLocator();
-        }
+	public class DelegateWithArguments
+	{
+		public string Process(Func<string> func, MethodArgument[] arguments)
+		{
+			var val = "yay: " + func();
 
-        public Type Build(Type typeToBuild)
-        {
-            return proxy.Create(typeToBuild);
-        }
-    }
+			foreach(MethodArgument arg in arguments)
+			{
+				val += ", " + arg.Name;
+			}
+
+			return val;
+		}
+	}
 }

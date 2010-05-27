@@ -130,11 +130,28 @@ namespace Siege.DynamicTypeGeneration
             return method.Call(() => methodInfo, variables);
         }
 
+		public ILocalIndexer Invoke(Func<MethodInfo> methodInfo, Func<List<GeneratedField>> variables)
+		{
+			actions.Add(new VariableLoadAction(method, this.LocalIndex));
+			return method.Call(methodInfo, variables);
+		}
+
+		public ILocalIndexer Invoke(GeneratedMethod info, Type returnType)
+		{
+			return method.Call(() => info, returnType);
+		}
+
         public void AssignFrom(GeneratedField field)
         {
             actions.Add(new FieldLoadAction(method, field.Field));
             actions.Add(new VariableAssignmentAction(() => method.MethodBuilder(), localIndex));
         }
+
+		public void AssignFrom(GeneratedField field, GeneratedField parent)
+		{
+			actions.Add(new FieldLoadAction(method, field.Field, parent));
+			actions.Add(new VariableAssignmentAction(() => method.MethodBuilder(), localIndex));
+		}
 
         public MethodInfo GetMethod<TType>(Expression<Action<TType>> expression)
         {
@@ -150,5 +167,6 @@ namespace Siege.DynamicTypeGeneration
 
             actions.Add(new SetValueOnObjectAction(method, this, value, setMethod));
         }
+
     }
 }
