@@ -13,15 +13,26 @@
      limitations under the License.
 */
 
-using System;
+using Siege.ServiceLocation.Bindings;
+using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.Stores
+namespace Siege.ServiceLocation.SiegeAdapter
 {
-    public interface IServiceLocatorStore : IDisposable
-    {
-        IContextStore ContextStore { get; }
-		IResolutionStore ResolutionStore { get; set; }
-        IExecutionStore ExecutionStore { get; }
-		IRegistrationStore RegistrationStore { get; }
-    }
+	internal class OpenGenericUseCaseBinding : IOpenGenericUseCaseBinding
+	{
+		private readonly SiegeTypeResolver typeResolver;
+
+		public OpenGenericUseCaseBinding(SiegeTypeResolver typeResolver)
+		{
+			this.typeResolver = typeResolver;
+		}
+
+		public void Bind(IUseCase useCase, IFactoryFetcher locator)
+		{
+			var factory = (Factory<object>) locator.GetFactory<object>();
+			factory.AddCase(useCase);
+
+			this.typeResolver.Register(useCase.GetBaseBindingType(), useCase.GetBoundType());
+		}
+	}
 }

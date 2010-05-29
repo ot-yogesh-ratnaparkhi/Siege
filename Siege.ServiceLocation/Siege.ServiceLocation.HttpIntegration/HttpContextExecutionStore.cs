@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
+using Siege.ServiceLocation.EventHandlers;
 using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.HttpIntegration

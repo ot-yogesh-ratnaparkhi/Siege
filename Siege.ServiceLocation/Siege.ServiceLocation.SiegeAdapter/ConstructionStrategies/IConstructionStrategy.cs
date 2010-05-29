@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,14 +15,15 @@
 
 using System;
 using System.Collections.Generic;
-using Siege.ServiceLocation.EventHandlers;
+using Siege.ServiceLocation.Resolution;
+using Siege.ServiceLocation.SiegeAdapter.Maps;
 
-namespace Siege.ServiceLocation.Stores
+namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 {
-    public interface IExecutionStore
-    {
-        List<Type> RequestedTypes{ get; }
-        void WireEvent(ITypeResolver typeResolver);
-        void WireEvent(ITypeRequester typeRequestor);
-    }
+	public interface IConstructionStrategy
+	{
+		object Get(Type type, string key, ConstructorParameter[] parameters, ResolutionMap map);
+		IEnumerable<object> GetAll(Type type, ResolutionMap map);
+		IEnumerable<TService> GetAll<TService>(ResolutionMap map);
+	}
 }

@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,17 +13,10 @@
      limitations under the License.
 */
 
-using Siege.ServiceLocation.EventHandlers;
-
-namespace Siege.ServiceLocation
+namespace Siege.ServiceLocation.EventHandlers
 {
-    public interface ITypeResolver
-    {
-        event TypeResolvedEventHandler TypeResolved;
-    }
-
-    public interface ITypeRequester
-    {
-        event TypeRequestedEventHandler TypeRequested;
-    }
+	public interface ITypeRequester
+	{
+		event TypeRequestedEventHandler TypeRequested;
+	}
 }

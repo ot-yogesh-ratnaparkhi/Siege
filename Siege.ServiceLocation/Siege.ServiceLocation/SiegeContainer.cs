@@ -32,21 +32,23 @@ using Siege.ServiceLocation.UseCases.Default;
 
 namespace Siege.ServiceLocation
 {
-    public class SiegeContainer : IContextualServiceLocator, ITypeResolver
+    public class SiegeContainer : IContextualServiceLocator, ITypeResolver, ITypeRegistrar
     {
         private IServiceLocatorAdapter serviceLocator;
         private IServiceLocatorStore store;
         private UseCaseStore useCaseStore = new UseCaseStore();
         private readonly Hashtable factories = new Hashtable();
 
-        public event TypeResolvedEventHandler TypeResolved;
+		public event TypeResolvedEventHandler TypeResolved;
+		public event TypeRegisteredEventHandler TypeRegistered;
 
         public SiegeContainer(IServiceLocatorAdapter serviceLocator, IServiceLocatorStore store, ITypeBuilder typeBuilder)
         {
             this.serviceLocator = serviceLocator;
             this.store = store;
 
-            this.store.ExecutionStore.WireEvent(this);
+			this.store.ExecutionStore.WireEvent(this);
+			this.store.RegistrationStore.WireEvent(this);
             TypeHandler.Initialize(typeBuilder);
 
             AddBinding(typeof (IActionUseCaseBinding<>), typeof (ActionUseCaseBinding<>));
@@ -210,6 +212,8 @@ namespace Siege.ServiceLocation
                 binding.Bind(useCase, this);
             }
 
+        	RaiseTypeRegisteredEvent(useCase.GetBoundType());
+
             return this;
         }
 
@@ -228,6 +232,11 @@ namespace Siege.ServiceLocation
         {
             if (this.TypeResolved != null) this.TypeResolved(type);
         }
+
+		private void RaiseTypeRegisteredEvent(Type type)
+		{
+			if (this.TypeRegistered != null) this.TypeRegistered(type);
+		}
 
         private object Resolve(IGenericUseCase useCase, IResolutionStrategy strategy)
         {

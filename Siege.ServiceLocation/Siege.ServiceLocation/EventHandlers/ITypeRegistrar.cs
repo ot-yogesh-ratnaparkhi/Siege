@@ -13,16 +13,10 @@
      limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
-using Siege.ServiceLocation.EventHandlers;
-
-namespace Siege.ServiceLocation.Stores
+namespace Siege.ServiceLocation.EventHandlers
 {
-    public interface IExecutionStore
-    {
-        List<Type> RequestedTypes{ get; }
-        void WireEvent(ITypeResolver typeResolver);
-        void WireEvent(ITypeRequester typeRequestor);
-    }
+	public interface ITypeRegistrar
+	{
+		event TypeRegisteredEventHandler TypeRegistered;
+	}
 }

@@ -13,15 +13,26 @@
      limitations under the License.
 */
 
-using System;
+using NUnit.Framework;
+using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
 
-namespace Siege.ServiceLocation.Stores
+namespace Siege.ServiceLocation.UnitTests.Adapters
 {
-    public interface IServiceLocatorStore : IDisposable
-    {
-        IContextStore ContextStore { get; }
-		IResolutionStore ResolutionStore { get; set; }
-        IExecutionStore ExecutionStore { get; }
-		IRegistrationStore RegistrationStore { get; }
-    }
+	public class SiegeAdapterTests : SiegeContainerTests
+	{
+		protected override IServiceLocatorAdapter GetAdapter()
+		{
+			return new SiegeAdapter.SiegeAdapter(new ReflectionConstructionStrategy());
+		}
+
+		protected override void RegisterWithoutSiege()
+		{
+		}
+
+		[Ignore]
+		public override void Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container()
+		{
+			base.Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container();
+		}
+	}
 }

@@ -112,7 +112,7 @@ namespace Siege.ServiceLocation.UnitTests
 
         
         [Test]
-        public void Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container()
+        public virtual void Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container()
         {
             RegisterWithoutSiege();
             Assert.IsTrue(locator.GetInstance<IUnregisteredInterface>() is UnregisteredClass);

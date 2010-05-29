@@ -18,7 +18,9 @@ namespace Siege.ServiceLocation.Stores
     public class ThreadedServiceLocatorStore : IServiceLocatorStore
     {
         private IContextStore store;
-        private IResolutionStore resolutionStore;
+		private IResolutionStore resolutionStore;
+    	private IExecutionStore executionStore;
+    	private IRegistrationStore registrationStore;
 
         public ThreadedServiceLocatorStore()
             : this(new ThreadLocalStore())
@@ -29,7 +31,8 @@ namespace Siege.ServiceLocation.Stores
         {
             this.store = store;
             this.resolutionStore = new ThreadedResolutionStore();
-            this.ExecutionStore = ThreadedExecutionStore.New(this);
+            this.executionStore = ThreadedExecutionStore.New(this);
+        	this.registrationStore = new ThreadedRegistrationStore();
         }
 
         public IContextStore ContextStore
@@ -37,13 +40,18 @@ namespace Siege.ServiceLocation.Stores
             get { return this.store; }
         }
 
+    	public IRegistrationStore RegistrationStore
+    	{
+			get { return this.registrationStore; }
+    	}
+
         public IResolutionStore ResolutionStore
         {
             get { return this.resolutionStore; }
 			set { this.resolutionStore = value; }
-        }
+		}
 
-        public IExecutionStore ExecutionStore { get; set; }
+		public IExecutionStore ExecutionStore { get { return this.executionStore; } }
 
         public void Dispose()
         {

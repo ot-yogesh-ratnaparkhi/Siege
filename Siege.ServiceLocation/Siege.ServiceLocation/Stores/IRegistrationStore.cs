@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,13 +16,14 @@
 using System;
 using System.Collections.Generic;
 using Siege.ServiceLocation.EventHandlers;
+using Siege.ServiceLocation.Planning;
 
 namespace Siege.ServiceLocation.Stores
 {
-    public interface IExecutionStore
-    {
-        List<Type> RequestedTypes{ get; }
-        void WireEvent(ITypeResolver typeResolver);
-        void WireEvent(ITypeRequester typeRequestor);
-    }
+	public interface IRegistrationStore
+	{
+		List<Type> RegisteredTypes { get; }
+		List<ConstructorCandidate> GetCandidatesForType<TType>() where TType : class;
+		void WireEvent(ITypeRegistrar typeRegistrar);
+	}
 }

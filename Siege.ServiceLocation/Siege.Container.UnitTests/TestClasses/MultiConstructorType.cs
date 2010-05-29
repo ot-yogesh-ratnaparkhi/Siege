@@ -13,15 +13,36 @@
      limitations under the License.
 */
 
-using System;
-
-namespace Siege.ServiceLocation.Stores
+namespace Siege.ServiceLocation.UnitTests.TestClasses
 {
-    public interface IServiceLocatorStore : IDisposable
-    {
-        IContextStore ContextStore { get; }
-		IResolutionStore ResolutionStore { get; set; }
-        IExecutionStore ExecutionStore { get; }
-		IRegistrationStore RegistrationStore { get; }
-    }
+	public class MultiConstructorType
+	{
+		public MultiConstructorType(TypeA a) {}
+		public MultiConstructorType(TypeA a, TypeB b) { }
+		public MultiConstructorType(TypeA a, TypeB b, TypeC c) { }
+		public MultiConstructorType(TypeA a, TypeB b, TypeC c, TypeD d) { }
+		public MultiConstructorType(TypeA a, TypeB b, TypeC c, TypeE e) { }
+		public MultiConstructorType(TypeE e) { }
+
+	}
+
+	public class TypeA
+	{
+	}
+
+	public class TypeB
+	{
+	}
+
+	public class TypeC
+	{
+	}
+
+	public class TypeD
+	{
+	}
+
+	public class TypeE
+	{
+	}
 }

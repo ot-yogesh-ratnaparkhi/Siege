@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6A195833-5013-422B-B87D-70FB70A0B79C}</ProjectGuid>
+    <ProjectGuid>{95E2262B-E46C-4B10-9A28-12FC2C7127F0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Siege.ServiceLocation.HttpIntegration</RootNamespace>
-    <AssemblyName>Siege.ServiceLocation.HttpIntegration</AssemblyName>
+    <RootNamespace>Siege.ServiceLocation.SiegeAdapter</RootNamespace>
+    <AssemblyName>Siege.ServiceLocation.SiegeAdapter</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -35,13 +35,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
+    <Reference Include="Siege.DynamicTypeGeneration, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Siege.DynamicTypeGeneration.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web.Routing">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml.Linq">
@@ -54,16 +53,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HttpContextExecutionStore.cs" />
-    <Compile Include="HttpContextRegistrationStore.cs" />
-    <Compile Include="HttpResolutionStore.cs" />
-    <Compile Include="HttpSessionStore.cs" />
-    <Compile Include="HttpSiegeContainer.cs" />
-    <Compile Include="HttpSiegeContainerStore.cs" />
-    <Compile Include="SiegeControllerFactory.cs" />
+    <Compile Include="ConditionalUseCaseBinding.cs" />
+    <Compile Include="ConstructionStrategies\ReflectionConstructionStrategy.cs" />
+    <Compile Include="DefaultUseCaseBinding.cs" />
+    <Compile Include="ConstructionStrategies\IConstructionStrategy.cs" />
+    <Compile Include="Maps\FactoryMap.cs" />
+    <Compile Include="Maps\InstanceMap.cs" />
+    <Compile Include="KeyBasedUseCaseBinding.cs" />
+    <Compile Include="Maps\ResolutionMap.cs" />
+    <Compile Include="OpenGenericUseCaseBinding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SiegeHttpApplication.cs" />
-    <Compile Include="SiegeViewEngine.cs" />
+    <Compile Include="SiegeAdapter.cs" />
+    <Compile Include="ConstructionStrategies\SiegeProxyConstructionStrategy.cs" />
+    <Compile Include="SiegeTypeResolver.cs" />
+    <Compile Include="Maps\TypeMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Siege.ServiceLocation\Siege.ServiceLocation.csproj">
