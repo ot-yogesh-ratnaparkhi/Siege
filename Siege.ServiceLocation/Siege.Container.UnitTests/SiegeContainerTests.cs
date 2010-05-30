@@ -21,12 +21,14 @@ using Siege.ServiceLocation.UnitTests.TestClasses;
 
 namespace Siege.ServiceLocation.UnitTests
 {
-    [TestFixture]
+	[TestFixture]
+	[Category("Siege")]
     public abstract partial class SiegeContainerTests
     {
         protected IContextualServiceLocator locator;
         protected abstract IServiceLocatorAdapter GetAdapter();
-        protected abstract void RegisterWithoutSiege();
+		protected abstract void RegisterWithoutSiege<TFrom, TTo>() where TTo : TFrom;
+		protected abstract void ResolveWithoutSiege<T>();
 
         [SetUp]
         public virtual void SetUp()
@@ -114,7 +116,7 @@ namespace Siege.ServiceLocation.UnitTests
         [Test]
         public virtual void Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container()
         {
-            RegisterWithoutSiege();
+			RegisterWithoutSiege<IUnregisteredInterface, UnregisteredClass>();
             Assert.IsTrue(locator.GetInstance<IUnregisteredInterface>() is UnregisteredClass);
         }
 

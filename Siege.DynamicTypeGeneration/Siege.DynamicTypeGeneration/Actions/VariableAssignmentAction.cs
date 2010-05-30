@@ -21,7 +21,8 @@ namespace Siege.DynamicTypeGeneration.Actions
     internal class VariableAssignmentAction : ITypeGenerationAction
     {
         private readonly Func<MethodBuilderBundle> bundle;
-        private readonly int localIndex;
+    	private readonly MethodParameter parameter;
+    	private readonly int localIndex;
 
         public VariableAssignmentAction(Func<MethodBuilderBundle> bundle, int localIndex)
         {
@@ -29,9 +30,20 @@ namespace Siege.DynamicTypeGeneration.Actions
             this.localIndex = localIndex;
         }
 
-        public void Execute()
+		public VariableAssignmentAction(Func<MethodBuilderBundle> bundle, int localIndex, MethodParameter parameter) : this(bundle, localIndex)
+		{
+			this.parameter = parameter;
+		}
+
+    	public void Execute()
         {
-            bundle().MethodBuilder.GetILGenerator().Emit(OpCodes.Stloc, localIndex);
+    		var generator = bundle().MethodBuilder.GetILGenerator();
+
+            if(parameter != null)
+            {
+				generator.Emit(OpCodes.Ldarg, parameter.Index);
+            }
+            generator.Emit(OpCodes.Stloc, localIndex);
         }
     }
 }

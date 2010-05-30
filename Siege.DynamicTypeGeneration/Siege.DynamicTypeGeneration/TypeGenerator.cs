@@ -25,9 +25,13 @@ namespace Siege.DynamicTypeGeneration
         private static AssemblyBuilder assemblyBuilder;
         private ModuleBuilder module;
 
-        public TypeGenerator()
+		public TypeGenerator() : this("Siege.DynamicTypes")
+		{
+			
+		}
+
+        public TypeGenerator(string dllName)
         {
-            const string dllName = "Siege.DynamicTypes";
             AssemblyName assemblyName = new AssemblyName { Name = dllName };
             AppDomain thisDomain = Thread.GetDomain();
 

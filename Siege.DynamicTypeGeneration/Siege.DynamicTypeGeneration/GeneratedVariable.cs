@@ -91,6 +91,11 @@ namespace Siege.DynamicTypeGeneration
             actions.Add(new VariableAssignmentAction(() => method.MethodBuilder(), localIndex));
         }
 
+		public void AssignFromParameter(MethodParameter parameter)
+		{
+			actions.Add(new VariableAssignmentAction(method.MethodBuilder, localIndex, parameter));
+		}
+
         public int LocalIndex
         {
             get { return localIndex; }

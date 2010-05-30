@@ -24,50 +24,57 @@ using Siege.SeviceLocation.WindsorAdapter;
 
 namespace Siege.ServiceLocation.UnitTests.Adapters
 {
-    [TestFixture]
-    public class WindsorAdapterTests : SiegeContainerTests
-    {
-        private IKernel kernel;
+	[TestFixture]
+	[Category("Windsor")]
+	public class WindsorAdapterTests : SiegeContainerTests
+	{
+		private IKernel kernel;
 
-        public override void SetUp()
-        {
-            kernel = new DefaultKernel();
-            base.SetUp();
-        }
+		protected override void ResolveWithoutSiege<T>()
+		{
+			kernel.Resolve<T>();
+		}
 
-        protected override IServiceLocatorAdapter GetAdapter()
-        {
-            return new WindsorAdapter(kernel);
-        }
+		public override void SetUp()
+		{
+			kernel = new DefaultKernel();
+			base.SetUp();
+		}
 
-        protected override void RegisterWithoutSiege()
-        {
-            kernel.Register(Component.For<IUnregisteredInterface>().ImplementedBy<UnregisteredClass>());
-        }
-        
-        [Test, Ignore("Bug in Windsor lol")]
-        public virtual void Should_Dispose_From_Containers()
-        {
-            DefaultKernel disposableKernel = new DefaultKernel();
-            using (var disposableLocater = new SiegeContainer(new WindsorAdapter(disposableKernel), new ThreadedServiceLocatorStore()))
-            {
-                disposableLocater.Register(Given<ITestInterface>.Then<TestCase1>());
-                Assert.IsTrue(disposableLocater.GetInstance<ITestInterface>() is TestCase1);
-            }
-            
-            Assert.IsFalse(disposableKernel.HasComponent(typeof(ITestInterface)));
-        }
+		protected override IServiceLocatorAdapter GetAdapter()
+		{
+			return new WindsorAdapter(kernel);
+		}
 
-        [ExpectedException(typeof(RegistrationNotFoundException))]
-        public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided()
-        {
-            base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided();
-        }
+		protected override void RegisterWithoutSiege<TFrom, TTo>()
+		{
+			kernel.Register(Component.For<TFrom>().ImplementedBy<TTo>());
+		}
 
-        [ExpectedException(typeof(RegistrationNotFoundException))]
-        public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
-        {
-            base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
-        }
-    }
+		[Test, Ignore("Bug in Windsor lol")]
+		public virtual void Should_Dispose_From_Containers()
+		{
+			DefaultKernel disposableKernel = new DefaultKernel();
+			using (
+				var disposableLocater = new SiegeContainer(new WindsorAdapter(disposableKernel), new ThreadedServiceLocatorStore()))
+			{
+				disposableLocater.Register(Given<ITestInterface>.Then<TestCase1>());
+				Assert.IsTrue(disposableLocater.GetInstance<ITestInterface>() is TestCase1);
+			}
+
+			Assert.IsFalse(disposableKernel.HasComponent(typeof (ITestInterface)));
+		}
+
+		[ExpectedException(typeof (RegistrationNotFoundException))]
+		public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided()
+		{
+			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided();
+		}
+
+		[ExpectedException(typeof (RegistrationNotFoundException))]
+		public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
+		{
+			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
+		}
+	}
 }

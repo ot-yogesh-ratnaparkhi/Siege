@@ -15,6 +15,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
 using Siege.ServiceLocation.SiegeAdapter.Maps;
@@ -24,13 +27,12 @@ namespace Siege.ServiceLocation.SiegeAdapter
 	internal class SiegeTypeResolver
 	{
 		private readonly IConstructionStrategy strategy;
-
-		private ResolutionMap resolutionMap = new ResolutionMap();
+		protected ResolutionMap resolutionMap = new ResolutionMap();
 
 		public SiegeTypeResolver(IConstructionStrategy strategy)
 		{
 			this.strategy = strategy;
-			this.resolutionMap.InstanceMap.Add(typeof(SiegeTypeResolver), this, null);
+			Register(typeof(SiegeTypeResolver), this, null);
 		}
 
 		public void Register(Type from, Type to)
@@ -48,19 +50,30 @@ namespace Siege.ServiceLocation.SiegeAdapter
 			Register(from, instance, null);
 		}
 
-		public void Register(Type from, object instance, string key)
-		{
-			this.resolutionMap.InstanceMap.Add(from, instance, key);
-		}
-
 		public void Register(Type from, string key)
 		{
 			Register(from, from, key);
 		}
 
-		public void Register(Type from, Type to, string key)
+		public virtual void Register(Type from, object instance, string key)
+		{
+			this.resolutionMap.InstanceMap.Add(from, instance, key);
+		}
+
+		public virtual void Register(Type from, Type to, string key)
 		{
 			this.resolutionMap.TypeMap.Add(from, to, key);
+			strategy.Register(to, resolutionMap.TypeMap.GetMappedType(to, key));
+		}
+
+		public virtual void RegisterWithFactoryMethod(Type from, Func<object> to, string key)
+		{
+			this.resolutionMap.FactoryMap.Add(from, to, key);
+		}
+
+		public bool Contains(Type type)
+		{
+			return this.resolutionMap.Contains(type);
 		}
 
 		public void RegisterWithFactoryMethod(Type from, Func<object> to)
@@ -68,14 +81,48 @@ namespace Siege.ServiceLocation.SiegeAdapter
 			RegisterWithFactoryMethod(from, to, null);
 		}
 
-		public void RegisterWithFactoryMethod(Type from, Func<object> to, string key)
-		{
-			this.resolutionMap.FactoryMap.Add(from, to, key);
-		}
-
 		public object Get(Type type, string key, ConstructorParameter[] parameters)
 		{
-			return strategy.Get(type, key, parameters, resolutionMap);
+			if (resolutionMap.FactoryMap.Contains(type)) return resolutionMap.FactoryMap.Get(type, key);
+			if (resolutionMap.InstanceMap.Contains(type)) return resolutionMap.InstanceMap.Get(type, key);
+
+			if (!resolutionMap.TypeMap.Contains(type) && type.IsClass)
+			{
+				resolutionMap.TypeMap.Add(type, type, null);
+			}
+
+			var mappedType = resolutionMap.TypeMap.GetMappedType(type, key);
+
+			if (mappedType == null) return null;
+
+			var candidate = SelectConstructor(mappedType, resolutionMap, parameters);
+
+			var constructorArgs = new object[candidate.Parameters.Count];
+
+			foreach (ParameterInfo arg in candidate.Parameters)
+			{
+				var value = Get(arg.ParameterType, null, null);
+
+				if (value != null)
+				{
+					constructorArgs[arg.Position] = value;
+				}
+				else
+				{
+					foreach (ConstructorParameter parameter in parameters)
+					{
+						if (parameter.Name == arg.Name)
+						{
+							constructorArgs[arg.Position] = parameter.Value;
+						}
+					}
+				}
+
+			}
+
+			if (!strategy.CanConstruct(candidate)) strategy.Register(candidate.Type, mappedType);
+
+			return strategy.Create(candidate, constructorArgs.ToArray());  
 		}
 
 		public object Get(Type type, ConstructorParameter[] parameters)
@@ -85,17 +132,44 @@ namespace Siege.ServiceLocation.SiegeAdapter
 
 		public bool IsRegistered(Type type)
 		{
-			return this.resolutionMap.Contains(type);
+			return resolutionMap.Contains(type);
 		}
 
 		public IEnumerable<object> GetAll(Type type)
 		{
-			return strategy.GetAll(type, resolutionMap); ;
+			List<object> list = new List<object>();
+
+			foreach (Type registration in resolutionMap.GetAllRegisteredTypesMatching(type))
+			{
+				list.Add(Get(registration, null, new ConstructorParameter[] { }));
+			}
+
+			return list;
 		}
 
 		public IEnumerable<TService> GetAll<TService>()
 		{
-			return strategy.GetAll<TService>(resolutionMap); ;
+			List<TService> list = new List<TService>();
+
+			foreach (Type registration in resolutionMap.GetAllRegisteredTypesMatching(typeof(TService)))
+			{
+				list.Add((TService)Get(registration, null, new ConstructorParameter[] { }));
+			}
+
+			return list;
+		}
+
+		private ConstructorCandidate SelectConstructor(MappedType type, ResolutionMap map, ConstructorParameter[] parameters)
+		{
+			foreach (ConstructorCandidate candidate in type.Candidates)
+			{
+				if (candidate.Parameters.All(p => map.Contains(p.ParameterType) || parameters.Any(param => p.ParameterType.IsAssignableFrom(param.Value.GetType()))))
+				{
+					return candidate;
+				}
+			}
+
+			throw new Exception();
 		}
 	}
 }

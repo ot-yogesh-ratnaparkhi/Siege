@@ -15,26 +15,73 @@
 
 using System;
 using System.Collections.Generic;
-using Siege.ServiceLocation.Resolution;
+using System.Linq;
+using System.Reflection;
+using Siege.DynamicTypeGeneration;
+using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.SiegeAdapter.Maps;
 
 namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 {
+	public abstract class SiegeActivator
+	{
+		public abstract object Instantiate(object[] args);
+	}
+
 	public class SiegeProxyConstructionStrategy : IConstructionStrategy
 	{
-		public object Get(Type type, string key, ConstructorParameter[] parameters, ResolutionMap map)
+		private Dictionary<ConstructorCandidate, SiegeActivator> activators = new Dictionary<ConstructorCandidate,SiegeActivator>();
+		private int registrationCount = 1;
+
+		public bool CanConstruct(ConstructorCandidate candidate)
 		{
-			throw new NotImplementedException();
+			return activators.ContainsKey(candidate);
 		}
 
-		public IEnumerable<object> GetAll(Type type, ResolutionMap map)
+		public object Create(ConstructorCandidate candidate, object[] parameters)
 		{
-			throw new NotImplementedException();
+			return this.activators[candidate].Instantiate(parameters);
 		}
 
-		public IEnumerable<TService> GetAll<TService>(ResolutionMap map)
+		public void Register(Type to, MappedType mappedType)
 		{
-			throw new NotImplementedException();
+			var generator = new TypeGenerator("Siege.DynamicTypes" + registrationCount);
+			registrationCount++;
+
+			if(mappedType == null) return;
+
+			foreach (ConstructorCandidate candidate in mappedType.Candidates)
+			{
+				var activatorType = generator.CreateType(context =>
+             	{
+             		context.Named(Guid.NewGuid() + "Builder");
+             		context.InheritFrom<SiegeActivator>();
+
+					context.OverrideMethod<SiegeActivator>(activator => activator.Instantiate(null), method =>
+					{
+						method.WithBody(body =>
+	                	{
+							var instance = body.CreateVariable(to);
+	                		
+							List<ILocalIndexer> items = new List<ILocalIndexer>();
+
+							foreach(ParameterInfo info in candidate.Parameters.OrderBy(p => p.Position))
+							{
+								var arg1 = body.CreateVariable(info.ParameterType);
+								arg1.AssignFromParameter(new MethodParameter(info.Position+1));
+								items.Add(arg1);
+							}
+
+	                		instance.AssignFrom(body.Instantiate(to, candidate.Parameters.OrderBy(p => p.Position).Select(p => p.ParameterType).ToArray(), items.ToArray()));
+	                		body.Return(instance);
+	                	});
+					});
+             	});
+
+				activators.Add(candidate, (SiegeActivator)Activator.CreateInstance(activatorType));
+			}
+
+			generator.Save();
 		}
 	}
 }

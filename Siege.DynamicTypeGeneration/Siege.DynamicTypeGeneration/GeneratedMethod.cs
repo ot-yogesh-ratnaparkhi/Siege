@@ -68,6 +68,18 @@ namespace Siege.DynamicTypeGeneration
             return LocalCount - 1;
         }
 
+		public int Instantiate(Type type, Type[] constructorArguments, ILocalIndexer[] arguments)
+		{
+			foreach (ILocalIndexer arg in arguments)
+			{
+				actions.Add(new VariableLoadAction(this, arg.LocalIndex));
+			}
+
+			actions.Add(new InstantiationAction(bundle, type, constructorArguments));
+
+			return LocalCount - 1;
+		}
+
         public int Instantiate(Func<BuilderBundle> type, Type[] constructorArguments)
         {
             actions.Add(new InstantiationAction(bundle, type, constructorArguments));

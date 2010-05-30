@@ -58,5 +58,18 @@ namespace Siege.ServiceLocation.UnitTests
 
 			Assert.AreSame(argument, ((DependsOnInterface) instance).Argument);
 		}
+
+		[Test]
+		public void Should_Resolve_With_Args_In_Any_Order()
+		{
+			locator.Register(Given<ITestInterface>.Then<DependsOnMultipleInterfaceTypes>());
+
+			var argument = new ConstructorArgument();
+			var instance = locator.GetInstance<ITestInterface>(new ConstructorParameter { Name = "arg", Value = argument });
+
+
+			Assert.AreSame(argument, ((DependsOnMultipleInterfaceTypes)instance).Arg);
+			Assert.AreSame(locator, ((DependsOnMultipleInterfaceTypes)instance).Locator);
+		}
 	}
 }

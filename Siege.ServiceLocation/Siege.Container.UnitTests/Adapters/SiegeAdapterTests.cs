@@ -25,7 +25,12 @@ namespace Siege.ServiceLocation.UnitTests.Adapters
 			return new SiegeAdapter.SiegeAdapter(new ReflectionConstructionStrategy());
 		}
 
-		protected override void RegisterWithoutSiege()
+		protected override void RegisterWithoutSiege<TFrom, TTo>()
+		{
+		}
+
+
+		protected override void ResolveWithoutSiege<T>()
 		{
 		}
 
@@ -34,5 +39,18 @@ namespace Siege.ServiceLocation.UnitTests.Adapters
 		{
 			base.Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container();
 		}
+
+		[Ignore]
+		public override void WithoutSiege()
+		{
+ 			 base.WithoutSiege();
+		}
+
+		[Category("Without Siege")]
+		public override void With_Siege()
+		{
+			base.With_Siege();
+		}
+
 	}
 }

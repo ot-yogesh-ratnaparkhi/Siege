@@ -62,6 +62,11 @@ namespace Siege.DynamicTypeGeneration
             return () => new LocalIndexer(GeneratedMethod.Instantiate(type, constructorArguments));
         }
 
+		public Func<ILocalIndexer> Instantiate(Type type, Type[] constructorArguments, ILocalIndexer[] arguments)
+		{
+			return () => new LocalIndexer(GeneratedMethod.Instantiate(type, constructorArguments, arguments));
+		}
+
         public Func<ILocalIndexer> Instantiate(Func<BuilderBundle> type, Type[] constructorArguments)
         {
             return () => new LocalIndexer(GeneratedMethod.Instantiate(type, constructorArguments));

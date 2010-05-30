@@ -13,7 +13,6 @@
      limitations under the License.
 */
 
-using System;
 using Ninject;
 using NUnit.Framework;
 using Siege.ServiceLocation.Stores;
@@ -22,46 +21,53 @@ using Siege.ServiceLocation.UnitTests.TestClasses;
 
 namespace Siege.ServiceLocation.UnitTests.Adapters
 {
-    [TestFixture]
-    public class NinjectAdapterTests : SiegeContainerTests
-    {
-        private IKernel kernel;
-        public override void SetUp()
-        {
-            kernel = new StandardKernel();
-            base.SetUp();
-        }
+	[TestFixture]
+	[Category("Ninject")]
+	public class NinjectAdapterTests : SiegeContainerTests
+	{
+		private IKernel kernel;
 
-        protected override IServiceLocatorAdapter GetAdapter()
-        {
-            return new NinjectAdapter.NinjectAdapter(kernel);
-        }
+		protected override void ResolveWithoutSiege<T>()
+		{
+			kernel.Get<T>();
+		}
 
-        protected override void RegisterWithoutSiege()
-        {
-            Type type = typeof(UnregisteredClass);
+		public override void SetUp()
+		{
+			kernel = new StandardKernel();
+			base.SetUp();
+		}
 
-            kernel.Bind<IUnregisteredInterface>().To(type);
-        }
+		protected override IServiceLocatorAdapter GetAdapter()
+		{
+			return new NinjectAdapter.NinjectAdapter(kernel);
+		}
 
-        [Test]
-        public virtual void Should_Dispose_From_Containers()
-        {
-            var disposableContainer = new StandardKernel();
-            using (var disposableLocater = new SiegeContainer(new NinjectAdapter.NinjectAdapter(disposableContainer), new ThreadedServiceLocatorStore()))
-            {
-                disposableLocater.Register(Given<ITestInterface>.Then<TestCase1>());
-                Assert.IsTrue(disposableLocater.GetInstance<ITestInterface>() is TestCase1);
-            }
+		protected override void RegisterWithoutSiege<TFrom, TTo>()
+		{
+			kernel.Bind<TFrom>().To<TTo>();
+		}
 
-            Assert.IsTrue(disposableContainer.IsDisposed);
-        }
+		[Test]
+		public virtual void Should_Dispose_From_Containers()
+		{
+			var disposableContainer = new StandardKernel();
+			using (
+				var disposableLocater = new SiegeContainer(new NinjectAdapter.NinjectAdapter(disposableContainer),
+				                                           new ThreadedServiceLocatorStore()))
+			{
+				disposableLocater.Register(Given<ITestInterface>.Then<TestCase1>());
+				Assert.IsTrue(disposableLocater.GetInstance<ITestInterface>() is TestCase1);
+			}
 
-        public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
-        {
-            base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
+			Assert.IsTrue(disposableContainer.IsDisposed);
+		}
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
-        }
-    }
+		public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
+		{
+			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
+
+			Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
+		}
+	}
 }

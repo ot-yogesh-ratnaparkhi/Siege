@@ -14,94 +14,26 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Siege.ServiceLocation.Planning;
-using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.SiegeAdapter.Maps;
 
 namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 {
 	public class ReflectionConstructionStrategy : IConstructionStrategy
 	{
-		public object Get(Type type, string key, ConstructorParameter[] parameters, ResolutionMap map)
+		public object Create(ConstructorCandidate candidate, object[] parameters)
 		{
-			if(map.FactoryMap.Contains(type)) return map.FactoryMap.Get(type, key);
-			if(map.InstanceMap.Contains(type)) return map.InstanceMap.Get(type, key);
-			
-			if(!map.TypeMap.Contains(type) && type.IsClass)
-			{
-				map.TypeMap.Add(type, type, null);
-			}
-
-			var mappedType = map.TypeMap.GetMappedType(type, key);
-			var constructorArgs = new List<object>();
-
-			if (mappedType == null) return null;
-
-			if(mappedType.Candidates == null)
-			{
-				if(parameters == null || parameters.Count() == 0) return Activator.CreateInstance(mappedType.To);
-
-				foreach (ConstructorParameter parameter in parameters)
-				{
-					constructorArgs.Add(parameter.Value);
-				}
-
-				return Activator.CreateInstance(mappedType.To, constructorArgs.ToArray());  
-			}
-
-			var candidate = SelectConstructor(mappedType, map, parameters);
-
-			foreach(Type arg in candidate.Parameters)
-			{
-				var value = Get(arg, null, null, map);
-				if(value != null) constructorArgs.Add(value);
-			}
-
-			foreach(ConstructorParameter parameter in parameters)
-			{
-				constructorArgs.Add(parameter.Value);
-			}
-
-			return Activator.CreateInstance(mappedType.To, constructorArgs.ToArray());  
+			return Activator.CreateInstance(candidate.Type, parameters.ToArray());
 		}
 
-		public IEnumerable<object> GetAll(Type type, ResolutionMap map)
+		public bool CanConstruct(ConstructorCandidate candidate)
 		{
-			List<object> list = new List<object>();
-
-			foreach(Type registration in map.GetAllRegisteredTypesMatching(type))
-			{
-				list.Add(Get(registration, null, new ConstructorParameter[] {}, map));
-			}
-
-			return list;
+			return true;
 		}
 
-		public IEnumerable<TService> GetAll<TService>(ResolutionMap map)
+		public void Register(Type to, MappedType mappedType)
 		{
-			List<TService> list = new List<TService>();
-
-			foreach (Type registration in map.GetAllRegisteredTypesMatching(typeof(TService)))
-			{
-				list.Add((TService)Get(registration, null, new ConstructorParameter[] { }, map));
-			}
-
-			return list;
-		}
-
-		private ConstructorCandidate SelectConstructor(MappedType type, ResolutionMap map, ConstructorParameter[] parameters)
-		{
-			foreach (ConstructorCandidate candidate in type.Candidates)
-			{
-				if (candidate.Parameters.All(p => map.Contains(p) || parameters.Any(param => p.IsAssignableFrom(param.Value.GetType()))))
-				{
-					return candidate;
-				}
-			}
-
-			throw new Exception();
 		}
 	}
 }

@@ -17,43 +17,49 @@ using Autofac;
 using Autofac.Builder;
 using NUnit.Framework;
 using Siege.ServiceLocation.Exceptions;
-using Siege.ServiceLocation.UnitTests.TestClasses;
 
 namespace Siege.ServiceLocation.UnitTests.Adapters
 {
-    [TestFixture]
-    public class AutofacAdapterTests : SiegeContainerTests
-    {
-        private IContainer container;
+	[TestFixture]
+	[Category("Autofac")]
+	public class AutofacAdapterTests : SiegeContainerTests
+	{
+		private IContainer container;
 
-        public override void SetUp()
-        {
-            container = new Container();
-            base.SetUp();
-        }
 
-        protected override IServiceLocatorAdapter GetAdapter()
-        {
-            return new AutofacAdapter.AutofacAdapter(container);
-        }
+		protected override void ResolveWithoutSiege<T>()
+		{
+			container.Resolve<T>();
+		}
 
-        protected override void RegisterWithoutSiege()
-        {
-            var builder = new ContainerBuilder();
-            builder.Register<UnregisteredClass>().As<IUnregisteredInterface>();
-            builder.Build(container);
-        }
+		public override void SetUp()
+		{
+			container = new Container();
+			base.SetUp();
+		}
 
-        [ExpectedException(typeof (RegistrationNotFoundException))]
-        public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided()
-        {
-            base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided();
-        }
+		protected override IServiceLocatorAdapter GetAdapter()
+		{
+			return new AutofacAdapter.AutofacAdapter(container);
+		}
 
-        [ExpectedException(typeof (RegistrationNotFoundException))]
-        public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
-        {
-            base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
-        }
-    }
+		protected override void RegisterWithoutSiege<TFrom, TTo>()
+		{
+			var builder = new ContainerBuilder();
+			builder.Register<TTo>().As<TFrom>();
+			builder.Build(container);
+		}
+
+		[ExpectedException(typeof (RegistrationNotFoundException))]
+		public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided()
+		{
+			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided();
+		}
+
+		[ExpectedException(typeof (RegistrationNotFoundException))]
+		public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
+		{
+			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
+		}
+	}
 }

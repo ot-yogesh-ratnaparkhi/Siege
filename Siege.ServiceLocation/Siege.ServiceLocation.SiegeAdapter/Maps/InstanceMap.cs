@@ -46,12 +46,9 @@ namespace Siege.ServiceLocation.SiegeAdapter.Maps
 		public object Get(Type type, string key)
 		{
 			var instances = entries[type].MappedInstances;
-			var instance = instances.Where(f => f.Name == key && !string.IsNullOrEmpty(key)).FirstOrDefault();
+			var instance = instances.Where(f => f.Name == key && !string.IsNullOrEmpty(key)).FirstOrDefault() ??
+			               entries[type].MappedInstances.First();
 
-			if (instance == null)
-			{
-				instance = entries[type].MappedInstances.First();
-			}
 			return instance.To;
 		}
 	}

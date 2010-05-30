@@ -21,34 +21,36 @@ using StructureMap.Configuration.DSL;
 
 namespace Siege.ServiceLocation.StructureMapAdapter
 {
-    public class KeyBasedUseCaseBinding<TService> : IKeyBasedUseCaseBinding<TService>
-    {
-        private StructureMap.Container container;
+	public class KeyBasedUseCaseBinding<TService> : IKeyBasedUseCaseBinding<TService>
+	{
+		private StructureMap.Container container;
 
-        public KeyBasedUseCaseBinding(StructureMap.Container container)
-        {
-            this.container = container;
-        }
+		public KeyBasedUseCaseBinding(StructureMap.Container container)
+		{
+			this.container = container;
+		}
 
-        public void Bind(IUseCase useCase, IFactoryFetcher locator)
-        {
-            Bind((IKeyBasedUseCase<TService>)useCase);
-        }
+		public void Bind(IUseCase useCase, IFactoryFetcher locator)
+		{
+			Bind((IKeyBasedUseCase<TService>) useCase);
+		}
 
-        private void Bind(IKeyBasedUseCase<TService> useCase)
-        {
-            Registry registry = new Registry();
-            registry.ForRequestedType<TService>().CacheBy(InstanceScope.PerRequest).AddInstances(ex => ex.OfConcreteType(useCase.GetBoundType()).WithName(useCase.Key));
-            container.Configure(configure => configure.AddRegistry(registry));
-        }
+		private void Bind(IKeyBasedUseCase<TService> useCase)
+		{
+			if (container.Model.HasImplementationsFor(useCase.GetBoundType())) return;
 
-        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
-        {
-            Registry registry = new Registry();
+			Registry registry = new Registry();
+			registry.ForRequestedType<TService>().CacheBy(InstanceScope.PerRequest).AddInstances(ex => ex.OfConcreteType(useCase.GetBoundType()).WithName(useCase.Key));
+			container.Configure(configure => configure.AddRegistry(registry));
+		}
 
-            registry.ForRequestedType<TService>().CacheBy(InstanceScope.PerRequest).AddInstances(ex => ex.IsThis((TService)useCase.GetBinding()).WithName(((IKeyBasedInstanceUseCase)useCase).Key));
+		public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+		{
+			Registry registry = new Registry();
 
-            container.Configure(configure => configure.AddRegistry(registry));
-        }
-    }
+			registry.ForRequestedType<TService>().CacheBy(InstanceScope.PerRequest).AddInstances(ex => ex.IsThis((TService) useCase.GetBinding()).WithName(((IKeyBasedInstanceUseCase) useCase).Key));
+
+			container.Configure(configure => configure.AddRegistry(registry));
+		}
+	}
 }

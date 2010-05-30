@@ -15,29 +15,35 @@
 
 using Microsoft.Practices.Unity;
 using NUnit.Framework;
-using Siege.ServiceLocation.UnitTests.TestClasses;
 
 namespace Siege.ServiceLocation.UnitTests.Adapters
 {
-    [TestFixture]
-    public class UnityAdapterTests : SiegeContainerTests
-    {
-        private UnityContainer container;
+	[TestFixture]
+	[Category("Unity")]
+	public class UnityAdapterTests : SiegeContainerTests
+	{
+		private UnityContainer container;
 
-        public override void SetUp()
-        {
-            container = new UnityContainer();
-            base.SetUp();
-        }
 
-        protected override IServiceLocatorAdapter GetAdapter()
-        {
-            return new UnityAdapter.UnityAdapter(container);
-        }
+		protected override void ResolveWithoutSiege<T>()
+		{
+			container.Resolve<T>();
+		}
 
-        protected override void RegisterWithoutSiege()
-        {
-            container.RegisterType<IUnregisteredInterface, UnregisteredClass>();
-        }
-    }
+		public override void SetUp()
+		{
+			container = new UnityContainer();
+			base.SetUp();
+		}
+
+		protected override IServiceLocatorAdapter GetAdapter()
+		{
+			return new UnityAdapter.UnityAdapter(container);
+		}
+
+		protected override void RegisterWithoutSiege<TFrom, TTo>()
+		{
+			container.RegisterType<TFrom, TTo>();
+		}
+	}
 }

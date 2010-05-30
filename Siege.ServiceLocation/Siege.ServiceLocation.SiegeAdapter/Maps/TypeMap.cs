@@ -149,7 +149,7 @@ namespace Siege.ServiceLocation.SiegeAdapter.Maps
 			foreach (ConstructorInfo constructor in To.GetConstructors())
 			{
 				var candidate = new ConstructorCandidate { Type = To };
-				candidate.Parameters.AddRange(constructor.GetParameters().Select(p => p.ParameterType));
+				candidate.Parameters.AddRange(constructor.GetParameters().Select(p => p));
 
 				Candidates.Add(candidate);
 			}

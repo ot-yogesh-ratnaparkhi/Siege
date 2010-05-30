@@ -19,31 +19,39 @@ using StructureMap;
 
 namespace Siege.ServiceLocation.UnitTests.Adapters
 {
-    [TestFixture]
-    public class StructureMapAdapterTests : SiegeContainerTests
-    {
-        private Container container;
-        protected override IServiceLocatorAdapter GetAdapter()
-        {
-            container = new Container();
-            return new StructureMapAdapter.StructureMapAdapter(container);
-        }
+	[TestFixture]
+	[Category("StructureMap")]
+	public class StructureMapAdapterTests : SiegeContainerTests
+	{
+		private Container container;
 
-        protected override void RegisterWithoutSiege()
-        {
-            container.Configure(registry => registry.ForRequestedType<IUnregisteredInterface>().TheDefaultIsConcreteType<UnregisteredClass>());
-        }
+		protected override IServiceLocatorAdapter GetAdapter()
+		{
+			container = new Container();
+			return new StructureMapAdapter.StructureMapAdapter(container);
+		}
 
-        public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
-        {
-            base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
-        }
+		protected override void RegisterWithoutSiege<TFrom, TTo>()
+		{
+			container.Configure(
+				registry => registry.ForRequestedType<TFrom>().TheDefaultIsConcreteType<TTo>());
+		}
+
+		protected override void ResolveWithoutSiege<T>()
+		{
+			container.GetInstance<T>();
+		}
+
+		public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
+		{
+			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
+			Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
+		}
 
 		[Ignore("StructureMap sucks")]
 		public override void Should_Use_Unregistered_Constructor_Argument_With_Name()
 		{
 			base.Should_Use_Unregistered_Constructor_Argument_With_Name();
 		}
-    }
+	}
 }

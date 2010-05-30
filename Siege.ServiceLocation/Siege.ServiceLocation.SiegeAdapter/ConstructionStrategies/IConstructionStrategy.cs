@@ -14,16 +14,15 @@
 */
 
 using System;
-using System.Collections.Generic;
-using Siege.ServiceLocation.Resolution;
+using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.SiegeAdapter.Maps;
 
 namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 {
 	public interface IConstructionStrategy
 	{
-		object Get(Type type, string key, ConstructorParameter[] parameters, ResolutionMap map);
-		IEnumerable<object> GetAll(Type type, ResolutionMap map);
-		IEnumerable<TService> GetAll<TService>(ResolutionMap map);
+		object Create(ConstructorCandidate candidate, object[] parameters);
+		bool CanConstruct(ConstructorCandidate candidate);
+		void Register(Type to, MappedType mappedType);
 	}
 }

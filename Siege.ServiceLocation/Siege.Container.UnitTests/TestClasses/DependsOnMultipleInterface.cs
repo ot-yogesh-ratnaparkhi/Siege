@@ -36,4 +36,26 @@ namespace Siege.ServiceLocation.UnitTests.TestClasses
 			get { return argument1; }
 		}
 	}
+
+	public class DependsOnMultipleInterfaceTypes : ITestInterface
+	{
+		private readonly IConstructorArgument arg;
+		private readonly IServiceLocator locator;
+
+		public DependsOnMultipleInterfaceTypes(IConstructorArgument arg, IServiceLocator locator)
+		{
+			this.arg = arg;
+			this.locator = locator;
+		}
+
+		public IServiceLocator Locator
+		{
+			get { return locator; }
+		}
+
+		public IConstructorArgument Arg
+		{
+			get { return arg; }
+		}
+	}
 }

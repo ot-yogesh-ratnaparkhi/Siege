@@ -87,7 +87,9 @@
   <ItemGroup>
     <Compile Include="ActivationRuleTests.cs" />
     <Compile Include="Adapters\AutofacAdapterTests.cs" />
+    <Compile Include="Adapters\ILSiegeAdapterTests.cs" />
     <Compile Include="Adapters\SiegeAdapterTests.cs" />
+    <Compile Include="BenchmarkTests.cs" />
     <Compile Include="ConstructorArgumentTests.cs" />
     <Compile Include="ContextualTests\AutofacContextTests.cs" />
     <Compile Include="ContextualTests\BaseContextTests.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="ContextualTests\Classes\TestRepository2.cs" />
     <Compile Include="ContextualTests\Classes\TestService1.cs" />
     <Compile Include="ContextualTests\Classes\TestService2.cs" />
+    <Compile Include="ContextualTests\ILSiegeContextTests.cs" />
     <Compile Include="ContextualTests\NinjectContextTests.cs" />
     <Compile Include="ContextualTests\SiegeContextTests.cs" />
     <Compile Include="ContextualTests\StructureMapContextTests.cs" />

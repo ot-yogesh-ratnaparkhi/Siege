@@ -31,6 +31,7 @@ namespace Siege.ServiceLocation.StructureMapAdapter
 
         public void Bind(IUseCase useCase, IFactoryFetcher locator)
         {
+			if (container.Model.HasDefaultImplementationFor(useCase.GetBoundType())) return;
             Registry registry = new Registry();
 
             var factory = (Factory<TService>)locator.GetFactory<TService>();
@@ -42,7 +43,8 @@ namespace Siege.ServiceLocation.StructureMapAdapter
         }
 
         public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
-        {
+		{
+			if (container.Model.HasDefaultImplementationFor(useCase.GetBoundType())) return;
             Registry registry = new Registry();
 
             var factory = (Factory<TService>)locator.GetFactory<TService>();

@@ -30,15 +30,14 @@ namespace Siege.ServiceLocation.StructureMapAdapter
         }
 
         public void Bind(IUseCase useCase, IFactoryFetcher locator)
-        {
+		{
+			if (container.Model.HasImplementationsFor(useCase.GetBaseBindingType())) return;
             Registry registry = new Registry();
 
             var factory = (Factory<object>) locator.GetFactory<object>();
             factory.AddCase(useCase);
 
-            //if (typeof(TService) != useCase.GetBoundType()) registry.ForRequestedType<TService>().CacheBy(InstanceScope.PerRequest).TheDefault.Is.ConstructedBy(context => factory.Build());
-            registry.ForRequestedType(useCase.GetBaseBindingType()).CacheBy(InstanceScope.PerRequest).AddType(
-                useCase.GetBoundType());
+            registry.ForRequestedType(useCase.GetBaseBindingType()).CacheBy(InstanceScope.PerRequest).AddType(useCase.GetBoundType());
             container.Configure(configure => configure.AddRegistry(registry));
         }
     }

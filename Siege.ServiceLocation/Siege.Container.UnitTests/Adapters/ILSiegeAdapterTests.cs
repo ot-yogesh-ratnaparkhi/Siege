@@ -13,25 +13,17 @@
      limitations under the License.
 */
 
-using System;
-using System.Reflection.Emit;
+using NUnit.Framework;
+using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
 
-namespace Siege.DynamicTypeGeneration.Actions
+namespace Siege.ServiceLocation.UnitTests.Adapters
 {
-	public class LoadParameterAction : ITypeGenerationAction
+	[Ignore]
+	public class ILSiegeAdapterTests : SiegeAdapterTests
 	{
-		private readonly Func<GeneratedMethod> method;
-		private readonly int index;
-
-		public LoadParameterAction(Func<GeneratedMethod> method, int index)
+		protected override IServiceLocatorAdapter GetAdapter()
 		{
-			this.method = method;
-			this.index = index;
-		}
-
-		public void Execute()
-		{
-			method().MethodBuilder().MethodBuilder.GetILGenerator().Emit(OpCodes.Ldarg, index);
+			return new SiegeAdapter.SiegeAdapter(new SiegeProxyConstructionStrategy());
 		}
 	}
 }

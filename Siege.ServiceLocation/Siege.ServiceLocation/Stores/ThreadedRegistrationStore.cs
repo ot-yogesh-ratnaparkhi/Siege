@@ -55,7 +55,7 @@ namespace Siege.ServiceLocation.Stores
 			foreach(ConstructorInfo constructor in type.GetConstructors())
 			{
 				var candidate = new ConstructorCandidate {Type = type};
-				candidate.Parameters.AddRange(constructor.GetParameters().Select(p => p.ParameterType));
+				candidate.Parameters.AddRange(constructor.GetParameters().Select(p => p));
 
 				candidates.Add(candidate);
 			}
