@@ -102,38 +102,76 @@ namespace Siege.ServiceLocation.AutofacAdapter
             return new List<TService>();
         }
 
-        public void RegisterBinding(Type baseBinding, Type targetBinding)
+        public void Register(Type from, Type to)
         {
             var builder = new ContainerBuilder();
-            if(baseBinding.IsGenericType)
+
+            Type genericType = typeof(IEnumerable<>).MakeGenericType(from);
+            if (!from.IsGenericType && !container.IsRegistered(genericType))
             {
-                builder.RegisterGeneric(targetBinding).As(baseBinding);
+                builder.RegisterCollection(from).As(genericType);
+            }
+
+            if(!from.IsGenericType)
+            {
+                builder.Register(to).As(from).FactoryScoped();
             }
             else
             {
-                builder.Register(targetBinding).As(baseBinding);
+                builder.RegisterGeneric(to).As(from).FactoryScoped();
             }
             builder.Build(container);
         }
 
-        public Type ConditionalUseCaseBinding
+        public void RegisterInstance(Type type, object instance)
         {
-            get { return typeof (ConditionalUseCaseBinding<>); }
+            var builder = new ContainerBuilder();
+
+            Type genericType = typeof(IEnumerable<>).MakeGenericType(type);
+            if (!container.IsRegistered(genericType))
+            {
+                builder.RegisterCollection(type).As(genericType);
+            }
+
+            builder.Register(instance).As(type);
+            builder.Register(instance);
+
+            builder.Build(container);
         }
 
-        public Type DefaultUseCaseBinding
+        public void RegisterWithName(Type from, Type to, string name)
         {
-            get { return typeof (DefaultUseCaseBinding<>); }
+            var builder = new ContainerBuilder();
+
+            builder.Register(from).Named(name);
+            builder.Register(to).Named(name);
+
+            builder.Build(container);
         }
 
-        public Type KeyBasedUseCaseBinding
+        public void RegisterInstanceWithName(Type type, object instance, string name)
         {
-            get { return typeof (KeyBasedUseCaseBinding<>); }
+            var builder = new ContainerBuilder();
+
+            builder.Register(c => type).Named(name);
+            builder.Register(c => instance).Named(name);
+
+            builder.Build(container);
         }
 
-        public Type OpenGenericUseCaseBinding
+        public void RegisterFactoryMethod(Type type, Func<object> func)
         {
-            get { return typeof (OpenGenericUseCaseBinding); }
+            var builder = new ContainerBuilder();
+            Type genericType = typeof(IEnumerable<>).MakeGenericType(type);
+            
+            if (!container.IsRegistered(genericType))
+            {
+                builder.RegisterCollection(type).As(genericType);
+            }
+            
+            builder.Register((c => func())).As(type).FactoryScoped().MemberOf(genericType);
+            
+            builder.Build(container);
         }
     }
 }

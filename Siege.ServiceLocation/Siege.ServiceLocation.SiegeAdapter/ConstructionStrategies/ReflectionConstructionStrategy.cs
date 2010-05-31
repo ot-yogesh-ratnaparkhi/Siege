@@ -24,7 +24,7 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 	{
 		public object Create(ConstructorCandidate candidate, object[] parameters)
 		{
-			return Activator.CreateInstance(candidate.Type, parameters.ToArray());
+			return candidate.Instantiate(parameters.ToArray());
 		}
 
 		public bool CanConstruct(ConstructorCandidate candidate)

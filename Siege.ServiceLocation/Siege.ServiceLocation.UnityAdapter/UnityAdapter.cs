@@ -94,29 +94,31 @@ namespace Siege.ServiceLocation.UnityAdapter
             return container.ResolveAll<TService>();
         }
 
-        public void RegisterBinding(Type baseBinding, Type targetBinding)
+        public void Register(Type from, Type to)
         {
-            container.RegisterType(baseBinding, targetBinding);
+            container.RegisterType(from, to);
         }
 
-        public Type ConditionalUseCaseBinding
+        public void RegisterInstance(Type type, object instance)
         {
-            get { return typeof (ConditionalUseCaseBinding<>); }
+            container.RegisterInstance(type, instance);
         }
 
-        public Type DefaultUseCaseBinding
+        public void RegisterWithName(Type from, Type to, string name)
         {
-            get { return typeof (DefaultUseCaseBinding<>); }
+            container.RegisterType(from, to, name);
         }
 
-        public Type KeyBasedUseCaseBinding
+        public void RegisterInstanceWithName(Type type, object instance, string name)
         {
-            get { return typeof (KeyBasedUseCaseBinding<>); }
+            container.RegisterInstance(type, name, instance);
         }
 
-        public Type OpenGenericUseCaseBinding
+        public void RegisterFactoryMethod(Type type, Func<object> func)
         {
-            get { return typeof (OpenGenericUseCaseBinding); }
+            container.RegisterType(type, new TransientLifetimeManager(), new InjectionFactory(f => func()));
+            container.RegisterType(type, Guid.NewGuid().ToString(), new TransientLifetimeManager(), new InjectionFactory(f => func()));
+
         }
     }
 }

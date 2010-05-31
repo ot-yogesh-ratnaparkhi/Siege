@@ -14,16 +14,42 @@
 */
 
 using NUnit.Framework;
+using Siege.ServiceLocation.Resolution;
+using Siege.ServiceLocation.SiegeAdapter;
 using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
 
 namespace Siege.ServiceLocation.UnitTests.Adapters
 {
-	[Ignore]
-	public class ILSiegeAdapterTests : SiegeAdapterTests
-	{
-		protected override IServiceLocatorAdapter GetAdapter()
-		{
-			return new SiegeAdapter.SiegeAdapter(new SiegeProxyConstructionStrategy());
-		}
-	}
+    [Category("Siege")]
+    public class ILSiegeAdapterTests : SiegeContainerTests
+    {
+        protected override IServiceLocatorAdapter GetAdapter()
+        {
+            return new SiegeAdapter.SiegeAdapter(new SiegeProxyConstructionStrategy());
+        }
+
+        private SiegeTypeResolver ilResolver;
+
+        public override void SetUp()
+        {
+            ilResolver = new SiegeTypeResolver(new SiegeProxyConstructionStrategy());
+            base.SetUp();
+        }
+
+        protected override void RegisterWithoutSiege<TFrom, TTo>()
+        {
+            ilResolver.Register(typeof(TFrom), typeof(TTo));
+        }
+
+        protected override void ResolveWithoutSiege<T>()
+        {
+            ilResolver.Get(typeof(T), new ConstructorParameter[] { });
+        }
+
+        [Ignore]
+        public override void Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container()
+        {
+            base.Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container();
+        }
+    }
 }

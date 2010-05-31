@@ -43,9 +43,23 @@ namespace Siege.DynamicTypeGeneration
             actions.Add(new VariableAssignmentAction(() => method.MethodBuilder(), localIndex));
         }
 
+        public void AssignFromParameter(MethodParameter parameter)
+        {
+            actions.Add(new VariableAssignmentAction(method.MethodBuilder, localIndex, parameter));
+        }
+
         public void SetValueAtIndex(GeneratedVariable variable, int index)
         {
             actions.Add(new SetValueAtIndexAction(method, this, variable, index));
+        }
+
+        public GeneratedVariable LoadValueAtIndex(Type objectType, MethodBodyContext context, int index)
+        {
+            var variable = context.CreateVariable(objectType);
+            actions.Add(new LoadValueAtIndexAction(method, this, index));
+            actions.Add(new VariableAssignmentAction(() => method.MethodBuilder(), variable.LocalIndex));
+
+            return variable;
         }
     }
 }

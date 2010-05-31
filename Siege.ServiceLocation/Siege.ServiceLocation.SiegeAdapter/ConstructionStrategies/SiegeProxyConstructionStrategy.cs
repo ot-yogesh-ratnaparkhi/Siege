@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Siege.DynamicTypeGeneration;
 using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.SiegeAdapter.Maps;
@@ -35,12 +34,13 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 
 		public bool CanConstruct(ConstructorCandidate candidate)
 		{
-			return activators.ContainsKey(candidate);
+			return activators.Keys.Any(k => k.Type == candidate.Type);
 		}
 
 		public object Create(ConstructorCandidate candidate, object[] parameters)
 		{
-			return this.activators[candidate].Instantiate(parameters);
+		    var item = activators.Keys.Where(k => k.Type == candidate.Type).First();
+			return this.activators[item].Instantiate(parameters);
 		}
 
 		public void Register(Type to, MappedType mappedType)
@@ -48,40 +48,46 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 			var generator = new TypeGenerator("Siege.DynamicTypes" + registrationCount);
 			registrationCount++;
 
-			if(mappedType == null) return;
+		    var candidates = mappedType.Candidates;
+		    int candidateCount = candidates.Count;
+            for (int candidateCounter = 0; candidateCounter < candidateCount; candidateCounter++)
+            {
+                var candidate = candidates[candidateCounter];
+                if (activators.ContainsKey(candidate)) continue;
 
-			foreach (ConstructorCandidate candidate in mappedType.Candidates)
-			{
-				var activatorType = generator.CreateType(context =>
-             	{
-             		context.Named(Guid.NewGuid() + "Builder");
-             		context.InheritFrom<SiegeActivator>();
+                var activatorType = generator.CreateType(context =>
+                {
+                    context.Named(Guid.NewGuid() + "Builder");
+                    context.InheritFrom<SiegeActivator>();
 
-					context.OverrideMethod<SiegeActivator>(activator => activator.Instantiate(null), method =>
-					{
-						method.WithBody(body =>
-	                	{
-							var instance = body.CreateVariable(to);
-	                		
-							List<ILocalIndexer> items = new List<ILocalIndexer>();
+                    context.OverrideMethod<SiegeActivator>(activator => activator.Instantiate(null), method =>
+                    {
+                        method.WithBody(body =>
+                        {
+                            var instance = body.CreateVariable(to);
+                            var array = body.CreateArray(typeof(object));
+                            array.AssignFromParameter(new MethodParameter(0));
+                            var items = new List<ILocalIndexer>();
 
-							foreach(ParameterInfo info in candidate.Parameters.OrderBy(p => p.Position))
-							{
-								var arg1 = body.CreateVariable(info.ParameterType);
-								arg1.AssignFromParameter(new MethodParameter(info.Position+1));
-								items.Add(arg1);
-							}
+                            var parameters = candidate.Parameters;
+                            var parameterCount = parameters.Count;
+                            for (int i = 0; i < parameterCount; i++)
+                            {
+                                var info = parameters[i];
+                                var arg1 = array.LoadValueAtIndex(info.ParameterType, body, info.Position);
+                                items.Add(arg1);
+                            }
 
-	                		instance.AssignFrom(body.Instantiate(to, candidate.Parameters.OrderBy(p => p.Position).Select(p => p.ParameterType).ToArray(), items.ToArray()));
-	                		body.Return(instance);
-	                	});
-					});
-             	});
+                            instance.AssignFrom(body.Instantiate(to, candidate.Parameters.OrderBy(p => p.Position).Select(p => p.ParameterType).ToArray(), items.ToArray()));
+                            body.Return(instance);
+                        });
+                    });
+                });
 
-				activators.Add(candidate, (SiegeActivator)Activator.CreateInstance(activatorType));
-			}
+                var constructor = activatorType.GetConstructor(new Type[] { });
 
-			generator.Save();
+                activators.Add(candidate, (SiegeActivator)constructor.Invoke(new object[] { }));
+            }
 		}
 	}
 }

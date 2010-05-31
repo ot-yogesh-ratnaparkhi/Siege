@@ -55,6 +55,7 @@
     <Compile Include="Actions\AddMethodAction.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Actions\LoadValueAtIndexAction.cs" />
     <Compile Include="Actions\SetValueAtIndexAction.cs" />
     <Compile Include="Actions\CallAction.cs">
       <SubType>Code</SubType>

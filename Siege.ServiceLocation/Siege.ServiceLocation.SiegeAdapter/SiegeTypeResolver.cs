@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
@@ -24,7 +23,7 @@ using Siege.ServiceLocation.SiegeAdapter.Maps;
 
 namespace Siege.ServiceLocation.SiegeAdapter
 {
-	internal class SiegeTypeResolver
+    public class SiegeTypeResolver
 	{
 		private readonly IConstructionStrategy strategy;
 		protected ResolutionMap resolutionMap = new ResolutionMap();
@@ -63,7 +62,8 @@ namespace Siege.ServiceLocation.SiegeAdapter
 		public virtual void Register(Type from, Type to, string key)
 		{
 			this.resolutionMap.TypeMap.Add(from, to, key);
-			strategy.Register(to, resolutionMap.TypeMap.GetMappedType(to, key));
+		    var mappedType = resolutionMap.TypeMap.GetMappedType(to, key);
+			if(mappedType != null) strategy.Register(to, mappedType);
 		}
 
 		public virtual void RegisterWithFactoryMethod(Type from, Func<object> to, string key)
@@ -98,9 +98,12 @@ namespace Siege.ServiceLocation.SiegeAdapter
 			var candidate = SelectConstructor(mappedType, resolutionMap, parameters);
 
 			var constructorArgs = new object[candidate.Parameters.Count];
-
-			foreach (ParameterInfo arg in candidate.Parameters)
+		    var candidateParameters = candidate.Parameters;
+		    var parameterCount = candidateParameters.Count;
+			for(int i = 0; i < parameterCount; i++)
 			{
+                var arg = candidateParameters[i];
+
 				var value = Get(arg.ParameterType, null, null);
 
 				if (value != null)
@@ -120,7 +123,10 @@ namespace Siege.ServiceLocation.SiegeAdapter
 
 			}
 
-			if (!strategy.CanConstruct(candidate)) strategy.Register(candidate.Type, mappedType);
+			if (!strategy.CanConstruct(candidate))
+			{
+			    strategy.Register(candidate.Type, mappedType);
+			}
 
 			return strategy.Create(candidate, constructorArgs.ToArray());  
 		}

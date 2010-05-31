@@ -16,12 +16,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.Resolution;
 using StructureMap;
-using StructureMap.Attributes;
 using StructureMap.Configuration.DSL;
-using System.Linq;
 
 namespace Siege.ServiceLocation.StructureMapAdapter
 {
@@ -34,32 +33,29 @@ namespace Siege.ServiceLocation.StructureMapAdapter
         {
         }
 
-        public StructureMapAdapter(string configFileName) : this(new StructureMap.Container(x => x.AddConfigurationFromXmlFile(configFileName))) { }
+        public StructureMapAdapter(string configFileName)
+            : this(new Container(x => x.AddConfigurationFromXmlFile(configFileName)))
+        {
+        }
 
         public StructureMapAdapter(Container container)
         {
             this.container = container;
-            Registry registry = new Registry();
+            var registry = new Registry();
 
-            registry.ForRequestedType<Container>().TheDefault.IsThis(container);
+            registry.For<Container>().Use(container);
 
-            container.Configure(x => x.AddRegistry(registry));
-        }
-
-        public void RegisterBinding(Type baseBinding, Type targetBinding)
-        {
-            Registry registry = new Registry();
-            registry.ForRequestedType(baseBinding).CacheBy(InstanceScope.PerRequest).TheDefaultIsConcreteType(targetBinding);
             container.Configure(x => x.AddRegistry(registry));
         }
 
         public void Dispose()
         {
+            //container.Dispose();
         }
 
         public IEnumerable<object> GetAllInstances(Type serviceType)
         {
-            Collection<object> objects = new Collection<object>();
+            var objects = new Collection<object>();
 
             foreach (object item in container.GetAllInstances(serviceType))
             {
@@ -86,86 +82,101 @@ namespace Siege.ServiceLocation.StructureMapAdapter
             }
         }
 
-		public object GetInstance(Type type, string key, params IResolutionArgument[] parameters)
-		{
-			object instance;
-
-			try
-			{
-				//ExplicitArgsExpression expression = null;
-
-				if (parameters.OfType<ConstructorParameter>().Count() > 0)
-				{
-					throw new Exception("Not currently supported.");
-					//var parameter1 = parameters.OfType<ConstructorParameter>().First();
-
-					//expression = container.With(parameter1.Name).EqualTo(parameter1.Value);
-
-					//if (parameters.Count() > 1)
-					//{
-					//    var constructorArgs = parameters.OfType<ConstructorParameter>();
-
-					//    for (int i = 1; i < constructorArgs.Count(); i++)
-					//    {
-					//        expression.With(constructorArgs.ElementAt(i).Name).EqualTo(constructorArgs.ElementAt(i).Value);
-					//    }
-					//}
-				}
-
-				instance = container.GetInstance(type, key);
-			}
-			catch (StructureMapException ex)
-			{
-				throw new RegistrationNotFoundException(type, key, ex);
-			}
-
-			if (instance == null) throw new RegistrationNotFoundException(type, key);
-
-			return instance;
-		}
-
-		public object GetInstance(Type type, params IResolutionArgument[] parameters)
-		{
-			ExplicitArgsExpression expression = null;
-
-			if (parameters.OfType<ConstructorParameter>().Count() > 0)
-			{
-				var parameter1 = parameters.OfType<ConstructorParameter>().First();
-
-				expression = container.With(parameter1.Name).EqualTo(parameter1.Value);
-
-				if (parameters.Count() > 1)
-				{
-					var constructorArgs = parameters.OfType<ConstructorParameter>();
-
-					for (int i = 1; i < constructorArgs.Count(); i++)
-					{
-						expression.With(constructorArgs.ElementAt(i).Name).EqualTo(constructorArgs.ElementAt(i).Value);
-					}
-				}
-			}
-
-			return expression != null ? expression.GetInstance(type) : container.GetInstance(type);
-		}
-
-        public Type ConditionalUseCaseBinding
+        public object GetInstance(Type type, string key, params IResolutionArgument[] parameters)
         {
-            get { return typeof(ConditionalUseCaseBinding<>); }
+            object instance;
+
+            try
+            {
+                //ExplicitArgsExpression expression = null;
+
+                if (parameters.OfType<ConstructorParameter>().Count() > 0)
+                {
+                    throw new Exception("Not currently supported.");
+                    //var parameter1 = parameters.OfType<ConstructorParameter>().First();
+
+                    //expression = container.With(parameter1.Name).EqualTo(parameter1.Value);
+
+                    //if (parameters.Count() > 1)
+                    //{
+                    //    var constructorArgs = parameters.OfType<ConstructorParameter>();
+
+                    //    for (int i = 1; i < constructorArgs.Count(); i++)
+                    //    {
+                    //        expression.With(constructorArgs.ElementAt(i).Name).EqualTo(constructorArgs.ElementAt(i).Value);
+                    //    }
+                    //}
+                }
+
+                instance = container.GetInstance(type, key);
+            }
+            catch (StructureMapException ex)
+            {
+                throw new RegistrationNotFoundException(type, key, ex);
+            }
+
+            if (instance == null) throw new RegistrationNotFoundException(type, key);
+
+            return instance;
         }
 
-        public Type DefaultUseCaseBinding
+        public object GetInstance(Type type, params IResolutionArgument[] parameters)
         {
-            get { return typeof(DefaultUseCaseBinding<>); }
+            ExplicitArgsExpression expression = null;
+
+            if (parameters.OfType<ConstructorParameter>().Count() > 0)
+            {
+                ConstructorParameter parameter1 = parameters.OfType<ConstructorParameter>().First();
+
+                expression = container.With(parameter1.Name).EqualTo(parameter1.Value);
+
+                if (parameters.Count() > 1)
+                {
+                    IEnumerable<ConstructorParameter> constructorArgs = parameters.OfType<ConstructorParameter>();
+
+                    for (int i = 1; i < constructorArgs.Count(); i++)
+                    {
+                        expression.With(constructorArgs.ElementAt(i).Name).EqualTo(constructorArgs.ElementAt(i).Value);
+                    }
+                }
+            }
+
+            return expression != null ? expression.GetInstance(type) : container.GetInstance(type);
         }
 
-        public Type KeyBasedUseCaseBinding
+        public void Register(Type from, Type to)
         {
-            get { return typeof(KeyBasedUseCaseBinding<>); }
+            var registry = new Registry();
+            registry.For(from).LifecycleIs(InstanceScope.PerRequest).Use(to);
+            container.Configure(configure => configure.AddRegistry(registry));
         }
 
-        public Type OpenGenericUseCaseBinding
+        public void RegisterInstance(Type type, object instance)
         {
-            get { return typeof(OpenGenericUseCaseBinding); }
+            var registry = new Registry();
+            registry.For(type).Use(instance);
+            container.Configure(configure => configure.AddRegistry(registry));
+        }
+
+        public void RegisterWithName(Type from, Type to, string name)
+        {
+            var registry = new Registry();
+            registry.For(from).LifecycleIs(InstanceScope.PerRequest).Use(to).Named(name);
+            container.Configure(configure => configure.AddRegistry(registry));
+        }
+
+        public void RegisterInstanceWithName(Type type, object instance, string name)
+        {
+            var registry = new Registry();
+            registry.For(type).Use(instance).Named(name);
+            container.Configure(configure => configure.AddRegistry(registry));
+        }
+
+        public void RegisterFactoryMethod(Type type, Func<object> func)
+        {
+            var registry = new Registry();
+            registry.For(type).LifecycleIs(InstanceScope.PerRequest).Use(x => func());
+            container.Configure(configure => configure.AddRegistry(registry));
         }
     }
 }

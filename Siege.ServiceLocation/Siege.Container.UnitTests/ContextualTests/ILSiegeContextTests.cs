@@ -13,17 +13,15 @@
      limitations under the License.
 */
 
-using NUnit.Framework;
 using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
 
 namespace Siege.ServiceLocation.UnitTests.ContextualTests
 {
-	[Ignore]
-	public class ILSiegeContextTests : SiegeContextTests
-	{
-		protected override IServiceLocatorAdapter GetAdapter()
-		{
-			return new SiegeAdapter.SiegeAdapter(new SiegeProxyConstructionStrategy());
-		}
-	}
+    public class ILSiegeContextTests : SiegeContextTests
+    {
+        protected override IServiceLocatorAdapter GetAdapter()
+        {
+            return new SiegeAdapter.SiegeAdapter(new SiegeProxyConstructionStrategy());
+        }
+    }
 }

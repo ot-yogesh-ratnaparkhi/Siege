@@ -50,7 +50,7 @@ namespace Siege.ServiceLocation.SiegeAdapter.Maps
 			
 			if(factory == null)
 			{
-				factory = entries[type].MappedFactories.First();
+				factory = factories.First();
 			}
 			return factory.To();
 		}

@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,22 +13,10 @@
      limitations under the License.
 */
 
-using NUnit.Framework;
-using Siege.ServiceLocation.Extensions.ExtendedSyntax;
-using Siege.ServiceLocation.UnitTests.TestClasses;
-
-namespace Siege.ServiceLocation.UnitTests
+namespace Siege.ServiceLocation.Bindings.Default
 {
-	public abstract partial class SiegeContainerTests
-	{
-		[Test]
-		public void Should_Identify_Constructor_Candidates()
-		{
-			locator.Register(Given<MultiConstructorType>.Then<MultiConstructorType>());
-
-			var candidates = locator.Store.RegistrationStore.GetCandidatesForType<MultiConstructorType>();
-
-			Assert.AreEqual(6, candidates.Count);
-		}
-	}
+    public interface IDefaultUseCaseBinding : IUseCaseBinding, IInstanceUseCaseBinding
+    {
+        
+    }
 }

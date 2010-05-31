@@ -13,10 +13,12 @@
      limitations under the License.
 */
 
+using System;
+
 namespace Siege.ServiceLocation
 {
-    public interface IGenericFactory<TBaseService>
+    public interface IGenericFactory
     {
-        TBaseService Build();
+        object Build(Type type);
     }
 }

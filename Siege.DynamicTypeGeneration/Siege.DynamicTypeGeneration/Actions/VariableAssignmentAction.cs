@@ -41,7 +41,7 @@ namespace Siege.DynamicTypeGeneration.Actions
 
             if(parameter != null)
             {
-				generator.Emit(OpCodes.Ldarg, parameter.Index);
+				generator.Emit(OpCodes.Ldarg, parameter.Index + 1);
             }
             generator.Emit(OpCodes.Stloc, localIndex);
         }

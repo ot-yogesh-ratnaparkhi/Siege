@@ -13,40 +13,40 @@
      limitations under the License.
 */
 
-using Ninject;
-using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.UseCases;
 using Siege.ServiceLocation.UseCases.Named;
 
-namespace Siege.ServiceLocation.NinjectAdapter
+namespace Siege.ServiceLocation.Bindings.Named
 {
-    public class KeyBasedUseCaseBinding<TService> : IKeyBasedUseCaseBinding<TService>
+    public class NamedUseCaseBinding : INamedUseCaseBinding
     {
-        private IKernel kernel;
+        private readonly IServiceLocatorAdapter adapter;
 
-        public KeyBasedUseCaseBinding(IKernel kernel)
+        public NamedUseCaseBinding(IServiceLocatorAdapter adapter)
         {
-            this.kernel = kernel;
+            this.adapter = adapter;
         }
 
         public void Bind(IUseCase useCase, IFactoryFetcher locator)
         {
-            Bind((IKeyBasedUseCase<TService>)useCase);
+            Bind((IKeyBasedUseCase) useCase);
         }
 
         public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
         {
-            BindInstance((IKeyBasedInstanceUseCase)useCase);
+            BindInstance((IKeyBasedInstanceUseCase) useCase);
         }
 
         private void BindInstance(IKeyBasedInstanceUseCase useCase)
         {
-            kernel.Bind(typeof(TService)).ToConstant(useCase.GetBinding()).Named(useCase.Key);
+            adapter.RegisterInstanceWithName(useCase.GetBoundType(), useCase.GetBinding(), useCase.Key);
+            adapter.RegisterInstanceWithName(useCase.GetBaseBindingType(), useCase.GetBinding(), useCase.Key);
         }
 
-        private void Bind(IKeyBasedUseCase<TService> useCase)
+        private void Bind(IKeyBasedUseCase useCase)
         {
-            kernel.Bind<TService>().To(useCase.GetBoundType()).Named(useCase.Key);
+            adapter.RegisterWithName(useCase.GetBoundType(), useCase.GetBoundType(), useCase.Key);
+            adapter.RegisterWithName(useCase.GetBaseBindingType(), useCase.GetBoundType(), useCase.Key);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Siege.ServiceLocation.SiegeAdapter.Maps
 
 		public bool Contains(Type type)
 		{
-			return entries.ContainsKey(type);
+		    return entries.ContainsKey(type);
 		}
 
 		public object Get(Type type, string key)

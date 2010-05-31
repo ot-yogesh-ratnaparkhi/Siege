@@ -34,7 +34,7 @@ namespace Siege.ServiceLocation.UseCases.Named
 
         public override Type GetUseCaseBindingType()
         {
-            return typeof(IKeyBasedUseCaseBinding<>);
+            return typeof(INamedUseCaseBinding);
         }
     }
 }

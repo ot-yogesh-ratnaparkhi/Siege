@@ -19,10 +19,10 @@ using Siege.ServiceLocation.SiegeAdapter.Maps;
 
 namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 {
-	public interface IConstructionStrategy
-	{
-		object Create(ConstructorCandidate candidate, object[] parameters);
-		bool CanConstruct(ConstructorCandidate candidate);
-		void Register(Type to, MappedType mappedType);
-	}
+    public interface IConstructionStrategy
+    {
+        object Create(ConstructorCandidate candidate, object[] parameters);
+        void Register(Type to, MappedType mappedType);
+        bool CanConstruct(ConstructorCandidate candidate);
+    }
 }

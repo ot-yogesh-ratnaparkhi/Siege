@@ -18,6 +18,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Siege.ServiceLocation.Bindings;
+using Siege.ServiceLocation.Bindings.Action;
+using Siege.ServiceLocation.Bindings.Conditional;
+using Siege.ServiceLocation.Bindings.Default;
+using Siege.ServiceLocation.Bindings.Named;
+using Siege.ServiceLocation.Bindings.OpenGenerics;
 using Siege.ServiceLocation.EventHandlers;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.Resolution;
@@ -51,16 +56,17 @@ namespace Siege.ServiceLocation
 			this.store.RegistrationStore.WireEvent(this);
             TypeHandler.Initialize(typeBuilder);
 
-            AddBinding(typeof (IActionUseCaseBinding<>), typeof (ActionUseCaseBinding<>));
-            AddBinding(typeof (IConditionalUseCaseBinding<>), this.serviceLocator.ConditionalUseCaseBinding);
-            AddBinding(typeof (IDefaultUseCaseBinding<>), this.serviceLocator.DefaultUseCaseBinding);
-            AddBinding(typeof (IKeyBasedUseCaseBinding<>), this.serviceLocator.KeyBasedUseCaseBinding);
-            AddBinding(typeof (IOpenGenericUseCaseBinding), this.serviceLocator.OpenGenericUseCaseBinding);
+            serviceLocator.RegisterInstance(typeof(IServiceLocatorAdapter), serviceLocator);
+            
+            AddBinding<IDefaultUseCaseBinding, DefaultUseCaseBinding>();
+            AddBinding<IConditionalUseCaseBinding, ConditionalUseCaseBinding>();
+            AddBinding<INamedUseCaseBinding, NamedUseCaseBinding>();
+            AddBinding<IOpenGenericUseCaseBinding, OpenGenericUseCaseBinding>();
+            AddBinding<IActionUseCaseBinding, ActionUseCaseBinding>();
 
             Register(Given<IFactoryFetcher>.Then(this));
             Register(Given<IServiceLocator>.Then(this));
             Register(Given<IContextualServiceLocator>.Then(this));
-            Register(Given<IServiceLocatorAdapter>.Then(serviceLocator));
         }
 
         public SiegeContainer(IServiceLocatorAdapter serviceLocator, IServiceLocatorStore store) : this(serviceLocator, store, new DefaultTypeBuilder())
@@ -73,10 +79,9 @@ namespace Siege.ServiceLocation
             store.ContextStore.Add(contextItem);
         }
 
-        public IServiceLocator AddBinding(Type baseBinding, Type targetBinding)
+        private void AddBinding<TFrom, TTo>()
         {
-            serviceLocator.RegisterBinding(baseBinding, targetBinding);
-            return this;
+            serviceLocator.Register(typeof(TFrom), typeof(TTo));
         }
 
         public TService GetInstance<TService>()
@@ -271,23 +276,23 @@ namespace Siege.ServiceLocation
             }
         }
 
-        IGenericFactory<TBaseService> IFactoryFetcher.GetFactory<TBaseService>()
+        IGenericFactory IFactoryFetcher.GetFactory(Type type)
         {
-            if (!factories.ContainsKey(typeof (TBaseService)))
+            if (!factories.ContainsKey(type))
             {
                 lock (factories.SyncRoot)
                 {
-                    if (!factories.ContainsKey(typeof (TBaseService)))
+                    if (!factories.ContainsKey(type))
                     {
-                        var factory = new Factory<TBaseService>(this);
-                        Register(Given<Factory<TBaseService>>.Then("Factory" + typeof (TBaseService), factory));
+                        var factory = new Factory(this);
+                        Register(Given<Factory>.Then("Factory" + type, factory));
 
-                        factories.Add(typeof (TBaseService), factory);
+                        factories.Add(type, factory);
                     }
                 }
             }
 
-            return (Factory<TBaseService>) factories[typeof (TBaseService)];
+            return (Factory) factories[type];
         }
     }
 }

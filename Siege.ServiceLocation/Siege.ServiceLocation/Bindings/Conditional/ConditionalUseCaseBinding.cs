@@ -13,37 +13,35 @@
      limitations under the License.
 */
 
-using Ninject;
-using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.NinjectAdapter
+namespace Siege.ServiceLocation.Bindings.Conditional
 {
-    public class DefaultUseCaseBinding<TService> : IDefaultUseCaseBinding<TService>
+    public class ConditionalUseCaseBinding : IConditionalUseCaseBinding
     {
-        private IKernel kernel;
+        private readonly IServiceLocatorAdapter adapter;
 
-        public DefaultUseCaseBinding(IKernel kernel)
+        public ConditionalUseCaseBinding(IServiceLocatorAdapter adapter)
         {
-            this.kernel = kernel;
+            this.adapter = adapter;
         }
 
         public void Bind(IUseCase useCase, IFactoryFetcher locator)
         {
-            var factory = (Factory<TService>)locator.GetFactory<TService>();
+            var factory = (Factory) locator.GetFactory(useCase.GetBaseBindingType());
             factory.AddCase(useCase);
 
-            if (typeof(TService) != useCase.GetBoundType()) kernel.Bind<TService>().ToMethod(context => factory.Build());
-            kernel.Bind(useCase.GetBoundType()).ToSelf();
+            adapter.RegisterFactoryMethod(useCase.GetBaseBindingType(), () => factory.Build(useCase.GetBoundType()));
+            adapter.Register(useCase.GetBoundType(), useCase.GetBoundType());
         }
 
         public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
         {
-            var factory = (Factory<TService>)locator.GetFactory<TService>();
+            var factory = (Factory) locator.GetFactory(useCase.GetBaseBindingType());
             factory.AddCase(useCase);
 
-            if (typeof(TService) != useCase.GetBoundType()) kernel.Bind<TService>().ToMethod(context => factory.Build());
-            kernel.Bind(useCase.GetBoundType()).ToConstant(useCase.GetBinding());
+            adapter.RegisterFactoryMethod(useCase.GetBaseBindingType(), () => factory.Build(useCase.GetBoundType()));
+            adapter.RegisterInstance(useCase.GetBoundType(), useCase.GetBinding());
         }
     }
 }

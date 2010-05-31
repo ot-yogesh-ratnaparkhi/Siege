@@ -43,11 +43,6 @@ namespace Siege.SeviceLocation.WindsorAdapter
             }
         }
 
-        public void RegisterBinding(Type baseBinding, Type targetBinding)
-        {
-            kernel.Register(Component.For(baseBinding).ImplementedBy(targetBinding));
-        }
-
         public void Dispose()
         {
             //bug in windsor lol
@@ -107,24 +102,65 @@ namespace Siege.SeviceLocation.WindsorAdapter
             return kernel.HasComponent(type);
         }
 
-        public Type ConditionalUseCaseBinding
+        public void Register(Type from, Type to)
         {
-            get { return typeof(ConditionalUseCaseBinding<>); }
+            if(kernel.HasComponent(from) || kernel.HasComponent(to)) return;
+            kernel.Register(Component.For(from).ImplementedBy(to).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
         }
 
-        public Type DefaultUseCaseBinding
+        public void RegisterInstance(Type type, object instance)
         {
-            get { return typeof(DefaultUseCaseBinding<>); }
+            kernel.Register(Component.For(type).Instance(instance).Unless(Component.ServiceAlreadyRegistered));
         }
 
-        public Type KeyBasedUseCaseBinding
+        public void RegisterWithName(Type from, Type to, string name)
         {
-            get { return typeof(KeyBasedUseCaseBinding<>); }
+            if(kernel.HasComponent(name)) return;
+            kernel.Register(Component.For(from).ImplementedBy(to).Named(name).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
         }
 
-        public Type OpenGenericUseCaseBinding
+        public void RegisterInstanceWithName(Type type, object instance, string name)
         {
-            get { return typeof(OpenGenericUseCaseBinding); }
+            if (kernel.HasComponent(name)) return;
+            kernel.Register(Component.For(type).Instance(instance).Named(name).Unless(Component.ServiceAlreadyRegistered));
+        }
+
+        public void RegisterFactoryMethod(Type type, Func<object> func)
+        {
+            kernel.Register(Component.For(type).FactoryMethod(kernel, type, func).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
         }
     }
+
+   public static class ComponentRegistrationExtensions 
+   {
+       public static ComponentRegistration FactoryMethod(this ComponentRegistration reg, IKernel kernel, Type type, Func<object> factory)
+       {
+           Type item = typeof(InternalFactory<>).MakeGenericType(type);
+           var factoryName = item.FullName;
+           kernel.Register(Component.For(item).Named(factoryName).Instance(new GenericFactory(factory)).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));  
+           reg.Configuration(Attrib.ForName("factoryId").Eq(factoryName), Attrib.ForName("factoryCreate").Eq("Create"));  
+           return reg;  
+       }  
+     
+       private class InternalFactory<T> : GenericFactory
+       {
+           public InternalFactory(Func<object> factoryMethod) : base(factoryMethod)
+           {
+           }
+       }
+       private class GenericFactory 
+       {  
+           private readonly Func<object> factoryMethod;  
+     
+           public GenericFactory(Func<object> factoryMethod) 
+           {  
+               this.factoryMethod = factoryMethod;  
+           }  
+     
+           public object Create() 
+           {  
+               return factoryMethod();  
+           }  
+       }  
+   }  
 }

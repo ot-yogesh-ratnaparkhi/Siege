@@ -53,15 +53,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConditionalUseCaseBinding.cs" />
     <Compile Include="ConstructionStrategies\ReflectionConstructionStrategy.cs" />
-    <Compile Include="DefaultUseCaseBinding.cs" />
     <Compile Include="ConstructionStrategies\IConstructionStrategy.cs" />
     <Compile Include="Maps\FactoryMap.cs" />
     <Compile Include="Maps\InstanceMap.cs" />
-    <Compile Include="KeyBasedUseCaseBinding.cs" />
     <Compile Include="Maps\ResolutionMap.cs" />
-    <Compile Include="OpenGenericUseCaseBinding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiegeAdapter.cs" />
     <Compile Include="ConstructionStrategies\SiegeProxyConstructionStrategy.cs" />

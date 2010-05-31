@@ -13,10 +13,19 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocation.Bindings
+using Siege.ServiceLocation.UseCases;
+
+namespace Siege.ServiceLocation.Bindings.Action
 {
-    public interface IDefaultUseCaseBinding<TService> : IUseCaseBinding<TService>
+    public class ActionUseCaseBinding : IActionUseCaseBinding 
     {
-        
+        public void Bind(IUseCase useCase, IFactoryFetcher locator)
+        {
+            
+        }
+
+        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
+        {
+        }
     }
 }

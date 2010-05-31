@@ -43,7 +43,7 @@ namespace Siege.ServiceLocation.Stores
 
 		public void WireEvent(ITypeRegistrar typeRegistrar)
 		{
-			typeRegistrar.TypeRegistered += OnTypeRegistered;
+			//typeRegistrar.TypeRegistered += OnTypeRegistered;
 		}
 
 		void OnTypeRegistered(Type type)
@@ -51,14 +51,30 @@ namespace Siege.ServiceLocation.Stores
 			if (registeredTypes.ContainsKey(type)) return;
 
 			var candidates = new List<ConstructorCandidate>();
+		    var constructors = type.GetConstructors();
+		    var constructorCount = constructors.Length;
+            for (int counter = 0; counter < constructorCount; counter++)
+            {
+                var constructor = constructors[counter];
+                var candidate = new ConstructorCandidate { Type = type };
+                var parameters = constructor.GetParameters();
+                var count = parameters.Length;
 
-			foreach(ConstructorInfo constructor in type.GetConstructors())
-			{
-				var candidate = new ConstructorCandidate {Type = type};
-				candidate.Parameters.AddRange(constructor.GetParameters().Select(p => p));
+                for (int i = 0; i < count; i++)
+                {
+                    ParameterInfo parameter = parameters[i];
+                    var summary = new ParameterSummary
+                    {
+                        Position = parameter.Position,
+                        ParameterType = parameter.ParameterType,
+                        Name = parameter.Name
+                    };
 
-				candidates.Add(candidate);
-			}
+                    candidate.Parameters.Add(summary);
+                }
+
+                candidates.Add(candidate);
+            }
 
 			registeredTypes.Add(type, candidates);
 		}

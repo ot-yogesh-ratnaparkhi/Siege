@@ -46,8 +46,8 @@ namespace Siege.ServiceLocation.SiegeAdapter.Maps
 			{
 				Add(type, type, null);
 			}
-			
-			return entries.ContainsKey(type);
+
+		    return entries.ContainsKey(type);
 		}
 
 		private Type CreateGeneric(Type type, string name)
@@ -146,13 +146,32 @@ namespace Siege.ServiceLocation.SiegeAdapter.Maps
 
 		private void BuildCandidateList()
 		{
-			foreach (ConstructorInfo constructor in To.GetConstructors())
-			{
-				var candidate = new ConstructorCandidate { Type = To };
-				candidate.Parameters.AddRange(constructor.GetParameters().Select(p => p));
+			var constructors = To.GetConstructors();
+		    var constructorCount = constructors.Length;
+            for (int counter = 0; counter < constructorCount; counter++)
+            {
+                var constructor = constructors[counter];
+                var candidate = new ConstructorCandidate { Type = To };
+                var parameters = constructor.GetParameters();
+                var count = parameters.Length;
 
-				Candidates.Add(candidate);
-			}
+                for (int i = 0; i < count; i++)
+                {
+                    ParameterInfo parameter = parameters[i];
+                    var summary = new ParameterSummary
+                    {
+                        Position = parameter.Position,
+                        ParameterType = parameter.ParameterType,
+                        Name = parameter.Name
+                    };
+
+                    candidate.Parameters.Add(summary);
+                }
+
+                candidate.Instantiate = array => constructor.Invoke(array);
+
+                Candidates.Add(candidate);
+            }
 		}
 	}
 }

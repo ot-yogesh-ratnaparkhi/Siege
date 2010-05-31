@@ -14,7 +14,7 @@
 */
 
 using System;
-using Siege.ServiceLocation.Bindings;
+using Siege.ServiceLocation.Bindings.Conditional;
 
 namespace Siege.ServiceLocation.UseCases.Conditional
 {
@@ -22,7 +22,7 @@ namespace Siege.ServiceLocation.UseCases.Conditional
     {
         public override Type GetUseCaseBindingType()
         {
-            return typeof (IConditionalUseCaseBinding<>);
+            return typeof (IConditionalUseCaseBinding);
         }
     }
 }

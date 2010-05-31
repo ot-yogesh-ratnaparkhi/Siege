@@ -13,7 +13,7 @@
      limitations under the License.
 */
 
-using Siege.ServiceLocation.Bindings;
+using Siege.ServiceLocation.Bindings.Conditional;
 using Siege.ServiceLocation.UseCases.Conditional;
 
 namespace Siege.ServiceLocation.Extensions.FactorySupport
@@ -22,7 +22,7 @@ namespace Siege.ServiceLocation.Extensions.FactorySupport
     {
         public override System.Type GetUseCaseBindingType()
         {
-            return typeof (IConditionalUseCaseBinding<>);
+            return typeof (IConditionalUseCaseBinding);
         }
     }
 }

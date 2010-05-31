@@ -13,10 +13,12 @@
      limitations under the License.
 */
 
+using System;
+
 namespace Siege.ServiceLocation
 {
     public interface IFactoryFetcher
     {
-        IGenericFactory<TBaseService> GetFactory<TBaseService>();
+        IGenericFactory GetFactory(Type type);
     }
 }

@@ -15,18 +15,25 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace Siege.ServiceLocation.Planning
 {
-	public class ConstructorCandidate
-	{
-		public Type Type { get; set; }
-		public List<ParameterInfo> Parameters { get; set; }
+    public class ConstructorCandidate
+    {
+        public ConstructorCandidate()
+        {
+            Parameters = new List<ParameterSummary>();
+        }
 
-		public ConstructorCandidate()
-		{
-			this.Parameters = new List<ParameterInfo>();
-		}
-	}
+        public Type Type { get; set; }
+        public List<ParameterSummary> Parameters { get; set; }
+        public Func<object[], object> Instantiate { get; set; }
+    }
+
+    public class ParameterSummary
+    {
+        public int Position { get; set; }
+        public Type ParameterType { get; set; }
+        public string Name { get; set; }
+    }
 }

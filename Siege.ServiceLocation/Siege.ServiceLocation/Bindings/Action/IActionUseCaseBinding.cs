@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,19 +13,9 @@
      limitations under the License.
 */
 
-using Siege.ServiceLocation.UseCases;
-
-namespace Siege.ServiceLocation.Bindings
+namespace Siege.ServiceLocation.Bindings.Action
 {
-    public class ActionUseCaseBinding<TService> : IActionUseCaseBinding<TService> 
+    public interface IActionUseCaseBinding : IUseCaseBinding
     {
-        public void Bind(IUseCase useCase, IFactoryFetcher locator)
-        {
-            
-        }
-
-        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
-        {
-        }
     }
 }

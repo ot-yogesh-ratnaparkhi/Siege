@@ -19,10 +19,10 @@ namespace Siege.ServiceLocation
 {
     public interface IServiceLocatorAdapter : IDisposable, IInstanceResolver, IGetAllInstancesServiceLocator
     {
-        void RegisterBinding(Type baseBinding, Type targetBinding);
-        Type ConditionalUseCaseBinding { get; }
-        Type DefaultUseCaseBinding { get; }
-        Type KeyBasedUseCaseBinding { get; }
-		Type OpenGenericUseCaseBinding { get; }
+        void Register(Type from, Type to);
+        void RegisterInstance(Type type, object instance);
+        void RegisterWithName(Type from, Type to, string name);
+        void RegisterInstanceWithName(Type type, object instance, string name);
+        void RegisterFactoryMethod(Type type, Func<object> func);
     }
 }

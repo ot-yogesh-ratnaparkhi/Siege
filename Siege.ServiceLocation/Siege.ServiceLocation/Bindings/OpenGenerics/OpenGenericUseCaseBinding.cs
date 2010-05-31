@@ -13,28 +13,25 @@
      limitations under the License.
 */
 
-using Ninject;
-using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.NinjectAdapter
+namespace Siege.ServiceLocation.Bindings.OpenGenerics
 {
     public class OpenGenericUseCaseBinding : IOpenGenericUseCaseBinding
     {
-        private IKernel kernel;
+        private readonly IServiceLocatorAdapter adapter;
 
-        public OpenGenericUseCaseBinding(IKernel kernel)
+        public OpenGenericUseCaseBinding(IServiceLocatorAdapter adapter)
         {
-            this.kernel = kernel;
+            this.adapter = adapter;
         }
 
         public void Bind(IUseCase useCase, IFactoryFetcher locator)
         {
-            var factory = (Factory<object>) locator.GetFactory<object>();
+            var factory = (Factory)locator.GetFactory(typeof(object));
             factory.AddCase(useCase);
 
-            //if (typeof(TService) != useCase.GetBoundType()) kernel.Bind<TService>().ToMethod(context => factory.Build());
-            kernel.Bind(useCase.GetBaseBindingType()).To(useCase.GetBoundType());
+            this.adapter.Register(useCase.GetBaseBindingType(), useCase.GetBoundType());
         }
     }
 }

@@ -15,7 +15,7 @@
 
 namespace Siege.ServiceLocation.Bindings
 {
-    public interface IKeyBasedUseCaseBinding<TService> : IUseCaseBinding<TService>
+    public interface INamedUseCaseBinding : IUseCaseBinding, IInstanceUseCaseBinding
     {
         
     }

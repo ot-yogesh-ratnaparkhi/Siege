@@ -13,12 +13,10 @@
      limitations under the License.
 */
 
-using System;
-
-namespace Siege.ServiceLocation.Bindings
+namespace Siege.ServiceLocation.Bindings.Conditional
 {
-    public interface IBindingAdapter
+    public interface IConditionalUseCaseBinding : IUseCaseBinding, IInstanceUseCaseBinding
     {
-        IServiceLocator AddBinding(Type baseBinding, Type targetBinding);
+        
     }
 }

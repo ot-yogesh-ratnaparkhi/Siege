@@ -22,80 +22,80 @@ using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
 
 namespace Siege.ServiceLocation.SiegeAdapter
 {
-	public class SiegeAdapter : IServiceLocatorAdapter
-	{
-		private SiegeTypeResolver resolver;
+    public class SiegeAdapter : IServiceLocatorAdapter
+    {
+        private readonly SiegeTypeResolver resolver;
 
-		public SiegeAdapter() : this(new SiegeProxyConstructionStrategy())
-		{
-			
-		}
+        public SiegeAdapter() : this(new SiegeProxyConstructionStrategy())
+        {
+        }
 
-		public SiegeAdapter(IConstructionStrategy strategy)
-		{
-			resolver = new SiegeTypeResolver(strategy);
-		}
+        public SiegeAdapter(IConstructionStrategy strategy)
+        {
+            resolver = new SiegeTypeResolver(strategy);
+        }
 
-		public void Dispose()
-		{
-		}
+        public void Dispose()
+        {
+        }
 
-		public object GetInstance(Type type, string key, params IResolutionArgument[] parameters)
-		{
-			var value = resolver.Get(type, key, parameters.OfType<ConstructorParameter>().ToArray());
-			
-			if(value == null) throw new RegistrationNotFoundException(type);
+        public object GetInstance(Type type, string key, params IResolutionArgument[] parameters)
+        {
+            object value = resolver.Get(type, key, parameters.OfType<ConstructorParameter>().ToArray());
 
-			return value;
-		}
+            if (value == null) throw new RegistrationNotFoundException(type);
 
-		public object GetInstance(Type type, params IResolutionArgument[] parameters)
-		{
-			var value = resolver.Get(type, parameters.OfType<ConstructorParameter>().ToArray());
+            return value;
+        }
 
-			if (value == null) throw new RegistrationNotFoundException(type);
+        public object GetInstance(Type type, params IResolutionArgument[] parameters)
+        {
+            object value = resolver.Get(type, parameters.OfType<ConstructorParameter>().ToArray());
 
-			return value;
-		}
+            if (value == null) throw new RegistrationNotFoundException(type);
 
-		public bool HasTypeRegistered(Type type)
-		{
-			return resolver.IsRegistered(type);
-		}
+            return value;
+        }
 
-		public IEnumerable<object> GetAllInstances(Type serviceType)
-		{
-			return resolver.GetAll(serviceType);
-		}
+        public bool HasTypeRegistered(Type type)
+        {
+            return resolver.IsRegistered(type);
+        }
 
-		public IEnumerable<TService> GetAllInstances<TService>()
-		{
-			return resolver.GetAll<TService>();
-		}
+        public IEnumerable<object> GetAllInstances(Type serviceType)
+        {
+            return resolver.GetAll(serviceType);
+        }
 
-		public void RegisterBinding(Type baseBinding, Type targetBinding)
-		{
-			resolver.Register(baseBinding, targetBinding);
-		}
+        public IEnumerable<TService> GetAllInstances<TService>()
+        {
+            return resolver.GetAll<TService>();
+        }
 
-		public Type ConditionalUseCaseBinding
-		{
-			get { return typeof(ConditionalUseCaseBinding<>); }
-		}
+        public void Register(Type from, Type to)
+        {
+            resolver.Register(from, to);
+            resolver.Register(to, to);
+        }
 
-		public Type DefaultUseCaseBinding
-		{
-			get { return typeof(DefaultUseCaseBinding<>); }
-		}
+        public void RegisterInstance(Type type, object instance)
+        {
+            resolver.Register(type, instance);
+        }
 
-		public Type KeyBasedUseCaseBinding
-		{
-			get { return typeof(KeyBasedUseCaseBinding<>); }
-		}
+        public void RegisterWithName(Type from, Type to, string name)
+        {
+            resolver.Register(from, to, name);
+        }
 
-		public Type OpenGenericUseCaseBinding
-		{
-			get { return typeof(OpenGenericUseCaseBinding); }
-		}
-	}
+        public void RegisterInstanceWithName(Type type, object instance, string name)
+        {
+            resolver.Register(type, instance, name);
+        }
+
+        public void RegisterFactoryMethod(Type type, Func<object> func)
+        {
+            resolver.RegisterWithFactoryMethod(type, func);
+        }
+    }
 }

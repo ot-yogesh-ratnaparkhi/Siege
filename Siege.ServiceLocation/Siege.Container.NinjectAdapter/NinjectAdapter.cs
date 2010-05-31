@@ -42,26 +42,6 @@ namespace Siege.ServiceLocation.NinjectAdapter
             kernel.Bind(baseBinding).To(targetBinding);
         }
 
-        public Type ConditionalUseCaseBinding
-        {
-            get { return typeof(ConditionalUseCaseBinding<>); }
-        }
-
-        public Type DefaultUseCaseBinding
-        {
-            get { return typeof(DefaultUseCaseBinding<>); }
-        }
-
-        public Type KeyBasedUseCaseBinding
-        {
-            get { return typeof(KeyBasedUseCaseBinding<>); }
-        }
-
-        public Type OpenGenericUseCaseBinding
-        {
-            get { return typeof(OpenGenericUseCaseBinding); }
-        }
-
         public void Dispose()
         {
             kernel.Dispose();
@@ -109,5 +89,30 @@ namespace Siege.ServiceLocation.NinjectAdapter
 
 			return instance;
 		}
+
+        public void Register(Type from, Type to)
+        {
+            kernel.Bind(from).To(to);
+        }
+
+        public void RegisterInstance(Type type, object instance)
+        {
+            kernel.Bind(type).ToConstant(instance);
+        }
+
+        public void RegisterWithName(Type from, Type to, string name)
+        {
+            kernel.Bind(from).To(to).Named(name);
+        }
+
+        public void RegisterInstanceWithName(Type type, object instance, string name)
+        {
+            kernel.Bind(type).ToConstant(instance).Named(name);
+        }
+
+        public void RegisterFactoryMethod(Type type, Func<object> func)
+        {
+            kernel.Bind(type).ToMethod(context => func());
+        }
     }
 }

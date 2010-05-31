@@ -23,7 +23,7 @@ using Siege.ServiceLocation.UseCases.Default;
 
 namespace Siege.ServiceLocation
 {
-    public class Factory<TBaseService> : IGenericFactory<TBaseService>, ITypeResolver
+    public class Factory : IGenericFactory, ITypeResolver
     {
         private IContextualServiceLocator serviceLocator;
         private readonly List<IUseCase> conditionalUseCases = new List<IUseCase>();
@@ -48,36 +48,36 @@ namespace Siege.ServiceLocation
             if (this.TypeResolved != null) this.TypeResolved(type);
         }
 
-        public TBaseService Build()
+        public object Build(Type type)
         {
             foreach (IGenericUseCase useCase in conditionalUseCases)
             {
-                TBaseService result = default(TBaseService);
+                object result = null;
 
                 if (useCase.IsValid(serviceLocator.Store))
                 {
-                    result = (TBaseService)useCase.Resolve(new ConditionalResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
+                    result = useCase.Resolve(new ConditionalResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
                 }
 
-                if (!Equals(result, default(TBaseService)))
+                if (result != null)
                 {
-                    RaiseTypeResolvedEvent(typeof(TBaseService));
+                    RaiseTypeResolvedEvent(useCase.GetBaseBindingType());
                     return result;
                 }
             }
 
             foreach (IGenericUseCase useCase in defaultCases)
             {
-                TBaseService result = (TBaseService)useCase.Resolve(new DefaultResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
+                object result = useCase.Resolve(new DefaultResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
 
-                if (!Equals(result, default(TBaseService)))
+                if (result != null)
                 {
-                    RaiseTypeResolvedEvent(typeof(TBaseService));
+                    RaiseTypeResolvedEvent(useCase.GetBaseBindingType());
                     return result;
                 }
             }
 
-            throw new RegistrationNotFoundException(typeof(TBaseService));
+            throw new RegistrationNotFoundException(type);
         }
     }
 }

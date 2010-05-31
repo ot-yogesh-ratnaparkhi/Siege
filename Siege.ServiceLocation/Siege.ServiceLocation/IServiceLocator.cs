@@ -14,18 +14,17 @@
 */
 
 using System;
-using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation
 {
-    public interface IServiceLocator : Microsoft.Practices.ServiceLocation.IServiceLocator, IDisposable, IInstanceResolver, IBindingAdapter, IFactoryFetcher
+    public interface IServiceLocator : Microsoft.Practices.ServiceLocation.IServiceLocator, IDisposable, IInstanceResolver, IFactoryFetcher
     {
         IServiceLocator Register(IUseCase useCase);
         new object GetInstance(Type type);
-		new object GetInstance(Type type, string key);
-		TService GetInstance<TService>(Type type, params IResolutionArgument[] arguments);
+        new object GetInstance(Type type, string key);
+        TService GetInstance<TService>(Type type, params IResolutionArgument[] arguments);
         TService GetInstance<TService>(string key, params IResolutionArgument[] arguments);
         TService GetInstance<TService>(params IResolutionArgument[] arguments);
     }
