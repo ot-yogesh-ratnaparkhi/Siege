@@ -32,6 +32,7 @@ namespace Siege.ServiceLocation.AOP
     	private IServiceLocator serviceLocator;
     	private static readonly Hashtable definedTypes = new Hashtable();
         private bool useServiceLocator;
+        private static TypeGenerator generator = new TypeGenerator();
 
 		public SiegeProxy(IServiceLocator serviceLocator)
 		{
@@ -67,12 +68,10 @@ namespace Siege.ServiceLocation.AOP
         {
             if (definedTypes.ContainsKey(typeToProxy)) return (Type)definedTypes[typeToProxy];
             if (typeToProxy.GetMethods().Where(methodInfo => methodInfo.GetCustomAttributes(typeof(IAopAttribute), true).Count() > 0).Count() == 0) return typeToProxy;
-
-            var generator = new TypeGenerator();
             
             Type generatedType = generator.CreateType(type =>
             {
-                type.Named(typeToProxy.Name);
+                type.Named(typeToProxy.Name + Guid.NewGuid());
                 type.InheritFrom(typeToProxy);
                 GeneratedField field = null;
                 if(useServiceLocator)
@@ -84,7 +83,6 @@ namespace Siege.ServiceLocation.AOP
                 ProxyMethods(type, typeToProxy, field);
             });
 
-            generator.Save();
             return generatedType;
         }
 
@@ -254,7 +252,11 @@ namespace Siege.ServiceLocation.AOP
 					this.serviceLocator.GetInstance<IProcessEncapsulatingInterceptionStrategy>(new ContextArgument(methodCall)).Intercept(methodInfo, attribute, func, null, encapsulating);
 				}
 			});
-			
-    	}
+		}
+
+        public void SaveAssembly()
+        {
+            generator.Save();
+        }
     }
 }

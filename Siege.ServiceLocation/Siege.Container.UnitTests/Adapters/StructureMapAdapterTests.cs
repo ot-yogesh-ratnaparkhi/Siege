@@ -34,7 +34,7 @@ namespace Siege.ServiceLocation.UnitTests.Adapters
 		protected override void RegisterWithoutSiege<TFrom, TTo>()
 		{
 			container.Configure(
-				registry => registry.ForRequestedType<TFrom>().TheDefaultIsConcreteType<TTo>());
+				registry => registry.For<TFrom>().Use<TTo>());
 		}
 
 		protected override void ResolveWithoutSiege<T>()

@@ -30,7 +30,6 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 	public class SiegeProxyConstructionStrategy : IConstructionStrategy
 	{
 		private Hashtable activators = new Hashtable();
-		private int registrationCount = 1;
 
 		public bool CanConstruct(ConstructorCandidate candidate)
 		{
@@ -47,8 +46,7 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 		{
             if(activators.ContainsKey(to)) return;
 
-			var generator = new TypeGenerator("Siege.DynamicTypes" + registrationCount);
-			registrationCount++;
+			var generator = new TypeGenerator();
 
 		    var candidates = mappedType.Candidates;
 		    int candidateCount = candidates.Count;

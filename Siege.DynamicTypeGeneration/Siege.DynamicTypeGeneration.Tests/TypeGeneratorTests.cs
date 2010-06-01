@@ -22,12 +22,14 @@ namespace Siege.DynamicTypeGeneration.Tests
     [TestFixture]
     public class TypeGeneratorTests
     {
+        private TypeGenerator generator = new TypeGenerator();
+
         [Test]
         public void Should_Create_Empty_Class_Type()
         {
-            Type generatedType = new TypeGenerator().CreateType(context => context.Named("TestType"));
+            Type generatedType = generator.CreateType(context => context.Named("TestType1"));
 
-            Assert.AreEqual("TestType", generatedType.Name);
+            Assert.AreEqual("TestType1", generatedType.Name);
             Assert.AreEqual(4, generatedType.GetMethods().Length, "Should only have types from object");
             Assert.AreEqual(0, generatedType.GetProperties().Length, "Should have no properties");
             Assert.AreEqual(0, generatedType.GetFields().Length, "Should have no fields");
@@ -38,9 +40,9 @@ namespace Siege.DynamicTypeGeneration.Tests
         [Test]
         public void Should_Create_From_Base_Type()
         {
-            Type generatedType = new TypeGenerator().CreateType(type =>
+            Type generatedType = generator.CreateType(type =>
             {
-                type.Named("TestType");
+                type.Named("TestType2");
                 type.InheritFrom<BaseType>();
             });
 
@@ -50,9 +52,9 @@ namespace Siege.DynamicTypeGeneration.Tests
         [Test]
         public void Should_Be_Able_To_Add_A_Method()
         {
-            Type generatedType = new TypeGenerator().CreateType(type =>
+            Type generatedType = generator.CreateType(type =>
             {
-                type.Named("TestType");
+                type.Named("TestType3");
                 type.AddMethod(method =>
                 {
                     method.Named("TestMethod");
@@ -69,9 +71,9 @@ namespace Siege.DynamicTypeGeneration.Tests
         [Test]
         public void Should_Be_Able_To_Add_A_Method_With_Parameters()
         {
-            Type generatedType = new TypeGenerator().CreateType(type =>
+            Type generatedType = generator.CreateType(type =>
             {
-                type.Named("TestType");
+                type.Named("TestType4");
                 type.AddMethod(method =>
                 {
                     method.Named("TestMethod");
@@ -90,9 +92,9 @@ namespace Siege.DynamicTypeGeneration.Tests
         [Test]
         public void Should_Be_Able_To_Add_An_Override_Method()
         {
-            Type generatedType = new TypeGenerator().CreateType(type =>
+            Type generatedType = generator.CreateType(type =>
             {
-                type.Named("TestType");
+                type.Named("TestType5");
                 type.InheritFrom<BaseType>();
                 type.OverrideMethod<BaseType>(baseType => baseType.DoSomething(null), method => method.WithBody(body =>
                 {
@@ -110,9 +112,9 @@ namespace Siege.DynamicTypeGeneration.Tests
         [Test]
         public void Should_Be_Able_To_Add_An_Override_Method_And_Instantiate_A_Type()
         {
-            Type generatedType = new TypeGenerator().CreateType(type =>
+            Type generatedType = generator.CreateType(type =>
             {
-                type.Named("TestType");
+                type.Named("TestType6");
                 type.InheritFrom<BaseType>();
                 type.OverrideMethod<BaseType>(baseType => baseType.DoSomething(null), method =>
                 {
@@ -136,9 +138,9 @@ namespace Siege.DynamicTypeGeneration.Tests
         [Test]
         public void Should_Be_Able_To_Add_An_Override_Method_And_Instantiate_A_Type_And_Invoke_A_Method()
         {
-            Type generatedType = new TypeGenerator().CreateType(type =>
+            Type generatedType = generator.CreateType(type =>
             {
-                type.Named("TestType");
+                type.Named("TestType7");
                 type.InheritFrom<BaseType>();
                 type.OverrideMethod<BaseType>(baseType => baseType.DoSomething(null), method =>
                 {
@@ -165,9 +167,9 @@ namespace Siege.DynamicTypeGeneration.Tests
         [Test]
         public void Should_Be_Able_To_Add_A_Method_And_Instantiate_A_Type_And_Invoke_A_Method()
         {
-            Type generatedType = new TypeGenerator().CreateType(type =>
+            Type generatedType = generator.CreateType(type =>
             {
-                type.Named("TestType");
+                type.Named("TestType8");
                 type.AddMethod(method =>
                 {
                     method.Named("TestMethod");
@@ -193,9 +195,9 @@ namespace Siege.DynamicTypeGeneration.Tests
         [Test]
         public void Should_Be_Able_To_Create_Constructor()
         {
-            Type generatedType = new TypeGenerator().CreateType(type =>
+            Type generatedType = generator.CreateType(type =>
             {
-                type.Named("TestType");
+                type.Named("TestType9");
                 type.AddConstructor(constructor =>
                 {
                     constructor.CreateArgument<string>();
@@ -212,7 +214,7 @@ namespace Siege.DynamicTypeGeneration.Tests
         {
             Type generatedType = new TypeGenerator().CreateType(type =>
             {
-                type.Named("TestType");
+                type.Named("TestType10");
                 type.AddField<string>("field1");
                 type.AddField<BaseType>("field2");
             });
@@ -225,9 +227,9 @@ namespace Siege.DynamicTypeGeneration.Tests
         [Test]
         public void Should_Be_Able_To_Create_Constructor_And_Initialize_Fields()
         {
-            Type generatedType = new TypeGenerator().CreateType(type =>
+            Type generatedType = generator.CreateType(type =>
             {
-                type.Named("TestType");
+                type.Named("TestType11");
                 var field1 = type.AddField<string>("field1");
                 var field2 = type.AddField<BaseType>("field2");
                 type.AddConstructor(constructor =>
@@ -250,10 +252,9 @@ namespace Siege.DynamicTypeGeneration.Tests
         [Test]
         public void Should_Be_Able_To_Create_A_Func_Wrapping_A_Method()
         {
-            TypeGenerator generator = new TypeGenerator();
             Type generatedType = generator.CreateType(type =>
             {
-                type.Named("TestType");
+                type.Named("TestType12");
                 type.InheritFrom<BaseType>();
                 type.OverrideMethod<BaseType>(baseType => baseType.DoSomething(null), method =>
                 {
@@ -277,8 +278,6 @@ namespace Siege.DynamicTypeGeneration.Tests
                 });
             });
 
-            generator.Save();
-
             var obj = Activator.CreateInstance(generatedType);
             var result = generatedType.GetMethod("DoSomething").Invoke(obj, new[] { "" });
             Assert.AreEqual("yay", result);
@@ -287,10 +286,9 @@ namespace Siege.DynamicTypeGeneration.Tests
         [Test]
         public void Should_Be_Able_To_Create_A_Nested_Func_Wrapping_A_Method()
         {
-            TypeGenerator generator = new TypeGenerator();
             Type generatedType = generator.CreateType(type =>
             {
-                type.Named("TestType");
+                type.Named("TestType13");
                 type.InheritFrom<BaseType>();
                 type.OverrideMethod<BaseType>(baseType => baseType.DoSomething(null), method =>
                 {
@@ -325,8 +323,6 @@ namespace Siege.DynamicTypeGeneration.Tests
                 });
             });
 
-            generator.Save();
-
             var obj = Activator.CreateInstance(generatedType);
             var result = generatedType.GetMethod("DoSomething").Invoke(obj, new[] { "" });
             Assert.AreEqual("yay", result);
@@ -335,10 +331,9 @@ namespace Siege.DynamicTypeGeneration.Tests
         [Test]
         public void Should_Pass_Method_Arguments()
         {
-            TypeGenerator generator = new TypeGenerator();
             Type generatedType = generator.CreateType(type =>
             {
-                type.Named("TestType");
+                type.Named("TestType14");
                 type.InheritFrom<BaseTypeWithMultipleArgs>();
                 type.OverrideMethod<BaseTypeWithMultipleArgs>(baseType => baseType.DoSomething(null, null), method =>
                 {
@@ -384,11 +379,15 @@ namespace Siege.DynamicTypeGeneration.Tests
                 });
             });
 
-            generator.Save();
-
             var obj = Activator.CreateInstance(generatedType);
             var result = generatedType.GetMethod("DoSomething").Invoke(obj, new object[] { "hurr", new SampleClass() });
             Assert.AreEqual("yay: hurr, val1, sample", result);
+        }
+
+        [TestFixtureTearDown]
+        public void FixtureTearDown()
+        {
+            generator.Save();
         }
     }
 }

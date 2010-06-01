@@ -23,20 +23,15 @@ namespace Siege.DynamicTypeGeneration
     public class TypeGenerator
     {
         private static AssemblyBuilder assemblyBuilder;
-        private ModuleBuilder module;
+        private static ModuleBuilder module;
 
-		public TypeGenerator() : this("Siege.DynamicTypes")
-		{
-			
-		}
-
-        public TypeGenerator(string dllName)
+        static TypeGenerator()
         {
-            AssemblyName assemblyName = new AssemblyName { Name = dllName };
+            AssemblyName assemblyName = new AssemblyName { Name = "Siege.DynamicTypes" };
             AppDomain thisDomain = Thread.GetDomain();
 
             assemblyBuilder = thisDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave);
-            this.module = assemblyBuilder.DefineDynamicModule(assemblyBuilder.GetName().Name,
+            module = assemblyBuilder.DefineDynamicModule(assemblyBuilder.GetName().Name,
                                                          assemblyBuilder.GetName().Name +
                                                          ".dll");
         }
