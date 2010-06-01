@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
@@ -120,7 +119,6 @@ namespace Siege.ServiceLocation.SiegeAdapter
 						}
 					}
 				}
-
 			}
 
 			if (!strategy.CanConstruct(candidate))
@@ -128,7 +126,7 @@ namespace Siege.ServiceLocation.SiegeAdapter
 			    strategy.Register(candidate.Type, mappedType);
 			}
 
-			return strategy.Create(candidate, constructorArgs.ToArray());  
+			return strategy.Create(candidate, constructorArgs);  
 		}
 
 		public object Get(Type type, ConstructorParameter[] parameters)
@@ -143,7 +141,7 @@ namespace Siege.ServiceLocation.SiegeAdapter
 
 		public IEnumerable<object> GetAll(Type type)
 		{
-			List<object> list = new List<object>();
+			var list = new List<object>();
 
 			foreach (Type registration in resolutionMap.GetAllRegisteredTypesMatching(type))
 			{
@@ -155,7 +153,7 @@ namespace Siege.ServiceLocation.SiegeAdapter
 
 		public IEnumerable<TService> GetAll<TService>()
 		{
-			List<TService> list = new List<TService>();
+			var list = new List<TService>();
 
 			foreach (Type registration in resolutionMap.GetAllRegisteredTypesMatching(typeof(TService)))
 			{
@@ -167,13 +165,40 @@ namespace Siege.ServiceLocation.SiegeAdapter
 
 		private ConstructorCandidate SelectConstructor(MappedType type, ResolutionMap map, ConstructorParameter[] parameters)
 		{
-			foreach (ConstructorCandidate candidate in type.Candidates)
-			{
-				if (candidate.Parameters.All(p => map.Contains(p.ParameterType) || parameters.Any(param => p.ParameterType.IsAssignableFrom(param.Value.GetType()))))
-				{
-					return candidate;
-				}
-			}
+		    var candidates = type.Candidates;
+		    var candidateCount = candidates.Count;
+
+            for (int i = 0; i < candidateCount; i++)
+            {
+                var candidate = candidates[i];
+
+                var summaries = candidate.Parameters;
+                var summaryCount = summaries.Count;
+                
+                for (int j = 0; j < summaryCount; j++)
+                {
+                    var summary = summaries[i];
+                    var parameterType = summary.ParameterType;
+
+                    if(!map.Contains(parameterType))
+                    {
+                        int parameterCount = parameters.Length;
+
+                        for(int k = 0; k < parameterCount; k++)
+                        {
+                            var parameter = parameters[k];
+                            if(parameterType.IsAssignableFrom(parameter.Value.GetType())) return candidate;
+                        }
+                    }
+                    else
+                    {
+                        return candidate;
+                    }
+
+                }
+
+                return candidate;
+            }
 
 			throw new Exception();
 		}

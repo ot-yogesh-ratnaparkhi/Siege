@@ -14,7 +14,6 @@
 */
 
 using System;
-using System.Linq;
 using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.SiegeAdapter.Maps;
 
@@ -24,7 +23,7 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 	{
 		public object Create(ConstructorCandidate candidate, object[] parameters)
 		{
-			return candidate.Instantiate(parameters.ToArray());
+			return candidate.Instantiate(parameters);
 		}
 
 		public bool CanConstruct(ConstructorCandidate candidate)

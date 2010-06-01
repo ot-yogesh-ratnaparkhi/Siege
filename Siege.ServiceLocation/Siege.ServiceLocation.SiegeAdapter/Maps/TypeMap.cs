@@ -14,8 +14,8 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Siege.ServiceLocation.Planning;
 
@@ -23,11 +23,25 @@ namespace Siege.ServiceLocation.SiegeAdapter.Maps
 {
 	public class TypeMap
 	{
-		private Dictionary<Type, TypeMapList> entries = new Dictionary<Type,TypeMapList>();
+		private Hashtable entries = new Hashtable();
 
 		public List<Type> GetRegisteredTypesMatching(Type type)
-		{
-			return new List<Type>(entries.Keys.Where(k => k == type || k.IsAssignableFrom(type)));
+        {
+            var keyList = entries.Keys;
+            int keyCount = keyList.Count;
+            var keys = new ArrayList(keyList);
+            var types = new List<Type>();
+
+            for(int i = 0; i < keyCount; i++)
+            {
+                var key = keys[i];
+                var item = (TypeMapList)entries[key];
+                var itemType = item.Type;
+
+                if(itemType == type || itemType.IsAssignableFrom(type)) types.Add(type);
+            }
+
+		    return types;
 		}
 
 		public void Add(Type from, Type to, string key)
@@ -53,15 +67,11 @@ namespace Siege.ServiceLocation.SiegeAdapter.Maps
 		private Type CreateGeneric(Type type, string name)
 		{
 			var definition = type.GetGenericTypeDefinition();
-			var types = entries[definition].MappedTypes;
-			var item = types.Where(f => f.Name == name && !string.IsNullOrEmpty(name)).FirstOrDefault();
+		    var entry = (TypeMapList)entries[definition];
+		    var types = entry.MappedTypes;
+			var item = GetMappedType(name, types) ?? entry.MappedTypes[0];
 
-			if (item == null)
-			{
-				item = entries[definition].MappedTypes.First();
-			}
-
-			if (!item.To.IsGenericType) return item.To;
+		    if (!item.To.IsGenericType) return item.To;
 
 			return item.To.MakeGenericType(type.GetGenericArguments());
 		}
@@ -93,16 +103,25 @@ namespace Siege.ServiceLocation.SiegeAdapter.Maps
 
 			if (!entries.ContainsKey(type)) return null;
 
-			var types = entries[type].MappedTypes;
-			var item = types.Where(f => f.Name == name && !string.IsNullOrEmpty(name)).FirstOrDefault();
+		    var entry = (TypeMapList)entries[type];
+		    var types = entry.MappedTypes;
 
-			if (item == null && name == null)
-			{
-				item = entries[type].MappedTypes.Where(f => string.IsNullOrEmpty(f.Name)).FirstOrDefault();
-			}
-
-			return item;
+		    return GetMappedType(name, types);
 		}
+
+	    private MappedType GetMappedType(string name, List<MappedType> types)
+	    {
+	        int typeCount = types.Count;
+
+            for(int i = 0; i < typeCount; i++)
+            {
+                var type = types[i];
+
+                if(type.Name == name) return type;
+            }
+
+	        return null;
+	    }
 	}
 
 	internal class TypeMapList

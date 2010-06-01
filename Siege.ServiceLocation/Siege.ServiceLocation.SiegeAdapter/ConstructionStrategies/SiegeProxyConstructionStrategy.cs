@@ -14,8 +14,8 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Siege.DynamicTypeGeneration;
 using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.SiegeAdapter.Maps;
@@ -29,22 +29,24 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 
 	public class SiegeProxyConstructionStrategy : IConstructionStrategy
 	{
-		private Dictionary<ConstructorCandidate, SiegeActivator> activators = new Dictionary<ConstructorCandidate,SiegeActivator>();
+		private Hashtable activators = new Hashtable();
 		private int registrationCount = 1;
 
 		public bool CanConstruct(ConstructorCandidate candidate)
 		{
-			return activators.Keys.Any(k => k.Type == candidate.Type);
+		    return activators.ContainsKey(candidate.Type);
 		}
 
 		public object Create(ConstructorCandidate candidate, object[] parameters)
 		{
-		    var item = activators.Keys.Where(k => k.Type == candidate.Type).First();
-			return this.activators[item].Instantiate(parameters);
+		    var activator = (SiegeActivator) activators[candidate.Type];
+            return activator.Instantiate(parameters);
 		}
 
 		public void Register(Type to, MappedType mappedType)
 		{
+            if(activators.ContainsKey(to)) return;
+
 			var generator = new TypeGenerator("Siege.DynamicTypes" + registrationCount);
 			registrationCount++;
 
@@ -53,7 +55,7 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
             for (int candidateCounter = 0; candidateCounter < candidateCount; candidateCounter++)
             {
                 var candidate = candidates[candidateCounter];
-                if (activators.ContainsKey(candidate)) continue;
+                if (activators.ContainsKey(candidate.Type)) continue;
 
                 var activatorType = generator.CreateType(context =>
                 {
@@ -78,7 +80,17 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
                                 items.Add(arg1);
                             }
 
-                            instance.AssignFrom(body.Instantiate(to, candidate.Parameters.OrderBy(p => p.Position).Select(p => p.ParameterType).ToArray(), items.ToArray()));
+                            var constructorArgs = new Type[candidate.Parameters.Count];
+                            var candidateParameters = candidate.Parameters;
+                            var candidateParameterCount = candidateParameters.Count;
+                            for (int i = 0; i < candidateParameterCount; i++)
+                            {
+                                var arg = candidateParameters[i];
+
+                                constructorArgs[arg.Position] = arg.ParameterType;
+                            }
+
+                            instance.AssignFrom(body.Instantiate(to, constructorArgs, items.ToArray()));
                             body.Return(instance);
                         });
                     });
@@ -86,7 +98,7 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 
                 var constructor = activatorType.GetConstructor(new Type[] { });
 
-                activators.Add(candidate, (SiegeActivator)constructor.Invoke(new object[] { }));
+                activators.Add(candidate.Type, constructor.Invoke(new object[] { }));
             }
 		}
 	}

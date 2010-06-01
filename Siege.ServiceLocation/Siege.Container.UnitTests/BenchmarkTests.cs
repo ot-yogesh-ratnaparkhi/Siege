@@ -27,7 +27,10 @@ namespace Siege.ServiceLocation.UnitTests
 		[Test]
 		[Category("Load")]
 		public void Load_Performance_Test()
-		{
+        {
+            var totalTime = new TimeSpan();
+            DateTime start = DateTime.Now;
+
 			locator
 				.Register(Given<ITestController>.Then<TestController>())
 				.Register(Given<IBaseService>.Then<DefaultTestService>())
@@ -45,12 +48,18 @@ namespace Siege.ServiceLocation.UnitTests
 							.When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionB)
 							.Then<TestRepository2>());
 
-				locator.GetInstance<ITestController>();
+			locator.GetInstance<ITestController>();
 
-			DateTime start = DateTime.Now;
+            DateTime end = DateTime.Now;
+            totalTime += end - start;
+
+
+            Console.WriteLine("Total Registration Time (in milliseconds): " + totalTime.TotalMilliseconds);
+            Console.WriteLine("Average Registration Time (in milliseconds): " + totalTime.TotalMilliseconds / iterations);
 
 			for (int i = 0; i < iterations; i++)
-			{
+            {
+                start = DateTime.Now;
 				ITestController controller = locator.GetInstance<ITestController>();
 				Assert.IsInstanceOfType(typeof(DefaultTestService), controller.Service);
 				Assert.IsInstanceOfType(typeof(DefaultTestRepository), controller.Service.Repository);
@@ -67,11 +76,12 @@ namespace Siege.ServiceLocation.UnitTests
 				Assert.IsInstanceOfType(typeof(TestService1), controller.Service);
 				Assert.IsInstanceOfType(typeof(TestRepository2), controller.Service.Repository);
 
-				locator.Store.ContextStore.Clear();
+                locator.Store.ContextStore.Clear();
+                end = DateTime.Now;
+
+                totalTime += end - start;
 			}
 
-			DateTime end = DateTime.Now;
-			TimeSpan totalTime = end - start;
 			Console.WriteLine("Total Execution Time (in milliseconds): " + totalTime.TotalMilliseconds);
 			Console.WriteLine("Average Execution Time (in milliseconds): " + totalTime.TotalMilliseconds / iterations);
 		}
@@ -80,22 +90,28 @@ namespace Siege.ServiceLocation.UnitTests
 		[Test]
 		[Category("With Siege")]
 		public virtual void With_Siege()
-		{
+        {
+            var totalTime = new TimeSpan();
+            DateTime start = DateTime.Now;
+
 			locator
 				.Register(Given<ITestController>.Then<TestController>())
 				.Register(Given<IBaseService>.Then<DefaultTestService>())
 				.Register(Given<ITestRepository>.Then<DefaultTestRepository>());
 
+            DateTime end = DateTime.Now;
+            totalTime += end - start;
 
-			DateTime start = DateTime.Now;
+            Console.WriteLine("Total Registration Time (in milliseconds): " + totalTime.TotalMilliseconds);
+            Console.WriteLine("Average Registration Time (in milliseconds): " + totalTime.TotalMilliseconds / iterations);
 
-			for (int i = 0; i < iterations; i++)
-			{
-				locator.GetInstance<ITestController>();
+            for (int i = 0; i < iterations; i++)
+            {
+                start = DateTime.Now;
+                locator.GetInstance<ITestController>();
+                end = DateTime.Now;
+                totalTime += end - start;
 			}
-
-			DateTime end = DateTime.Now;
-			TimeSpan totalTime = end - start;
 
 			Console.WriteLine("Total Execution Time (with Siege in milliseconds): " + totalTime.TotalMilliseconds);
 			Console.WriteLine("Average Execution Time (with Siege in milliseconds): " + totalTime.TotalMilliseconds / iterations);
@@ -104,20 +120,30 @@ namespace Siege.ServiceLocation.UnitTests
 		[Test]
 		[Category("Without Siege")]
 		public virtual void WithoutSiege()
-		{
+        {
+            var totalTime = new TimeSpan();
+
+            DateTime start = DateTime.Now;
+
 			RegisterWithoutSiege<ITestController, TestController>();
 			RegisterWithoutSiege<IBaseService, DefaultTestService>();
 			RegisterWithoutSiege<ITestRepository, DefaultTestRepository>();
 
-			DateTime start = DateTime.Now;
+            DateTime end = DateTime.Now;
+            totalTime += end - start;
 
-			for (int i = 0; i < iterations; i++)
-			{
-				ResolveWithoutSiege<ITestController>();
+            Console.WriteLine("Total Registration Time (in milliseconds): " + totalTime.TotalMilliseconds);
+            Console.WriteLine("Average Registration Time (in milliseconds): " + totalTime.TotalMilliseconds / iterations);
+            
+            for (int i = 0; i < iterations; i++)
+            {
+                start = DateTime.Now;
+                ResolveWithoutSiege<ITestController>();
+                end = DateTime.Now;
+
+                totalTime += end - start;
 			}
 
-			DateTime end = DateTime.Now;
-			TimeSpan totalTime = end - start;
 
 			Console.WriteLine("Total Execution Time (without Siege in milliseconds): " + totalTime.TotalMilliseconds);
 			Console.WriteLine("Average Execution Time (without Siege in milliseconds): " + totalTime.TotalMilliseconds / iterations);
