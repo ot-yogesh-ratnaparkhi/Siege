@@ -50,8 +50,9 @@ namespace Siege.ServiceLocation
 
         public object Build(Type type)
         {
-            foreach (IGenericUseCase useCase in conditionalUseCases)
+            for (int i = 0; i < conditionalUseCases.Count; i++)
             {
+                var useCase = (IGenericUseCase)conditionalUseCases[i];
                 object result = null;
 
                 if (useCase.IsValid(serviceLocator.Store))
@@ -66,8 +67,9 @@ namespace Siege.ServiceLocation
                 }
             }
 
-            foreach (IGenericUseCase useCase in defaultCases)
+            for(int i = 0; i < defaultCases.Count; i++)
             {
+                var useCase = (IGenericUseCase)defaultCases[i];
                 object result = useCase.Resolve(new DefaultResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
 
                 if (result != null)

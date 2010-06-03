@@ -22,7 +22,7 @@ namespace Siege.ServiceLocation.UnitTests
 {
 	public abstract partial class SiegeContainerTests
 	{
-		const double iterations = 1000000;
+		const double iterations = 10000;
 
 		[Test]
 		[Category("Load")]

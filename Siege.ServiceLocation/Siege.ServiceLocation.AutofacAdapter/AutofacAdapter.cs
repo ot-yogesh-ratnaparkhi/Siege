@@ -47,14 +47,16 @@ namespace Siege.ServiceLocation.AutofacAdapter
         {
             try
 			{
-				List<NamedParameter> args = new List<NamedParameter>();
+				var args = new List<NamedParameter>();
 
-                foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
-				{
+                var constructorParameters = parameters.OfType<ConstructorParameter, IResolutionArgument>();
+                for (int i = 0; i < constructorParameters.Length; i++)
+                {
+                    var parameter = constructorParameters[i];
 					args.Add(new NamedParameter(parameter.Name, parameter.Value));
 				}
-				
-				return container.Resolve(key, args.ToArray());
+
+                return container.Resolve(key, args.OfType<NamedParameter, NamedParameter>());
             }
             catch (ComponentNotRegisteredException)
             {
@@ -64,14 +66,16 @@ namespace Siege.ServiceLocation.AutofacAdapter
 
 		public object GetInstance(Type type, params IResolutionArgument[] parameters)
 		{
-			List<NamedParameter> args = new List<NamedParameter>();
+			var args = new List<NamedParameter>();
 
-            foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
-			{
+            var constructorParameters = parameters.OfType<ConstructorParameter, IResolutionArgument>();
+            for (int i = 0; i < constructorParameters.Length; i++)
+            {
+                var parameter = constructorParameters[i];
 				args.Add(new NamedParameter(parameter.Name, parameter.Value));
 			}
 
-			return container.Resolve(type, args.ToArray());
+            return container.Resolve(type, args.OfType<NamedParameter, NamedParameter>());
         }
 
         public bool HasTypeRegistered(Type type)

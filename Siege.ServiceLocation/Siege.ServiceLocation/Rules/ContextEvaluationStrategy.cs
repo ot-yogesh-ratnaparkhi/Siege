@@ -23,25 +23,31 @@ namespace Siege.ServiceLocation.Rules
     {
         public bool IsValid(IActivationRule rule, IServiceLocatorStore context)
         {
-            foreach (object contextItem in MergeContextItems(context))
+            var items = MergeContextItems(context);
+            for (int i = 0; i < items.Count; i++)
             {
+                var contextItem = items[i];
                 if (rule.Evaluate(contextItem)) return true;
             }
 
             return false;
         }
 
-        private List<object> MergeContextItems(IServiceLocatorStore context)
+        private static List<object> MergeContextItems(IServiceLocatorStore context)
         {
-            List<object> contextItems = new List<object>();
-
-            foreach (IResolutionArgument argument in context.ResolutionStore.Items)
+            var contextItems = new List<object>();
+            var resolutionItems = context.ResolutionStore.Items;
+            for(int i = 0; i < resolutionItems.Count; i++)
             {
+                var argument = resolutionItems[i];
                 if (argument is ContextArgument) contextItems.Add(((ContextArgument)argument).ContextItem);
             }
 
-            foreach (object item in context.ContextStore.Items)
+            var items = context.ContextStore.Items;
+
+            for (int i = 0; i < items.Count; i++)
             {
+                var item = items[i];
                 contextItems.Add(item);
             }
             return contextItems;

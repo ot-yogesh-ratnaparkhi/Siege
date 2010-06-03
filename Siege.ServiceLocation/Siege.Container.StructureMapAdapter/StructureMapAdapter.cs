@@ -14,10 +14,13 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using Siege.ServiceLocation.Exceptions;
+using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.Resolution;
 using StructureMap;
 using StructureMap.Configuration.DSL;
@@ -48,6 +51,8 @@ namespace Siege.ServiceLocation.StructureMapAdapter
             container.Configure(x => x.AddRegistry(registry));
         }
 
+        #region IServiceLocatorAdapter Members
+
         public void Dispose()
         {
             //container.Dispose();
@@ -57,8 +62,11 @@ namespace Siege.ServiceLocation.StructureMapAdapter
         {
             var objects = new Collection<object>();
 
-            foreach (object item in container.GetAllInstances(serviceType))
+            IList instances = container.GetAllInstances(serviceType);
+
+            for (int i = 0; i < instances.Count; i++)
             {
+                object item = instances[i];
                 objects.Add(item);
             }
 
@@ -86,33 +94,38 @@ namespace Siege.ServiceLocation.StructureMapAdapter
         {
             object instance;
 
-			//lol thanks stucturemap for your inconsistent API, I /love/ using reflection to call methods.
+            //lol thanks stucturemap for your inconsistent API, I /love/ using reflection to call methods.
 
             try
             {
                 ExplicitArgsExpression expression = null;
 
-                if (parameters.OfType<ConstructorParameter>().Count() > 0)
+                if (parameters.OfType<ConstructorParameter, IResolutionArgument>().Length > 0)
                 {
-                	var parameter1 = parameters.OfType<ConstructorParameter>().First();
+                    ConstructorParameter parameter1 = parameters.OfType<ConstructorParameter, IResolutionArgument>()[0];
 
-					expression = container.With(parameter1.Name).EqualTo(parameter1.Value);
+                    expression = container.With(parameter1.Name).EqualTo(parameter1.Value);
 
-					if (parameters.Count() > 1)
-					{
-						var constructorArgs = parameters.OfType<ConstructorParameter>();
+                    if (parameters.Length > 1)
+                    {
+                        ConstructorParameter[] constructorArgs =
+                            parameters.OfType<ConstructorParameter, IResolutionArgument>();
 
-						for (int i = 1; i < constructorArgs.Count(); i++)
-						{
-							expression.With(constructorArgs.ElementAt(i).Name).EqualTo(constructorArgs.ElementAt(i).Value);
-						}
-					}
+                        for (int i = 1; i < constructorArgs.Length; i++)
+                        {
+                            expression.With(constructorArgs[i].Name).EqualTo(constructorArgs[i].Value);
+                        }
+                    }
                 }
-            	var method = typeof (ExplicitArgsExpression).GetMethods().Where(m => m.IsGenericMethod && m.Name =="GetInstance" && m.GetParameters().Count() == 1).First();
-				method = method.MakeGenericMethod(type);
-				
-				instance = expression != null ? method.Invoke(expression, new object[] { key }) : 
-					container.GetInstance(type, key);
+                MethodInfo method =
+                    typeof (ExplicitArgsExpression).GetMethods().Where(
+                        m => m.IsGenericMethod && m.Name == "GetInstance" && m.GetParameters().Count() == 1).First();
+                method = method.MakeGenericMethod(type);
+
+                instance = expression != null
+                               ? method.Invoke(expression, new object[] {key})
+                               :
+                                   container.GetInstance(type, key);
             }
             catch (StructureMapException ex)
             {
@@ -128,19 +141,20 @@ namespace Siege.ServiceLocation.StructureMapAdapter
         {
             ExplicitArgsExpression expression = null;
 
-            if (parameters.OfType<ConstructorParameter>().Count() > 0)
+            if (parameters.OfType<ConstructorParameter, IResolutionArgument>().Length > 0)
             {
-                ConstructorParameter parameter1 = parameters.OfType<ConstructorParameter>().First();
+                ConstructorParameter parameter1 = parameters.OfType<ConstructorParameter, IResolutionArgument>()[0];
 
                 expression = container.With(parameter1.Name).EqualTo(parameter1.Value);
 
-                if (parameters.Count() > 1)
+                if (parameters.Length > 1)
                 {
-                    IEnumerable<ConstructorParameter> constructorArgs = parameters.OfType<ConstructorParameter>();
+                    ConstructorParameter[] constructorArgs =
+                        parameters.OfType<ConstructorParameter, IResolutionArgument>();
 
-                    for (int i = 1; i < constructorArgs.Count(); i++)
+                    for (int i = 1; i < constructorArgs.Length; i++)
                     {
-                        expression.With(constructorArgs.ElementAt(i).Name).EqualTo(constructorArgs.ElementAt(i).Value);
+                        expression.With(constructorArgs[i].Name).EqualTo(constructorArgs[i].Value);
                     }
                 }
             }
@@ -182,5 +196,7 @@ namespace Siege.ServiceLocation.StructureMapAdapter
             registry.For(type).LifecycleIs(InstanceScope.PerRequest).Use(x => func());
             container.Configure(configure => configure.AddRegistry(registry));
         }
+
+        #endregion
     }
 }

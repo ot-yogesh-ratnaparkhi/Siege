@@ -61,12 +61,14 @@ namespace Siege.ServiceLocation.NinjectAdapter
 		{
 			var args = new List<ConstructorArgument>();
 
-            foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
-			{
+            var constructorParameters = parameters.OfType<ConstructorParameter, IResolutionArgument>();
+            for (int i = 0; i < constructorParameters.Length; i++)
+            {
+                var parameter = constructorParameters[i];
 				args.Add(new ConstructorArgument(parameter.Name, parameter.Value));
 			}
 
-			return kernel.Get(type, args.ToArray());
+            return kernel.Get(type, args.OfType<ConstructorArgument, ConstructorArgument>());
 		}
 
 		public bool HasTypeRegistered(Type type)
@@ -78,12 +80,14 @@ namespace Siege.ServiceLocation.NinjectAdapter
 		{
 			var args = new List<ConstructorArgument>();
 
-            foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
-			{
+            var constructorParameters = parameters.OfType<ConstructorParameter, IResolutionArgument>();
+            for (int i = 0; i < constructorParameters.Length; i++)
+            {
+                var parameter = constructorParameters[i];
 				args.Add(new ConstructorArgument(parameter.Name, parameter.Value));
 			}
 
-			var instance = kernel.Get(serviceType, key, args.ToArray());
+            var instance = kernel.Get(serviceType, key, args.OfType<ConstructorArgument, ConstructorArgument>());
 
 			if (instance == null) throw new RegistrationNotFoundException(serviceType, key);
 

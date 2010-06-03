@@ -13,7 +13,6 @@
      limitations under the License.
 */
 
-using System;
 using Siege.ServiceLocation.Rules;
 using Siege.ServiceLocation.Stores;
 
@@ -23,8 +22,10 @@ namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
     {
         public bool IsValid(IActivationRule rule, IServiceLocatorStore context)
         {
-            foreach (Type dependency in context.ExecutionStore.RequestedTypes)
+            var types = context.ExecutionStore.RequestedTypes;
+            for(int i = 0; i < types.Count; i++)
             {
+                var dependency = types[i];
                 if (rule.Evaluate(dependency)) return true;
             }
 

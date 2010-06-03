@@ -31,7 +31,7 @@ namespace Siege.ServiceLocation.HttpIntegration
         {
             get
             {
-                List<object> items = new List<object>();
+                var items = new List<object>();
 
                 foreach (string item in HttpContext.Current.Session)
                 {

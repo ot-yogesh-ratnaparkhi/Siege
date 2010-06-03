@@ -32,8 +32,9 @@ namespace Siege.ServiceLocation.Stores
 
         public void Add(List<IResolutionArgument> arguments)
         {
-            foreach (IResolutionArgument argument in arguments)
+            for(int i = 0; i < arguments.Count; i++)
             {
+                var argument = arguments[i];
                 contextItems.Add(argument);
             }
         }

@@ -47,8 +47,10 @@ namespace Siege.ServiceLocation.UnityAdapter
 			{
 				var args = new ParameterOverrides();
 
-                foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
-				{
+                var constructorParameters = parameters.OfType<ConstructorParameter, IResolutionArgument>();
+                for (int i = 0; i < constructorParameters.Length; i++)
+                {
+                    var parameter = constructorParameters[i];
 					args.Add(parameter.Name, parameter.Value);
 				}
 
@@ -64,8 +66,10 @@ namespace Siege.ServiceLocation.UnityAdapter
 		{
 			var args = new ParameterOverrides();
 
-            foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
+		    var constructorParameters = parameters.OfType<ConstructorParameter, IResolutionArgument>();
+            for (int i = 0; i < constructorParameters.Length; i++)
 			{
+			    var parameter = constructorParameters[i];
 				args.Add(parameter.Name, parameter.Value);
 			}
 

@@ -14,6 +14,8 @@
 */
 
 using System;
+using Siege.ServiceLocation.ExtensionMethods;
+using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.UseCases
@@ -58,7 +60,7 @@ namespace Siege.ServiceLocation.UseCases
 
             public object Resolve(IInstanceResolver locator, IServiceLocatorStore context)
             {
-				return locator.GetInstance(boundType, context.ResolutionStore.Items.ToArray());
+				return locator.GetInstance(boundType, context.ResolutionStore.Items.OfType<IResolutionArgument, IResolutionArgument>());
             }
         }
     }

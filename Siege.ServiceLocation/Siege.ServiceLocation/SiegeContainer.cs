@@ -112,9 +112,10 @@ namespace Siege.ServiceLocation
 
             if (selectedCase != null)
             {
-                foreach (IGenericUseCase useCase in selectedCase)
+                for (int i = 0; i < selectedCase.Count; i++)
                 {
-                    var value = Resolve(useCase, new ConditionalResolutionStrategy(serviceLocator, this.store));
+                    var useCase = selectedCase[i];
+                    var value = Resolve((IGenericUseCase)useCase, new ConditionalResolutionStrategy(serviceLocator, this.store));
 
                     if (value != null)
                     {
@@ -269,9 +270,10 @@ namespace Siege.ServiceLocation
 
             if (actions != null)
             {
-                foreach (IActionUseCase actionUseCase in actions)
+                for (int i = 0; i < actions.Count; i++)
                 {
-                    action(actionUseCase);
+                    var actionUseCase = actions[i];
+                    action((IActionUseCase)actionUseCase);
                 }
             }
         }

@@ -63,10 +63,12 @@ namespace Siege.SeviceLocation.WindsorAdapter
 		{
 			try
 			{
-				Dictionary<string, object> args = new Dictionary<string, object>();
+				var args = new Dictionary<string, object>();
 
-                foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
-				{
+                var constructorParameters = parameters.OfType<ConstructorParameter, IResolutionArgument>();
+                for (int i = 0; i < constructorParameters.Length; i++)
+                {
+                    var parameter = constructorParameters[i];
 					args.Add(parameter.Name, parameter.Value);
 				}
 
@@ -82,10 +84,12 @@ namespace Siege.SeviceLocation.WindsorAdapter
 		{
 			try
 			{
-				Dictionary<string, object> args = new Dictionary<string, object>();
+				var args = new Dictionary<string, object>();
 
-                foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
-				{
+                var constructorParameters = parameters.OfType<ConstructorParameter, IResolutionArgument>();
+                for (int i = 0; i < constructorParameters.Length; i++)
+                {
+                    var parameter = constructorParameters[i];
 					args.Add(parameter.Name, parameter.Value);
 				}
 

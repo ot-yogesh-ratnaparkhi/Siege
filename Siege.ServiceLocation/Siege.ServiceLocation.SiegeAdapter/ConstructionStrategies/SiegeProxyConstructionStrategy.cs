@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Siege.DynamicTypeGeneration;
+using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.SiegeAdapter.Maps;
 
@@ -88,7 +89,7 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
                                 constructorArgs[arg.Position] = arg.ParameterType;
                             }
 
-                            instance.AssignFrom(body.Instantiate(to, constructorArgs, items.ToArray()));
+                            instance.AssignFrom(body.Instantiate(to, constructorArgs, items.OfType<ILocalIndexer, ILocalIndexer>()));
                             body.Return(instance);
                         });
                     });
