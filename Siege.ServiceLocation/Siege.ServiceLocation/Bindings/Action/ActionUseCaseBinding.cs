@@ -21,11 +21,6 @@ namespace Siege.ServiceLocation.Bindings.Action
     {
         public void Bind(IUseCase useCase, IFactoryFetcher locator)
         {
-            
-        }
-
-        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
-        {
         }
     }
 }
