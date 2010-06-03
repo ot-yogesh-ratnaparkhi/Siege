@@ -20,6 +20,7 @@ using System.Linq;
 using Autofac;
 using Autofac.Builder;
 using Siege.ServiceLocation.Exceptions;
+using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.Resolution;
 
 namespace Siege.ServiceLocation.AutofacAdapter
@@ -48,7 +49,7 @@ namespace Siege.ServiceLocation.AutofacAdapter
 			{
 				List<NamedParameter> args = new List<NamedParameter>();
 
-				foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+                foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
 				{
 					args.Add(new NamedParameter(parameter.Name, parameter.Value));
 				}
@@ -65,7 +66,7 @@ namespace Siege.ServiceLocation.AutofacAdapter
 		{
 			List<NamedParameter> args = new List<NamedParameter>();
 
-			foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+            foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
 			{
 				args.Add(new NamedParameter(parameter.Name, parameter.Value));
 			}

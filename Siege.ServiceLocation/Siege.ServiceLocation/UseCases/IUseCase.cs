@@ -14,11 +14,13 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace Siege.ServiceLocation.UseCases
 {
     public interface IUseCase
     {
+        //IList<IUseCase> ChainedCases { get; }
         Type GetBoundType();
         Type GetUseCaseBindingType();
         Type GetBaseBindingType();

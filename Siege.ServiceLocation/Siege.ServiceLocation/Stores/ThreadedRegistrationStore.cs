@@ -14,8 +14,8 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Siege.ServiceLocation.EventHandlers;
 using Siege.ServiceLocation.Planning;
@@ -30,7 +30,18 @@ namespace Siege.ServiceLocation.Stores
 		{
 			get
 			{
-				return new List<Type>(registeredTypes.Keys.ToArray());
+                var list = new Type[registeredTypes.Keys.Count];
+                var types = new List<Type>();
+			    registeredTypes.Keys.CopyTo(list,0);
+
+                for (int i = 0; i < list.Length; i++)
+                {
+                    var type = list[i];
+
+                    types.Add(type);
+                }
+
+			    return types;
 			}
 		}
 

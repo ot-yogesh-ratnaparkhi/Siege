@@ -40,9 +40,9 @@ namespace Siege.ServiceLocation.SiegeAdapter.Maps
 		{
 			var types = new List<Type>();
 
-			types.AddRange(FactoryMap.GetRegisteredTypesMatching(type));
-			types.AddRange(InstanceMap.GetRegisteredTypesMatching(type));
-			types.AddRange(TypeMap.GetRegisteredTypesMatching(type));
+			types.AddRange(FactoryMap.GetRegisteredTypesMatching<FactoryMapList>(type));
+			types.AddRange(InstanceMap.GetRegisteredTypesMatching<InstanceMapList>(type));
+			types.AddRange(TypeMap.GetRegisteredTypesMatching<TypeMapList>(type));
 
 			return types;
 		}

@@ -15,19 +15,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Siege.ServiceLocation.SiegeAdapter.Maps
 {
-	public class InstanceMap
+	public class InstanceMap : AbstractMap
 	{
-		private Dictionary<Type, InstanceMapList> entries = new Dictionary<Type,InstanceMapList>();
-		
-		public List<Type> GetRegisteredTypesMatching(Type type)
-		{
-			return new List<Type>(entries.Keys.Where(k => k == type || k.IsAssignableFrom(type)));
-		}
-		
 		public void Add(Type from, object to, string key)
 		{
 			if(!entries.ContainsKey(from))
@@ -43,21 +35,26 @@ namespace Siege.ServiceLocation.SiegeAdapter.Maps
 		    return entries.ContainsKey(type);
 		}
 
-		public object Get(Type type, string key)
+		public object Get(Type type, string name)
 		{
-			var instances = entries[type].MappedInstances;
-			var instance = instances.Where(f => f.Name == key && !string.IsNullOrEmpty(key)).FirstOrDefault() ??
-			               entries[type].MappedInstances.First();
+            var entry = (InstanceMapList)entries[type];
+            var instances = entry.MappedInstances;
 
-			return instance.To;
+            for (int i = 0; i < instances.Count; i++)
+            {
+                var instance = instances[i];
+
+                if (instance.Name == name) return instance.To;
+            }
+
+            return instances[0].To;
 		}
 	}
 
-	internal class InstanceMapList
+    internal class InstanceMapList : AbstractMapList
 	{
 		private List<object> registeredInstances = new List<object>();
 		public List<MappedInstance> MappedInstances { get; private set; }
-		public Type Type { get; private set; }
 
 		public InstanceMapList(Type type)
 		{

@@ -15,9 +15,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Practices.Unity;
 using Siege.ServiceLocation.Exceptions;
+using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.Resolution;
 
 namespace Siege.ServiceLocation.UnityAdapter
@@ -45,9 +45,9 @@ namespace Siege.ServiceLocation.UnityAdapter
         {
             try
 			{
-				ParameterOverrides args = new ParameterOverrides();
+				var args = new ParameterOverrides();
 
-				foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+                foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
 				{
 					args.Add(parameter.Name, parameter.Value);
 				}
@@ -62,9 +62,9 @@ namespace Siege.ServiceLocation.UnityAdapter
 
 		public object GetInstance(Type type, params IResolutionArgument[] parameters)
 		{
-			ParameterOverrides args = new ParameterOverrides();
+			var args = new ParameterOverrides();
 
-			foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+            foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
 			{
 				args.Add(parameter.Name, parameter.Value);
 			}

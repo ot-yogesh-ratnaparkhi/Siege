@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="ConstructionStrategies\ReflectionConstructionStrategy.cs" />
     <Compile Include="ConstructionStrategies\IConstructionStrategy.cs" />
+    <Compile Include="Maps\AbstractMap.cs" />
     <Compile Include="Maps\FactoryMap.cs" />
     <Compile Include="Maps\InstanceMap.cs" />
     <Compile Include="Maps\ResolutionMap.cs" />

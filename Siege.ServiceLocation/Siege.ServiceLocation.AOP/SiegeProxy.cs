@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections;
-using System.Linq;
 using System.Reflection;
 using Siege.DynamicTypeGeneration;
 using Siege.ServiceLocation.AOP.Attributes;
@@ -67,8 +66,8 @@ namespace Siege.ServiceLocation.AOP
         public Type Create(Type typeToProxy)
         {
             if (definedTypes.ContainsKey(typeToProxy)) return (Type)definedTypes[typeToProxy];
-            if (typeToProxy.GetMethods().Where(methodInfo => methodInfo.GetCustomAttributes(typeof(IAopAttribute), true).Count() > 0).Count() == 0) return typeToProxy;
-            
+            if (!HasAopDefinitions(typeToProxy)) return typeToProxy;
+
             Type generatedType = generator.CreateType(type =>
             {
                 type.Named(typeToProxy.Name + Guid.NewGuid());
@@ -86,44 +85,62 @@ namespace Siege.ServiceLocation.AOP
             return generatedType;
         }
 
-    	private void ProxyMethods(TypeGenerationContext type, Type typeToProxy, GeneratedField field)
+        private static bool HasAopDefinitions(Type typeToProxy)
+        {
+            var methods = typeToProxy.GetMethods();
+
+            for (int i = 0; i < methods.Length; i++)
+            {
+                var method = methods[i];
+                if(method.GetCustomAttributes(typeof(IAopAttribute), true).Length > 1) return true;
+            }
+
+            return false;
+        }
+
+    	private void ProxyMethods(BaseTypeGenerationContext type, Type typeToProxy, GeneratedField field)
     	{
-    		foreach (MethodInfo methodInfo in typeToProxy.GetMethods(BindingFlags.Public | BindingFlags.Instance))
-    		{
-    			if (methodInfo.IsVirtual && methodInfo.GetBaseDefinition().DeclaringType != typeof(object))
-    			{
-    				type.OverrideMethod(methodInfo, method => method.WithBody(body =>
-                  	{
-                  		if (methodInfo.GetCustomAttributes(typeof(IAopAttribute), true).Count() == 0)
-                  		{
-                  			body.CallBase(methodInfo);
-                  			return;
-                  		}
+    	    var methods = typeToProxy.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+            for (int i = 0; i < methods.Length; i++)
+            {
+                var methodInfo = methods[i];
+                if (methodInfo.IsVirtual && methodInfo.GetBaseDefinition().DeclaringType != typeof(object))
+                {
+                    type.OverrideMethod(methodInfo, method => method.WithBody(body =>
+                    {
+                        if (methodInfo.GetCustomAttributes(typeof(IAopAttribute), true).Length == 0)
+                        {
+                            body.CallBase(methodInfo);
+                            return;
+                        }
 
-                  		GeneratedVariable locator = null;
+                        GeneratedVariable locator = null;
 
-                  		if (useServiceLocator)
-                  		{
-							locator = body.CreateVariable<Microsoft.Practices.ServiceLocation.IServiceLocator>();
-							locator.AssignFrom(field);
-                  		}
+                        if (useServiceLocator)
+                        {
+                            locator = body.CreateVariable<Microsoft.Practices.ServiceLocation.IServiceLocator>();
+                            locator.AssignFrom(field);
+                        }
 
-						GeneratePreProcessors(body, methodInfo, locator);
+                        GeneratePreProcessors(body, methodInfo, locator);
 
-                  		var returnValue = GenerateEncapsulatedCalls(methodInfo, body, locator, field);
+                        var returnValue = GenerateEncapsulatedCalls(methodInfo, body, locator, field);
 
-						GeneratePostProcessors(body, methodInfo, locator);
+                        GeneratePostProcessors(body, methodInfo, locator);
 
-                  		if(returnValue != null) body.Return(returnValue);
-                  	}));
-    			}
-    		}
+                        if (returnValue != null) body.Return(returnValue);
+                    }));
+                }
+            }
     	}
 
     	private void GeneratePreProcessors(MethodBodyContext body, ICustomAttributeProvider methodInfo, GeneratedVariable serviceLocator)
         {
-            foreach (Attribute attribute in methodInfo.GetCustomAttributes(typeof(IPreProcessingAttribute), true))
+    	    var attributes = methodInfo.GetCustomAttributes(typeof (IPreProcessingAttribute), true);
+            
+            for(int i = 0; i < attributes.Length; i++)
             {
+                var attribute = attributes[i];
                 var preProcessor = body.CreateVariable<IPreProcessingAttribute>();
                 if(useServiceLocator)
                 {
@@ -140,8 +157,11 @@ namespace Siege.ServiceLocation.AOP
 
         private void GeneratePostProcessors(MethodBodyContext body, ICustomAttributeProvider methodInfo, GeneratedVariable serviceLocator)
         {
-            foreach (Attribute attribute in methodInfo.GetCustomAttributes(typeof(IPostProcessingAttribute), true))
+            var attributes = methodInfo.GetCustomAttributes(typeof(IPostProcessingAttribute), true);
+
+            for (int i = 0; i < attributes.Length; i++)
             {
+                var attribute = attributes[i];
                 var postProcessor = body.CreateVariable<IPostProcessingAttribute>();
                 if (useServiceLocator)
                 {

@@ -15,10 +15,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Ninject;
 using Ninject.Parameters;
 using Siege.ServiceLocation.Exceptions;
+using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.Resolution;
 
 namespace Siege.ServiceLocation.NinjectAdapter
@@ -59,9 +59,9 @@ namespace Siege.ServiceLocation.NinjectAdapter
 
 		public object GetInstance(Type type, params IResolutionArgument[] parameters)
 		{
-			List<ConstructorArgument> args = new List<ConstructorArgument>();
+			var args = new List<ConstructorArgument>();
 
-			foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+            foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
 			{
 				args.Add(new ConstructorArgument(parameter.Name, parameter.Value));
 			}
@@ -76,9 +76,9 @@ namespace Siege.ServiceLocation.NinjectAdapter
 
 		public object GetInstance(Type serviceType, string key, params IResolutionArgument[] parameters)
 		{
-			List<ConstructorArgument> args = new List<ConstructorArgument>();
+			var args = new List<ConstructorArgument>();
 
-			foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+            foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
 			{
 				args.Add(new ConstructorArgument(parameter.Name, parameter.Value));
 			}

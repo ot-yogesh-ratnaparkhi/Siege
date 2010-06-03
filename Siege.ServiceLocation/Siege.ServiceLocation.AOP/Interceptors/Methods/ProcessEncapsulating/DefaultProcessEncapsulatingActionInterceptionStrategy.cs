@@ -34,7 +34,7 @@ namespace Siege.ServiceLocation.AOP.Interceptors.Methods.ProcessEncapsulating
 				encapsulating.Invoke(funcProcessor);
 		}
 
-		private MethodInfo GetMethodInfo(Expression<Action> method)
+		private static MethodInfo GetMethodInfo(Expression<Action> method)
 		{
 			var body = method.Body as MethodCallExpression;
 

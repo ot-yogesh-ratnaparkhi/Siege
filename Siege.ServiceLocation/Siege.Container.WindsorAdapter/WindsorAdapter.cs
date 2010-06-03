@@ -15,12 +15,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Castle.Facilities.FactorySupport;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Siege.ServiceLocation;
 using Siege.ServiceLocation.Exceptions;
+using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.Resolution;
 
 namespace Siege.SeviceLocation.WindsorAdapter
@@ -37,7 +37,7 @@ namespace Siege.SeviceLocation.WindsorAdapter
         public WindsorAdapter(IKernel kernel)
         {
             this.kernel = kernel;
-            if(this.kernel.GetFacilities().OfType<FactorySupportFacility>().Count() == 0)
+            if(this.kernel.GetFacilities().OfType<FactorySupportFacility, IFacility>().Length == 0)
             {
             	this.kernel.AddFacility<FactorySupportFacility>();
             }
@@ -65,7 +65,7 @@ namespace Siege.SeviceLocation.WindsorAdapter
 			{
 				Dictionary<string, object> args = new Dictionary<string, object>();
 
-				foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+                foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
 				{
 					args.Add(parameter.Name, parameter.Value);
 				}
@@ -84,7 +84,7 @@ namespace Siege.SeviceLocation.WindsorAdapter
 			{
 				Dictionary<string, object> args = new Dictionary<string, object>();
 
-				foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter>())
+                foreach (ConstructorParameter parameter in parameters.OfType<ConstructorParameter, IResolutionArgument>())
 				{
 					args.Add(parameter.Name, parameter.Value);
 				}

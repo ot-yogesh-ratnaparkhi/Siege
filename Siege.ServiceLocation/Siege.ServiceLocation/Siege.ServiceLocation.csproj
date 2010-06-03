@@ -64,6 +64,7 @@
     <Compile Include="EventHandlers\TypeResolvedEventHandler.cs" />
     <Compile Include="Exceptions\RegistrationNotFoundException.cs" />
     <Compile Include="EventHandlers\ITypeResolver.cs" />
+    <Compile Include="ExtensionMethods\IResolutionArgumentExtensions.cs" />
     <Compile Include="IFactoryFetcher.cs" />
     <Compile Include="Planning\ConstructorCandidate.cs" />
     <Compile Include="Planning\IResolutionPlan.cs" />

@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
@@ -33,6 +32,7 @@ namespace Siege.ServiceLocation.SiegeAdapter
         public SiegeAdapter(IConstructionStrategy strategy)
         {
             resolver = new SiegeTypeResolver(strategy);
+            resolver.Register(typeof(SiegeTypeResolver), resolver, null);
         }
 
         public void Dispose()
@@ -41,7 +41,7 @@ namespace Siege.ServiceLocation.SiegeAdapter
 
         public object GetInstance(Type type, string key, params IResolutionArgument[] parameters)
         {
-            object value = resolver.Get(type, key, parameters.OfType<ConstructorParameter>().ToArray());
+            object value = resolver.Get(type, key, GetConstructorParameters(parameters));
 
             if (value == null) throw new RegistrationNotFoundException(type);
 
@@ -50,11 +50,35 @@ namespace Siege.ServiceLocation.SiegeAdapter
 
         public object GetInstance(Type type, params IResolutionArgument[] parameters)
         {
-            object value = resolver.Get(type, parameters.OfType<ConstructorParameter>().ToArray());
+            object value = resolver.Get(type, GetConstructorParameters(parameters));
 
             if (value == null) throw new RegistrationNotFoundException(type);
 
             return value;
+        }
+
+        public ConstructorParameter[] GetConstructorParameters(IResolutionArgument[] parameters)
+        {
+            int parameterCount = 0;
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                parameterCount++;
+            }
+
+            var constructorParameters = new ConstructorParameter[parameterCount];
+            int currentParameterIndex = 0;
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                IResolutionArgument argument = parameters[i];
+                if(argument is ConstructorParameter)
+                {
+                    constructorParameters[currentParameterIndex] = (ConstructorParameter)argument;
+                    currentParameterIndex++;
+                }
+            }
+
+            return constructorParameters;
         }
 
         public bool HasTypeRegistered(Type type)

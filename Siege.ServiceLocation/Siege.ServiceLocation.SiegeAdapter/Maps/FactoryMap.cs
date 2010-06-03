@@ -15,14 +15,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Siege.ServiceLocation.SiegeAdapter.Maps
 {
-	public class FactoryMap
+	public class FactoryMap : AbstractMap
 	{
-		private Dictionary<Type, FactoryMapList> entries = new Dictionary<Type,FactoryMapList>();
-
 		public void Add(Type from, Func<object> to, string key)
 		{
 			if (!entries.ContainsKey(from))
@@ -33,34 +30,31 @@ namespace Siege.ServiceLocation.SiegeAdapter.Maps
 			}
 		}
 
-		public List<Type> GetRegisteredTypesMatching(Type type)
-		{
-			return new List<Type>(entries.Keys.Where(k => k == type || k.IsAssignableFrom(type)));
-		}
-
 		public bool Contains(Type type)
 		{
 			return entries.ContainsKey(type);
 		}
 
-		public object Get(Type type, string key)
-		{
-			var factories = entries[type].MappedFactories;
-			var factory = factories.Where(f => f.Name == key && !string.IsNullOrEmpty(key)).FirstOrDefault();
+		public object Get(Type type, string name)
+        {
+            var entry = (FactoryMapList)entries[type];
+            var factories = entry.MappedFactories;
 			
-			if(factory == null)
-			{
-				factory = factories.First();
-			}
-			return factory.To();
+            for (int i = 0; i < factories.Count; i++)
+            {
+                var factory = factories[i];
+
+                if (factory.Name == name) return factory.To();
+            }
+
+			return factories[0].To();
 		}
 	}
 
-	internal class FactoryMapList
+	internal class FactoryMapList : AbstractMapList
 	{
 		private List<Func<object>> registeredFactories = new List<Func<object>>();
 		public List<MappedFactory> MappedFactories { get; private set; }
-		public Type Type { get; private set; }
 
 		public FactoryMapList(Type type)
 		{

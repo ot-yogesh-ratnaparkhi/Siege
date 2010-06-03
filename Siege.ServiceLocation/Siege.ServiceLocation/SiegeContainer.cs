@@ -16,7 +16,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Bindings.Action;
 using Siege.ServiceLocation.Bindings.Conditional;
@@ -34,6 +33,7 @@ using Siege.ServiceLocation.UseCases;
 using Siege.ServiceLocation.UseCases.Actions;
 using Siege.ServiceLocation.UseCases.Conditional;
 using Siege.ServiceLocation.UseCases.Default;
+using Siege.ServiceLocation.ExtensionMethods;
 
 namespace Siege.ServiceLocation
 {
@@ -135,7 +135,7 @@ namespace Siege.ServiceLocation
 
             if (HasTypeRegistered(type) || type.IsGenericType)
             {
-                return serviceLocator.GetInstance(type, this.store.ResolutionStore.Items.OfType<ConstructorParameter>().ToArray());
+                return serviceLocator.GetInstance(type, this.store.ResolutionStore.Items.OfType<ConstructorParameter,IResolutionArgument>());
             }
 
             throw new RegistrationNotFoundException(type);
@@ -155,7 +155,7 @@ namespace Siege.ServiceLocation
         {
 			this.store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
 
-            return serviceLocator.GetInstance(type, key, this.store.ResolutionStore.Items.OfType<ConstructorParameter>().ToArray());
+            return serviceLocator.GetInstance(type, key, this.store.ResolutionStore.Items.OfType<ConstructorParameter, IResolutionArgument>());
         }
 
         public object GetService(Type serviceType)
@@ -293,6 +293,30 @@ namespace Siege.ServiceLocation
             }
 
             return (Factory) factories[type];
+        }
+
+        public ConstructorParameter[] GetConstructorParameters(IResolutionArgument[] parameters)
+        {
+            int parameterCount = 0;
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                parameterCount++;
+            }
+
+            var constructorParameters = new ConstructorParameter[parameterCount];
+            int currentParameterIndex = 0;
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                IResolutionArgument argument = parameters[i];
+                if (argument is ConstructorParameter)
+                {
+                    constructorParameters[currentParameterIndex] = (ConstructorParameter)argument;
+                    currentParameterIndex++;
+                }
+            }
+
+            return constructorParameters;
         }
     }
 }

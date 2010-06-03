@@ -14,175 +14,153 @@
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Siege.ServiceLocation.Planning;
 
 namespace Siege.ServiceLocation.SiegeAdapter.Maps
 {
-	public class TypeMap
-	{
-		private Hashtable entries = new Hashtable();
-
-		public List<Type> GetRegisteredTypesMatching(Type type)
+    public class TypeMap : AbstractMap
+    {
+        public void Add(Type from, Type to, string key)
         {
-            var keyList = entries.Keys;
-            int keyCount = keyList.Count;
-            var keys = new ArrayList(keyList);
-            var types = new List<Type>();
-
-            for(int i = 0; i < keyCount; i++)
+            if (!entries.ContainsKey(from))
             {
-                var key = keys[i];
-                var item = (TypeMapList)entries[key];
-                var itemType = item.Type;
+                var list = new TypeMapList(from);
+                list.Add(to, key);
+                entries.Add(from, list);
+            }
+        }
 
-                if(itemType == type || itemType.IsAssignableFrom(type)) types.Add(type);
+        public bool Contains(Type type)
+        {
+            if (!entries.ContainsKey(type) && type.IsClass)
+            {
+                Add(type, type, null);
             }
 
-		    return types;
-		}
+            return entries.ContainsKey(type);
+        }
 
-		public void Add(Type from, Type to, string key)
-		{
-			if(!entries.ContainsKey(from))
-			{
-				var list = new TypeMapList(from);
-				list.Add(to, key);
-				entries.Add(from, list);
-			}
-		}
+        private Type CreateGeneric(Type type, string name)
+        {
+            Type definition = type.GetGenericTypeDefinition();
+            var entry = (TypeMapList) entries[definition];
+            List<MappedType> types = entry.MappedTypes;
+            MappedType item = GetMappedType(name, types) ?? entry.MappedTypes[0];
 
-		public bool Contains(Type type)
-		{
-			if(!entries.ContainsKey(type) && type.IsClass)
-			{
-				Add(type, type, null);
-			}
+            if (!item.To.IsGenericType) return item.To;
 
-		    return entries.ContainsKey(type);
-		}
+            return item.To.MakeGenericType(type.GetGenericArguments());
+        }
 
-		private Type CreateGeneric(Type type, string name)
-		{
-			var definition = type.GetGenericTypeDefinition();
-		    var entry = (TypeMapList)entries[definition];
-		    var types = entry.MappedTypes;
-			var item = GetMappedType(name, types) ?? entry.MappedTypes[0];
+        private bool CanConstructGenericType(Type type)
+        {
+            if (!type.IsGenericType) return false;
 
-		    if (!item.To.IsGenericType) return item.To;
+            if (entries.ContainsKey(type.GetGenericTypeDefinition())) return true;
 
-			return item.To.MakeGenericType(type.GetGenericArguments());
-		}
+            return false;
+        }
 
-		private bool CanConstructGenericType(Type type)
-		{
-			if (!type.IsGenericType) return false;
+        public MappedType GetMappedType(Type type, string name)
+        {
+            return SelectItem(type, name);
+        }
 
-			if(entries.ContainsKey(type.GetGenericTypeDefinition())) return true;
-
-			return false;
-		}
-
-		public MappedType GetMappedType(Type type, string name)
-		{
-			return SelectItem(type, name);
-		}
-
-		private MappedType SelectItem(Type type, string name)
-		{
-			if (!entries.ContainsKey(type) && CanConstructGenericType(type))
-			{
-				var generic = CreateGeneric(type, name);
-
-				Add(generic, generic, null);
-
-				type = generic;
-			}
-
-			if (!entries.ContainsKey(type)) return null;
-
-		    var entry = (TypeMapList)entries[type];
-		    var types = entry.MappedTypes;
-
-		    return GetMappedType(name, types);
-		}
-
-	    private MappedType GetMappedType(string name, List<MappedType> types)
-	    {
-	        int typeCount = types.Count;
-
-            for(int i = 0; i < typeCount; i++)
+        private MappedType SelectItem(Type type, string name)
+        {
+            if (!entries.ContainsKey(type) && CanConstructGenericType(type))
             {
-                var type = types[i];
+                Type generic = CreateGeneric(type, name);
 
-                if(type.Name == name) return type;
+                Add(generic, generic, null);
+
+                type = generic;
             }
 
-	        return null;
-	    }
-	}
+            if (!entries.ContainsKey(type)) return null;
 
-	internal class TypeMapList
-	{
-		public Type Type { get; private set; }
-		public List<MappedType> MappedTypes { get; private set; }
-		private List<Type> registeredTypes = new List<Type>();
+            var entry = (TypeMapList) entries[type];
+            List<MappedType> types = entry.MappedTypes;
 
-		public TypeMapList(Type type)
-		{
-			this.Type = type;
-			this.MappedTypes = new List<MappedType>();
-		}
+            return GetMappedType(name, types);
+        }
 
-		public void Add(Type to, string name)
-		{
-			if (this.registeredTypes.Contains(to)) return;
-			if (!to.IsClass) throw new ApplicationException("Cannot map type " + this.Type + " to the interface " + to + ". You must map to a class.");
+        private MappedType GetMappedType(string name, List<MappedType> types)
+        {
+            for (int i = 0; i < types.Count; i++)
+            {
+                MappedType type = types[i];
 
-			this.registeredTypes.Add(to);
-			this.MappedTypes.Add(new MappedType(this.Type, to, name));
-		}
-	}
+                if (type.Name == name) return type;
+            }
 
-	public class MappedType
-	{
-		public string Name { get; private set; }
-		public Type From { get; private set; }
-		public Type To { get; private set; }
-		public List<ConstructorCandidate> Candidates { get; private set; }
+            return null;
+        }
+    }
 
-		public MappedType(Type from, Type to, string name)
-		{
-			this.Name = name;
-			this.From = from;
-			this.To = to;
-			this.Candidates = new List<ConstructorCandidate>();
+    internal class TypeMapList : AbstractMapList
+    {
+        private List<Type> registeredTypes = new List<Type>();
 
-			BuildCandidateList();
-		}
+        public TypeMapList(Type type)
+        {
+            Type = type;
+            MappedTypes = new List<MappedType>();
+        }
 
-		private void BuildCandidateList()
-		{
-			var constructors = To.GetConstructors();
-		    var constructorCount = constructors.Length;
+        public List<MappedType> MappedTypes { get; private set; }
+
+        public void Add(Type to, string name)
+        {
+            if (registeredTypes.Contains(to)) return;
+            if (!to.IsClass)
+                throw new ApplicationException("Cannot map type " + Type + " to the interface " + to +
+                                               ". You must map to a class.");
+
+            registeredTypes.Add(to);
+            MappedTypes.Add(new MappedType(Type, to, name));
+        }
+    }
+
+    public class MappedType
+    {
+        public MappedType(Type from, Type to, string name)
+        {
+            Name = name;
+            From = from;
+            To = to;
+            Candidates = new List<ConstructorCandidate>();
+
+            BuildCandidateList();
+        }
+
+        public string Name { get; private set; }
+        public Type From { get; private set; }
+        public Type To { get; private set; }
+        public List<ConstructorCandidate> Candidates { get; private set; }
+
+        private void BuildCandidateList()
+        {
+            ConstructorInfo[] constructors = To.GetConstructors();
+            int constructorCount = constructors.Length;
             for (int counter = 0; counter < constructorCount; counter++)
             {
-                var constructor = constructors[counter];
-                var candidate = new ConstructorCandidate { Type = To };
-                var parameters = constructor.GetParameters();
-                var count = parameters.Length;
+                ConstructorInfo constructor = constructors[counter];
+                var candidate = new ConstructorCandidate {Type = To};
+                ParameterInfo[] parameters = constructor.GetParameters();
+                int count = parameters.Length;
 
                 for (int i = 0; i < count; i++)
                 {
                     ParameterInfo parameter = parameters[i];
                     var summary = new ParameterSummary
-                    {
-                        Position = parameter.Position,
-                        ParameterType = parameter.ParameterType,
-                        Name = parameter.Name
-                    };
+                                      {
+                                          Position = parameter.Position,
+                                          ParameterType = parameter.ParameterType,
+                                          Name = parameter.Name
+                                      };
 
                     candidate.Parameters.Add(summary);
                 }
@@ -191,6 +169,6 @@ namespace Siege.ServiceLocation.SiegeAdapter.Maps
 
                 Candidates.Add(candidate);
             }
-		}
-	}
+        }
+    }
 }

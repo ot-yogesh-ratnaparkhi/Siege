@@ -30,7 +30,6 @@ namespace Siege.ServiceLocation.SiegeAdapter
 		public SiegeTypeResolver(IConstructionStrategy strategy)
 		{
 			this.strategy = strategy;
-			Register(typeof(SiegeTypeResolver), this, null);
 		}
 
 		public void Register(Type from, Type to)
@@ -111,8 +110,9 @@ namespace Siege.ServiceLocation.SiegeAdapter
 				}
 				else
 				{
-					foreach (ConstructorParameter parameter in parameters)
+					for (int j = 0; j < parameters.Length; j++)
 					{
+					    var parameter = parameters[j];
 						if (parameter.Name == arg.Name)
 						{
 							constructorArgs[arg.Position] = parameter.Value;
@@ -141,10 +141,12 @@ namespace Siege.ServiceLocation.SiegeAdapter
 
 		public IEnumerable<object> GetAll(Type type)
 		{
-			var list = new List<object>();
+            var list = new List<object>();
+            var registrations = resolutionMap.GetAllRegisteredTypesMatching(type);
 
-			foreach (Type registration in resolutionMap.GetAllRegisteredTypesMatching(type))
-			{
+            for (int i = 0; i < registrations.Count; i++)
+            {
+                var registration = registrations[i];
 				list.Add(Get(registration, null, new ConstructorParameter[] { }));
 			}
 
@@ -155,15 +157,17 @@ namespace Siege.ServiceLocation.SiegeAdapter
 		{
 			var list = new List<TService>();
 
-			foreach (Type registration in resolutionMap.GetAllRegisteredTypesMatching(typeof(TService)))
+		    var registrations = resolutionMap.GetAllRegisteredTypesMatching(typeof (TService));
+			for (int i = 0; i < registrations.Count; i++)
 			{
+			    var registration = registrations[i];
 				list.Add((TService)Get(registration, null, new ConstructorParameter[] { }));
 			}
 
 			return list;
 		}
 
-		private ConstructorCandidate SelectConstructor(MappedType type, ResolutionMap map, ConstructorParameter[] parameters)
+		private static ConstructorCandidate SelectConstructor(MappedType type, ResolutionMap map, ConstructorParameter[] parameters)
 		{
 		    var candidates = type.Candidates;
 		    var candidateCount = candidates.Count;
