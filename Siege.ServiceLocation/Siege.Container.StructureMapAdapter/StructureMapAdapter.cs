@@ -86,29 +86,33 @@ namespace Siege.ServiceLocation.StructureMapAdapter
         {
             object instance;
 
+			//lol thanks stucturemap for your inconsistent API, I /love/ using reflection to call methods.
+
             try
             {
-                //ExplicitArgsExpression expression = null;
+                ExplicitArgsExpression expression = null;
 
                 if (parameters.OfType<ConstructorParameter>().Count() > 0)
                 {
-                    throw new Exception("Not currently supported.");
-                    //var parameter1 = parameters.OfType<ConstructorParameter>().First();
+                	var parameter1 = parameters.OfType<ConstructorParameter>().First();
 
-                    //expression = container.With(parameter1.Name).EqualTo(parameter1.Value);
+					expression = container.With(parameter1.Name).EqualTo(parameter1.Value);
 
-                    //if (parameters.Count() > 1)
-                    //{
-                    //    var constructorArgs = parameters.OfType<ConstructorParameter>();
+					if (parameters.Count() > 1)
+					{
+						var constructorArgs = parameters.OfType<ConstructorParameter>();
 
-                    //    for (int i = 1; i < constructorArgs.Count(); i++)
-                    //    {
-                    //        expression.With(constructorArgs.ElementAt(i).Name).EqualTo(constructorArgs.ElementAt(i).Value);
-                    //    }
-                    //}
+						for (int i = 1; i < constructorArgs.Count(); i++)
+						{
+							expression.With(constructorArgs.ElementAt(i).Name).EqualTo(constructorArgs.ElementAt(i).Value);
+						}
+					}
                 }
-
-                instance = container.GetInstance(type, key);
+            	var method = typeof (ExplicitArgsExpression).GetMethods().Where(m => m.IsGenericMethod && m.Name =="GetInstance" && m.GetParameters().Count() == 1).First();
+				method = method.MakeGenericMethod(type);
+				
+				instance = expression != null ? method.Invoke(expression, new object[] { key }) : 
+					container.GetInstance(type, key);
             }
             catch (StructureMapException ex)
             {

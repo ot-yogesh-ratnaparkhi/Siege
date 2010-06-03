@@ -47,11 +47,5 @@ namespace Siege.ServiceLocation.UnitTests.Adapters
 			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
 			Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
 		}
-
-		[Ignore("StructureMap sucks")]
-		public override void Should_Use_Unregistered_Constructor_Argument_With_Name()
-		{
-			base.Should_Use_Unregistered_Constructor_Argument_With_Name();
-		}
 	}
 }
