@@ -39,11 +39,6 @@ namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
             return context == basedOnType;
         }
 
-        public override Type GetBoundType()
-        {
-            return basedOnType;
-        }
-
         public new IInjectionUseCase<TService> Then<TImplementingType>() where TImplementingType : TService
         {
             InjectionUseCase<TService> useCase = new InjectionUseCase<TService>();

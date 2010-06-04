@@ -87,16 +87,6 @@ namespace Siege.ServiceLocation.Stores
 			store.ResolutionStore = new ThreadedResolutionStore();
         }
 
-		public IExecutionStore Create(IServiceLocatorStore store)
-        {
-            if (Index == 0)
-            {
-                return new ThreadedExecutionStore(store);
-            }
-
-            return this;
-        }
-
 		public static IExecutionStore New(IServiceLocatorStore store)
         {
             return new ThreadedExecutionStore(store);

@@ -31,7 +31,7 @@ namespace Siege.ServiceLocation.UseCases
 
         public void BindTo(Type implementationType)
         {
-            boundType = implementationType;
+            boundType = TypeHandler.Build(implementationType);
         }
 
         protected override IActivationStrategy GetActivationStrategy()

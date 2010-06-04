@@ -15,8 +15,6 @@
 
 using System;
 using Siege.ServiceLocation.Bindings;
-using Siege.ServiceLocation.UseCases;
-using Siege.ServiceLocation.UseCases.OpenGenerics;
 
 namespace Siege.ServiceLocation.UseCases.OpenGenerics
 {
@@ -27,6 +25,7 @@ namespace Siege.ServiceLocation.UseCases.OpenGenerics
 
         public OpenGenericUseCase(Type baseBinding)
         {
+            if (!baseBinding.IsGenericType) throw new Exception("Type: " + baseBinding + " is not a generic type.");
             this.baseBinding = baseBinding;
         }
 

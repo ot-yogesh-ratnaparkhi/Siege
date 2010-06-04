@@ -30,6 +30,7 @@ namespace Siege.ServiceLocation.UseCases.Default
         {
             this.locator = locator;
             this.accessor = accessor;
+            this.accessor.ExecutionStore.WireEvent(this);
         }
 
         public object Resolve(Type boundType, IActivationRule rule, IActivationStrategy activator)

@@ -13,12 +13,9 @@
      limitations under the License.
 */
 
-using System;
-
 namespace Siege.ServiceLocation.Rules
 {
     public interface IConditionalActivationRule : IActivationRule
     {
-        Type GetBoundType();
     }
 }

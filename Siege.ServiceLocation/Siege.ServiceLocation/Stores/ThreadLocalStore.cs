@@ -22,11 +22,6 @@ namespace Siege.ServiceLocation.Stores
     {
         [ThreadStatic] private static List<object> contextItems = new List<object>();
 
-        public ThreadLocalStore()
-        {
-            if (contextItems == null) contextItems = new List<object>();
-        }
-
         public void Add(object contextItem)
         {
             contextItems.Add(contextItem);

@@ -25,8 +25,6 @@ namespace Siege.ServiceLocation.Stores
 
         public ThreadedResolutionStore()
         {
-            if (contextItems == null) contextItems = new List<IResolutionArgument>();
-
         	contextItems.Clear();
         }
 

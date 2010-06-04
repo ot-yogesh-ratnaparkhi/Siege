@@ -22,14 +22,12 @@ namespace Siege.ServiceLocation.HttpIntegration
         private IContextStore contextStore;
         private IResolutionStore resolutionStore;
         private IExecutionStore executionStore;
-    	private IRegistrationStore registrationStore;
-
+    	
         public HttpSiegeContainerStore(IContextStore store)
         {
             this.contextStore = store;
             this.resolutionStore = new HttpResolutionStore();
             this.executionStore = HttpContextExecutionStore.New(this);
-        	this.registrationStore = new HttpContextRegistrationStore();
         }
 
         public IContextStore ContextStore
@@ -47,11 +45,6 @@ namespace Siege.ServiceLocation.HttpIntegration
         {
             get { return this.executionStore; }
         }
-
-    	public IRegistrationStore RegistrationStore
-    	{
-			get { return this.registrationStore; }
-    	}
 
         public void Dispose()
         {

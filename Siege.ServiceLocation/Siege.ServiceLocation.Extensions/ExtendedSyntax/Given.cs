@@ -79,7 +79,7 @@ namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
             return useCase;
         }
 
-        public IDefaultActionUseCase DecorateWith(Func<TService, TService> func)
+        public static IDefaultActionUseCase DecorateWith(Func<TService, TService> func)
         {
             var useCase = new DecoratorUseCase<TService>();
 

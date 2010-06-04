@@ -37,7 +37,7 @@ using Siege.ServiceLocation.ExtensionMethods;
 
 namespace Siege.ServiceLocation
 {
-    public class SiegeContainer : IContextualServiceLocator, ITypeResolver, ITypeRegistrar
+    public class SiegeContainer : IContextualServiceLocator, ITypeResolver
     {
         private IServiceLocatorAdapter serviceLocator;
         private IServiceLocatorStore store;
@@ -45,7 +45,6 @@ namespace Siege.ServiceLocation
         private readonly Hashtable factories = new Hashtable();
 
 		public event TypeResolvedEventHandler TypeResolved;
-		public event TypeRegisteredEventHandler TypeRegistered;
 
         public SiegeContainer(IServiceLocatorAdapter serviceLocator, IServiceLocatorStore store, ITypeBuilder typeBuilder)
         {
@@ -53,7 +52,6 @@ namespace Siege.ServiceLocation
             this.store = store;
 
 			this.store.ExecutionStore.WireEvent(this);
-			this.store.RegistrationStore.WireEvent(this);
             TypeHandler.Initialize(typeBuilder);
 
             serviceLocator.RegisterInstance(typeof(IServiceLocatorAdapter), serviceLocator);
@@ -218,8 +216,6 @@ namespace Siege.ServiceLocation
                 binding.Bind(useCase, this);
             }
 
-        	RaiseTypeRegisteredEvent(useCase.GetBoundType());
-
             return this;
         }
 
@@ -238,11 +234,6 @@ namespace Siege.ServiceLocation
         {
             if (this.TypeResolved != null) this.TypeResolved(type);
         }
-
-		private void RaiseTypeRegisteredEvent(Type type)
-		{
-			if (this.TypeRegistered != null) this.TypeRegistered(type);
-		}
 
         private object Resolve(IGenericUseCase useCase, IResolutionStrategy strategy)
         {
@@ -295,30 +286,6 @@ namespace Siege.ServiceLocation
             }
 
             return (Factory) factories[type];
-        }
-
-        public ConstructorParameter[] GetConstructorParameters(IResolutionArgument[] parameters)
-        {
-            int parameterCount = 0;
-            for (int i = 0; i < parameters.Length; i++)
-            {
-                parameterCount++;
-            }
-
-            var constructorParameters = new ConstructorParameter[parameterCount];
-            int currentParameterIndex = 0;
-
-            for (int i = 0; i < parameters.Length; i++)
-            {
-                IResolutionArgument argument = parameters[i];
-                if (argument is ConstructorParameter)
-                {
-                    constructorParameters[currentParameterIndex] = (ConstructorParameter)argument;
-                    currentParameterIndex++;
-                }
-            }
-
-            return constructorParameters;
         }
     }
 }

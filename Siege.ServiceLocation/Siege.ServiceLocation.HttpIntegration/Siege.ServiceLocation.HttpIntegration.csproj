@@ -55,7 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HttpContextExecutionStore.cs" />
-    <Compile Include="HttpContextRegistrationStore.cs" />
     <Compile Include="HttpResolutionStore.cs" />
     <Compile Include="HttpSessionStore.cs" />
     <Compile Include="HttpSiegeContainer.cs" />

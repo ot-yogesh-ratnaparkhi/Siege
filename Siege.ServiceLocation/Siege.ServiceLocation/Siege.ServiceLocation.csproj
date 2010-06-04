@@ -57,9 +57,7 @@
     <Compile Include="Bindings\OpenGenerics\IOpenGenericUseCaseBinding.cs" />
     <Compile Include="Bindings\Named\NamedUseCaseBinding.cs" />
     <Compile Include="Bindings\OpenGenerics\OpenGenericUseCaseBinding.cs" />
-    <Compile Include="EventHandlers\ITypeRegistrar.cs" />
     <Compile Include="EventHandlers\ITypeRequester.cs" />
-    <Compile Include="EventHandlers\TypeRegisteredEventHandler.cs" />
     <Compile Include="EventHandlers\TypeRequestedEventHandler.cs" />
     <Compile Include="EventHandlers\TypeResolvedEventHandler.cs" />
     <Compile Include="Exceptions\RegistrationNotFoundException.cs" />
@@ -68,8 +66,6 @@
     <Compile Include="IFactoryFetcher.cs" />
     <Compile Include="Planning\ConstructorCandidate.cs" />
     <Compile Include="Planning\IResolutionPlan.cs" />
-    <Compile Include="Stores\IRegistrationStore.cs" />
-    <Compile Include="Stores\ThreadedRegistrationStore.cs" />
     <Compile Include="UseCases\IGenericUseCase.cs" />
     <Compile Include="UseCases\OpenGenerics\IOpenGenericUseCase.cs" />
     <Compile Include="UseCases\OpenGenerics\OpenGenericUseCase.cs" />
@@ -92,7 +88,6 @@
     <Compile Include="Rules\ConditionalActivationRule.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Rules\IConditionalActivationRule.cs" />
-    <Compile Include="Stores\GlobalContextStore.cs" />
     <Compile Include="Bindings\Conditional\IConditionalUseCaseBinding.cs" />
     <Compile Include="Stores\IContextStore.cs" />
     <Compile Include="Bindings\Default\IDefaultUseCaseBinding.cs" />

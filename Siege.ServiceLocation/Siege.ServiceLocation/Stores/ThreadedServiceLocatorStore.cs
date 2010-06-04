@@ -20,7 +20,6 @@ namespace Siege.ServiceLocation.Stores
         private IContextStore store;
 		private IResolutionStore resolutionStore;
     	private IExecutionStore executionStore;
-    	private IRegistrationStore registrationStore;
 
         public ThreadedServiceLocatorStore()
             : this(new ThreadLocalStore())
@@ -32,18 +31,12 @@ namespace Siege.ServiceLocation.Stores
             this.store = store;
             this.resolutionStore = new ThreadedResolutionStore();
             this.executionStore = ThreadedExecutionStore.New(this);
-        	this.registrationStore = new ThreadedRegistrationStore();
         }
 
         public IContextStore ContextStore
         {
             get { return this.store; }
         }
-
-    	public IRegistrationStore RegistrationStore
-    	{
-			get { return this.registrationStore; }
-    	}
 
         public IResolutionStore ResolutionStore
         {

@@ -22,7 +22,6 @@ using Siege.ServiceLocation.UnitTests.TestClasses;
 namespace Siege.ServiceLocation.UnitTests
 {
 	[TestFixture]
-	[Category("Siege")]
     public abstract partial class SiegeContainerTests
     {
         protected IContextualServiceLocator locator;

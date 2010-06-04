@@ -30,7 +30,7 @@ namespace Siege.ServiceLocation.Rules
 
         public IConditionalUseCase<TBaseService> Then<TImplementingType>() where TImplementingType : TBaseService
         {
-            ConditionalGenericUseCase<TBaseService> useCase = new ConditionalGenericUseCase<TBaseService>();
+            var useCase = new ConditionalGenericUseCase<TBaseService>();
 
             useCase.SetActivationRule(this);
             useCase.BindTo<TImplementingType>();
@@ -40,7 +40,7 @@ namespace Siege.ServiceLocation.Rules
 
         public IInstanceUseCase Then(TBaseService implementation)
         {
-            ConditionalInstanceUseCase<TBaseService> useCase = new ConditionalInstanceUseCase<TBaseService>();
+            var useCase = new ConditionalInstanceUseCase<TBaseService>();
 
             useCase.SetActivationRule(this);
             useCase.BindTo(implementation);
@@ -51,11 +51,6 @@ namespace Siege.ServiceLocation.Rules
         public virtual bool Evaluate(object context)
         {
             return evaluation.Invoke(context);
-        }
-
-        public virtual Type GetBoundType()
-        {
-            return typeof (TBaseService);
         }
 
         public virtual IRuleEvaluationStrategy GetRuleEvaluationStrategy()

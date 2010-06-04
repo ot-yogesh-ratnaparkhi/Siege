@@ -22,6 +22,5 @@ namespace Siege.ServiceLocation.Stores
         IContextStore ContextStore { get; }
 		IResolutionStore ResolutionStore { get; set; }
         IExecutionStore ExecutionStore { get; }
-		IRegistrationStore RegistrationStore { get; }
     }
 }

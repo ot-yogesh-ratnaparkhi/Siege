@@ -25,7 +25,7 @@ namespace Siege.ServiceLocation.UnitTests.Adapters
     {
         protected override IServiceLocatorAdapter GetAdapter()
         {
-            return new SiegeAdapter.SiegeAdapter(new SiegeProxyConstructionStrategy());
+            return new SiegeAdapter.SiegeAdapter();
         }
 
         private SiegeTypeResolver ilResolver;

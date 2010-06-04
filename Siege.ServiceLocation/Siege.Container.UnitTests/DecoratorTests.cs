@@ -62,5 +62,19 @@ namespace Siege.ServiceLocation.UnitTests
             Assert.AreEqual(0.75M, instance.Total);
         }
 
+        [Test]
+        public void Should_Decorate_As_Default()
+        {
+            locator
+                .Register(Given<ICoffee>.Then<Coffee>())
+                .Register(Given<ICoffee>
+                              .DecorateWith(coffee => new WhippedCreamDecorator(coffee)))
+                .Register(Given<ICoffee>
+                              .DecorateWith(coffee => new EspressoShotDecorator(coffee)));
+
+            var instance = locator.GetInstance<ICoffee>();
+
+            Assert.AreEqual(1.5M, instance.Total);
+        }
     }
 }
