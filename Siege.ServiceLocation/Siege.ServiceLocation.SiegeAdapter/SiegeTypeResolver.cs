@@ -169,42 +169,39 @@ namespace Siege.ServiceLocation.SiegeAdapter
 
 		private static ConstructorCandidate SelectConstructor(MappedType type, ResolutionMap map, ConstructorParameter[] parameters)
 		{
-		    var candidates = type.Candidates;
-		    var candidateCount = candidates.Count;
+			var candidates = type.Candidates;
+			var candidateCount = candidates.Count;
+			ConstructorCandidate candidate = null;
 
-            for (int i = 0; i < candidateCount; i++)
-            {
-                var candidate = candidates[i];
+			for (int i = 0; i < candidateCount; i++)
+			{
+				candidate = candidates[i];
+				var summaries = candidate.Parameters;
+				var summaryCount = summaries.Count;
 
-                var summaries = candidate.Parameters;
-                var summaryCount = summaries.Count;
-                
-                for (int j = 0; j < summaryCount; j++)
-                {
-                    var summary = summaries[i];
-                    var parameterType = summary.ParameterType;
+				for (int j = 0; j < summaryCount; j++)
+				{
+					var summary = summaries[i];
+					var parameterType = summary.ParameterType;
 
-                    if(!map.Contains(parameterType))
-                    {
-                        int parameterCount = parameters.Length;
+					if (!map.Contains(parameterType))
+					{
+						int parameterCount = parameters.Length;
 
-                        for(int k = 0; k < parameterCount; k++)
-                        {
-                            var parameter = parameters[k];
-                            if(parameterType.IsAssignableFrom(parameter.Value.GetType())) return candidate;
-                        }
-                    }
-                    else
-                    {
-                        return candidate;
-                    }
+						for (int k = 0; k < parameterCount; k++)
+						{
+							var parameter = parameters[k];
+							if (parameterType.IsAssignableFrom(parameter.Value.GetType())) return candidate;
+						}
+					}
+					else
+					{
+						return candidate;
+					}
+				}
+			}
 
-                }
-
-                return candidate;
-            }
-
-			throw new Exception();
+			return candidate;
 		}
 	}
 }
