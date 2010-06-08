@@ -22,7 +22,7 @@ namespace Siege.ServiceLocation.Extensions.FactorySupport
     {
         public override System.Type GetUseCaseBindingType()
         {
-            return typeof (IConditionalUseCaseBinding);
+            return typeof (ConditionalUseCaseBinding);
         }
     }
 }

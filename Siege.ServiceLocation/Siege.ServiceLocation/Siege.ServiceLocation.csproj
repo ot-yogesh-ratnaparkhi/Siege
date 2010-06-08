@@ -52,9 +52,7 @@
     <Compile Include="Bindings\Action\ActionUseCaseBinding.cs" />
     <Compile Include="Bindings\Conditional\ConditionalUseCaseBinding.cs" />
     <Compile Include="Bindings\Default\DefaultUseCaseBinding.cs" />
-    <Compile Include="Bindings\Action\IActionUseCaseBinding.cs" />
     <Compile Include="Bindings\IInstanceUseCaseBinding.cs" />
-    <Compile Include="Bindings\OpenGenerics\IOpenGenericUseCaseBinding.cs" />
     <Compile Include="Bindings\Named\NamedUseCaseBinding.cs" />
     <Compile Include="Bindings\OpenGenerics\OpenGenericUseCaseBinding.cs" />
     <Compile Include="EventHandlers\ITypeRequester.cs" />
@@ -88,9 +86,7 @@
     <Compile Include="Rules\ConditionalActivationRule.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Rules\IConditionalActivationRule.cs" />
-    <Compile Include="Bindings\Conditional\IConditionalUseCaseBinding.cs" />
     <Compile Include="Stores\IContextStore.cs" />
-    <Compile Include="Bindings\Default\IDefaultUseCaseBinding.cs" />
     <Compile Include="IGenericFactory.cs" />
     <Compile Include="Stores\IExecutionStore.cs" />
     <Compile Include="Stores\ThreadedExecutionStore.cs" />
@@ -118,7 +114,6 @@
     <Compile Include="UseCases\IInstanceUseCase.cs" />
     <Compile Include="UseCases\Named\IKeyBasedInstanceUseCase.cs" />
     <Compile Include="UseCases\Named\IKeyBasedUseCase.cs" />
-    <Compile Include="Bindings\Named\INamedUseCaseBinding.cs" />
     <Compile Include="UseCases\InstanceUseCase.cs" />
     <Compile Include="IServiceLocator.cs" />
     <Compile Include="IServiceLocatorAdapter.cs" />

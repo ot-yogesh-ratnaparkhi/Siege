@@ -37,11 +37,6 @@ namespace Siege.ServiceLocation.NinjectAdapter
             this.kernel = kernel;
         }
 
-        public void RegisterBinding(Type baseBinding, Type targetBinding)
-        {
-            kernel.Bind(baseBinding).To(targetBinding);
-        }
-
         public void Dispose()
         {
             kernel.Dispose();

@@ -17,7 +17,7 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Bindings.OpenGenerics
 {
-    public class OpenGenericUseCaseBinding : IOpenGenericUseCaseBinding
+    public class OpenGenericUseCaseBinding : IUseCaseBinding
     {
         private readonly IServiceLocatorAdapter adapter;
 

@@ -22,7 +22,7 @@ namespace Siege.ServiceLocation.UseCases.Default
     {
         public override Type GetUseCaseBindingType()
         {
-            return typeof (IDefaultUseCaseBinding);
+            return typeof (DefaultUseCaseBinding);
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Siege.ServiceLocation.UseCases.Actions
 
         public override Type GetUseCaseBindingType()
         {
-            return typeof (IActionUseCaseBinding);
+            return typeof (ActionUseCaseBinding);
         }
     }
 }

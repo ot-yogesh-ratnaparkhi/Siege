@@ -18,7 +18,7 @@ using Siege.ServiceLocation.UseCases.Named;
 
 namespace Siege.ServiceLocation.Bindings.Named
 {
-    public class NamedUseCaseBinding : INamedUseCaseBinding
+    public class NamedUseCaseBinding : IUseCaseBinding, IInstanceUseCaseBinding
     {
         private readonly IServiceLocatorAdapter adapter;
 

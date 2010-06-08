@@ -70,7 +70,7 @@ namespace Siege.ServiceLocation.UnitTests
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>("test"));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface>("test") is TestCase1);
+			Assert.IsInstanceOfType(typeof(TestCase1), locator.GetInstance<ITestInterface>("test"));
         }
 
         [Test]

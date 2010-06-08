@@ -56,11 +56,11 @@ namespace Siege.ServiceLocation
 
             serviceLocator.RegisterInstance(typeof(IServiceLocatorAdapter), serviceLocator);
             
-            AddBinding<IDefaultUseCaseBinding, DefaultUseCaseBinding>();
-            AddBinding<IConditionalUseCaseBinding, ConditionalUseCaseBinding>();
-            AddBinding<INamedUseCaseBinding, NamedUseCaseBinding>();
-            AddBinding<IOpenGenericUseCaseBinding, OpenGenericUseCaseBinding>();
-            AddBinding<IActionUseCaseBinding, ActionUseCaseBinding>();
+            AddBinding<DefaultUseCaseBinding>();
+            AddBinding<ConditionalUseCaseBinding>();
+            AddBinding<NamedUseCaseBinding>();
+            AddBinding<OpenGenericUseCaseBinding>();
+            AddBinding<ActionUseCaseBinding>();
 
             Register(Given<IFactoryFetcher>.Then(this));
             Register(Given<IServiceLocator>.Then(this));
@@ -77,9 +77,9 @@ namespace Siege.ServiceLocation
             store.ContextStore.Add(contextItem);
         }
 
-        private void AddBinding<TFrom, TTo>()
+        private void AddBinding<TBinding>()
         {
-            serviceLocator.Register(typeof(TFrom), typeof(TTo));
+			serviceLocator.Register(typeof(TBinding), typeof(TBinding));
         }
 
         public TService GetInstance<TService>()

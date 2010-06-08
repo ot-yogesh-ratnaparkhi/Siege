@@ -23,7 +23,7 @@ namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
     {
         public override Type GetUseCaseBindingType()
         {
-            return typeof (IConditionalUseCaseBinding);
+            return typeof (ConditionalUseCaseBinding);
         }
     }
 }

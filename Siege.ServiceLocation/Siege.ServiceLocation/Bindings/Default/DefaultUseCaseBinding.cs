@@ -17,7 +17,7 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Bindings.Default
 {
-    public class DefaultUseCaseBinding : IDefaultUseCaseBinding
+    public class DefaultUseCaseBinding : IUseCaseBinding, IInstanceUseCaseBinding
     {
         private readonly IServiceLocatorAdapter adapter;
 

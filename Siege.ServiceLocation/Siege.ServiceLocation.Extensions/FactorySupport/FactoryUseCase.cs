@@ -26,7 +26,7 @@ namespace Siege.ServiceLocation.Extensions.FactorySupport
 
         public override Type GetUseCaseBindingType()
         {
-            return typeof(IDefaultUseCaseBinding);
+            return typeof(DefaultUseCaseBinding);
         }
 
         public void ConstructWith(Func<IInstanceResolver, TService> factoryMethod)
