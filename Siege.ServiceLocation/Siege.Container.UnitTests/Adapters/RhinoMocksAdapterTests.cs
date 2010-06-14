@@ -13,26 +13,35 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.Planning;
-using Siege.ServiceLocation.SiegeAdapter.Maps;
+using NUnit.Framework;
 
-namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
+namespace Siege.ServiceLocation.UnitTests.Adapters
 {
-	public class ReflectionConstructionStrategy : IConstructionStrategy
+	public class RhinoMocksAdapterTests : SiegeContainerTests
 	{
-		public virtual object Create(ConstructorCandidate candidate, object[] parameters)
+		protected override IServiceLocatorAdapter GetAdapter()
 		{
-			return candidate.Instantiate(parameters);
+			return new RhinoMocksAdapter.RhinoMocksAdapter();
 		}
 
-		public virtual bool CanConstruct(ConstructorCandidate candidate)
+		protected override void RegisterWithoutSiege<TFrom, TTo>()
 		{
-			return true;
 		}
 
-		public virtual void Register(Type to, MappedType mappedType)
+		protected override void ResolveWithoutSiege<T>()
 		{
+		}
+
+		[Ignore]
+		public override void WithoutSiege()
+		{
+			base.WithoutSiege();
+		}
+
+		[Ignore]
+		public override void Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container()
+		{
+			base.Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container();
 		}
 	}
 }

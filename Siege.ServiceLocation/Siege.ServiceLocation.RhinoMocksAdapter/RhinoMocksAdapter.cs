@@ -13,25 +13,11 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.Planning;
-using Siege.ServiceLocation.SiegeAdapter.Maps;
-
-namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
+namespace Siege.ServiceLocation.RhinoMocksAdapter
 {
-	public class ReflectionConstructionStrategy : IConstructionStrategy
+	public class RhinoMocksAdapter : SiegeAdapter.SiegeAdapter
 	{
-		public virtual object Create(ConstructorCandidate candidate, object[] parameters)
-		{
-			return candidate.Instantiate(parameters);
-		}
-
-		public virtual bool CanConstruct(ConstructorCandidate candidate)
-		{
-			return true;
-		}
-
-		public virtual void Register(Type to, MappedType mappedType)
+		public RhinoMocksAdapter() : base(new RhinoMocksConstructionStrategy())
 		{
 		}
 	}
