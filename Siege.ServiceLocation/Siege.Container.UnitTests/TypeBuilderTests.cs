@@ -8,7 +8,7 @@ namespace Siege.ServiceLocation.UnitTests
     public abstract partial class SiegeContainerTests
     {
         [Test]
-        public void Should_Use_SiegeProxy_TypeBuilder()
+        public virtual void Should_Use_SiegeProxy_TypeBuilder()
         {
             locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());

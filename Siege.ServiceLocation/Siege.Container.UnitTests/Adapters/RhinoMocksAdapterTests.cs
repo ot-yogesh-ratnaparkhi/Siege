@@ -43,5 +43,17 @@ namespace Siege.ServiceLocation.UnitTests.Adapters
 		{
 			base.Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container();
 		}
+
+        [Ignore]
+        public override void Should_Use_SiegeProxy_TypeBuilder()
+        {
+            base.Should_Use_SiegeProxy_TypeBuilder();
+        }
+
+        [Ignore]
+        public override void Load_Performance_Test()
+        {
+            base.Load_Performance_Test();
+        } 
 	}
 }

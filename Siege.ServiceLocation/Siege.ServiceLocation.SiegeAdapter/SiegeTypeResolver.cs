@@ -37,19 +37,9 @@ namespace Siege.ServiceLocation.SiegeAdapter
 			Register(from, to, null);
 		}
 
-		public void Register(Type type)
-		{
-			Register(type, type);
-		}
-
 		public void Register(Type from, object instance)
 		{
 			Register(from, instance, null);
-		}
-
-		public void Register(Type from, string key)
-		{
-			Register(from, from, key);
 		}
 
 		public virtual void Register(Type from, object instance, string key)
@@ -67,11 +57,6 @@ namespace Siege.ServiceLocation.SiegeAdapter
 		public virtual void RegisterWithFactoryMethod(Type from, Func<object> to, string key)
 		{
 			this.resolutionMap.FactoryMap.Add(from, to, key);
-		}
-
-		public bool Contains(Type type)
-		{
-			return this.resolutionMap.Contains(type);
 		}
 
 		public void RegisterWithFactoryMethod(Type from, Func<object> to)

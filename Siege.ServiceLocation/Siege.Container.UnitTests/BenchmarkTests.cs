@@ -26,7 +26,7 @@ namespace Siege.ServiceLocation.UnitTests
 
 		[Test]
 		[Category("Load")]
-		public void Load_Performance_Test()
+		public virtual void Load_Performance_Test()
         {
             var totalTime = new TimeSpan();
             DateTime start = DateTime.Now;

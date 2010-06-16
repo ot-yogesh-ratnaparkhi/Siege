@@ -22,25 +22,32 @@ using Siege.ServiceLocation.SiegeAdapter.Maps;
 
 namespace Siege.ServiceLocation.RhinoMocksAdapter
 {
-	public class RhinoMocksConstructionStrategy : ReflectionConstructionStrategy
+	public class RhinoMocksConstructionStrategy : IConstructionStrategy
 	{
-		private MockRepository repository = new MockRepository();
-		private Dictionary<Type, object> registeredInstances = new Dictionary<Type, object>();
+		private readonly MockRepository repository = new MockRepository();
+		private readonly Dictionary<Type, object> registeredInstances = new Dictionary<Type, object>();
 
-		public override object Create(ConstructorCandidate candidate, object[] parameters)
+		public object Create(ConstructorCandidate candidate, object[] parameters)
 		{
-			if (!registeredInstances.ContainsKey(candidate.Type)) return base.Create(candidate, parameters);
+			if (!registeredInstances.ContainsKey(candidate.Type))
+			{
+			    registeredInstances.Add(candidate.Type, repository.Stub(candidate.Type, parameters));
+			}
 
 			return registeredInstances[candidate.Type];
 		}
 
-		public override void Register(Type to, MappedType mappedType)
+		public void Register(Type to, MappedType mappedType)
 		{
-			if (registeredInstances.ContainsKey(to)) return;
-			if (to.IsInterface)
+			if (!registeredInstances.ContainsKey(to) && to.IsInterface)
 			{
 				registeredInstances.Add(to, repository.DynamicMock(to));
 			}
 		}
+
+	    public bool CanConstruct(ConstructorCandidate candidate)
+	    {
+	        return true;
+	    }
 	}
 }
