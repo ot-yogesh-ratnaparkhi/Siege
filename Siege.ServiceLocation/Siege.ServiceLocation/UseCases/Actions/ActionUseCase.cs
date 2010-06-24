@@ -18,9 +18,13 @@ using Siege.ServiceLocation.Bindings.Action;
 
 namespace Siege.ServiceLocation.UseCases.Actions
 {
-    public abstract class ActionUseCase<TService> : GenericUseCase<TService>
+    public abstract class ActionUseCase<TService> : GenericUseCase
     {
         private Func<TService, TService> action;
+
+        protected ActionUseCase() : base(typeof(TService))
+        {
+        }
 
         public void Associate(Func<TService, TService> action)
         {

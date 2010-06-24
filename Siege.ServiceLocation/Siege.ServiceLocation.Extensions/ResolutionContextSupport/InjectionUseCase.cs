@@ -19,8 +19,12 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
 {
-    public class InjectionUseCase<TService> : GenericUseCase<TService>, IInjectionUseCase<TService>
+    public class InjectionUseCase<TService> : GenericUseCase, IInjectionUseCase<TService>
     {
+        public InjectionUseCase() : base(typeof(TService))
+        {
+        }
+
         public override Type GetUseCaseBindingType()
         {
             return typeof (ConditionalUseCaseBinding);

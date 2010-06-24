@@ -182,6 +182,13 @@ namespace Siege.ServiceLocation
             return serviceLocator.HasTypeRegistered(type);
         }
 
+        public IServiceLocator Register(List<IUseCase> useCases)
+        {
+            foreach (IUseCase useCase in useCases) Register(useCase);
+
+            return this;
+        }
+
         public IServiceLocator Register(IUseCase useCase)
         {
             if (useCase is IDefaultActionUseCase)

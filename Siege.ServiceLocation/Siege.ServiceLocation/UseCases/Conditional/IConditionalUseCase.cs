@@ -20,7 +20,7 @@ namespace Siege.ServiceLocation.UseCases.Conditional
         
     }
 
-    public interface IConditionalUseCase<TBaseService> : IUseCase<TBaseService>, IConditionalUseCase
+    public interface IConditionalUseCase<TBaseService> : IGenericUseCase, IConditionalUseCase
     {
     }
 }

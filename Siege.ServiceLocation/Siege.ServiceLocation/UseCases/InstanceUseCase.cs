@@ -18,7 +18,7 @@ using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.UseCases
 {
-    public abstract class InstanceUseCase<TBaseService> : UseCase<TBaseService, TBaseService>, IInstanceUseCase
+    public abstract class InstanceUseCase<TBaseService> : UseCase, IInstanceUseCase
     {
         protected TBaseService implementation;
 

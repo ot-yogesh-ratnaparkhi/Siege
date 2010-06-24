@@ -18,7 +18,7 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Extensions.Hydration
 {
-    public interface IInitializationUseCase<TService> : IUseCase<TService>
+    public interface IInitializationUseCase<TService> : IGenericUseCase
     {
         void Associate(Func<TService, TService> action);
     }

@@ -18,11 +18,11 @@ using Siege.ServiceLocation.Bindings.Named;
 
 namespace Siege.ServiceLocation.UseCases.Named
 {
-    public class KeyBasedUseCase<TBaseService> : GenericUseCase<TBaseService>, IKeyBasedUseCase<TBaseService>
+    public class KeyBasedUseCase<TBaseService> : GenericUseCase, IKeyBasedUseCase<TBaseService>
     {
         private readonly string key;
 
-        public KeyBasedUseCase(string key)
+        public KeyBasedUseCase(string key) : base(typeof(TBaseService))
         {
             this.key = key;
         }

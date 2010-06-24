@@ -20,9 +20,14 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Extensions.FactorySupport
 {
-    public abstract class FactoryUseCase<TService> : GenericUseCase<TService>
+    public abstract class FactoryUseCase<TService> : GenericUseCase
     {
         private Func<IInstanceResolver, TService> factoryMethod;
+
+        protected FactoryUseCase() : base(typeof(TService))
+        {
+            
+        }
 
         public override Type GetUseCaseBindingType()
         {

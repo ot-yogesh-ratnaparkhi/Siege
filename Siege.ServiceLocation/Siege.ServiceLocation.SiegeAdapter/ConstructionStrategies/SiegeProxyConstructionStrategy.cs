@@ -43,7 +43,7 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
             return activator.Instantiate(parameters);
 		}
 
-		public void Register(Type to, MappedType mappedType)
+		public void Register(Type to, MappedType mappedType, ResolutionMap resolutionMap)
 		{
             if(activators.ContainsKey(to)) return;
 

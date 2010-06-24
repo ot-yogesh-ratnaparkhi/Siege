@@ -18,7 +18,7 @@ using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.UseCases
 {
-    public abstract class UseCase<TBaseService, TService> : UntypedUseCase, IUseCase<TBaseService>
+    public abstract class UseCase : UntypedUseCase, IGenericUseCase
     {
         protected abstract IActivationStrategy GetActivationStrategy();
 

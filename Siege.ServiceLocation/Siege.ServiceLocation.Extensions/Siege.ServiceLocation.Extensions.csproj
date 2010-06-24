@@ -45,11 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoScanner\AutoScannedUseCase.cs" />
+    <Compile Include="AutoScanner\AutoScanningConvention.cs" />
     <Compile Include="Decorator\ConditionalDecoratorUseCase.cs" />
     <Compile Include="Decorator\DecoratorUseCase.cs" />
     <Compile Include="Decorator\IDecoratorUseCase.cs" />
     <Compile Include="ExtendedSyntax\ActivationRule.cs" />
+    <Compile Include="Conventions\IConvention.cs" />
     <Compile Include="ExtendedSyntax\SyntaxExtensions.cs" />
+    <Compile Include="Conventions\Using.cs" />
     <Compile Include="Hydration\ConditionalInitializationUseCase.cs" />
     <Compile Include="Hydration\InitializationUseCase.cs" />
     <Compile Include="Hydration\IInitializationUseCase.cs" />

@@ -22,7 +22,7 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
     public interface IConstructionStrategy
     {
         object Create(ConstructorCandidate candidate, object[] parameters);
-        void Register(Type to, MappedType mappedType);
+        void Register(Type to, MappedType mappedType, ResolutionMap resolutionMap);
         bool CanConstruct(ConstructorCandidate candidate);
     }
 }

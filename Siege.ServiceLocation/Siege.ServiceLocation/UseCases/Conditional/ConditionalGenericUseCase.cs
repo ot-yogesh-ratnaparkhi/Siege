@@ -18,8 +18,12 @@ using Siege.ServiceLocation.Bindings.Conditional;
 
 namespace Siege.ServiceLocation.UseCases.Conditional
 {
-    public class ConditionalGenericUseCase<TBaseService> : GenericUseCase<TBaseService>, IConditionalUseCase<TBaseService>
+    public class ConditionalGenericUseCase<TBaseService> : GenericUseCase, IConditionalUseCase<TBaseService>
     {
+        public ConditionalGenericUseCase() : base(typeof(TBaseService))
+        {
+        }
+
         public override Type GetUseCaseBindingType()
         {
             return typeof (ConditionalUseCaseBinding);

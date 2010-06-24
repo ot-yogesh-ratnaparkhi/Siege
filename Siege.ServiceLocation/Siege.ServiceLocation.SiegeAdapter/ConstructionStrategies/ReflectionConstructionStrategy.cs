@@ -31,7 +31,7 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 			return true;
 		}
 
-		public virtual void Register(Type to, MappedType mappedType)
+		public virtual void Register(Type to, MappedType mappedType, ResolutionMap resolutionMap)
 		{
 		}
 	}

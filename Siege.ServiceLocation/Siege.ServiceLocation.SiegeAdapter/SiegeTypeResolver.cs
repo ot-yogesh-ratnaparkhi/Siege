@@ -51,7 +51,7 @@ namespace Siege.ServiceLocation.SiegeAdapter
 		{
 			this.resolutionMap.TypeMap.Add(from, to, key);
 		    var mappedType = resolutionMap.TypeMap.GetMappedType(to, key);
-			if(mappedType != null) strategy.Register(to, mappedType);
+			if(mappedType != null) strategy.Register(to, mappedType, resolutionMap);
 		}
 
 		public virtual void RegisterWithFactoryMethod(Type from, Func<object> to, string key)
@@ -108,7 +108,7 @@ namespace Siege.ServiceLocation.SiegeAdapter
 
 			if (!strategy.CanConstruct(candidate))
 			{
-			    strategy.Register(candidate.Type, mappedType);
+			    strategy.Register(candidate.Type, mappedType, resolutionMap);
 			}
 
 			return strategy.Create(candidate, constructorArgs);  

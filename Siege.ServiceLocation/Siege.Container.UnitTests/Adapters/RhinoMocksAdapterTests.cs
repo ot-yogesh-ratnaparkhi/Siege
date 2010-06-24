@@ -14,14 +14,16 @@
 */
 
 using NUnit.Framework;
+using Rhino.Mocks;
 
 namespace Siege.ServiceLocation.UnitTests.Adapters
 {
+    [Ignore]
 	public class RhinoMocksAdapterTests : SiegeContainerTests
 	{
 		protected override IServiceLocatorAdapter GetAdapter()
 		{
-			return new RhinoMocksAdapter.RhinoMocksAdapter();
+			return new RhinoMocksAdapter.RhinoMocksAdapter(new MockRepository());
 		}
 
 		protected override void RegisterWithoutSiege<TFrom, TTo>()

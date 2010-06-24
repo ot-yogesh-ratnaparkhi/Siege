@@ -23,8 +23,4 @@ namespace Siege.ServiceLocation.UseCases
         Type GetUseCaseBindingType();
         Type GetBaseBindingType();
     }
-
-    public interface IUseCase<TBaseService> : IGenericUseCase
-    {
-    }
 }

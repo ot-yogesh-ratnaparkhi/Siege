@@ -20,9 +20,15 @@ using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.UseCases
 {
-    public abstract class GenericUseCase<TBaseService> : UseCase<TBaseService, Type>
+    public abstract class GenericUseCase : UseCase
     {
         protected Type boundType;
+        protected Type baseBindingType;
+
+        protected GenericUseCase(Type baseBindingType)
+        {
+            this.baseBindingType = baseBindingType;
+        }
 
         public void BindTo<TImplementationType>()
         {
@@ -46,7 +52,7 @@ namespace Siege.ServiceLocation.UseCases
 
         public override Type GetBaseBindingType()
         {
-            return typeof(TBaseService);
+            return baseBindingType;
         }
 
         public class GenericActivationStrategy : IActivationStrategy

@@ -13,11 +13,14 @@
      limitations under the License.
 */
 
+using Rhino.Mocks;
+
 namespace Siege.ServiceLocation.RhinoMocksAdapter
 {
 	public class RhinoMocksAdapter : SiegeAdapter.SiegeAdapter
 	{
-		public RhinoMocksAdapter() : base(new RhinoMocksConstructionStrategy())
+        public RhinoMocksAdapter(MockRepository repository)
+            : base(new RhinoMocksConstructionStrategy(repository))
 		{
 		}
 	}

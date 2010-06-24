@@ -14,6 +14,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.UseCases;
 
@@ -21,6 +22,7 @@ namespace Siege.ServiceLocation
 {
     public interface IServiceLocator : Microsoft.Practices.ServiceLocation.IServiceLocator, IDisposable, IInstanceResolver, IFactoryFetcher
     {
+        IServiceLocator Register(List<IUseCase> useCase);
         IServiceLocator Register(IUseCase useCase);
         new object GetInstance(Type type);
         new object GetInstance(Type type, string key);

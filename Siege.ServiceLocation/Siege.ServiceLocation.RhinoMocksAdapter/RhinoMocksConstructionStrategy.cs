@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Rhino.Mocks;
 using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
@@ -22,32 +24,51 @@ using Siege.ServiceLocation.SiegeAdapter.Maps;
 
 namespace Siege.ServiceLocation.RhinoMocksAdapter
 {
-	public class RhinoMocksConstructionStrategy : IConstructionStrategy
-	{
-		private readonly MockRepository repository = new MockRepository();
-		private readonly Dictionary<Type, object> registeredInstances = new Dictionary<Type, object>();
+    public class RhinoMocksConstructionStrategy : IConstructionStrategy
+    {
+        private readonly MockRepository repository;
+        private readonly Dictionary<Type, object> registeredInstances = new Dictionary<Type, object>();
 
-		public object Create(ConstructorCandidate candidate, object[] parameters)
-		{
-			if (!registeredInstances.ContainsKey(candidate.Type))
-			{
-			    registeredInstances.Add(candidate.Type, repository.Stub(candidate.Type, parameters));
-			}
+        public RhinoMocksConstructionStrategy(MockRepository repository)
+        {
+            this.repository = repository;
+        }
 
-			return registeredInstances[candidate.Type];
-		}
+        public object Create(ConstructorCandidate candidate, object[] parameters)
+        {
+            if (!registeredInstances.ContainsKey(candidate.Type))
+            {
+                var stub = candidate.Instantiate(parameters);
+                registeredInstances.Add(candidate.Type, stub);
+            }
 
-		public void Register(Type to, MappedType mappedType)
-		{
-			if (!registeredInstances.ContainsKey(to) && to.IsInterface)
-			{
-				registeredInstances.Add(to, repository.DynamicMock(to));
-			}
-		}
+            return registeredInstances[candidate.Type];
+        }
 
-	    public bool CanConstruct(ConstructorCandidate candidate)
-	    {
-	        return true;
-	    }
-	}
+        public void Register(Type to, MappedType mappedType, ResolutionMap resolutionMap)
+        {
+            if (!registeredInstances.ContainsKey(to) && to.IsInterface)
+            {
+                var mock = repository.DynamicMock(to);
+                registeredInstances.Add(to, mock);
+                resolutionMap.InstanceMap.Add(to, mock, null);
+            }
+            else if (to.IsClass)
+            {
+                var constructors = to.GetConstructors();
+                var args = constructors.Max(constructor => constructor.GetParameters().Count());
+                var candidate = constructors.Where(constructor => constructor.GetParameters().Count() == args).FirstOrDefault();
+
+                foreach (ParameterInfo dependency in candidate.GetParameters())
+                {
+                    Register(dependency.ParameterType, mappedType, resolutionMap);
+                }
+            }
+        }
+
+        public bool CanConstruct(ConstructorCandidate candidate)
+        {
+            return true;
+        }
+    }
 }

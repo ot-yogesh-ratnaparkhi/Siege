@@ -19,5 +19,5 @@ namespace Siege.ServiceLocation.UseCases.Default
     {
     }
 
-    public interface IDefaultUseCase<TBaseService> : IDefaultUseCase, IUseCase<TBaseService> {}
+    public interface IDefaultUseCase<TBaseService> : IDefaultUseCase, IGenericUseCase { }
 }
