@@ -21,7 +21,7 @@ namespace Siege.ServiceLocation.UnitTests.TestClasses
 		public MultiConstructorType(TypeA a, TypeB b) { }
 		public MultiConstructorType(TypeA a, TypeB b, TypeC c) { }
 		public MultiConstructorType(TypeA a, TypeB b, TypeC c, TypeD d) { }
-		public MultiConstructorType(TypeA a, TypeB b, TypeC c, TypeE e) { }
+		public MultiConstructorType(TypeA a, TypeB b, TypeC c, TypeD d, TypeE e) { }
 		public MultiConstructorType(TypeE e) { }
 
 	}

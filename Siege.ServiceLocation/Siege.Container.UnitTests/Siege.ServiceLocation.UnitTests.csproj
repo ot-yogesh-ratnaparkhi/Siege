@@ -90,6 +90,7 @@
     <Compile Include="Adapters\ILSiegeAdapterTests.cs" />
     <Compile Include="Adapters\RhinoMocksAdapterTests.cs" />
     <Compile Include="Adapters\SiegeAdapterTests.cs" />
+    <Compile Include="AutoMockingTests.cs" />
     <Compile Include="AutoRegistrationTests.cs" />
     <Compile Include="BenchmarkTests.cs" />
     <Compile Include="ConstructorArgumentTests.cs" />
