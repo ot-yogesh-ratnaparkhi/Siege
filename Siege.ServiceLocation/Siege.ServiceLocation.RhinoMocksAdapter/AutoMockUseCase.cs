@@ -20,7 +20,7 @@ using Siege.ServiceLocation.UseCases.Default;
 
 namespace Siege.ServiceLocation.RhinoMocksAdapter
 {
-    public class AutoMockUseCase : InstanceUseCase<object>, IInstanceUseCase, IDefaultUseCase
+    public class AutoMockUseCase : InstanceUseCase<object>, IDefaultUseCase
     {
         private readonly Type from;
 
@@ -28,11 +28,6 @@ namespace Siege.ServiceLocation.RhinoMocksAdapter
         {
             this.from = from;
             this.implementation = to;
-        }
-
-        object IInstanceUseCase.GetBinding()
-        {
-            return implementation;
         }
 
         public override Type GetUseCaseBindingType()
