@@ -15,10 +15,7 @@
 
 namespace Siege.ServiceLocation.UseCases.Named
 {
-    public interface IKeyBasedUseCase : IUseCase
+    public interface INamedInstanceUseCase : IInstanceUseCase, INamedUseCase
     {
-        string Key { get; }
     }
-
-    public interface IKeyBasedUseCase<TBaseService> : IKeyBasedUseCase, IGenericUseCase { }
 }

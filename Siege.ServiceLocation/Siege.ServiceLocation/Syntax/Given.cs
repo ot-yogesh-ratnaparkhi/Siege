@@ -39,9 +39,9 @@ namespace Siege.ServiceLocation.Syntax
             return useCase;
         }
 
-        public static IKeyBasedUseCase<TBaseService> Then<TImplementingType>(string key) where TImplementingType : TBaseService
+        public static INamedUseCase<TBaseService> Then<TImplementingType>(string key) where TImplementingType : TBaseService
         {
-            KeyBasedUseCase<TBaseService> useCase = new KeyBasedUseCase<TBaseService>(key);
+            NamedUseCase<TBaseService> useCase = new NamedUseCase<TBaseService>(key);
 
             useCase.BindTo<TImplementingType>();
 
@@ -59,7 +59,7 @@ namespace Siege.ServiceLocation.Syntax
 
         public static IInstanceUseCase Then(string key, TBaseService implementation)
         {
-            KeyBasedInstanceUseCase<TBaseService> useCase = new KeyBasedInstanceUseCase<TBaseService>(key);
+            NamedInstanceUseCase<TBaseService> useCase = new NamedInstanceUseCase<TBaseService>(key);
 
             useCase.BindTo(implementation);
 

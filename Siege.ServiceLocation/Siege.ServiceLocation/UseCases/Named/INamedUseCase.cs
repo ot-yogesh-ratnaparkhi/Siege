@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,28 +13,12 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.Bindings.Named;
-
 namespace Siege.ServiceLocation.UseCases.Named
 {
-    public class KeyBasedInstanceUseCase<TBaseService> : InstanceUseCase<TBaseService>, IKeyBasedInstanceUseCase
+    public interface INamedUseCase : IUseCase
     {
-        private readonly string key;
-
-        public KeyBasedInstanceUseCase(string key)
-        {
-            this.key = key;
-        }
-
-        public string Key
-        {
-            get { return key; }
-        }
-
-        public override Type GetUseCaseBindingType()
-        {
-            return typeof (NamedUseCaseBinding);
-        }
+        string Key { get; }
     }
+
+    public interface INamedUseCase<TBaseService> : INamedUseCase, IGenericUseCase { }
 }

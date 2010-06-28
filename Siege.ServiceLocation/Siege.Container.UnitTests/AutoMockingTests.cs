@@ -12,7 +12,7 @@ namespace Siege.ServiceLocation.UnitTests
         {
             var repository = new MockRepository();
 
-            locator.Register(AutoMock<DependsOnMultipleInterfaceTypes>.Using(repository));
+            locator.Register(RhinoMock<DependsOnMultipleInterfaceTypes>.Using(repository));
 
             Assert.IsNotNull(locator.GetInstance<IConstructorArgument>());
             Assert.IsNotNull(locator.GetInstance<IServiceLocator>());
@@ -24,7 +24,7 @@ namespace Siege.ServiceLocation.UnitTests
         {
             var repository = new MockRepository();
 
-            locator.Register(AutoMock<MultiConstructorType>.Using(repository));
+            locator.Register(RhinoMock<MultiConstructorType>.Using(repository));
 
             Assert.IsNotNull(locator.GetInstance<TypeA>());
             Assert.IsNotNull(locator.GetInstance<TypeB>());

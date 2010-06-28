@@ -112,8 +112,8 @@
     <Compile Include="IGetAllInstancesServiceLocator.cs" />
     <Compile Include="IInstanceResolver.cs" />
     <Compile Include="UseCases\IInstanceUseCase.cs" />
-    <Compile Include="UseCases\Named\IKeyBasedInstanceUseCase.cs" />
-    <Compile Include="UseCases\Named\IKeyBasedUseCase.cs" />
+    <Compile Include="UseCases\Named\INamedInstanceUseCase.cs" />
+    <Compile Include="UseCases\Named\INamedUseCase.cs" />
     <Compile Include="UseCases\InstanceUseCase.cs" />
     <Compile Include="IServiceLocator.cs" />
     <Compile Include="IServiceLocatorAdapter.cs" />
@@ -121,8 +121,8 @@
     <Compile Include="UseCases\IResolutionStrategy.cs" />
     <Compile Include="UseCases\IUseCase.cs" />
     <Compile Include="Bindings\IUseCaseBinding.cs" />
-    <Compile Include="UseCases\Named\KeyBasedInstanceUseCase.cs" />
-    <Compile Include="UseCases\Named\KeyBasedUseCase.cs" />
+    <Compile Include="UseCases\Named\NamedInstanceUseCase.cs" />
+    <Compile Include="UseCases\Named\NamedUseCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiegeContainer.cs" />
     <Compile Include="UseCases\UntypedUseCase.cs" />

@@ -18,11 +18,11 @@ using Siege.ServiceLocation.Bindings.Named;
 
 namespace Siege.ServiceLocation.UseCases.Named
 {
-    public class KeyBasedUseCase<TBaseService> : GenericUseCase, IKeyBasedUseCase<TBaseService>
+    public class NamedInstanceUseCase<TBaseService> : InstanceUseCase<TBaseService>, INamedInstanceUseCase
     {
         private readonly string key;
 
-        public KeyBasedUseCase(string key) : base(typeof(TBaseService))
+        public NamedInstanceUseCase(string key)
         {
             this.key = key;
         }
@@ -34,7 +34,7 @@ namespace Siege.ServiceLocation.UseCases.Named
 
         public override Type GetUseCaseBindingType()
         {
-            return typeof(NamedUseCaseBinding);
+            return typeof (NamedUseCaseBinding);
         }
     }
 }

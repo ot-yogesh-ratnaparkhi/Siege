@@ -29,21 +29,21 @@ namespace Siege.ServiceLocation.Bindings.Named
 
         public void Bind(IUseCase useCase, IFactoryFetcher locator)
         {
-            Bind((IKeyBasedUseCase) useCase);
+            Bind((INamedUseCase) useCase);
         }
 
         public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
         {
-            BindInstance((IKeyBasedInstanceUseCase) useCase);
+            BindInstance((INamedInstanceUseCase) useCase);
         }
 
-        private void BindInstance(IKeyBasedInstanceUseCase useCase)
+        private void BindInstance(INamedInstanceUseCase useCase)
         {
             adapter.RegisterInstanceWithName(useCase.GetBoundType(), useCase.GetBinding(), useCase.Key);
             adapter.RegisterInstanceWithName(useCase.GetBaseBindingType(), useCase.GetBinding(), useCase.Key);
         }
 
-        private void Bind(IKeyBasedUseCase useCase)
+        private void Bind(INamedUseCase useCase)
         {
             adapter.RegisterWithName(useCase.GetBoundType(), useCase.GetBoundType(), useCase.Key);
             adapter.RegisterWithName(useCase.GetBaseBindingType(), useCase.GetBoundType(), useCase.Key);

@@ -22,7 +22,7 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.RhinoMocksAdapter
 {
-    public abstract class AutoMock<T>
+    public abstract class RhinoMock<T>
     {
         public static List<IUseCase> Using(MockRepository repository)
         {
@@ -47,8 +47,7 @@ namespace Siege.ServiceLocation.RhinoMocksAdapter
             {
                 ConstructorInfo[] constructors = to.GetConstructors();
                 int args = constructors.Max(constructor => constructor.GetParameters().Count());
-                ConstructorInfo candidate =
-                    constructors.Where(constructor => constructor.GetParameters().Count() == args).FirstOrDefault();
+                ConstructorInfo candidate = constructors.Where(constructor => constructor.GetParameters().Count() == args).FirstOrDefault();
                 var parameters = new List<object>();
 
                 foreach (ParameterInfo dependency in candidate.GetParameters())
