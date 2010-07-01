@@ -32,11 +32,6 @@ namespace Siege.ServiceLocation.UseCases.Actions
             this.action = action;
         }
 
-        public object Invoke(object item)
-        {
-            return action.Invoke((TService)item);
-        }
-
         public override object Resolve(IResolutionStrategy strategy, IServiceLocatorStore accessor)
         {
             return action((TService)base.Resolve(strategy, accessor));

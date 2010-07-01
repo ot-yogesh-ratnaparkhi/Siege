@@ -21,7 +21,8 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
 {
-    public abstract class ActivationRule<TBaseService, TContext> : Rules.ConditionalActivationRule<TBaseService, TContext>
+    public abstract class ActivationRule<TBaseService, TContext> :
+        Rules.ConditionalActivationRule<TBaseService, TContext>
     {
         public IUseCase ConstructWith<TService>(Func<IInstanceResolver, TService> factoryMethod)
         {
@@ -42,10 +43,10 @@ namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
             useCase.SetActivationRule(this);
 
             Func<TBaseService, TBaseService> func = service =>
-            {
-                action(service);
-                return service;
-            };
+                                                        {
+                                                            action(service);
+                                                            return service;
+                                                        };
 
             useCase.Associate(func);
 
