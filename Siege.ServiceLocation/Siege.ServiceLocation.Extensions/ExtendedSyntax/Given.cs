@@ -64,7 +64,7 @@ namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
 
         public static IInitializationUseCase<TService> InitializeWith(Action<TService> action)
         {
-            InitializationUseCase<TService> useCase = new InitializationUseCase<TService>();
+            var useCase = new InitializationUseCase<TService>();
 
             useCase.BindTo<TService>();
 

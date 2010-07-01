@@ -19,11 +19,11 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Stores.UseCases
 {
-    public class CompositeUseCaseGroup
+    public class ConditionalUseCaseList
     {
         private Dictionary<Type, List<IUseCase>> resolutionCases { get; set; }
 
-        public CompositeUseCaseGroup()
+        public ConditionalUseCaseList()
         {
             this.resolutionCases = new Dictionary<Type, List<IUseCase>>();
         }
@@ -39,7 +39,7 @@ namespace Siege.ServiceLocation.Stores.UseCases
         {
             if (!resolutionCases.ContainsKey(type))
             {
-                List<IUseCase> list = new List<IUseCase>();
+                var list = new List<IUseCase>();
                 resolutionCases.Add(type, list);
             }
 

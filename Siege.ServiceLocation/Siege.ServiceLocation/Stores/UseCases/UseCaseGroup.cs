@@ -17,11 +17,11 @@ namespace Siege.ServiceLocation.Stores.UseCases
 {
     public class UseCaseGroup
     {
-        public CompositeUseCaseGroup PostResolutionCases { get; set; }
+        public ConditionalUseCaseList PostResolutionCases { get; set; }
 
         public UseCaseGroup()
         {
-            this.PostResolutionCases = new CompositeUseCaseGroup();
+            this.PostResolutionCases = new ConditionalUseCaseList();
         }
     }
 }

@@ -64,7 +64,14 @@
     <Compile Include="IFactoryFetcher.cs" />
     <Compile Include="Planning\ConstructorCandidate.cs" />
     <Compile Include="Planning\IResolutionPlan.cs" />
+    <Compile Include="Resolution\IResolver.cs" />
+    <Compile Include="Resolution\Resolver.cs" />
     <Compile Include="UseCases\IGenericUseCase.cs" />
+    <Compile Include="UseCases\Managers\ConditionalActionUseCaseManager.cs" />
+    <Compile Include="UseCases\Managers\ConditionalUseCaseManager.cs" />
+    <Compile Include="UseCases\Managers\DefaultActionUseCaseManager.cs" />
+    <Compile Include="UseCases\Managers\DefaultUseCaseManager.cs" />
+    <Compile Include="UseCases\Managers\IUseCaseManager.cs" />
     <Compile Include="UseCases\OpenGenerics\IOpenGenericUseCase.cs" />
     <Compile Include="UseCases\OpenGenerics\OpenGenericUseCase.cs" />
     <Compile Include="Resolution\ConstructorParameter.cs" />
@@ -75,7 +82,7 @@
     <Compile Include="Stores\ThreadedResolutionStore.cs" />
     <Compile Include="Stores\ThreadedServiceLocatorStore.cs" />
     <Compile Include="Stores\ThreadLocalStore.cs" />
-    <Compile Include="Stores\UseCases\CompositeUseCaseGroup.cs" />
+    <Compile Include="Stores\UseCases\ConditionalUseCaseList.cs" />
     <Compile Include="Stores\UseCases\ConditionalUseCaseGroup.cs" />
     <Compile Include="Stores\UseCases\DefaultUseCaseGroup.cs" />
     <Compile Include="Stores\UseCases\DefaultUseCaseList.cs" />

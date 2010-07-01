@@ -67,7 +67,7 @@ namespace Siege.ServiceLocation
                 }
             }
 
-            for(int i = 0; i < defaultCases.Count; i++)
+            for (int i = 0; i < defaultCases.Count; i++)
             {
                 var useCase = (IGenericUseCase)defaultCases[i];
                 object result = useCase.Resolve(new DefaultResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);

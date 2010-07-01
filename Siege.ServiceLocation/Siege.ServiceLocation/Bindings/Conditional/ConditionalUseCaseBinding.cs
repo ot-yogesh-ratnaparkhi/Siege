@@ -32,7 +32,7 @@ namespace Siege.ServiceLocation.Bindings.Conditional
             factory.AddCase(useCase);
 
             adapter.RegisterFactoryMethod(useCase.GetBaseBindingType(), () => factory.Build(useCase.GetBoundType()));
-            adapter.Register(useCase.GetBoundType(), useCase.GetBoundType());
+            if (!useCase.GetBoundType().IsInterface) adapter.Register(useCase.GetBoundType(), useCase.GetBoundType());
         }
 
         public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)

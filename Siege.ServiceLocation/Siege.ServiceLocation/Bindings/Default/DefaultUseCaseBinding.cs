@@ -43,9 +43,12 @@ namespace Siege.ServiceLocation.Bindings.Default
         {
             var factory = (Factory) locator.GetFactory(useCase.GetBaseBindingType());
             factory.AddCase(useCase);
-    
-            adapter.RegisterFactoryMethod(useCase.GetBaseBindingType(), () => factory.Build(useCase.GetBoundType()));
-            
+           
+            if (useCase.GetBaseBindingType() != useCase.GetBoundType())
+            {
+                adapter.RegisterFactoryMethod(useCase.GetBaseBindingType(), () => factory.Build(useCase.GetBoundType()));
+            }
+
             adapter.RegisterInstance(useCase.GetBoundType(), useCase.GetBinding());
         }
     }

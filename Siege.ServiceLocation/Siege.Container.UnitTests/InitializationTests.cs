@@ -12,7 +12,7 @@ namespace Siege.ServiceLocation.UnitTests
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
             locator.Register(Given<TestCase1>.InitializeWith(testCase1 => testCase1.Property1 = "lulz"));
 
-            TestCase1 instance = (TestCase1) locator.GetInstance<ITestInterface>();
+            var instance = (TestCase1) locator.GetInstance<ITestInterface>();
             Assert.AreEqual("lulz", instance.Property1);
         }
 
@@ -26,7 +26,7 @@ namespace Siege.ServiceLocation.UnitTests
 
             locator.AddContext(TestEnum.Case2);
 
-            TestCase1 instance = (TestCase1) locator.GetInstance<ITestInterface>();
+            var instance = (TestCase1) locator.GetInstance<ITestInterface>();
             Assert.AreEqual("lulz", instance.Property1);
         }
 
@@ -34,13 +34,13 @@ namespace Siege.ServiceLocation.UnitTests
         [Test]
         public void Should_Initialize_Property_After_Resolution_With_No_Context()
         {
-            locator.Register(Given<ITestInterface>.Then<TestCase1>());
-            locator.Register(Given<TestCase1>.InitializeWith(testCase1 => testCase1.Property1 = "lulz"));
-            locator.Register(
-                Given<TestCase1>.When<TestEnum>(x => x == TestEnum.Case2).InitializeWith(
+            locator
+                .Register(Given<ITestInterface>.Then<TestCase1>())
+                .Register(Given<TestCase1>.InitializeWith(testCase1 => testCase1.Property1 = "lulz"))
+                .Register(Given<TestCase1>.When<TestEnum>(x => x == TestEnum.Case2).InitializeWith(
                     testCase1 => testCase1.Property1 = "rofl"));
 
-            TestCase1 instance = (TestCase1) locator.GetInstance<ITestInterface>();
+            var instance = (TestCase1) locator.GetInstance<ITestInterface>();
             Assert.AreEqual("lulz", instance.Property1);
         }
     }

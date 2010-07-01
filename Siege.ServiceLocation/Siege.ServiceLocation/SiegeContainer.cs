@@ -23,7 +23,6 @@ using Siege.ServiceLocation.Bindings.Default;
 using Siege.ServiceLocation.Bindings.Named;
 using Siege.ServiceLocation.Bindings.OpenGenerics;
 using Siege.ServiceLocation.EventHandlers;
-using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.Stores;
 using Siege.ServiceLocation.Stores.UseCases;
@@ -31,36 +30,40 @@ using Siege.ServiceLocation.Syntax;
 using Siege.ServiceLocation.TypeBuilders;
 using Siege.ServiceLocation.UseCases;
 using Siege.ServiceLocation.UseCases.Actions;
-using Siege.ServiceLocation.UseCases.Conditional;
-using Siege.ServiceLocation.UseCases.Default;
 using Siege.ServiceLocation.ExtensionMethods;
+using Siege.ServiceLocation.UseCases.Default;
+using Siege.ServiceLocation.UseCases.Managers;
 
 namespace Siege.ServiceLocation
 {
-    public class SiegeContainer : IContextualServiceLocator, ITypeResolver
+    public class SiegeContainer : IContextualServiceLocator
     {
         private IServiceLocatorAdapter serviceLocator;
         private IServiceLocatorStore store;
         private UseCaseStore useCaseStore = new UseCaseStore();
-        private readonly Hashtable factories = new Hashtable();
-
-		public event TypeResolvedEventHandler TypeResolved;
+        private Hashtable factories = new Hashtable();
+        private IResolver resolver;
 
         public SiegeContainer(IServiceLocatorAdapter serviceLocator, IServiceLocatorStore store, ITypeBuilder typeBuilder)
         {
             this.serviceLocator = serviceLocator;
             this.store = store;
+            this.resolver = new Resolver(serviceLocator, this.store, this.useCaseStore);
 
-			this.store.ExecutionStore.WireEvent(this);
             TypeHandler.Initialize(typeBuilder);
 
             serviceLocator.RegisterInstance(typeof(IServiceLocatorAdapter), serviceLocator);
             
-            AddBinding<DefaultUseCaseBinding>();
-            AddBinding<ConditionalUseCaseBinding>();
-            AddBinding<NamedUseCaseBinding>();
-            AddBinding<OpenGenericUseCaseBinding>();
-            AddBinding<ActionUseCaseBinding>();
+            AddBinding(new DefaultUseCaseBinding(serviceLocator));
+            AddBinding(new ConditionalUseCaseBinding(serviceLocator));
+            AddBinding(new NamedUseCaseBinding(serviceLocator));
+            AddBinding(new OpenGenericUseCaseBinding(serviceLocator));
+            AddBinding(new ActionUseCaseBinding());
+
+            InitializeUseCaseStore();
+
+            Bind(Given<UseCaseStore>.Then(useCaseStore));
+            Bind(Given<IResolver>.Then(resolver));
 
             Register(Given<IFactoryFetcher>.Then(this));
             Register(Given<IServiceLocator>.Then(this));
@@ -77,9 +80,9 @@ namespace Siege.ServiceLocation
             store.ContextStore.Add(contextItem);
         }
 
-        private void AddBinding<TBinding>()
+        private void AddBinding<TBinding>(TBinding instance)
         {
-			serviceLocator.Register(typeof(TBinding), typeof(TBinding));
+			serviceLocator.RegisterInstance(typeof(TBinding), instance);
         }
 
         public TService GetInstance<TService>()
@@ -105,40 +108,12 @@ namespace Siege.ServiceLocation
         public object GetInstance(Type type, params IResolutionArgument[] arguments)
 		{
             this.store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
+            
+            var instance = resolver.Resolve(type);
 
-            IList<IUseCase> selectedCase = this.useCaseStore.Conditional.ResolutionCases.GetUseCasesForType(type);
-
-            if (selectedCase != null)
-            {
-                for (int i = 0; i < selectedCase.Count; i++)
-                {
-                    var useCase = selectedCase[i];
-                    var value = Resolve((IGenericUseCase)useCase, new ConditionalResolutionStrategy(serviceLocator, this.store));
-
-                    if (value != null)
-                    {
-                        return value;
-                    }
-                }
-            }
-            else if (this.useCaseStore.Default.ResolutionCases.Contains(type))
-            {
-                var useCase = (IGenericUseCase) this.useCaseStore.Default.ResolutionCases.GetUseCaseForType(type);
-                var value = Resolve(useCase, new DefaultResolutionStrategy(serviceLocator, this.store));
-
-                if (value != null)
-                {
-                    return value;
-                }
-            }
-
-            if (HasTypeRegistered(type) || type.IsGenericType)
-            {
-                return serviceLocator.GetInstance(type, this.store.ResolutionStore.Items.OfType<ConstructorParameter,IResolutionArgument>());
-            }
-
-            throw new RegistrationNotFoundException(type);
+            return instance;
         }
+
 
         public TService GetInstance<TService>(string key)
         {
@@ -191,39 +166,48 @@ namespace Siege.ServiceLocation
 
         public IServiceLocator Register(IUseCase useCase)
         {
-            if (useCase is IDefaultActionUseCase)
-            {
-                this.useCaseStore.Default.PostResolutionCases.Add(useCase.GetBoundType(), useCase);
-            }
-            else if (useCase is IConditionalActionUseCase)
-            {
-                this.useCaseStore.Conditional.PostResolutionCases.Add(useCase.GetBoundType(), useCase);
-            }
-            else if (useCase is IDefaultUseCase)
-            {
-                this.useCaseStore.Default.ResolutionCases.Add(useCase.GetBaseBindingType(), useCase);
-            }
-            else
-            {
-                this.useCaseStore.Conditional.ResolutionCases.Add(useCase.GetBaseBindingType(), useCase);
-            }
+            var caseStore = GetInstance<IUseCaseManager>(new ContextArgument(useCase));
+            caseStore.Add(useCase);
 
-            Type bindingType = useCase.GetUseCaseBindingType().IsGenericType ? 
-                useCase.GetUseCaseBindingType().MakeGenericType(useCase.GetBaseBindingType()) 
+            Bind(useCase);
+
+            return this;
+        }
+
+        private void InitializeUseCaseStore()
+        {
+            var conditionalCases = Given<IUseCaseManager>.Then<ConditionalUseCaseManager>();
+            var defaultCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase is IDefaultUseCase).Then<DefaultUseCaseManager>();
+            var defaultActionCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase is IDefaultActionUseCase).Then<DefaultActionUseCaseManager>();
+            var conditionalActionCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase is IConditionalActionUseCase).Then<ConditionalActionUseCaseManager>();
+
+            useCaseStore.Conditional.ResolutionCases.Add(typeof(IUseCaseManager), defaultCases);
+            useCaseStore.Default.ResolutionCases.Add(typeof(IUseCaseManager), conditionalCases);
+            useCaseStore.Conditional.ResolutionCases.Add(typeof(IUseCaseManager), defaultActionCases);
+            useCaseStore.Conditional.ResolutionCases.Add(typeof(IUseCaseManager), conditionalActionCases);
+
+            Bind(conditionalCases);
+            Bind(defaultCases);
+            Bind(defaultActionCases);
+            Bind(conditionalActionCases);
+        }
+
+        private void Bind(IUseCase useCase)
+        {
+            Type bindingType = useCase.GetUseCaseBindingType().IsGenericType ?
+                useCase.GetUseCaseBindingType().MakeGenericType(useCase.GetBaseBindingType())
                 : useCase.GetUseCaseBindingType();
 
             if (useCase is IInstanceUseCase)
             {
                 var binding = GetInstance<IInstanceUseCaseBinding>(bindingType);
-                binding.BindInstance((IInstanceUseCase) useCase, this);
+                binding.BindInstance((IInstanceUseCase)useCase, this);
             }
             else
             {
                 var binding = GetInstance<IUseCaseBinding>(bindingType);
                 binding.Bind(useCase, this);
             }
-
-            return this;
         }
 
         public IServiceLocatorStore Store
@@ -237,45 +221,6 @@ namespace Siege.ServiceLocation
             this.store.Dispose();
         }
 
-        private void RaiseTypeResolvedEvent(Type type)
-        {
-            if (this.TypeResolved != null) this.TypeResolved(type);
-        }
-
-        private object Resolve(IGenericUseCase useCase, IResolutionStrategy strategy)
-        {
-            var value = useCase.Resolve(strategy, this.store);
-
-            if (value != null)
-            {
-                RaiseTypeResolvedEvent(useCase.GetBoundType());
-                ExecutePostConditions(this.useCaseStore.Default, useCase, actionUseCase => value = actionUseCase.Invoke(value));
-                ExecutePostConditions(this.useCaseStore.Conditional, useCase, actionUseCase =>
-				{
-					if (actionUseCase.IsValid(this.store)) 
-						value = actionUseCase.Invoke(value);
-				});
-            }
-
-            return value;
-        }
-
-        private void ExecutePostConditions(UseCaseGroup useCaseGroup, IUseCase useCase,
-                                           Action<IActionUseCase> action)
-        {
-            IList<IUseCase> actions = useCaseGroup.PostResolutionCases.GetUseCasesForType(useCase.GetBoundType()) ??
-                                      useCaseGroup.PostResolutionCases.GetUseCasesForType(useCase.GetBaseBindingType());
-
-            if (actions != null)
-            {
-                for (int i = 0; i < actions.Count; i++)
-                {
-                    var actionUseCase = actions[i];
-                    action((IActionUseCase)actionUseCase);
-                }
-            }
-        }
-
         IGenericFactory IFactoryFetcher.GetFactory(Type type)
         {
             if (!factories.ContainsKey(type))
@@ -285,7 +230,7 @@ namespace Siege.ServiceLocation
                     if (!factories.ContainsKey(type))
                     {
                         var factory = new Factory(this);
-                        Register(Given<Factory>.Then("Factory" + type, factory));
+                        Bind(Given<Factory>.Then("Factory" + type, factory));
 
                         factories.Add(type, factory);
                     }

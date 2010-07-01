@@ -67,10 +67,8 @@ namespace Siege.ServiceLocation.UnitTests
         {
             locator
                 .Register(Given<ICoffee>.Then<Coffee>())
-                .Register(Given<ICoffee>
-                              .DecorateWith(coffee => new WhippedCreamDecorator(coffee)))
-                .Register(Given<ICoffee>
-                              .DecorateWith(coffee => new EspressoShotDecorator(coffee)));
+                .Register(Given<ICoffee>.DecorateWith(coffee => new WhippedCreamDecorator(coffee)))
+                .Register(Given<ICoffee>.DecorateWith(coffee => new EspressoShotDecorator(coffee)));
 
             var instance = locator.GetInstance<ICoffee>();
 

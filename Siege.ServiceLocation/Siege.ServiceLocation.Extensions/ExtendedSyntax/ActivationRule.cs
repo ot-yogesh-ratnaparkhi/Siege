@@ -17,6 +17,7 @@ using System;
 using Siege.ServiceLocation.Extensions.Decorator;
 using Siege.ServiceLocation.Extensions.FactorySupport;
 using Siege.ServiceLocation.Extensions.Hydration;
+using Siege.ServiceLocation.UseCases.Actions;
 using Siege.ServiceLocation.UseCases.Conditional;
 
 namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
@@ -27,14 +28,14 @@ namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
         {
             var useCase = new ConditionalFactoryUseCase<TService>();
 
-            useCase.BindTo<Func<IInstanceResolver, TService>>();
+            useCase.BindTo<TService>();
             useCase.SetActivationRule(this);
             useCase.ConstructWith(factoryMethod);
 
             return useCase;
         }
 
-        public IConditionalUseCase InitializeWith(Action<TBaseService> action)
+        public IConditionalActionUseCase InitializeWith(Action<TBaseService> action)
         {
             var useCase = new ConditionalInitializationUseCase<TBaseService>();
 
@@ -52,7 +53,7 @@ namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
             return useCase;
         }
 
-        public IConditionalUseCase DecorateWith(Func<TBaseService, TBaseService> func)
+        public IConditionalActionUseCase DecorateWith(Func<TBaseService, TBaseService> func)
         {
             var useCase = new ConditionalDecoratorUseCase<TBaseService>();
 
