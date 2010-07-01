@@ -14,7 +14,6 @@
 */
 
 using System;
-using Siege.ServiceLocation.Bindings.Default;
 using Siege.ServiceLocation.Stores;
 using Siege.ServiceLocation.UseCases;
 
@@ -27,11 +26,6 @@ namespace Siege.ServiceLocation.Extensions.FactorySupport
         protected FactoryUseCase() : base(typeof(TService))
         {
             
-        }
-
-        public override Type GetUseCaseBindingType()
-        {
-            return typeof(DefaultUseCaseBinding);
         }
 
         public void ConstructWith(Func<IInstanceResolver, TService> factoryMethod)

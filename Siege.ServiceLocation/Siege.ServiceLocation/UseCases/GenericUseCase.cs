@@ -45,6 +45,11 @@ namespace Siege.ServiceLocation.UseCases
             return new GenericActivationStrategy(boundType);
         }
 
+        public override object GetBinding()
+        {
+            return GetBoundType();
+        }
+
         public override Type GetBoundType()
         {
             return boundType;

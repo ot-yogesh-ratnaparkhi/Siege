@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Siege.ServiceLocation.Exceptions;
+using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
 
@@ -60,7 +61,8 @@ namespace Siege.ServiceLocation.SiegeAdapter
         public ConstructorParameter[] GetConstructorParameters(IResolutionArgument[] parameters)
         {
             int parameterCount = 0;
-            for (int i = 0; i < parameters.Length; i++)
+            var parameterList = parameters.OfType<ConstructorParameter, IResolutionArgument>();
+            for (int i = 0; i < parameterList.Length; i++)
             {
                 parameterCount++;
             }
@@ -98,7 +100,7 @@ namespace Siege.ServiceLocation.SiegeAdapter
 
         public void Register(Type from, Type to)
         {
-            resolver.Register(from, to);
+            if(from != to) resolver.Register(from, to);
             resolver.Register(to, to);
         }
 

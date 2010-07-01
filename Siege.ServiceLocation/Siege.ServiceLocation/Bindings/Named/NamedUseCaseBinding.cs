@@ -27,17 +27,7 @@ namespace Siege.ServiceLocation.Bindings.Named
             this.adapter = adapter;
         }
 
-        public void Bind(IUseCase useCase, IFactoryFetcher locator)
-        {
-            Bind((INamedUseCase) useCase);
-        }
-
-        public void BindInstance(IInstanceUseCase useCase, IFactoryFetcher locator)
-        {
-            BindInstance((INamedInstanceUseCase) useCase);
-        }
-
-        private void BindInstance(INamedInstanceUseCase useCase)
+        private void BindInstance(INamedUseCase useCase)
         {
             adapter.RegisterInstanceWithName(useCase.GetBoundType(), useCase.GetBinding(), useCase.Key);
             adapter.RegisterInstanceWithName(useCase.GetBaseBindingType(), useCase.GetBinding(), useCase.Key);
@@ -47,6 +37,16 @@ namespace Siege.ServiceLocation.Bindings.Named
         {
             adapter.RegisterWithName(useCase.GetBoundType(), useCase.GetBoundType(), useCase.Key);
             adapter.RegisterWithName(useCase.GetBaseBindingType(), useCase.GetBoundType(), useCase.Key);
+        }
+
+        void IUseCaseBinding.Bind(IUseCase useCase, IFactoryFetcher locator)
+        {
+            Bind((INamedUseCase)useCase);
+        }
+
+        void IInstanceUseCaseBinding.Bind(IUseCase useCase, IFactoryFetcher locator)
+        {
+            BindInstance((INamedUseCase)useCase);
         }
     }
 }

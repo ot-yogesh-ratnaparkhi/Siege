@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,16 +13,20 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.Rules;
+using Siege.ServiceLocation.Stores;
+using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.UseCases
+namespace Siege.ServiceLocation.Policies
 {
-    public abstract class UntypedUseCase : IUseCase
+    public class Transient : AbstractRegistrationPolicy
     {
-        protected IActivationRule rule;
-        public abstract Type GetUseCaseBindingType();
-        public abstract Type GetBaseBindingType();
-        public abstract Type GetBoundType();
+        public Transient(IUseCase useCase) : base(useCase)
+        {
+        }
+
+        public override object Resolve(IResolutionStrategy strategy, IServiceLocatorStore accessor)
+        {
+            return useCase.Resolve(strategy, accessor);
+        }
     }
 }

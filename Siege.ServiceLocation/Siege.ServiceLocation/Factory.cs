@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Siege.ServiceLocation.Bindings.Default;
 using Siege.ServiceLocation.EventHandlers;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.UseCases;
@@ -39,7 +40,7 @@ namespace Siege.ServiceLocation
 
         public void AddCase(IUseCase useCase)
         {
-            if (useCase is IDefaultUseCase) defaultCases.Add(useCase);
+            if (useCase.GetUseCaseBindingType() == typeof(DefaultUseCaseBinding)) defaultCases.Add(useCase);
             else conditionalUseCases.Add(useCase);
         }
 
@@ -52,7 +53,7 @@ namespace Siege.ServiceLocation
         {
             for (int i = 0; i < conditionalUseCases.Count; i++)
             {
-                var useCase = (IGenericUseCase)conditionalUseCases[i];
+                var useCase = conditionalUseCases[i];
                 object result = null;
 
                 if (useCase.IsValid(serviceLocator.Store))
@@ -69,7 +70,7 @@ namespace Siege.ServiceLocation
 
             for (int i = 0; i < defaultCases.Count; i++)
             {
-                var useCase = (IGenericUseCase)defaultCases[i];
+                var useCase = defaultCases[i];
                 object result = useCase.Resolve(new DefaultResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
 
                 if (result != null)

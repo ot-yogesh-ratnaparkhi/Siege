@@ -30,7 +30,7 @@ namespace Siege.ServiceLocation.Syntax
             return rule;
         }
 
-        public static IDefaultUseCase<TBaseService> Then<TImplementingType>() where TImplementingType : TBaseService
+        public static IUseCase Then<TImplementingType>() where TImplementingType : TBaseService
         {
             var useCase = new DefaultUseCase<TBaseService>();
 
@@ -48,7 +48,7 @@ namespace Siege.ServiceLocation.Syntax
             return useCase;
         }
 
-        public static IInstanceUseCase Then(TBaseService implementation)
+        public static IUseCase Then(TBaseService implementation)
         {
             var useCase = new DefaultInstanceUseCase<TBaseService>();
 
@@ -57,7 +57,7 @@ namespace Siege.ServiceLocation.Syntax
             return useCase;
         }
 
-        public static IInstanceUseCase Then(string key, TBaseService implementation)
+        public static IUseCase Then(string key, TBaseService implementation)
         {
             var useCase = new NamedInstanceUseCase<TBaseService>(key);
 

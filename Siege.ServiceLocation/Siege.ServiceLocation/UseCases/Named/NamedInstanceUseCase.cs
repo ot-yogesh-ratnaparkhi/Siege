@@ -18,7 +18,7 @@ using Siege.ServiceLocation.Bindings.Named;
 
 namespace Siege.ServiceLocation.UseCases.Named
 {
-    public class NamedInstanceUseCase<TBaseService> : InstanceUseCase<TBaseService>, INamedInstanceUseCase
+    public class NamedInstanceUseCase<TBaseService> : InstanceUseCase<TBaseService>, INamedUseCase
     {
         private readonly string key;
 

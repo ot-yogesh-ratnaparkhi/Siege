@@ -14,13 +14,22 @@
 */
 
 using System;
+using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.UseCases
 {
     public interface IUseCase
     {
+        object GetBinding();
         Type GetBoundType();
         Type GetUseCaseBindingType();
         Type GetBaseBindingType();
+        object Resolve(IResolutionStrategy strategy, IServiceLocatorStore accessor);
+        bool IsValid(IServiceLocatorStore context);
+    }
+
+    public interface IGenericUseCase : IUseCase
+    {
+        
     }
 }

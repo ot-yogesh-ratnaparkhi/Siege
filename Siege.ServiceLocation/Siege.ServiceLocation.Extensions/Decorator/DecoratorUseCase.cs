@@ -13,11 +13,16 @@
      limitations under the License.
 */
 
+using Siege.ServiceLocation.Bindings.Action;
 using Siege.ServiceLocation.UseCases.Actions;
 
 namespace Siege.ServiceLocation.Extensions.Decorator
 {
-    public class DecoratorUseCase<TService> : ActionUseCase<TService>, IDecoratorUseCase<TService>, IDefaultActionUseCase
+    public class DecoratorUseCase<TService> : ActionUseCase<TService>, IDecoratorUseCase<TService>
     {
+        public override System.Type GetUseCaseBindingType()
+        {
+            return typeof (DefaultActionUseCaseBinding);
+        }
     }
 }

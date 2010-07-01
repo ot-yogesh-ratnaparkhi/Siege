@@ -50,9 +50,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bindings\Action\ActionUseCaseBinding.cs" />
+    <Compile Include="Bindings\Action\ConditionalActionUseCaseBinding.cs" />
+    <Compile Include="Bindings\Action\DefaultActionUseCaseBinding.cs" />
     <Compile Include="Bindings\Conditional\ConditionalUseCaseBinding.cs" />
     <Compile Include="Bindings\Default\DefaultUseCaseBinding.cs" />
-    <Compile Include="Bindings\IInstanceUseCaseBinding.cs" />
+    <Compile Include="Bindings\IUseCaseBinding.cs" />
     <Compile Include="Bindings\Named\NamedUseCaseBinding.cs" />
     <Compile Include="Bindings\OpenGenerics\OpenGenericUseCaseBinding.cs" />
     <Compile Include="EventHandlers\ITypeRequester.cs" />
@@ -64,9 +66,14 @@
     <Compile Include="IFactoryFetcher.cs" />
     <Compile Include="Planning\ConstructorCandidate.cs" />
     <Compile Include="Planning\IResolutionPlan.cs" />
+    <Compile Include="Policies\AbstractRegistrationPolicy.cs" />
+    <Compile Include="Policies\IRegistrationPolicy.cs" />
+    <Compile Include="Policies\Singleton.cs" />
+    <Compile Include="Policies\Transient.cs" />
     <Compile Include="Resolution\IResolver.cs" />
     <Compile Include="Resolution\Resolver.cs" />
-    <Compile Include="UseCases\IGenericUseCase.cs" />
+    <Compile Include="UseCases\Actions\ActionResolutionStrategy.cs" />
+    <Compile Include="Bindings\IInstanceUseCaseBinding.cs" />
     <Compile Include="UseCases\Managers\ConditionalActionUseCaseManager.cs" />
     <Compile Include="UseCases\Managers\ConditionalUseCaseManager.cs" />
     <Compile Include="UseCases\Managers\DefaultActionUseCaseManager.cs" />
@@ -100,8 +107,6 @@
     <Compile Include="TypeHandler.cs" />
     <Compile Include="UseCases\Actions\ActionUseCase.cs" />
     <Compile Include="UseCases\Actions\IActionUseCase.cs" />
-    <Compile Include="UseCases\Actions\IConditionalActionUseCase.cs" />
-    <Compile Include="UseCases\Actions\IDefaultActionUseCase.cs" />
     <Compile Include="UseCases\Conditional\ConditionalGenericUseCase.cs" />
     <Compile Include="UseCases\Conditional\ConditionalImplementationUseCase.cs" />
     <Compile Include="Rules\ContextEvaluationStrategy.cs" />
@@ -113,13 +118,9 @@
     <Compile Include="Syntax\Given.cs" />
     <Compile Include="Rules\IActivationRule.cs" />
     <Compile Include="UseCases\IActivationStrategy.cs" />
-    <Compile Include="UseCases\Conditional\IConditionalUseCase.cs" />
     <Compile Include="IContextualServiceLocator.cs" />
-    <Compile Include="UseCases\Default\IDefaultUseCase.cs" />
     <Compile Include="IGetAllInstancesServiceLocator.cs" />
     <Compile Include="IInstanceResolver.cs" />
-    <Compile Include="UseCases\IInstanceUseCase.cs" />
-    <Compile Include="UseCases\Named\INamedInstanceUseCase.cs" />
     <Compile Include="UseCases\Named\INamedUseCase.cs" />
     <Compile Include="UseCases\InstanceUseCase.cs" />
     <Compile Include="IServiceLocator.cs" />
@@ -127,12 +128,10 @@
     <Compile Include="Rules\IRuleEvaluationStrategy.cs" />
     <Compile Include="UseCases\IResolutionStrategy.cs" />
     <Compile Include="UseCases\IUseCase.cs" />
-    <Compile Include="Bindings\IUseCaseBinding.cs" />
     <Compile Include="UseCases\Named\NamedInstanceUseCase.cs" />
     <Compile Include="UseCases\Named\NamedUseCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiegeContainer.cs" />
-    <Compile Include="UseCases\UntypedUseCase.cs" />
     <Compile Include="UseCases\UseCase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

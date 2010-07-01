@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
@@ -81,7 +82,7 @@ namespace Siege.ServiceLocation.SiegeAdapter
 			var candidate = SelectConstructor(mappedType, resolutionMap, parameters);
 
 			var constructorArgs = new object[candidate.Parameters.Count];
-		    var candidateParameters = candidate.Parameters;
+            var candidateParameters = candidate.Parameters;
 		    var parameterCount = candidateParameters.Count;
 			for(int i = 0; i < parameterCount; i++)
 			{

@@ -20,5 +20,5 @@ namespace Siege.ServiceLocation.UseCases.Named
         string Key { get; }
     }
 
-    public interface INamedUseCase<TBaseService> : INamedUseCase, IGenericUseCase { }
+    public interface INamedUseCase<TBaseService> : INamedUseCase { }
 }

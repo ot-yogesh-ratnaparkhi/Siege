@@ -18,7 +18,7 @@ using Siege.ServiceLocation.Bindings.Default;
 
 namespace Siege.ServiceLocation.UseCases.Default
 {
-    public class DefaultUseCase<TBaseService> : GenericUseCase, IDefaultUseCase<TBaseService> 
+    public class DefaultUseCase<TBaseService> : GenericUseCase 
     {
         public DefaultUseCase() : base(typeof(TBaseService))
         {

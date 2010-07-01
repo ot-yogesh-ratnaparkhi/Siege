@@ -13,14 +13,14 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocation.UseCases.Conditional
-{
-    public interface IConditionalUseCase : IUseCase
-    {
-        
-    }
+using Siege.ServiceLocation.UseCases;
 
-    public interface IConditionalUseCase<TBaseService> : IGenericUseCase, IConditionalUseCase
+namespace Siege.ServiceLocation.Bindings.Action
+{
+    public class DefaultActionUseCaseBinding : IUseCaseBinding
     {
+        public void Bind(IUseCase useCase, IFactoryFetcher locator)
+        {
+        }
     }
 }

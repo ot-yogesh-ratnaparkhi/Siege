@@ -17,7 +17,7 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
 {
-    public interface IInjectionUseCase<TService> : IGenericUseCase
+    public interface IInjectionUseCase<TService> : IUseCase
     {
         
     }

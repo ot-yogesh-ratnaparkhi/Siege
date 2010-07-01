@@ -13,11 +13,16 @@
      limitations under the License.
 */
 
+using Siege.ServiceLocation.Bindings.Action;
 using Siege.ServiceLocation.UseCases.Actions;
 
 namespace Siege.ServiceLocation.Extensions.Hydration
 {
-    public class InitializationUseCase<TService> : ActionUseCase<TService>, IInitializationUseCase<TService>, IDefaultActionUseCase
+    public class InitializationUseCase<TService> : ActionUseCase<TService>, IInitializationUseCase<TService>
     {
+        public override System.Type GetUseCaseBindingType()
+        {
+            return typeof(DefaultActionUseCaseBinding);
+        }
     }
 }

@@ -13,10 +13,11 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocation.UseCases
+using Siege.ServiceLocation.UseCases.Named;
+
+namespace Siege.ServiceLocation.Policies
 {
-    public interface IInstanceUseCase : IUseCase
+    public interface IRegistrationPolicy : INamedUseCase
     {
-        object GetBinding();
     }
 }

@@ -22,16 +22,14 @@ using Siege.ServiceLocation.Bindings.Conditional;
 using Siege.ServiceLocation.Bindings.Default;
 using Siege.ServiceLocation.Bindings.Named;
 using Siege.ServiceLocation.Bindings.OpenGenerics;
-using Siege.ServiceLocation.EventHandlers;
+using Siege.ServiceLocation.Policies;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.Stores;
 using Siege.ServiceLocation.Stores.UseCases;
 using Siege.ServiceLocation.Syntax;
 using Siege.ServiceLocation.TypeBuilders;
 using Siege.ServiceLocation.UseCases;
-using Siege.ServiceLocation.UseCases.Actions;
 using Siege.ServiceLocation.ExtensionMethods;
-using Siege.ServiceLocation.UseCases.Default;
 using Siege.ServiceLocation.UseCases.Managers;
 
 namespace Siege.ServiceLocation
@@ -58,16 +56,20 @@ namespace Siege.ServiceLocation
             AddBinding(new ConditionalUseCaseBinding(serviceLocator));
             AddBinding(new NamedUseCaseBinding(serviceLocator));
             AddBinding(new OpenGenericUseCaseBinding(serviceLocator));
-            AddBinding(new ActionUseCaseBinding());
+            AddBinding(new ConditionalActionUseCaseBinding());
+            AddBinding(new DefaultActionUseCaseBinding());
 
             InitializeUseCaseStore();
-
+            
             Bind(Given<UseCaseStore>.Then(useCaseStore));
             Bind(Given<IResolver>.Then(resolver));
+            
+            RegisterPolicy(Given<Transient>.Then<Transient>());
+            RegisterPolicy(Given<Singleton>.Then<Singleton>());
 
-            Register(Given<IFactoryFetcher>.Then(this));
-            Register(Given<IServiceLocator>.Then(this));
-            Register(Given<IContextualServiceLocator>.Then(this));
+            Register<Singleton>(Given<IFactoryFetcher>.Then(this));
+            Register<Singleton>(Given<IServiceLocator>.Then(this));
+            Register<Singleton>(Given<IContextualServiceLocator>.Then(this));
         }
 
         public SiegeContainer(IServiceLocatorAdapter serviceLocator, IServiceLocatorStore store) : this(serviceLocator, store, new DefaultTypeBuilder())
@@ -159,35 +161,57 @@ namespace Siege.ServiceLocation
 
         public IServiceLocator Register(List<IUseCase> useCases)
         {
-            foreach (IUseCase useCase in useCases) Register(useCase);
+            return Register<Transient>(useCases);
+        }
+
+        public IServiceLocator Register<TRegistrationPolicy>(List<IUseCase> useCases) where TRegistrationPolicy : IRegistrationPolicy
+        {
+            foreach (IUseCase useCase in useCases) Register<TRegistrationPolicy>(useCase);
 
             return this;
         }
 
-        public IServiceLocator Register(IUseCase useCase)
+        public IServiceLocator Register<TRegistrationPolicy>(IUseCase useCase) where TRegistrationPolicy : IRegistrationPolicy
+        {
+            var caseStore = GetInstance<IUseCaseManager>(new ContextArgument(useCase));
+            var policy = GetInstance<TRegistrationPolicy>(new ContextArgument(useCase), new ConstructorParameter { Name = "useCase", Value = useCase });
+            
+            caseStore.Add(policy);
+            Bind(policy);
+
+            return this;
+        }
+
+        private void RegisterPolicy(IUseCase useCase)
         {
             var caseStore = GetInstance<IUseCaseManager>(new ContextArgument(useCase));
             caseStore.Add(useCase);
 
             Bind(useCase);
+        }
 
-            return this;
+        public IServiceLocator Register(IUseCase useCase)
+        {
+            return Register<Transient>(useCase);
         }
 
         private void InitializeUseCaseStore()
         {
             var conditionalCases = Given<IUseCaseManager>.Then<ConditionalUseCaseManager>();
-            var defaultCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase is IDefaultUseCase).Then<DefaultUseCaseManager>();
-            var defaultActionCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase is IDefaultActionUseCase).Then<DefaultActionUseCaseManager>();
-            var conditionalActionCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase is IConditionalActionUseCase).Then<ConditionalActionUseCaseManager>();
+            var defaultCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase.GetUseCaseBindingType() == typeof(DefaultUseCaseBinding)).Then<DefaultUseCaseManager>();
+            var namedCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase.GetUseCaseBindingType() == typeof(NamedUseCaseBinding)).Then<ConditionalUseCaseManager>();
+            var defaultActionCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase.GetUseCaseBindingType() == typeof(DefaultActionUseCaseBinding)).Then<DefaultActionUseCaseManager>();
+            var conditionalActionCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase.GetUseCaseBindingType() == typeof(ConditionalActionUseCaseBinding)).Then<ConditionalActionUseCaseManager>();
 
             useCaseStore.Conditional.ResolutionCases.Add(typeof(IUseCaseManager), defaultCases);
+            useCaseStore.Conditional.ResolutionCases.Add(typeof(IUseCaseManager), namedCases);
             useCaseStore.Default.ResolutionCases.Add(typeof(IUseCaseManager), conditionalCases);
             useCaseStore.Conditional.ResolutionCases.Add(typeof(IUseCaseManager), defaultActionCases);
             useCaseStore.Conditional.ResolutionCases.Add(typeof(IUseCaseManager), conditionalActionCases);
 
             Bind(conditionalCases);
             Bind(defaultCases);
+            Bind(namedCases);
             Bind(defaultActionCases);
             Bind(conditionalActionCases);
         }
@@ -198,14 +222,14 @@ namespace Siege.ServiceLocation
                 useCase.GetUseCaseBindingType().MakeGenericType(useCase.GetBaseBindingType())
                 : useCase.GetUseCaseBindingType();
 
-            if (useCase is IInstanceUseCase)
+            if (useCase.GetBinding() is Type)
             {
-                var binding = GetInstance<IInstanceUseCaseBinding>(bindingType);
-                binding.BindInstance((IInstanceUseCase)useCase, this);
+                var binding = GetInstance<IUseCaseBinding>(bindingType);
+                binding.Bind(useCase, this);
             }
             else
             {
-                var binding = GetInstance<IUseCaseBinding>(bindingType);
+                var binding = GetInstance<IInstanceUseCaseBinding>(bindingType);
                 binding.Bind(useCase, this);
             }
         }

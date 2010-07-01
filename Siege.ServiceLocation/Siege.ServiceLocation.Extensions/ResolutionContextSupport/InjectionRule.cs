@@ -41,7 +41,7 @@ namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
 
         public new IInjectionUseCase<TService> Then<TImplementingType>() where TImplementingType : TService
         {
-            InjectionUseCase<TService> useCase = new InjectionUseCase<TService>();
+            var useCase = new InjectionUseCase<TService>();
 
             useCase.SetActivationRule(this);
             useCase.BindTo<TImplementingType>();
@@ -49,9 +49,9 @@ namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
             return useCase;
         }
 
-        public new IInstanceUseCase Then(TService implementation)
+        public new IUseCase Then(TService implementation)
         {
-            InjectionInstanceUseCase<TService> useCase = new InjectionInstanceUseCase<TService>();
+            var useCase = new InjectionInstanceUseCase<TService>();
 
             useCase.SetActivationRule(this);
             useCase.BindTo(implementation);

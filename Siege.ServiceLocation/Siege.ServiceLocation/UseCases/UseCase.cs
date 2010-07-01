@@ -13,14 +13,20 @@
      limitations under the License.
 */
 
+using System;
 using Siege.ServiceLocation.Rules;
 using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.UseCases
 {
-    public abstract class UseCase : UntypedUseCase, IGenericUseCase
+    public abstract class UseCase : IUseCase
     {
         protected abstract IActivationStrategy GetActivationStrategy();
+        protected IActivationRule rule;
+        public abstract Type GetUseCaseBindingType();
+        public abstract Type GetBaseBindingType();
+        public abstract object GetBinding();
+        public abstract Type GetBoundType();
 
         public void SetActivationRule(IActivationRule rule)
         {
@@ -29,10 +35,12 @@ namespace Siege.ServiceLocation.UseCases
 
         public bool IsValid(IServiceLocatorStore context)
         {
+            if(rule == null) return false;
+
             return rule.GetRuleEvaluationStrategy().IsValid(rule, context);
         }
 
-        public object Resolve(IResolutionStrategy strategy, IServiceLocatorStore accessor)
+        public virtual object Resolve(IResolutionStrategy strategy, IServiceLocatorStore accessor)
         {
             return strategy.Resolve(GetBoundType(), rule, GetActivationStrategy());
         }

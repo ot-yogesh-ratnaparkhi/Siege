@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,11 +13,23 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocation.UseCases.Default
-{
-    public interface IDefaultUseCase : IUseCase
-    {
-    }
+using System;
+using Siege.ServiceLocation.Rules;
 
-    public interface IDefaultUseCase<TBaseService> : IDefaultUseCase, IGenericUseCase { }
+namespace Siege.ServiceLocation.UseCases.Actions
+{
+    public class ActionResolutionStrategy : IResolutionStrategy
+    {
+        private readonly object value;
+
+        public ActionResolutionStrategy(object value)
+        {
+            this.value = value;
+        }
+
+        public object Resolve(Type boundType, IActivationRule rule, IActivationStrategy activator)
+        {
+            return value;
+        }
+    }
 }

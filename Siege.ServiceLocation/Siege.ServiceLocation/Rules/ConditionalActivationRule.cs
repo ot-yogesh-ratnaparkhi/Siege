@@ -28,7 +28,7 @@ namespace Siege.ServiceLocation.Rules
             this.evaluation = x => (x is TContext) ? evaluation.Invoke((TContext)x) : false;
         }
 
-        public IConditionalUseCase<TBaseService> Then<TImplementingType>() where TImplementingType : TBaseService
+        public IUseCase Then<TImplementingType>() where TImplementingType : TBaseService
         {
             var useCase = new ConditionalGenericUseCase<TBaseService>();
 
@@ -38,7 +38,7 @@ namespace Siege.ServiceLocation.Rules
             return useCase;
         }
 
-        public IInstanceUseCase Then(TBaseService implementation)
+        public IUseCase Then(TBaseService implementation)
         {
             var useCase = new ConditionalInstanceUseCase<TBaseService>();
 

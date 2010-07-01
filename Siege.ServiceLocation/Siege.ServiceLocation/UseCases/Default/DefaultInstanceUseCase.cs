@@ -18,7 +18,7 @@ using Siege.ServiceLocation.Bindings.Default;
 
 namespace Siege.ServiceLocation.UseCases.Default
 {
-    public class DefaultInstanceUseCase<TBaseService> : InstanceUseCase<TBaseService>, IDefaultUseCase<TBaseService>
+    public class DefaultInstanceUseCase<TBaseService> : InstanceUseCase<TBaseService>
     {
         public override Type GetUseCaseBindingType()
         {

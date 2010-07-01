@@ -13,22 +13,35 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.Bindings.Default;
+using Siege.ServiceLocation.Stores;
 using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.Extensions.AutoScanner
+namespace Siege.ServiceLocation.Policies
 {
-    public class AutoScannedUseCase : GenericUseCase
+    public class Singleton : AbstractRegistrationPolicy
     {
-        public AutoScannedUseCase(Type baseType, Type targetType) : base(baseType)
+        private object lockObject = new object();
+        private object instance;
+
+        public Singleton(IUseCase useCase) : base(useCase)
         {
-            BindTo(targetType);
+
         }
 
-        public override Type GetUseCaseBindingType()
+        public override object Resolve(IResolutionStrategy strategy, IServiceLocatorStore accessor)
         {
-            return typeof (DefaultUseCaseBinding);
+            if (instance == null)
+            {
+                lock (lockObject)
+                {
+                    if(instance == null)
+                    {
+                        instance = useCase.Resolve(strategy, accessor);
+                    }
+                }
+            }
+
+            return instance;
         }
     }
 }

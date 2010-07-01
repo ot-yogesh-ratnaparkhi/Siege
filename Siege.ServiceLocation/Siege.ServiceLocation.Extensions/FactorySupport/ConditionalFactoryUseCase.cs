@@ -14,11 +14,10 @@
 */
 
 using Siege.ServiceLocation.Bindings.Conditional;
-using Siege.ServiceLocation.UseCases.Conditional;
 
 namespace Siege.ServiceLocation.Extensions.FactorySupport
 {
-    public class ConditionalFactoryUseCase<TService> : FactoryUseCase<TService>, IConditionalUseCase<TService>
+    public class ConditionalFactoryUseCase<TService> : FactoryUseCase<TService>
     {
         public override System.Type GetUseCaseBindingType()
         {

@@ -16,11 +16,10 @@
 using System;
 using Siege.ServiceLocation.Bindings.Default;
 using Siege.ServiceLocation.UseCases;
-using Siege.ServiceLocation.UseCases.Default;
 
 namespace Siege.ServiceLocation.RhinoMocksAdapter
 {
-    public class AutoMockUseCase : InstanceUseCase<object>, IDefaultUseCase
+    public class AutoMockUseCase : InstanceUseCase<object>
     {
         private readonly Type from;
 

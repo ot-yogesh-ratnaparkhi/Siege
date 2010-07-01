@@ -1,4 +1,19 @@
-﻿using System;
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+*/
+
+using System;
 using System.Collections.Generic;
 using Siege.ServiceLocation.EventHandlers;
 using Siege.ServiceLocation.Exceptions;
@@ -36,7 +51,7 @@ namespace Siege.ServiceLocation.Resolution
             {
                 for (int i = 0; i < conditionalCases.Count; i++)
                 {
-                    var useCase = (IGenericUseCase)conditionalCases[i];
+                    var useCase = conditionalCases[i];
                     object value = null;
 
                     if (useCase.IsValid(this.store))
@@ -53,7 +68,7 @@ namespace Siege.ServiceLocation.Resolution
             
             if (defaultCases.Contains(type))
             {
-                var useCase = (IGenericUseCase)defaultCases.GetUseCaseForType(type);
+                var useCase = defaultCases.GetUseCaseForType(type);
                 var value = Resolve(useCase, new DefaultResolutionStrategy(serviceLocator, this.store));
 
                 if (value != null)
@@ -70,18 +85,18 @@ namespace Siege.ServiceLocation.Resolution
             throw new RegistrationNotFoundException(type);
         }
 
-        private object Resolve(IGenericUseCase useCase, IResolutionStrategy strategy)
+        private object Resolve(IUseCase useCase, IResolutionStrategy strategy)
         {
             var value = useCase.Resolve(strategy, this.store);
 
             if (value != null)
             {
                 this.RaiseTypeResolvedEvent(useCase.GetBoundType());
-                ExecutePostConditions(useCaseStore.Default, useCase, actionUseCase => value = actionUseCase.Invoke(value));
+                ExecutePostConditions(useCaseStore.Default, useCase, actionUseCase => value = actionUseCase.Resolve(new ActionResolutionStrategy(value), this.store));
                 ExecutePostConditions(useCaseStore.Conditional, useCase, actionUseCase =>
                 {
                     if (actionUseCase.IsValid(this.store))
-                        value = actionUseCase.Invoke(value);
+                        value = actionUseCase.Resolve(new ActionResolutionStrategy(value), this.store);
                 });
             }
 
@@ -89,7 +104,7 @@ namespace Siege.ServiceLocation.Resolution
         }
 
         private static void ExecutePostConditions(UseCaseGroup useCaseGroup, IUseCase useCase,
-                                           Action<IActionUseCase> action)
+                                           Action<IUseCase> action)
         {
             IList<IUseCase> actions = useCaseGroup.PostResolutionCases.GetUseCasesForType(useCase.GetBoundType()) ??
                                       useCaseGroup.PostResolutionCases.GetUseCasesForType(useCase.GetBaseBindingType());
@@ -99,7 +114,7 @@ namespace Siege.ServiceLocation.Resolution
                 for (int i = 0; i < actions.Count; i++)
                 {
                     var actionUseCase = actions[i];
-                    action((IActionUseCase)actionUseCase);
+                    action(actionUseCase);
                 }
             }
         }

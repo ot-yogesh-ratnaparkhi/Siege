@@ -18,7 +18,7 @@ using Siege.ServiceLocation.Bindings.Conditional;
 
 namespace Siege.ServiceLocation.UseCases.Conditional
 {
-    public class ConditionalInstanceUseCase<TBaseService> : InstanceUseCase<TBaseService>, IConditionalUseCase<TBaseService>
+    public class ConditionalInstanceUseCase<TBaseService> : InstanceUseCase<TBaseService>//, IConditionalUseCase<TBaseService>
     {
         public override Type GetUseCaseBindingType()
         {

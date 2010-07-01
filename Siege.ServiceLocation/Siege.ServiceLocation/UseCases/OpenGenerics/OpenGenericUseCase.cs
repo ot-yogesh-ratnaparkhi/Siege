@@ -18,7 +18,7 @@ using Siege.ServiceLocation.Bindings.OpenGenerics;
 
 namespace Siege.ServiceLocation.UseCases.OpenGenerics
 {
-    public class OpenGenericUseCase : UntypedUseCase, IOpenGenericUseCase
+    public class OpenGenericUseCase : UseCase, IOpenGenericUseCase
     {
         private readonly Type baseBinding;
         protected Type boundType;
@@ -34,9 +34,19 @@ namespace Siege.ServiceLocation.UseCases.OpenGenerics
             boundType = implementationType;
         }
 
+        public override object GetBinding()
+        {
+            return GetBoundType();
+        }
+
         public override Type GetBoundType()
         {
             return boundType;
+        }
+
+        protected override IActivationStrategy GetActivationStrategy()
+        {
+            throw new NotImplementedException();
         }
 
         public override Type GetUseCaseBindingType()

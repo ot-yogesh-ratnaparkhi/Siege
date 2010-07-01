@@ -15,6 +15,7 @@
 
 using System;
 using Siege.ServiceLocation.Bindings.Action;
+using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.UseCases.Actions
 {
@@ -34,6 +35,11 @@ namespace Siege.ServiceLocation.UseCases.Actions
         public object Invoke(object item)
         {
             return action.Invoke((TService)item);
+        }
+
+        public override object Resolve(IResolutionStrategy strategy, IServiceLocatorStore accessor)
+        {
+            return action((TService)base.Resolve(strategy, accessor));
         }
 
         public override Type GetUseCaseBindingType()

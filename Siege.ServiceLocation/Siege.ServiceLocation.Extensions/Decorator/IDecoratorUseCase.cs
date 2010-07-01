@@ -18,7 +18,7 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Extensions.Decorator
 {
-    public interface IDecoratorUseCase<TService> : IGenericUseCase
+    public interface IDecoratorUseCase<TService> : IUseCase
     {
         void Associate(Func<TService, TService> action);
     }

@@ -14,11 +14,10 @@
 */
 
 using System;
-using Siege.ServiceLocation.UseCases.Default;
 
 namespace Siege.ServiceLocation.UseCases.OpenGenerics
 {
-    public interface IOpenGenericUseCase : IDefaultUseCase
+    public interface IOpenGenericUseCase : IUseCase
     {
         IOpenGenericUseCase Then(Type type);
     }

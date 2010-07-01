@@ -18,8 +18,7 @@ using Siege.ServiceLocation.Extensions.Decorator;
 using Siege.ServiceLocation.Extensions.FactorySupport;
 using Siege.ServiceLocation.Extensions.Hydration;
 using Siege.ServiceLocation.Extensions.ResolutionContextSupport;
-using Siege.ServiceLocation.UseCases.Actions;
-using Siege.ServiceLocation.UseCases.Default;
+using Siege.ServiceLocation.UseCases;
 using Siege.ServiceLocation.UseCases.OpenGenerics;
 
 namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
@@ -34,7 +33,7 @@ namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
 
     public class Given<TService> : Syntax.Given<TService>
     {
-        public static IDefaultUseCase<TService> ConstructWith(Func<IInstanceResolver, TService> factoryMethod)
+        public static IUseCase ConstructWith(Func<IInstanceResolver, TService> factoryMethod)
         {
             var useCase = new DefaultFactoryUseCase<TService>();
 
@@ -79,7 +78,7 @@ namespace Siege.ServiceLocation.Extensions.ExtendedSyntax
             return useCase;
         }
 
-        public static IDefaultActionUseCase DecorateWith(Func<TService, TService> func)
+        public static IUseCase DecorateWith(Func<TService, TService> func)
         {
             var useCase = new DecoratorUseCase<TService>();
 
