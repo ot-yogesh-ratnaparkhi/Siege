@@ -21,7 +21,7 @@ using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.Stores;
 using Siege.ServiceLocation.Stores.UseCases;
 using Siege.ServiceLocation.UseCases;
-using Siege.ServiceLocation.UseCases.Actions;
+using Siege.ServiceLocation.UseCases.PostResolution;
 using Siege.ServiceLocation.UseCases.Conditional;
 using Siege.ServiceLocation.UseCases.Default;
 
@@ -92,11 +92,11 @@ namespace Siege.ServiceLocation.Resolution
             if (value != null)
             {
                 this.RaiseTypeResolvedEvent(useCase.GetBoundType());
-                ExecutePostConditions(useCaseStore.Default, useCase, actionUseCase => value = actionUseCase.Resolve(new ActionResolutionStrategy(value), this.store));
+                ExecutePostConditions(useCaseStore.Default, useCase, actionUseCase => value = actionUseCase.Resolve(new PostResolutionStrategy(value), this.store));
                 ExecutePostConditions(useCaseStore.Conditional, useCase, actionUseCase =>
                 {
                     if (actionUseCase.IsValid(this.store))
-                        value = actionUseCase.Resolve(new ActionResolutionStrategy(value), this.store);
+                        value = actionUseCase.Resolve(new PostResolutionStrategy(value), this.store);
                 });
             }
 

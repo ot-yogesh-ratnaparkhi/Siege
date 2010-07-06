@@ -17,18 +17,18 @@ using Siege.ServiceLocation.Stores.UseCases;
 
 namespace Siege.ServiceLocation.UseCases.Managers
 {
-    public class DefaultActionUseCaseManager : IUseCaseManager
+    public class ConditionalPostResolutionUseCaseManager : IUseCaseManager
     {
         private UseCaseStore useCaseStore;
 
-        public DefaultActionUseCaseManager(UseCaseStore useCaseStore)
+        public ConditionalPostResolutionUseCaseManager(UseCaseStore useCaseStore)
         {
             this.useCaseStore = useCaseStore;
         }
 
         public void Add(IUseCase useCase)
         {
-            useCaseStore.Default.PostResolutionCases.Add(useCase.GetBoundType(), useCase);
+            useCaseStore.Conditional.PostResolutionCases.Add(useCase.GetBoundType(), useCase);
         }
     }
 }

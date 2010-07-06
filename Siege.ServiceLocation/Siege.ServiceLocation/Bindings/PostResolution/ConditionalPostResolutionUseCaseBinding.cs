@@ -15,9 +15,9 @@
 
 using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.Bindings.Action
+namespace Siege.ServiceLocation.Bindings.PostResolution
 {
-    public class ConditionalActionUseCaseBinding : IUseCaseBinding
+    public class ConditionalPostResolutionUseCaseBinding : IUseCaseBinding
     {
         public void Bind(IUseCase useCase, IFactoryFetcher locator)
         {

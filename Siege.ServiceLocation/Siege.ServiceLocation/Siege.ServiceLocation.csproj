@@ -49,14 +49,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bindings\Action\ActionUseCaseBinding.cs" />
-    <Compile Include="Bindings\Action\ConditionalActionUseCaseBinding.cs" />
-    <Compile Include="Bindings\Action\DefaultActionUseCaseBinding.cs" />
+    <Compile Include="Bindings\PostResolution\ConditionalPostResolutionUseCaseBinding.cs" />
+    <Compile Include="Bindings\PostResolution\DefaultPostResolutionUseCaseBinding.cs" />
     <Compile Include="Bindings\Conditional\ConditionalUseCaseBinding.cs" />
     <Compile Include="Bindings\Default\DefaultUseCaseBinding.cs" />
     <Compile Include="Bindings\IUseCaseBinding.cs" />
     <Compile Include="Bindings\Named\NamedUseCaseBinding.cs" />
     <Compile Include="Bindings\OpenGenerics\OpenGenericUseCaseBinding.cs" />
+    <Compile Include="Bindings\Registration\ConditionalRegistrationUseCaseBinding.cs" />
+    <Compile Include="Bindings\Registration\DefaultRegistrationUseCaseBinding.cs" />
     <Compile Include="EventHandlers\ITypeRequester.cs" />
     <Compile Include="EventHandlers\TypeRequestedEventHandler.cs" />
     <Compile Include="EventHandlers\TypeResolvedEventHandler.cs" />
@@ -72,11 +73,13 @@
     <Compile Include="Policies\Transient.cs" />
     <Compile Include="Resolution\IResolver.cs" />
     <Compile Include="Resolution\Resolver.cs" />
-    <Compile Include="UseCases\Actions\ActionResolutionStrategy.cs" />
+    <Compile Include="UseCases\Managers\ConditionalRegistrationUseCaseManager.cs" />
+    <Compile Include="UseCases\Managers\DefaultRegistrationUseCaseManager.cs" />
+    <Compile Include="UseCases\PostResolution\PostResolutionStrategy.cs" />
     <Compile Include="Bindings\IInstanceUseCaseBinding.cs" />
-    <Compile Include="UseCases\Managers\ConditionalActionUseCaseManager.cs" />
+    <Compile Include="UseCases\Managers\ConditionalPostResolutionUseCaseManager.cs" />
     <Compile Include="UseCases\Managers\ConditionalUseCaseManager.cs" />
-    <Compile Include="UseCases\Managers\DefaultActionUseCaseManager.cs" />
+    <Compile Include="UseCases\Managers\DefaultPostResolutionUseCaseManager.cs" />
     <Compile Include="UseCases\Managers\DefaultUseCaseManager.cs" />
     <Compile Include="UseCases\Managers\IUseCaseManager.cs" />
     <Compile Include="UseCases\OpenGenerics\IOpenGenericUseCase.cs" />
@@ -105,8 +108,7 @@
     <Compile Include="Stores\IExecutionStore.cs" />
     <Compile Include="Stores\ThreadedExecutionStore.cs" />
     <Compile Include="TypeHandler.cs" />
-    <Compile Include="UseCases\Actions\ActionUseCase.cs" />
-    <Compile Include="UseCases\Actions\IActionUseCase.cs" />
+    <Compile Include="UseCases\PostResolution\PostResolutionUseCase.cs" />
     <Compile Include="UseCases\Conditional\ConditionalGenericUseCase.cs" />
     <Compile Include="UseCases\Conditional\ConditionalImplementationUseCase.cs" />
     <Compile Include="Rules\ContextEvaluationStrategy.cs" />

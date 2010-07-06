@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,14 +13,22 @@
      limitations under the License.
 */
 
-using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.Stores.UseCases;
 
-namespace Siege.ServiceLocation.Bindings.Action
+namespace Siege.ServiceLocation.UseCases.Managers
 {
-    public abstract class ActionUseCaseBinding : IUseCaseBinding 
+    public class DefaultPostResolutionUseCaseManager : IUseCaseManager
     {
-        public void Bind(IUseCase useCase, IFactoryFetcher locator)
+        private UseCaseStore useCaseStore;
+
+        public DefaultPostResolutionUseCaseManager(UseCaseStore useCaseStore)
         {
+            this.useCaseStore = useCaseStore;
+        }
+
+        public void Add(IUseCase useCase)
+        {
+            useCaseStore.Default.PostResolutionCases.Add(useCase.GetBoundType(), useCase);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,23 +13,14 @@
      limitations under the License.
 */
 
-using System;
-using Siege.ServiceLocation.Rules;
+using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.UseCases.Actions
+namespace Siege.ServiceLocation.Bindings.PostResolution
 {
-    public class ActionResolutionStrategy : IResolutionStrategy
+    public class DefaultPostResolutionUseCaseBinding : IUseCaseBinding
     {
-        private readonly object value;
-
-        public ActionResolutionStrategy(object value)
+        public void Bind(IUseCase useCase, IFactoryFetcher locator)
         {
-            this.value = value;
-        }
-
-        public object Resolve(Type boundType, IActivationRule rule, IActivationStrategy activator)
-        {
-            return value;
         }
     }
 }

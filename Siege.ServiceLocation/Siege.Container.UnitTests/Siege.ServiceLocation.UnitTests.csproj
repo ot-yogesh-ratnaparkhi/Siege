@@ -131,6 +131,7 @@
     <Compile Include="RegistrationExtensions\Classes\IngredientDecorator.cs" />
     <Compile Include="RegistrationExtensions\Classes\Ingredients.cs" />
     <Compile Include="RegistrationExtensions\Classes\WhippedCreamDecorator.cs" />
+    <Compile Include="RegistrationTests.cs" />
     <Compile Include="SiegeContainerTests.cs" />
     <Compile Include="Adapters\StructureMapAdapterTests.cs" />
     <Compile Include="TestClasses\AlternateConstructorArgument.cs" />

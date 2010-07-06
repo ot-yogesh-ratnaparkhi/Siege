@@ -18,10 +18,13 @@ namespace Siege.ServiceLocation.Stores.UseCases
     public class UseCaseGroup
     {
         public ConditionalUseCaseList PostResolutionCases { get; set; }
+        public ConditionalUseCaseList RegistrationCases { get; set; }
+
 
         public UseCaseGroup()
         {
             this.PostResolutionCases = new ConditionalUseCaseList();
+            this.RegistrationCases = new ConditionalUseCaseList();
         }
     }
 }

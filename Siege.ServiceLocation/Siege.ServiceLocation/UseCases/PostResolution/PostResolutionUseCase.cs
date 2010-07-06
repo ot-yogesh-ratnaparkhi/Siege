@@ -13,22 +13,27 @@
      limitations under the License.
 */
 
-using Siege.ServiceLocation.Stores.UseCases;
+using System;
+using Siege.ServiceLocation.Stores;
 
-namespace Siege.ServiceLocation.UseCases.Managers
+namespace Siege.ServiceLocation.UseCases.PostResolution
 {
-    public class ConditionalActionUseCaseManager : IUseCaseManager
+    public abstract class PostResolutionUseCase<TService> : GenericUseCase
     {
-        private UseCaseStore useCaseStore;
+        private Func<TService, TService> action;
 
-        public ConditionalActionUseCaseManager(UseCaseStore useCaseStore)
+        protected PostResolutionUseCase() : base(typeof(TService))
         {
-            this.useCaseStore = useCaseStore;
         }
 
-        public void Add(IUseCase useCase)
+        public void Associate(Func<TService, TService> action)
         {
-            useCaseStore.Conditional.PostResolutionCases.Add(useCase.GetBoundType(), useCase);
+            this.action = action;
+        }
+
+        public override object Resolve(IResolutionStrategy strategy, IServiceLocatorStore accessor)
+        {
+            return action((TService)base.Resolve(strategy, accessor));
         }
     }
 }

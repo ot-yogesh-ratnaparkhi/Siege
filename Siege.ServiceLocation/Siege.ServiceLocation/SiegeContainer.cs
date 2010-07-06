@@ -17,11 +17,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Siege.ServiceLocation.Bindings;
-using Siege.ServiceLocation.Bindings.Action;
+using Siege.ServiceLocation.Bindings.PostResolution;
 using Siege.ServiceLocation.Bindings.Conditional;
 using Siege.ServiceLocation.Bindings.Default;
 using Siege.ServiceLocation.Bindings.Named;
 using Siege.ServiceLocation.Bindings.OpenGenerics;
+using Siege.ServiceLocation.Bindings.Registration;
 using Siege.ServiceLocation.Policies;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.Stores;
@@ -56,8 +57,8 @@ namespace Siege.ServiceLocation
             AddBinding(new ConditionalUseCaseBinding(serviceLocator));
             AddBinding(new NamedUseCaseBinding(serviceLocator));
             AddBinding(new OpenGenericUseCaseBinding(serviceLocator));
-            AddBinding(new ConditionalActionUseCaseBinding());
-            AddBinding(new DefaultActionUseCaseBinding());
+            AddBinding(new ConditionalPostResolutionUseCaseBinding());
+            AddBinding(new DefaultPostResolutionUseCaseBinding());
 
             InitializeUseCaseStore();
             
@@ -200,20 +201,26 @@ namespace Siege.ServiceLocation
             var conditionalCases = Given<IUseCaseManager>.Then<ConditionalUseCaseManager>();
             var defaultCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase.GetUseCaseBindingType() == typeof(DefaultUseCaseBinding)).Then<DefaultUseCaseManager>();
             var namedCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase.GetUseCaseBindingType() == typeof(NamedUseCaseBinding)).Then<ConditionalUseCaseManager>();
-            var defaultActionCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase.GetUseCaseBindingType() == typeof(DefaultActionUseCaseBinding)).Then<DefaultActionUseCaseManager>();
-            var conditionalActionCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase.GetUseCaseBindingType() == typeof(ConditionalActionUseCaseBinding)).Then<ConditionalActionUseCaseManager>();
+            var defaultActionCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase.GetUseCaseBindingType() == typeof(DefaultPostResolutionUseCaseBinding)).Then<DefaultPostResolutionUseCaseManager>();
+            var conditionalActionCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase.GetUseCaseBindingType() == typeof(ConditionalPostResolutionUseCaseBinding)).Then<ConditionalPostResolutionUseCaseManager>();
+            var conditionalRegistrationCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase.GetUseCaseBindingType() == typeof(ConditionalRegistrationUseCaseBinding)).Then<ConditionalRegistrationUseCaseManager>();
+            var defaultRegistrationCases = Given<IUseCaseManager>.When<IUseCase>(useCase => useCase.GetUseCaseBindingType() == typeof(DefaultRegistrationUseCaseBinding)).Then<DefaultRegistrationUseCaseManager>();
 
             useCaseStore.Conditional.ResolutionCases.Add(typeof(IUseCaseManager), defaultCases);
             useCaseStore.Conditional.ResolutionCases.Add(typeof(IUseCaseManager), namedCases);
             useCaseStore.Default.ResolutionCases.Add(typeof(IUseCaseManager), conditionalCases);
             useCaseStore.Conditional.ResolutionCases.Add(typeof(IUseCaseManager), defaultActionCases);
             useCaseStore.Conditional.ResolutionCases.Add(typeof(IUseCaseManager), conditionalActionCases);
+            useCaseStore.Conditional.ResolutionCases.Add(typeof(IUseCaseManager), conditionalRegistrationCases);
+            useCaseStore.Conditional.ResolutionCases.Add(typeof(IUseCaseManager), defaultRegistrationCases);
 
             Bind(conditionalCases);
             Bind(defaultCases);
             Bind(namedCases);
             Bind(defaultActionCases);
             Bind(conditionalActionCases);
+            Bind(conditionalRegistrationCases);
+            Bind(defaultRegistrationCases);
         }
 
         private void Bind(IUseCase useCase)
