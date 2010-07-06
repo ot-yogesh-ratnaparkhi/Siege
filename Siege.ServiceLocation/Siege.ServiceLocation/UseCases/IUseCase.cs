@@ -27,9 +27,4 @@ namespace Siege.ServiceLocation.UseCases
         object Resolve(IResolutionStrategy strategy, IServiceLocatorStore accessor);
         bool IsValid(IServiceLocatorStore context);
     }
-
-    public interface IGenericUseCase : IUseCase
-    {
-        
-    }
 }
