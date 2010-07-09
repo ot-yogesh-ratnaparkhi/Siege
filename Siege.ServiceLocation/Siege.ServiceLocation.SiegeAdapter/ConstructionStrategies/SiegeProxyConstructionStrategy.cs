@@ -29,7 +29,7 @@ namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
 
 	public class SiegeProxyConstructionStrategy : IConstructionStrategy
 	{
-		private Hashtable activators = new Hashtable();
+		private readonly Hashtable activators = new Hashtable();
 
 		public bool CanConstruct(ConstructorCandidate candidate)
 		{
