@@ -19,6 +19,6 @@ namespace Siege.ServiceLocation.Bindings
 {
     public interface IUseCaseBinding
     {
-        void Bind(IUseCase useCase, IFactoryFetcher locator);
+        void Bind(IServiceLocatorAdapter adapter, IUseCase useCase, IFactoryFetcher locator);
     }
 }

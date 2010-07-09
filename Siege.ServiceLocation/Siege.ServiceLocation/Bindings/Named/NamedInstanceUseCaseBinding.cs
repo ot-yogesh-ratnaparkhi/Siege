@@ -18,17 +18,17 @@ using Siege.ServiceLocation.UseCases.Named;
 
 namespace Siege.ServiceLocation.Bindings.Named
 {
-    public class NamedUseCaseBinding : IUseCaseBinding
+    public class NamedInstanceUseCaseBinding : NamedUseCaseBinding
     {
-        private static void Bind(IServiceLocatorAdapter adapter, INamedUseCase useCase)
+        public override void Bind(IServiceLocatorAdapter adapter, IUseCase useCase, IFactoryFetcher locator)
         {
-            adapter.RegisterWithName(useCase.GetBoundType(), useCase.GetBoundType(), useCase.Key);
-            adapter.RegisterWithName(useCase.GetBaseBindingType(), useCase.GetBoundType(), useCase.Key);
-        }
+            BindInstance(adapter, (INamedUseCase)useCase);
+        } 
 
-        public virtual void Bind(IServiceLocatorAdapter adapter, IUseCase useCase, IFactoryFetcher locator)
+        private static void BindInstance(IServiceLocatorAdapter adapter, INamedUseCase useCase)
         {
-            Bind(adapter, (INamedUseCase)useCase);
+            adapter.RegisterInstanceWithName(useCase.GetBoundType(), useCase.GetBinding(), useCase.Key);
+            adapter.RegisterInstanceWithName(useCase.GetBaseBindingType(), useCase.GetBinding(), useCase.Key);
         }
     }
 }

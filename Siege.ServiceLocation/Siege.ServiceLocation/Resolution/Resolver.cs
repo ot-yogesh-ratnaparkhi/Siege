@@ -29,9 +29,10 @@ namespace Siege.ServiceLocation.Resolution
 {
     public class Resolver : IResolver, ITypeResolver
     {
-        private readonly IInstanceResolver serviceLocator;
-        private readonly IServiceLocatorStore store;
-        private readonly Foundation foundation;
+        protected readonly IInstanceResolver serviceLocator;
+        protected readonly IServiceLocatorStore store;
+        protected readonly Foundation foundation;
+
         public event TypeResolvedEventHandler TypeResolved;
 
         public Resolver(IInstanceResolver serviceLocator, IServiceLocatorStore store, Foundation foundation)
@@ -42,11 +43,11 @@ namespace Siege.ServiceLocation.Resolution
             this.store.ExecutionStore.WireEvent(this);
         }
 
-        public object Resolve(Type type)
+        public virtual object Resolve(Type type)
         {
             var conditionalManager = foundation.GetUseCaseManager<ConditionalUseCaseManager>();
             var defaultManager = foundation.GetUseCaseManager<DefaultUseCaseManager>();
-          
+
             if (conditionalManager.Contains(type))
             {
                 IList<IUseCase> conditionalCases = conditionalManager.GetUseCasesForType(type);
@@ -79,12 +80,21 @@ namespace Siege.ServiceLocation.Resolution
                 }
             }
 
+            var instance = ResolveFromLocator(type);
+
+            if(instance != null) return instance;
+
+            throw new RegistrationNotFoundException(type);
+        }
+
+        protected virtual object ResolveFromLocator(Type type)
+        {
             if (serviceLocator.HasTypeRegistered(type) || type.IsGenericType)
             {
                 return serviceLocator.GetInstance(type, this.store.ResolutionStore.Items.OfType<ConstructorParameter, IResolutionArgument>());
             }
 
-            throw new RegistrationNotFoundException(type);
+            return null;
         }
 
         private object Resolve(IUseCase useCase, IResolutionStrategy strategy)
@@ -94,12 +104,12 @@ namespace Siege.ServiceLocation.Resolution
             if (value != null)
             {
                 this.RaiseTypeResolvedEvent(useCase.GetBoundType());
-                ExecutePostConditions<DefaultPostResolutionUseCaseManager>(useCase, actionUseCase => value = actionUseCase.Resolve(new PostResolutionStrategy(value), this.store));
                 ExecutePostConditions<ConditionalPostResolutionUseCaseManager>(useCase, actionUseCase =>
                 {
                     if (actionUseCase.IsValid(this.store))
                         value = actionUseCase.Resolve(new PostResolutionStrategy(value), this.store);
-                });
+                }); 
+                ExecutePostConditions<DefaultPostResolutionUseCaseManager>(useCase, actionUseCase => value = actionUseCase.Resolve(new PostResolutionStrategy(value), this.store));
             }
 
             return value;
@@ -108,8 +118,16 @@ namespace Siege.ServiceLocation.Resolution
         private void ExecutePostConditions<TUseCaseManager>(IUseCase useCase, Action<IUseCase> action) where TUseCaseManager : IUseCaseManager
         {
             var manager = foundation.GetUseCaseManager<TUseCaseManager>();
-            IList<IUseCase> actions = manager.GetUseCasesForType(useCase.GetBoundType()) ??
-                                      manager.GetUseCasesForType(useCase.GetBaseBindingType());
+            IList<IUseCase> actions = null;
+            
+            if(manager.Contains(useCase.GetBoundType()))
+            {
+                actions = manager.GetUseCasesForType(useCase.GetBoundType());
+            }
+            else if (manager.Contains(useCase.GetBaseBindingType()))
+            {
+                actions = manager.GetUseCasesForType(useCase.GetBaseBindingType());
+            }
 
             if (actions != null)
             {

@@ -49,6 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bindings\Conditional\ConditionalInstanceUseCaseBinding.cs" />
+    <Compile Include="Bindings\Default\DefaultInstanceUseCaseBinding.cs" />
+    <Compile Include="Bindings\Named\NamedInstanceUseCaseBinding.cs" />
     <Compile Include="Bindings\PostResolution\ConditionalPostResolutionUseCaseBinding.cs" />
     <Compile Include="Bindings\PostResolution\DefaultPostResolutionUseCaseBinding.cs" />
     <Compile Include="Bindings\Conditional\ConditionalUseCaseBinding.cs" />
@@ -102,7 +105,7 @@
     <Compile Include="Stores\ThreadedExecutionStore.cs" />
     <Compile Include="UseCases\PostResolution\PostResolutionUseCase.cs" />
     <Compile Include="UseCases\Conditional\ConditionalGenericUseCase.cs" />
-    <Compile Include="UseCases\Conditional\ConditionalImplementationUseCase.cs" />
+    <Compile Include="UseCases\Conditional\ConditionalInstanceUseCase.cs" />
     <Compile Include="Rules\ContextEvaluationStrategy.cs" />
     <Compile Include="UseCases\Conditional\ConditionalResolutionStrategy.cs" />
     <Compile Include="UseCases\Default\DefaultInstanceUseCase.cs" />

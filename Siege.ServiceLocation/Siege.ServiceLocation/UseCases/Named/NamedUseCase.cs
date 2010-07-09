@@ -13,7 +13,7 @@
      limitations under the License.
 */
 
-using System;
+using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Bindings.Named;
 
 namespace Siege.ServiceLocation.UseCases.Named
@@ -22,7 +22,7 @@ namespace Siege.ServiceLocation.UseCases.Named
     {
         private readonly string key;
 
-        public NamedUseCase(string key) : base(typeof(TBaseService))
+        public NamedUseCase(string key) : base(typeof (TBaseService))
         {
             this.key = key;
         }
@@ -32,9 +32,9 @@ namespace Siege.ServiceLocation.UseCases.Named
             get { return key; }
         }
 
-        public override Type GetUseCaseBindingType()
+        public override IUseCaseBinding GetUseCaseBinding()
         {
-            return typeof(NamedUseCaseBinding);
+            return new NamedUseCaseBinding();
         }
     }
 }

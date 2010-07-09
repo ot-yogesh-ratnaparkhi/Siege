@@ -13,16 +13,16 @@
      limitations under the License.
 */
 
-using System;
+using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Bindings.Default;
 
 namespace Siege.ServiceLocation.Extensions.FactorySupport
 {
     public class DefaultFactoryUseCase<TService> : FactoryUseCase<TService>
     {
-        public override Type GetUseCaseBindingType()
+        public override IUseCaseBinding GetUseCaseBinding()
         {
-            return typeof(DefaultUseCaseBinding);
+            return new DefaultUseCaseBinding();
         }
     }
 }

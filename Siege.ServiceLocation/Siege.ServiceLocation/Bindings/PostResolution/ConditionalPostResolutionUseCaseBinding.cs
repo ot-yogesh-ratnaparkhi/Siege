@@ -19,7 +19,7 @@ namespace Siege.ServiceLocation.Bindings.PostResolution
 {
     public class ConditionalPostResolutionUseCaseBinding : IUseCaseBinding
     {
-        public void Bind(IUseCase useCase, IFactoryFetcher locator)
+        public void Bind(IServiceLocatorAdapter adapter, IUseCase useCase, IFactoryFetcher locator)
         {
         }
     }

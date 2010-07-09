@@ -17,31 +17,15 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Bindings.Conditional
 {
-    public class ConditionalUseCaseBinding : IUseCaseBinding, IInstanceUseCaseBinding
+    public class ConditionalUseCaseBinding : IUseCaseBinding
     {
-        private readonly IServiceLocatorAdapter adapter;
-
-        public ConditionalUseCaseBinding(IServiceLocatorAdapter adapter)
-        {
-            this.adapter = adapter;
-        }
-
-        void IUseCaseBinding.Bind(IUseCase useCase, IFactoryFetcher locator)
+        public virtual void Bind(IServiceLocatorAdapter adapter, IUseCase useCase, IFactoryFetcher locator)
         {
             var factory = (Factory) locator.GetFactory(useCase.GetBaseBindingType());
             factory.AddCase(useCase);
 
             adapter.RegisterFactoryMethod(useCase.GetBaseBindingType(), () => factory.Build(useCase.GetBoundType()));
             if (!useCase.GetBoundType().IsInterface) adapter.Register(useCase.GetBoundType(), useCase.GetBoundType());
-        }
-
-        void IInstanceUseCaseBinding.Bind(IUseCase useCase, IFactoryFetcher locator)
-        {
-            var factory = (Factory) locator.GetFactory(useCase.GetBaseBindingType());
-            factory.AddCase(useCase);
-
-            adapter.RegisterFactoryMethod(useCase.GetBaseBindingType(), () => factory.Build(useCase.GetBoundType()));
-            adapter.RegisterInstance(useCase.GetBoundType(), useCase.GetBinding());
         }
     }
 }

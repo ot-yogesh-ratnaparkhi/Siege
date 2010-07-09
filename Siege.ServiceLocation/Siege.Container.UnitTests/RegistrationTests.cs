@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Siege.ServiceLocation.AOP;
+using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Bindings.Registration;
 using Siege.ServiceLocation.Extensions.Conventions;
 using Siege.ServiceLocation.Extensions.ExtendedSyntax;
@@ -30,7 +31,7 @@ namespace Siege.ServiceLocation.UnitTests
     public class ProxyUseCase : IUseCase, IRegistrationUseCase
     {
         private readonly IUseCase useCase;
-        private Type boundType;
+        private readonly Type boundType;
 
         public ProxyUseCase(SiegeProxy proxy, IUseCase useCase)
         {
@@ -48,9 +49,9 @@ namespace Siege.ServiceLocation.UnitTests
             return boundType;
         }
 
-        public Type GetUseCaseBindingType()
+        public IUseCaseBinding GetUseCaseBinding()
         {
-            return useCase.GetUseCaseBindingType();
+            return useCase.GetUseCaseBinding();
         }
 
         public Type GetBaseBindingType()

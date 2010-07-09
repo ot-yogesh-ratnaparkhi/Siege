@@ -13,6 +13,7 @@
      limitations under the License.
 */
 
+using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Bindings.PostResolution;
 using Siege.ServiceLocation.UseCases.PostResolution;
 
@@ -20,9 +21,9 @@ namespace Siege.ServiceLocation.Extensions.Hydration
 {
     public class InitializationUseCase<TService> : PostResolutionUseCase<TService>, IInitializationUseCase<TService>
     {
-        public override System.Type GetUseCaseBindingType()
+        public override IUseCaseBinding GetUseCaseBinding()
         {
-            return typeof(DefaultPostResolutionUseCaseBinding);
+            return new DefaultPostResolutionUseCaseBinding();
         }
     }
 }

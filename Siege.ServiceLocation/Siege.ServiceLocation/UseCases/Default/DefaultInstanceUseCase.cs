@@ -13,16 +13,16 @@
      limitations under the License.
 */
 
-using System;
+using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Bindings.Default;
 
 namespace Siege.ServiceLocation.UseCases.Default
 {
     public class DefaultInstanceUseCase<TBaseService> : InstanceUseCase<TBaseService>
     {
-        public override Type GetUseCaseBindingType()
+        public override IUseCaseBinding GetUseCaseBinding()
         {
-            return typeof (DefaultUseCaseBinding);
+            return new DefaultUseCaseBinding();
         }
     }
 }

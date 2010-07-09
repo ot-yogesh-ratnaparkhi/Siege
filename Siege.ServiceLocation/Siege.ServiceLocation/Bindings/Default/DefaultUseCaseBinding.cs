@@ -17,16 +17,9 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Bindings.Default
 {
-    public class DefaultUseCaseBinding : IUseCaseBinding, IInstanceUseCaseBinding
+    public class DefaultUseCaseBinding : IUseCaseBinding
     {
-        private readonly IServiceLocatorAdapter adapter;
-
-        public DefaultUseCaseBinding(IServiceLocatorAdapter adapter)
-        {
-            this.adapter = adapter;
-        }
-
-        void IUseCaseBinding.Bind(IUseCase useCase, IFactoryFetcher locator)
+        public virtual void Bind(IServiceLocatorAdapter adapter, IUseCase useCase, IFactoryFetcher locator)
         {
             var factory = (Factory) locator.GetFactory(useCase.GetBaseBindingType());
             factory.AddCase(useCase);
@@ -37,19 +30,6 @@ namespace Siege.ServiceLocation.Bindings.Default
             }
 
             adapter.Register(useCase.GetBoundType(), useCase.GetBoundType());
-        }
-
-        void IInstanceUseCaseBinding.Bind(IUseCase useCase, IFactoryFetcher locator)
-        {
-            var factory = (Factory)locator.GetFactory(useCase.GetBaseBindingType());
-            factory.AddCase(useCase);
-
-            if (useCase.GetBaseBindingType() != useCase.GetBoundType())
-            {
-                adapter.RegisterFactoryMethod(useCase.GetBaseBindingType(), () => factory.Build(useCase.GetBoundType()));
-            }
-
-            adapter.RegisterInstance(useCase.GetBoundType(), useCase.GetBinding());
         }
     }
 }

@@ -13,16 +13,16 @@
      limitations under the License.
 */
 
-using System;
+using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Bindings.Conditional;
 
 namespace Siege.ServiceLocation.UseCases.Conditional
 {
     public class ConditionalInstanceUseCase<TBaseService> : InstanceUseCase<TBaseService>//, IConditionalUseCase<TBaseService>
     {
-        public override Type GetUseCaseBindingType()
+        public override IUseCaseBinding GetUseCaseBinding()
         {
-            return typeof (ConditionalUseCaseBinding);
+            return new ConditionalInstanceUseCaseBinding();
         }
     }
 }

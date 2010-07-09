@@ -14,21 +14,19 @@
 */
 
 using Siege.ServiceLocation.UseCases;
-using Siege.ServiceLocation.UseCases.Named;
 
-namespace Siege.ServiceLocation.Bindings.Named
+namespace Siege.ServiceLocation.Bindings.Conditional
 {
-    public class NamedUseCaseBinding : IUseCaseBinding
+    public class ConditionalInstanceUseCaseBinding : ConditionalUseCaseBinding
     {
-        private static void Bind(IServiceLocatorAdapter adapter, INamedUseCase useCase)
+        public override void Bind(IServiceLocatorAdapter adapter, IUseCase useCase, IFactoryFetcher locator)
         {
-            adapter.RegisterWithName(useCase.GetBoundType(), useCase.GetBoundType(), useCase.Key);
-            adapter.RegisterWithName(useCase.GetBaseBindingType(), useCase.GetBoundType(), useCase.Key);
-        }
+            var factory = (Factory)locator.GetFactory(useCase.GetBaseBindingType());
+            factory.AddCase(useCase);
 
-        public virtual void Bind(IServiceLocatorAdapter adapter, IUseCase useCase, IFactoryFetcher locator)
-        {
-            Bind(adapter, (INamedUseCase)useCase);
+            adapter.RegisterFactoryMethod(useCase.GetBaseBindingType(), () => factory.Build(useCase.GetBoundType()));
+            adapter.RegisterInstance(useCase.GetBoundType(), useCase.GetBinding());
+       
         }
     }
 }

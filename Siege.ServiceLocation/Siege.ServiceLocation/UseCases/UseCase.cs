@@ -14,6 +14,7 @@
 */
 
 using System;
+using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Rules;
 using Siege.ServiceLocation.Stores;
 
@@ -23,7 +24,7 @@ namespace Siege.ServiceLocation.UseCases
     {
         protected abstract IActivationStrategy GetActivationStrategy();
         protected IActivationRule rule;
-        public abstract Type GetUseCaseBindingType();
+        public abstract IUseCaseBinding GetUseCaseBinding();
         public abstract Type GetBaseBindingType();
         public abstract object GetBinding();
         public abstract Type GetBoundType();

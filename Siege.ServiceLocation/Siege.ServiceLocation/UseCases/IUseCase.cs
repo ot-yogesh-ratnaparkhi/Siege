@@ -14,6 +14,7 @@
 */
 
 using System;
+using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Stores;
 
 namespace Siege.ServiceLocation.UseCases
@@ -22,7 +23,7 @@ namespace Siege.ServiceLocation.UseCases
     {
         object GetBinding();
         Type GetBoundType();
-        Type GetUseCaseBindingType();
+        IUseCaseBinding GetUseCaseBinding();
         Type GetBaseBindingType();
         object Resolve(IResolutionStrategy strategy, IServiceLocatorStore accessor);
         bool IsValid(IServiceLocatorStore context);

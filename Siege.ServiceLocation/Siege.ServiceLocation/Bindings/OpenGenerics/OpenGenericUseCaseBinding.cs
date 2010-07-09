@@ -19,19 +19,12 @@ namespace Siege.ServiceLocation.Bindings.OpenGenerics
 {
     public class OpenGenericUseCaseBinding : IUseCaseBinding
     {
-        private readonly IServiceLocatorAdapter adapter;
-
-        public OpenGenericUseCaseBinding(IServiceLocatorAdapter adapter)
-        {
-            this.adapter = adapter;
-        }
-
-        public void Bind(IUseCase useCase, IFactoryFetcher locator)
+        public void Bind(IServiceLocatorAdapter adapter, IUseCase useCase, IFactoryFetcher locator)
         {
             var factory = (Factory)locator.GetFactory(typeof(object));
             factory.AddCase(useCase);
 
-            this.adapter.Register(useCase.GetBaseBindingType(), useCase.GetBoundType());
+            adapter.Register(useCase.GetBaseBindingType(), useCase.GetBoundType());
         }
     }
 }

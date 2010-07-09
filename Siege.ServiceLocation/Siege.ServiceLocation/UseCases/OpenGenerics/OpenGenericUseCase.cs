@@ -14,6 +14,7 @@
 */
 
 using System;
+using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Bindings.OpenGenerics;
 
 namespace Siege.ServiceLocation.UseCases.OpenGenerics
@@ -49,9 +50,9 @@ namespace Siege.ServiceLocation.UseCases.OpenGenerics
             throw new NotImplementedException();
         }
 
-        public override Type GetUseCaseBindingType()
+        public override IUseCaseBinding GetUseCaseBinding()
         {
-            return typeof (OpenGenericUseCaseBinding);
+            return new OpenGenericUseCaseBinding();
         }
 
         public override Type GetBaseBindingType()

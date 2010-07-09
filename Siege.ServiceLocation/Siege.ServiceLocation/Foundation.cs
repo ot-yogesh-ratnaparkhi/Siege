@@ -28,42 +28,27 @@ namespace Siege.ServiceLocation
 {
     public class Foundation
     {
-        private readonly Hashtable bindings = new Hashtable();
         private readonly Hashtable useCaseManagers = new Hashtable();
         private readonly Hashtable useCaseManagersByManagerType = new Hashtable();
         
-        public Foundation(IServiceLocatorAdapter serviceLocator)
+        public Foundation()
         {
-            AddBinding(new DefaultUseCaseBinding(serviceLocator));
-            AddBinding(new ConditionalUseCaseBinding(serviceLocator));
-            AddBinding(new NamedUseCaseBinding(serviceLocator));
-            AddBinding(new OpenGenericUseCaseBinding(serviceLocator));
-            AddBinding(new ConditionalPostResolutionUseCaseBinding());
-            AddBinding(new DefaultPostResolutionUseCaseBinding());
+            var conditionalManager = new ConditionalUseCaseManager();
+            var defaultManager = new DefaultUseCaseManager();
+            var namedManager = new ConditionalUseCaseManager();
 
-            AddUseCaseManager(typeof(ConditionalUseCaseBinding), new ConditionalUseCaseManager());
+            AddUseCaseManager(typeof(ConditionalUseCaseBinding), conditionalManager);
+            AddUseCaseManager(typeof(ConditionalInstanceUseCaseBinding), conditionalManager);
             AddUseCaseManager(typeof(OpenGenericUseCaseBinding), new ConditionalUseCaseManager());
-            AddUseCaseManager(typeof(DefaultUseCaseBinding), new DefaultUseCaseManager());
-            AddUseCaseManager(typeof(NamedUseCaseBinding), new ConditionalUseCaseManager());
+            AddUseCaseManager(typeof(DefaultUseCaseBinding), defaultManager);
+            AddUseCaseManager(typeof(DefaultInstanceUseCaseBinding), defaultManager);
+            AddUseCaseManager(typeof(NamedUseCaseBinding), namedManager);
+            AddUseCaseManager(typeof(NamedInstanceUseCaseBinding), namedManager);
             AddUseCaseManager(typeof(DefaultPostResolutionUseCaseBinding), new DefaultPostResolutionUseCaseManager());
             AddUseCaseManager(typeof(ConditionalPostResolutionUseCaseBinding), new ConditionalPostResolutionUseCaseManager());
             AddUseCaseManager(typeof(ConditionalRegistrationUseCaseBinding), new ConditionalRegistrationUseCaseManager());
             AddUseCaseManager(typeof(DefaultRegistrationUseCaseBinding), new DefaultRegistrationUseCaseManager());
             
-        }
-
-        private void AddBinding<TBinding>(TBinding instance) where TBinding : IUseCaseBinding
-        {
-            if (!bindings.ContainsKey(typeof(TBinding)))
-            {
-                lock (bindings.SyncRoot)
-                {
-                    if (!bindings.ContainsKey(typeof(TBinding)))
-                    {
-                        bindings.Add(typeof(TBinding), instance);
-                    }
-                }
-            }
         }
 
         private void AddUseCaseManager<TUseCaseManager>(Type bindingType, TUseCaseManager instance) where TUseCaseManager : IUseCaseManager
@@ -81,9 +66,9 @@ namespace Siege.ServiceLocation
             }
         }
 
-        public IUseCaseManager GetUseCaseManager(Type bindingType)
+        public IUseCaseManager GetUseCaseManager(IUseCaseBinding useCaseBinding)
         {
-            return (IUseCaseManager) useCaseManagers[bindingType];
+            return (IUseCaseManager) useCaseManagers[useCaseBinding.GetType()];
         }
 
         public IUseCaseManager GetUseCaseManager<TUseCaseManager>() where TUseCaseManager : IUseCaseManager
@@ -91,24 +76,9 @@ namespace Siege.ServiceLocation
             return (TUseCaseManager)useCaseManagersByManagerType[typeof(TUseCaseManager)];
         }
 
-        public IUseCaseBinding GetUseCaseBinding(Type useCaseBindingType)
+        public bool ContainsUseCaseManagerForBinding(IUseCaseBinding useCaseBinding)
         {
-            return (IUseCaseBinding)this.bindings[useCaseBindingType];
-        }
-
-        public bool ContainsBinding(Type bindingType)
-        {
-            return bindings.ContainsKey(bindingType);
-        }
-
-        public bool ContainsUseCaseManager(Type useCaseManagerType)
-        {
-            return useCaseManagersByManagerType.ContainsKey(useCaseManagerType);
-        }
-
-        public bool ContainsUseCaseManagerForBinding(Type useCaseBindingType)
-        {
-            return useCaseManagers.ContainsKey(useCaseBindingType);
+            return useCaseManagers.ContainsKey(useCaseBinding.GetType());
         }
     }
 }

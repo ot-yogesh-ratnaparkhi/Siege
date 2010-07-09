@@ -16,13 +16,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Siege.ServiceLocation.Bindings;
+using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.Policies;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.Stores;
 using Siege.ServiceLocation.Syntax;
 using Siege.ServiceLocation.UseCases;
-using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.UseCases.Managers;
 
 namespace Siege.ServiceLocation
@@ -39,13 +38,13 @@ namespace Siege.ServiceLocation
         {
             this.serviceLocator = serviceLocator;
             this.store = store;
-            this.foundation = new Foundation(serviceLocator);
-            this.resolver = new Resolver(serviceLocator, this.store, foundation);
+            foundation = new Foundation();
+            resolver = new Resolver(serviceLocator, this.store, foundation);
 
-            serviceLocator.RegisterInstance(typeof(IServiceLocatorAdapter), serviceLocator);
-            
+            serviceLocator.RegisterInstance(typeof (IServiceLocatorAdapter), serviceLocator);
+
             Bind(Given<IResolver>.Then(resolver));
-            
+
             RegisterPolicy(Given<Transient>.Then<Transient>());
             RegisterPolicy(Given<Singleton>.Then<Singleton>());
 
@@ -80,9 +79,9 @@ namespace Siege.ServiceLocation
         }
 
         public object GetInstance(Type type, params IResolutionArgument[] arguments)
-		{
-            this.store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
-            
+        {
+            store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
+
             var instance = resolver.Resolve(type);
 
             return instance;
@@ -101,9 +100,9 @@ namespace Siege.ServiceLocation
 
         public object GetInstance(Type type, string key, params IResolutionArgument[] arguments)
         {
-			this.store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
+            store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
 
-            return serviceLocator.GetInstance(type, key, this.store.ResolutionStore.Items.OfType<ConstructorParameter, IResolutionArgument>());
+            return serviceLocator.GetInstance(type, key, store.ResolutionStore.Items.OfType<ConstructorParameter, IResolutionArgument>());
         }
 
         public object GetService(Type serviceType)
@@ -136,28 +135,24 @@ namespace Siege.ServiceLocation
             return Register<Transient>(useCases);
         }
 
-        public IServiceLocator Register<TRegistrationPolicy>(List<IUseCase> useCases) where TRegistrationPolicy : IRegistrationPolicy
+        public IServiceLocator Register<TRegistrationPolicy>(List<IUseCase> useCases)
+            where TRegistrationPolicy : IRegistrationPolicy
         {
             foreach (IUseCase useCase in useCases) Register<TRegistrationPolicy>(useCase);
 
             return this;
         }
 
-        public IServiceLocator Register<TRegistrationPolicy>(IUseCase useCase) where TRegistrationPolicy : IRegistrationPolicy
+        public IServiceLocator Register<TRegistrationPolicy>(IUseCase useCase)
+            where TRegistrationPolicy : IRegistrationPolicy
         {
-            IUseCaseManager caseManager;
-            
-            if(this.foundation.ContainsUseCaseManagerForBinding(useCase.GetUseCaseBindingType()))
-            {
-                caseManager = this.foundation.GetUseCaseManager(useCase.GetUseCaseBindingType());
-            }
-            else
-            {
-                caseManager = GetInstance<IUseCaseManager>(new ContextArgument(useCase));
-            }
+            IUseCaseManager caseManager = foundation.ContainsUseCaseManagerForBinding(useCase.GetUseCaseBinding())
+                                              ? foundation.GetUseCaseManager(useCase.GetUseCaseBinding())
+                                              : GetInstance<IUseCaseManager>(new ContextArgument(useCase));
 
-            var policy = GetInstance<TRegistrationPolicy>(new ContextArgument(useCase), new ConstructorParameter { Name = "useCase", Value = useCase });
-            
+            var policy = GetInstance<TRegistrationPolicy>(new ContextArgument(useCase),
+                                                          new ConstructorParameter {Name = "useCase", Value = useCase});
+
             caseManager.Add(policy);
             Bind(policy);
 
@@ -166,16 +161,9 @@ namespace Siege.ServiceLocation
 
         private void RegisterPolicy(IUseCase useCase)
         {
-            IUseCaseManager caseManager;
-
-            if (this.foundation.ContainsUseCaseManagerForBinding(useCase.GetUseCaseBindingType()))
-            {
-                caseManager = this.foundation.GetUseCaseManager(useCase.GetUseCaseBindingType());
-            }
-            else
-            {
-                caseManager = GetInstance<IUseCaseManager>(new ContextArgument(useCase));
-            }
+            IUseCaseManager caseManager = foundation.ContainsUseCaseManagerForBinding(useCase.GetUseCaseBinding())
+                                              ? foundation.GetUseCaseManager(useCase.GetUseCaseBinding())
+                                              : GetInstance<IUseCaseManager>(new ContextArgument(useCase));
 
             caseManager.Add(useCase);
 
@@ -189,31 +177,18 @@ namespace Siege.ServiceLocation
 
         private void Bind(IUseCase useCase)
         {
-            Type bindingType = useCase.GetUseCaseBindingType().IsGenericType ?
-                useCase.GetUseCaseBindingType().MakeGenericType(useCase.GetBaseBindingType())
-                : useCase.GetUseCaseBindingType();
-
-            if (useCase.GetBinding() is Type)
-            {
-                var binding = this.foundation.GetUseCaseBinding(bindingType);
-                binding.Bind(useCase, this);
-            }
-            else
-            {
-                var binding = (IInstanceUseCaseBinding)this.foundation.GetUseCaseBinding(bindingType);
-                binding.Bind(useCase, this);
-            }
+            useCase.GetUseCaseBinding().Bind(serviceLocator, useCase, this);
         }
 
         public IServiceLocatorStore Store
         {
-            get { return this.store; }
+            get { return store; }
         }
 
         public void Dispose()
         {
             serviceLocator.Dispose();
-            this.store.Dispose();
+            store.Dispose();
         }
 
         IGenericFactory IFactoryFetcher.GetFactory(Type type)
@@ -224,10 +199,7 @@ namespace Siege.ServiceLocation
                 {
                     if (!factories.ContainsKey(type))
                     {
-                        var factory = new Factory(this);
-                        Bind(Given<Factory>.Then("Factory" + type, factory));
-
-                        factories.Add(type, factory);
+                        factories.Add(type, new Factory(this, foundation));
                     }
                 }
             }

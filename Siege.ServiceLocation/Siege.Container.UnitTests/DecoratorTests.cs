@@ -89,5 +89,29 @@ namespace Siege.ServiceLocation.UnitTests
 
             Assert.AreEqual(1.5M, instance.Total);
         }
+
+        [Test]
+        public void Should_Decorate_Nested_Dependencies()
+        {
+            locator
+                .Register(Given<CoffeeWrapper>.Then<CoffeeWrapper>())
+                .Register(Given<ICoffee>.Then<Coffee>())
+                .Register(Given<ICoffee>.DecorateWith(coffee => new WhippedCreamDecorator(coffee)))
+                .Register(Given<ICoffee>.DecorateWith(coffee => new EspressoShotDecorator(coffee)));
+
+            var instance = locator.GetInstance<CoffeeWrapper>();
+
+            Assert.AreEqual(1.5M, instance.Coffee.Total);
+        }
+    }
+
+    public class CoffeeWrapper
+    {
+        public ICoffee Coffee { get; set; }
+
+        public CoffeeWrapper(ICoffee coffee)
+        {
+            this.Coffee = coffee;
+        }
     }
 }

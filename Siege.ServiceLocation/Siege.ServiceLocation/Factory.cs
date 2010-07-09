@@ -21,26 +21,30 @@ using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.UseCases;
 using Siege.ServiceLocation.UseCases.Conditional;
 using Siege.ServiceLocation.UseCases.Default;
+using Siege.ServiceLocation.UseCases.Managers;
+using Siege.ServiceLocation.UseCases.PostResolution;
 
 namespace Siege.ServiceLocation
 {
     public class Factory : IGenericFactory, ITypeResolver
     {
         private readonly IContextualServiceLocator serviceLocator;
+        private readonly Foundation foundation;
         private readonly List<IUseCase> conditionalUseCases = new List<IUseCase>();
         private readonly List<IUseCase> defaultCases = new List<IUseCase>();
 
         public event TypeResolvedEventHandler TypeResolved;
 
-        public Factory(IContextualServiceLocator serviceLocator)
+        public Factory(IContextualServiceLocator serviceLocator, Foundation foundation)
         {
             this.serviceLocator = serviceLocator;
+            this.foundation = foundation;
             this.serviceLocator.Store.ExecutionStore.WireEvent(this);
         }
 
         public void AddCase(IUseCase useCase)
         {
-            if (useCase.GetUseCaseBindingType() == typeof(DefaultUseCaseBinding)) defaultCases.Add(useCase);
+            if (useCase.GetUseCaseBinding() is DefaultUseCaseBinding) defaultCases.Add(useCase);
             else conditionalUseCases.Add(useCase);
         }
 
@@ -58,7 +62,7 @@ namespace Siege.ServiceLocation
 
                 if (useCase.IsValid(serviceLocator.Store))
                 {
-                    result = useCase.Resolve(new ConditionalResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
+                    result = Resolve(useCase, new ConditionalResolutionStrategy(serviceLocator, serviceLocator.Store));
                 }
 
                 if (result != null)
@@ -71,7 +75,7 @@ namespace Siege.ServiceLocation
             for (int i = 0; i < defaultCases.Count; i++)
             {
                 var useCase = defaultCases[i];
-                object result = useCase.Resolve(new DefaultResolutionStrategy(serviceLocator, serviceLocator.Store), serviceLocator.Store);
+                object result = Resolve(useCase, new DefaultResolutionStrategy(serviceLocator, serviceLocator.Store));
 
                 if (result != null)
                 {
@@ -81,6 +85,40 @@ namespace Siege.ServiceLocation
             }
 
             throw new RegistrationNotFoundException(type);
+        }
+
+        private object Resolve(IUseCase useCase, IResolutionStrategy strategy)
+        {
+            var value = useCase.Resolve(strategy, this.serviceLocator.Store);
+
+            if (value != null)
+            {
+                this.RaiseTypeResolvedEvent(useCase.GetBoundType());
+                ExecutePostConditions<DefaultPostResolutionUseCaseManager>(useCase, actionUseCase => value = actionUseCase.Resolve(new PostResolutionStrategy(value), this.serviceLocator.Store));
+                ExecutePostConditions<ConditionalPostResolutionUseCaseManager>(useCase, actionUseCase =>
+                {
+                    if (actionUseCase.IsValid(this.serviceLocator.Store))
+                        value = actionUseCase.Resolve(new PostResolutionStrategy(value), this.serviceLocator.Store);
+                });
+            }
+
+            return value;
+        }
+
+        private void ExecutePostConditions<TUseCaseManager>(IUseCase useCase, Action<IUseCase> action) where TUseCaseManager : IUseCaseManager
+        {
+            var manager = foundation.GetUseCaseManager<TUseCaseManager>();
+            IList<IUseCase> actions = manager.GetUseCasesForType(useCase.GetBoundType()) ??
+                                      manager.GetUseCasesForType(useCase.GetBaseBindingType());
+
+            if (actions != null)
+            {
+                for (int i = 0; i < actions.Count; i++)
+                {
+                    var actionUseCase = actions[i];
+                    action(actionUseCase);
+                }
+            }
         }
     }
 }

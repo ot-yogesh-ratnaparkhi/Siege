@@ -14,6 +14,7 @@
 */
 
 using System;
+using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Bindings.Default;
 using Siege.ServiceLocation.UseCases;
 
@@ -29,9 +30,9 @@ namespace Siege.ServiceLocation.Extensions.AutoMocking
             this.implementation = to;
         }
 
-        public override Type GetUseCaseBindingType()
+        public override IUseCaseBinding GetUseCaseBinding()
         {
-            return typeof (DefaultUseCaseBinding);
+            return new DefaultInstanceUseCaseBinding();
         }
 
         public override Type GetBaseBindingType()

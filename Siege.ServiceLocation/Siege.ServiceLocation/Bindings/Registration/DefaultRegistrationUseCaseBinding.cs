@@ -5,7 +5,7 @@ namespace Siege.ServiceLocation.Bindings.Registration
 {
     public class DefaultRegistrationUseCaseBinding : IUseCaseBinding
     {
-        public void Bind(IUseCase useCase, IFactoryFetcher locator)
+        public void Bind(IServiceLocatorAdapter adapter, IUseCase useCase, IFactoryFetcher locator)
         {
             throw new NotImplementedException();
         }

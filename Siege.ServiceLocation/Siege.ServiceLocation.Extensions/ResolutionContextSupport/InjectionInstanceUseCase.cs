@@ -13,7 +13,7 @@
      limitations under the License.
 */
 
-using System;
+using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Bindings.Conditional;
 using Siege.ServiceLocation.UseCases;
 
@@ -21,9 +21,9 @@ namespace Siege.ServiceLocation.Extensions.ResolutionContextSupport
 {
     public class InjectionInstanceUseCase<TService> : InstanceUseCase<TService>, IInjectionUseCase<TService>
     {
-        public override Type GetUseCaseBindingType()
+        public override IUseCaseBinding GetUseCaseBinding()
         {
-            return typeof(ConditionalUseCaseBinding);
+            return new ConditionalInstanceUseCaseBinding();
         }
     }
 }

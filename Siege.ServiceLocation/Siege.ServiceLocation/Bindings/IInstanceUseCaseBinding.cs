@@ -17,8 +17,8 @@ using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation.Bindings
 {
-    public interface IInstanceUseCaseBinding
-    {
-        void Bind(IUseCase useCase, IFactoryFetcher locator);
-    }
+    //public interface IInstanceUseCaseBinding
+    //{
+    //    void Bind(IServiceLocatorAdapter adapter, IUseCase useCase, IFactoryFetcher locator);
+    //}
 }

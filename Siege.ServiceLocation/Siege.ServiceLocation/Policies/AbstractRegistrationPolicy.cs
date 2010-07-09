@@ -14,6 +14,7 @@
 */
 
 using System;
+using Siege.ServiceLocation.Bindings;
 using Siege.ServiceLocation.Stores;
 using Siege.ServiceLocation.UseCases;
 using Siege.ServiceLocation.UseCases.Named;
@@ -39,9 +40,9 @@ namespace Siege.ServiceLocation.Policies
             return useCase.GetBoundType();
         }
 
-        public Type GetUseCaseBindingType()
+        public IUseCaseBinding GetUseCaseBinding()
         {
-            return useCase.GetUseCaseBindingType();
+            return useCase.GetUseCaseBinding();
         }
 
         public Type GetBaseBindingType()
