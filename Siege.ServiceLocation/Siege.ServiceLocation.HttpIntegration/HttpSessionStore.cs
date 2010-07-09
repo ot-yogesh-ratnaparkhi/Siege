@@ -24,7 +24,14 @@ namespace Siege.ServiceLocation.HttpIntegration
     {
         public void Add(object contextItem)
         {
-            HttpContext.Current.Session.Add(contextItem.GetType() + Guid.NewGuid().ToString(), contextItem);
+            if (SessionExists())
+            {
+                HttpContext.Current.Session.Add(contextItem.GetType() + Guid.NewGuid().ToString(), contextItem);
+            }
+            else
+            {
+                HttpContext.Current.Application.Add(contextItem.GetType() + Guid.NewGuid().ToString(), contextItem);
+            }
         }
 
         public List<object> Items
@@ -33,18 +40,32 @@ namespace Siege.ServiceLocation.HttpIntegration
             {
                 var items = new List<object>();
 
-                foreach (string item in HttpContext.Current.Session)
+                if (SessionExists())
                 {
-                    items.Add(HttpContext.Current.Session[item]);
+                    foreach (string item in HttpContext.Current.Session)
+                    {
+                        items.Add(HttpContext.Current.Session[item]);
+                    }
+                }
+                foreach (string item in HttpContext.Current.Application)
+                {
+                    items.Add(HttpContext.Current.Application[item]);
                 }
 
                 return items;
             }
         }
 
+        private static bool SessionExists()
+        {
+            return HttpContext.Current.Session != null;
+        }
+
         public void Clear()
         {
-            HttpContext.Current.Session.Clear();
+            if (SessionExists())
+                HttpContext.Current.Session.Clear();
+            HttpContext.Current.Application.Clear();
         }
 
         public void Dispose()

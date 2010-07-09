@@ -23,23 +23,26 @@ namespace Siege.ServiceLocation.HttpIntegration
 {
     public class HttpContextExecutionStore : IExecutionStore
     {
-		protected HttpContextExecutionStore(IServiceLocatorStore store)
-		{
-			store.ResolutionStore = new HttpResolutionStore();
+        private readonly IServiceLocatorStore store;
+
+        protected HttpContextExecutionStore(IServiceLocatorStore store)
+        {
+            this.store = store;
+            this.store.ResolutionStore = new HttpResolutionStore();
             HttpContext.Current.Items["executionCount"] = 0;
         }
-        
+
         private int Count
         {
             get
             {
                 if (!HttpContext.Current.Items.Contains("executionCount")) return 0;
 
-                return (int) HttpContext.Current.Items["executionCount"];
+                return (int)HttpContext.Current.Items["executionCount"];
             }
         }
 
-		public static IExecutionStore New(IServiceLocatorStore store)
+        public static IExecutionStore New(IServiceLocatorStore store)
         {
             return new HttpContextExecutionStore(store);
         }
@@ -49,7 +52,7 @@ namespace Siege.ServiceLocation.HttpIntegration
             get
             {
                 List<Type> types = new List<Type>();
-                foreach(object item in HttpContext.Current.Items.Values)
+                foreach (object item in HttpContext.Current.Items.Values)
                 {
                     if (item is Type) types.Add((Type)item);
                 }
@@ -78,7 +81,7 @@ namespace Siege.ServiceLocation.HttpIntegration
             AddRequestedType(type);
         }
 
-        private void AddRequestedType(Type type)
+        public void AddRequestedType(Type type)
         {
             HttpContext.Current.Items.Add("ExecutionStore" + Guid.NewGuid(), type);
             Increment();
@@ -92,6 +95,10 @@ namespace Siege.ServiceLocation.HttpIntegration
         private void Decrement()
         {
             HttpContext.Current.Items["executionCount"] = Count - 1;
+            if (Count == 0)
+            {
+                store.ResolutionStore = new HttpResolutionStore();
+            }
         }
     }
 }

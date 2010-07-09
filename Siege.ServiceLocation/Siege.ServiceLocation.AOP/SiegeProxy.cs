@@ -28,10 +28,10 @@ namespace Siege.ServiceLocation.AOP
 {
     public class SiegeProxy
     {
-    	private IServiceLocator serviceLocator;
+    	private readonly IServiceLocator serviceLocator;
     	private static readonly Hashtable definedTypes = new Hashtable();
         private bool useServiceLocator;
-        private static TypeGenerator generator = new TypeGenerator();
+        private static readonly TypeGenerator generator = new TypeGenerator();
 
 		public SiegeProxy(IServiceLocator serviceLocator)
 		{

@@ -64,9 +64,8 @@
     <Compile Include="Exceptions\RegistrationNotFoundException.cs" />
     <Compile Include="EventHandlers\ITypeResolver.cs" />
     <Compile Include="ExtensionMethods\IResolutionArgumentExtensions.cs" />
+    <Compile Include="Foundation.cs" />
     <Compile Include="IFactoryFetcher.cs" />
-    <Compile Include="Planning\ConstructorCandidate.cs" />
-    <Compile Include="Planning\IResolutionPlan.cs" />
     <Compile Include="Policies\AbstractRegistrationPolicy.cs" />
     <Compile Include="Policies\IRegistrationPolicy.cs" />
     <Compile Include="Policies\Singleton.cs" />
@@ -93,13 +92,7 @@
     <Compile Include="Stores\ThreadedServiceLocatorStore.cs" />
     <Compile Include="Stores\ThreadLocalStore.cs" />
     <Compile Include="Stores\UseCases\ConditionalUseCaseList.cs" />
-    <Compile Include="Stores\UseCases\ConditionalUseCaseGroup.cs" />
-    <Compile Include="Stores\UseCases\DefaultUseCaseGroup.cs" />
     <Compile Include="Stores\UseCases\DefaultUseCaseList.cs" />
-    <Compile Include="Stores\UseCases\UseCaseGroup.cs" />
-    <Compile Include="Stores\UseCases\UseCaseStore.cs" />
-    <Compile Include="TypeBuilders\DefaultTypeBuilder.cs" />
-    <Compile Include="TypeBuilders\ITypeBuilder.cs" />
     <Compile Include="Rules\ConditionalActivationRule.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Rules\IConditionalActivationRule.cs" />
@@ -107,7 +100,6 @@
     <Compile Include="IGenericFactory.cs" />
     <Compile Include="Stores\IExecutionStore.cs" />
     <Compile Include="Stores\ThreadedExecutionStore.cs" />
-    <Compile Include="TypeHandler.cs" />
     <Compile Include="UseCases\PostResolution\PostResolutionUseCase.cs" />
     <Compile Include="UseCases\Conditional\ConditionalGenericUseCase.cs" />
     <Compile Include="UseCases\Conditional\ConditionalImplementationUseCase.cs" />

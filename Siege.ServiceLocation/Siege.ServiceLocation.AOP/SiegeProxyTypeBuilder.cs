@@ -14,13 +14,12 @@
 */
 
 using System;
-using Siege.ServiceLocation.TypeBuilders;
 
 namespace Siege.ServiceLocation.AOP
 {
-    public class SiegeProxyTypeBuilder : ITypeBuilder
+    public class SiegeProxyTypeBuilder
     {
-        private SiegeProxy proxy;
+        private readonly SiegeProxy proxy;
         
         public SiegeProxyTypeBuilder(IServiceLocator serviceLocator)
         {

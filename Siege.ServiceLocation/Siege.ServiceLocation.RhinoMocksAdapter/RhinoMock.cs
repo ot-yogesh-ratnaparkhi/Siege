@@ -18,9 +18,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Rhino.Mocks;
+using Siege.ServiceLocation.Extensions.AutoMocking;
 using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.RhinoMocksAdapter
+namespace Siege.ServiceLocation.RhinoMocks
 {
     public abstract class RhinoMock<T>
     {

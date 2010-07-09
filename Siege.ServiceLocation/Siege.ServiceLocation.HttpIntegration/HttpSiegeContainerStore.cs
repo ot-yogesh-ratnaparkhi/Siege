@@ -19,38 +19,39 @@ namespace Siege.ServiceLocation.HttpIntegration
 {
     public class HttpSiegeContainerStore : IServiceLocatorStore
     {
-        private IContextStore contextStore;
-        private IResolutionStore resolutionStore;
-        private IExecutionStore executionStore;
-    	
+        private readonly IContextStore contextStore;
+		private IResolutionStore resolutionStore;
+		private IExecutionStore executionStore;
+
         public HttpSiegeContainerStore(IContextStore store)
-        {
-            this.contextStore = store;
-            this.resolutionStore = new HttpResolutionStore();
-            this.executionStore = HttpContextExecutionStore.New(this);
-        }
+		{
+			this.contextStore = store;
+			this.resolutionStore = new HttpResolutionStore();
+			this.executionStore = HttpContextExecutionStore.New(this);
+		}
 
-        public IContextStore ContextStore
-        {
-            get { return this.contextStore; }
-        }
+		public IContextStore ContextStore
+		{
+			get { return this.contextStore; }
+		}
 
-        public IResolutionStore ResolutionStore
-        {
-            get { return this.resolutionStore; }
+		public IResolutionStore ResolutionStore
+		{
+			get { return this.resolutionStore; }
 			set { this.resolutionStore = value; }
-        }
+		}
+		
+		public IExecutionStore ExecutionStore
+		{
+			get { return this.executionStore; }
+			set { this.executionStore = value; }
+		}
 
-        public IExecutionStore ExecutionStore
-        {
-            get { return this.executionStore; }
-        }
-
-        public void Dispose()
-        {
-            this.contextStore.Clear();
-            this.resolutionStore.Clear();
-            this.executionStore = HttpContextExecutionStore.New(this);
-        }
+		public void Dispose()
+		{
+			this.contextStore.Clear();
+			this.resolutionStore.Clear();
+			this.executionStore = HttpContextExecutionStore.New(this);
+		}
     }
 }

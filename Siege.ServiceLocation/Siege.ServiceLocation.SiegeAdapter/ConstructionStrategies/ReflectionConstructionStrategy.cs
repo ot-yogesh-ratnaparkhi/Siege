@@ -14,7 +14,6 @@
 */
 
 using System;
-using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.SiegeAdapter.Maps;
 
 namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies

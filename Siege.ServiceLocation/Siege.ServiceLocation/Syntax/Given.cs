@@ -39,7 +39,7 @@ namespace Siege.ServiceLocation.Syntax
             return useCase;
         }
 
-        public static INamedUseCase<TBaseService> Then<TImplementingType>(string key) where TImplementingType : TBaseService
+        public static INamedUseCase Then<TImplementingType>(string key) where TImplementingType : TBaseService
         {
             var useCase = new NamedUseCase<TBaseService>(key);
 

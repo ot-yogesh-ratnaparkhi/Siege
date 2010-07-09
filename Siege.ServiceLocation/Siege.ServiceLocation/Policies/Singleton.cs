@@ -20,7 +20,7 @@ namespace Siege.ServiceLocation.Policies
 {
     public class Singleton : AbstractRegistrationPolicy
     {
-        private object lockObject = new object();
+        private readonly object lockObject = new object();
         private object instance;
 
         public Singleton(IUseCase useCase) : base(useCase)

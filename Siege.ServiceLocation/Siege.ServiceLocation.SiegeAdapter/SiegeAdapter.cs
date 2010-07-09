@@ -58,6 +58,21 @@ namespace Siege.ServiceLocation.SiegeAdapter
             return value;
         }
 
+        public TService GetInstance<TService>(Type type, params IResolutionArgument[] arguments)
+        {
+            return (TService) GetInstance(type, arguments);
+        }
+
+        public TService GetInstance<TService>(string key, params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(typeof(TService), key, arguments);
+        }
+
+        public TService GetInstance<TService>(params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(typeof(TService), arguments);
+        }
+
         public ConstructorParameter[] GetConstructorParameters(IResolutionArgument[] parameters)
         {
             int parameterCount = 0;

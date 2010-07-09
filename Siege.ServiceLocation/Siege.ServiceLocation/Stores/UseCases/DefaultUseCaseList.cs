@@ -21,7 +21,7 @@ namespace Siege.ServiceLocation.Stores.UseCases
 {
     public class DefaultUseCaseList
     {
-        private Dictionary<Type, IUseCase> internalList = new Dictionary<Type, IUseCase>();
+        private readonly Dictionary<Type, IUseCase> internalList = new Dictionary<Type, IUseCase>();
 
         public void Add(Type type, IUseCase useCase)
         {

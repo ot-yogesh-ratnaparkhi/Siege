@@ -13,15 +13,27 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocation.Stores.UseCases
-{
-    public class DefaultUseCaseGroup : UseCaseGroup
-    {
-        public DefaultUseCaseList ResolutionCases { get; set; }
+using System;
+using System.Collections.Generic;
 
-        public DefaultUseCaseGroup()
+namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies
+{
+    public class ConstructorCandidate
+    {
+        public ConstructorCandidate()
         {
-            this.ResolutionCases = new DefaultUseCaseList();
+            Parameters = new List<ParameterSummary>();
         }
+
+        public Type Type { get; set; }
+        public List<ParameterSummary> Parameters { get; set; }
+        public Func<object[], object> Instantiate { get; set; }
+    }
+
+    public class ParameterSummary
+    {
+        public int Position { get; set; }
+        public Type ParameterType { get; set; }
+        public string Name { get; set; }
     }
 }

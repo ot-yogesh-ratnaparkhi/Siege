@@ -18,7 +18,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Siege.DynamicTypeGeneration;
 using Siege.ServiceLocation.ExtensionMethods;
-using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.SiegeAdapter.Maps;
 
 namespace Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies

@@ -12,14 +12,14 @@ namespace Siege.ServiceLocation.UnitTests
 {
     public abstract partial class SiegeContainerTests
     {
-        [Test, Ignore]
+        [Test]
         public void Should_Proxy_All_Types()
         {
-            locator.Register(Using.Convention<AOPConvention>());
+            locator.Register(Using.Convention<ProxyConvention>());
         }
     }
 
-    public class AOPConvention : IConvention
+    public class ProxyConvention : IConvention
     {
         public List<IUseCase> Build()
         {

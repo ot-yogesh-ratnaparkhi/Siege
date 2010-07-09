@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using Siege.ServiceLocation.Policies;
-using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.UseCases;
 
 namespace Siege.ServiceLocation
@@ -29,8 +28,5 @@ namespace Siege.ServiceLocation
         IServiceLocator Register<TRegistrationPolicy>(IUseCase useCase) where TRegistrationPolicy : IRegistrationPolicy;
         new object GetInstance(Type type);
         new object GetInstance(Type type, string key);
-        TService GetInstance<TService>(Type type, params IResolutionArgument[] arguments);
-        TService GetInstance<TService>(string key, params IResolutionArgument[] arguments);
-        TService GetInstance<TService>(params IResolutionArgument[] arguments);
     }
 }

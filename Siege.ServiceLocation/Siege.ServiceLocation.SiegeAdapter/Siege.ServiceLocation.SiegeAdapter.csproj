@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConstructionStrategies\ConstructorCandidate.cs" />
     <Compile Include="ConstructionStrategies\IConstructionStrategy.cs" />
     <Compile Include="ConstructionStrategies\ReflectionConstructionStrategy.cs" />
     <Compile Include="ConstructionStrategies\SiegeProxyConstructionStrategy.cs" />

@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Conventions\ControllerConvention.cs" />
     <Compile Include="HttpContextExecutionStore.cs" />
     <Compile Include="HttpResolutionStore.cs" />
     <Compile Include="HttpSessionStore.cs" />
@@ -65,6 +66,10 @@
     <Compile Include="SiegeViewEngine.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Siege.ServiceLocation.Extensions\Siege.ServiceLocation.Extensions.csproj">
+      <Project>{7B5B2B4D-B5B6-4427-8DEF-B0D421A0EF96}</Project>
+      <Name>Siege.ServiceLocation.Extensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Siege.ServiceLocation\Siege.ServiceLocation.csproj">
       <Project>{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}</Project>
       <Name>Siege.ServiceLocation</Name>

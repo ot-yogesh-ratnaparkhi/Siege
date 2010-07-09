@@ -14,29 +14,18 @@
 */
 
 using Siege.ServiceLocation.Stores;
-using Siege.ServiceLocation.TypeBuilders;
 
 namespace Siege.ServiceLocation.HttpIntegration
 {
     public class HttpSiegeContainer : SiegeContainer
     {
-        protected HttpSiegeContainer(IServiceLocatorAdapter serviceLocator, IServiceLocatorStore store, ITypeBuilder typeBuilder)
-            : base(serviceLocator, store, typeBuilder)
+        protected HttpSiegeContainer(IServiceLocatorAdapter serviceLocator, IServiceLocatorStore store)
+            : base(serviceLocator, store)
         {
         }
 
         public HttpSiegeContainer(IServiceLocatorAdapter serviceLocator, IContextStore store)
-            : this(serviceLocator, new HttpSiegeContainerStore(store), new DefaultTypeBuilder())
-        {
-        }
-
-        public HttpSiegeContainer(IServiceLocatorAdapter serviceLocator, ITypeBuilder typeBuilder)
-            : this(serviceLocator, new HttpSiegeContainerStore(new HttpSessionStore()), typeBuilder)
-        {
-        }
-
-        public HttpSiegeContainer(IServiceLocatorAdapter serviceLocator)
-            : this(serviceLocator, new HttpSiegeContainerStore(new HttpSessionStore()), new DefaultTypeBuilder())
+            : this(serviceLocator, new HttpSiegeContainerStore(store))
         {
         }
     }

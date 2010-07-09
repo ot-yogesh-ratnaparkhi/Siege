@@ -19,8 +19,8 @@ using Siege.ServiceLocation.EventHandlers;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.Stores;
-using Siege.ServiceLocation.Stores.UseCases;
 using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.UseCases.Managers;
 using Siege.ServiceLocation.UseCases.PostResolution;
 using Siege.ServiceLocation.UseCases.Conditional;
 using Siege.ServiceLocation.UseCases.Default;
@@ -29,26 +29,28 @@ namespace Siege.ServiceLocation.Resolution
 {
     public class Resolver : IResolver, ITypeResolver
     {
-        private IInstanceResolver serviceLocator;
-        private IServiceLocatorStore store;
-        private UseCaseStore useCaseStore;
+        private readonly IInstanceResolver serviceLocator;
+        private readonly IServiceLocatorStore store;
+        private readonly Foundation foundation;
         public event TypeResolvedEventHandler TypeResolved;
 
-        public Resolver(IInstanceResolver serviceLocator, IServiceLocatorStore store, UseCaseStore useCaseStore)
+        public Resolver(IInstanceResolver serviceLocator, IServiceLocatorStore store, Foundation foundation)
         {
             this.serviceLocator = serviceLocator;
             this.store = store;
-            this.useCaseStore = useCaseStore;
+            this.foundation = foundation;
             this.store.ExecutionStore.WireEvent(this);
         }
 
         public object Resolve(Type type)
         {
-            IList<IUseCase> conditionalCases = useCaseStore.Conditional.ResolutionCases.GetUseCasesForType(type);
-            var defaultCases = useCaseStore.Default.ResolutionCases;
-            
-            if (conditionalCases != null)
+            var conditionalManager = foundation.GetUseCaseManager<ConditionalUseCaseManager>();
+            var defaultManager = foundation.GetUseCaseManager<DefaultUseCaseManager>();
+          
+            if (conditionalManager.Contains(type))
             {
+                IList<IUseCase> conditionalCases = conditionalManager.GetUseCasesForType(type);
+
                 for (int i = 0; i < conditionalCases.Count; i++)
                 {
                     var useCase = conditionalCases[i];
@@ -65,10 +67,10 @@ namespace Siege.ServiceLocation.Resolution
                     }
                 }
             }
-            
-            if (defaultCases.Contains(type))
+
+            if (defaultManager.Contains(type))
             {
-                var useCase = defaultCases.GetUseCaseForType(type);
+                var useCase = defaultManager.GetUseCasesForType(type)[0];
                 var value = Resolve(useCase, new DefaultResolutionStrategy(serviceLocator, this.store));
 
                 if (value != null)
@@ -92,8 +94,8 @@ namespace Siege.ServiceLocation.Resolution
             if (value != null)
             {
                 this.RaiseTypeResolvedEvent(useCase.GetBoundType());
-                ExecutePostConditions(useCaseStore.Default, useCase, actionUseCase => value = actionUseCase.Resolve(new PostResolutionStrategy(value), this.store));
-                ExecutePostConditions(useCaseStore.Conditional, useCase, actionUseCase =>
+                ExecutePostConditions<DefaultPostResolutionUseCaseManager>(useCase, actionUseCase => value = actionUseCase.Resolve(new PostResolutionStrategy(value), this.store));
+                ExecutePostConditions<ConditionalPostResolutionUseCaseManager>(useCase, actionUseCase =>
                 {
                     if (actionUseCase.IsValid(this.store))
                         value = actionUseCase.Resolve(new PostResolutionStrategy(value), this.store);
@@ -103,11 +105,11 @@ namespace Siege.ServiceLocation.Resolution
             return value;
         }
 
-        private static void ExecutePostConditions(UseCaseGroup useCaseGroup, IUseCase useCase,
-                                           Action<IUseCase> action)
+        private void ExecutePostConditions<TUseCaseManager>(IUseCase useCase, Action<IUseCase> action) where TUseCaseManager : IUseCaseManager
         {
-            IList<IUseCase> actions = useCaseGroup.PostResolutionCases.GetUseCasesForType(useCase.GetBoundType()) ??
-                                      useCaseGroup.PostResolutionCases.GetUseCasesForType(useCase.GetBaseBindingType());
+            var manager = foundation.GetUseCaseManager<TUseCaseManager>();
+            IList<IUseCase> actions = manager.GetUseCasesForType(useCase.GetBoundType()) ??
+                                      manager.GetUseCasesForType(useCase.GetBaseBindingType());
 
             if (actions != null)
             {

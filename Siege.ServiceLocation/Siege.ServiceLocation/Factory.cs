@@ -26,7 +26,7 @@ namespace Siege.ServiceLocation
 {
     public class Factory : IGenericFactory, ITypeResolver
     {
-        private IContextualServiceLocator serviceLocator;
+        private readonly IContextualServiceLocator serviceLocator;
         private readonly List<IUseCase> conditionalUseCases = new List<IUseCase>();
         private readonly List<IUseCase> defaultCases = new List<IUseCase>();
 

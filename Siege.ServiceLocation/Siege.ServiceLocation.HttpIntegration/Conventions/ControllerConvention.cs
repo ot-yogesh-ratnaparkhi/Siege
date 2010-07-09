@@ -13,17 +13,16 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocation.Stores.UseCases
-{
-    public class UseCaseStore
-    {
-        public DefaultUseCaseGroup Default { get; set; }
-        public ConditionalUseCaseGroup Conditional { get; set; }
+using System.Web.Mvc;
+using Siege.ServiceLocation.Extensions.AutoScanner;
 
-        public UseCaseStore()
+namespace Siege.ServiceLocation.HttpIntegration.Conventions
+{
+    public class ControllerConvention : AutoScanningConvention
+    {
+        public ControllerConvention()
         {
-            this.Default = new DefaultUseCaseGroup();
-            this.Conditional = new ConditionalUseCaseGroup();
+            ForTypesImplementing<Controller>();
         }
     }
 }

@@ -22,10 +22,10 @@ namespace Siege.ServiceLocation.HttpIntegration
     {
         private readonly IContextualServiceLocator locator;
 
-        public SiegeControllerFactory(IContextualServiceLocator locator)
-        {
-            this.locator = locator;
-        }
+		public SiegeControllerFactory(IContextualServiceLocator locator)
+		{
+			this.locator = locator;
+		}
 
         protected override IController GetControllerInstance(System.Web.Routing.RequestContext requestContext, Type controllerType)
         {

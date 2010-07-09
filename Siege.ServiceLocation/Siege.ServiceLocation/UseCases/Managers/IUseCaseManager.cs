@@ -13,10 +13,15 @@
      limitations under the License.
 */
 
+using System;
+using System.Collections.Generic;
+
 namespace Siege.ServiceLocation.UseCases.Managers
 {
     public interface IUseCaseManager
     {
         void Add(IUseCase useCase);
+        List<IUseCase> GetUseCasesForType(Type type);
+        bool Contains(Type type);
     }
 }

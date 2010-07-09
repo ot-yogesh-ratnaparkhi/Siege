@@ -24,7 +24,7 @@ namespace Siege.ServiceLocation.UnityAdapter
 {
     public class UnityAdapter : IServiceLocatorAdapter
     {
-        private IUnityContainer container;
+        private readonly IUnityContainer container;
 
         public UnityAdapter(IUnityContainer container)
         {
@@ -74,6 +74,21 @@ namespace Siege.ServiceLocation.UnityAdapter
 			}
 
             return container.Resolve(type, args);
+        }
+
+        public TService GetInstance<TService>(Type type, params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(type, arguments);
+        }
+
+        public TService GetInstance<TService>(string key, params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(typeof(TService), key, arguments);
+        }
+
+        public TService GetInstance<TService>(params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(typeof(TService), arguments);
         }
 
         public bool HasTypeRegistered(Type type)

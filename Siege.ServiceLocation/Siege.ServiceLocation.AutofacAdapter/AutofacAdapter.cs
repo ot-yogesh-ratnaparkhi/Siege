@@ -27,7 +27,7 @@ namespace Siege.ServiceLocation.AutofacAdapter
 {
     public class AutofacAdapter : IServiceLocatorAdapter
     {
-        private IContainer container;
+        private readonly IContainer container;
 
         public AutofacAdapter(IContainer container)
         {
@@ -76,6 +76,21 @@ namespace Siege.ServiceLocation.AutofacAdapter
 			}
 
             return container.Resolve(type, args.OfType<NamedParameter, NamedParameter>());
+        }
+
+        public TService GetInstance<TService>(Type type, params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(type, arguments);
+        }
+
+        public TService GetInstance<TService>(string key, params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(typeof(TService), key, arguments);
+        }
+
+        public TService GetInstance<TService>(params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(typeof(TService), arguments);
         }
 
         public bool HasTypeRegistered(Type type)

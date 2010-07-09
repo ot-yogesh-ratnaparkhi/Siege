@@ -15,7 +15,7 @@
 
 using NUnit.Framework;
 using Rhino.Mocks;
-using Siege.ServiceLocation.RhinoMocksAdapter;
+using Siege.ServiceLocation.RhinoMocks;
 using Siege.ServiceLocation.UnitTests.TestClasses;
 
 namespace Siege.ServiceLocation.UnitTests

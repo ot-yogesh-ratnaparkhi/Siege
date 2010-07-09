@@ -27,7 +27,7 @@ namespace Siege.SeviceLocation.WindsorAdapter
 {
     public class WindsorAdapter : IServiceLocatorAdapter
     {
-        private IKernel kernel;
+        private readonly IKernel kernel;
 
         public WindsorAdapter()
             : this(new DefaultKernel())
@@ -100,6 +100,21 @@ namespace Siege.SeviceLocation.WindsorAdapter
 				throw new RegistrationNotFoundException(type, ex);
 			}
 		}
+
+        public TService GetInstance<TService>(Type type, params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(type, arguments);
+        }
+
+        public TService GetInstance<TService>(string key, params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(typeof(TService), key, arguments);
+        }
+
+        public TService GetInstance<TService>(params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(typeof(TService), arguments);
+        }
 
         public bool HasTypeRegistered(Type type)
         {

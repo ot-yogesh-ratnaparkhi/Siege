@@ -88,7 +88,6 @@
     <Compile Include="ActivationRuleTests.cs" />
     <Compile Include="Adapters\AutofacAdapterTests.cs" />
     <Compile Include="Adapters\ILSiegeAdapterTests.cs" />
-    <Compile Include="Adapters\RhinoMocksAdapterTests.cs" />
     <Compile Include="Adapters\SiegeAdapterTests.cs" />
     <Compile Include="AutoMockingTests.cs" />
     <Compile Include="AutoRegistrationTests.cs" />
@@ -180,9 +179,9 @@
       <Project>{7B5B2B4D-B5B6-4427-8DEF-B0D421A0EF96}</Project>
       <Name>Siege.ServiceLocation.Extensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Siege.ServiceLocation.RhinoMocksAdapter\Siege.ServiceLocation.RhinoMocksAdapter.csproj">
+    <ProjectReference Include="..\Siege.ServiceLocation.RhinoMocksAdapter\Siege.ServiceLocation.RhinoMocks.csproj">
       <Project>{A9F60065-137A-40D3-A266-51E79792BAB8}</Project>
-      <Name>Siege.ServiceLocation.RhinoMocksAdapter</Name>
+      <Name>Siege.ServiceLocation.RhinoMocks</Name>
     </ProjectReference>
     <ProjectReference Include="..\Siege.ServiceLocation.SiegeAdapter\Siege.ServiceLocation.SiegeAdapter.csproj">
       <Project>{95E2262B-E46C-4B10-9A28-12FC2C7127F0}</Project>

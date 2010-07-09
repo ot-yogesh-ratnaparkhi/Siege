@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Siege.ServiceLocation.Planning;
+using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
 
 namespace Siege.ServiceLocation.SiegeAdapter.Maps
 {

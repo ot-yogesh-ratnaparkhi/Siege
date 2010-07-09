@@ -15,8 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using Siege.ServiceLocation.ExtensionMethods;
-using Siege.ServiceLocation.Planning;
 using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.SiegeAdapter.ConstructionStrategies;
 using Siege.ServiceLocation.SiegeAdapter.Maps;

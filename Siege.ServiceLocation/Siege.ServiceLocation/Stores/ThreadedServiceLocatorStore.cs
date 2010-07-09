@@ -17,9 +17,9 @@ namespace Siege.ServiceLocation.Stores
 {
     public class ThreadedServiceLocatorStore : IServiceLocatorStore
     {
-        private IContextStore store;
+        private readonly IContextStore store;
 		private IResolutionStore resolutionStore;
-    	private IExecutionStore executionStore;
+    	private readonly IExecutionStore executionStore;
 
         public ThreadedServiceLocatorStore()
             : this(new ThreadLocalStore())

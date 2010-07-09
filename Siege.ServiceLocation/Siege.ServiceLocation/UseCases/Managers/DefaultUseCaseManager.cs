@@ -13,22 +13,29 @@
      limitations under the License.
 */
 
+using System;
+using System.Collections.Generic;
 using Siege.ServiceLocation.Stores.UseCases;
 
 namespace Siege.ServiceLocation.UseCases.Managers
 {
     public class DefaultUseCaseManager : IUseCaseManager
     {
-        private UseCaseStore useCaseStore;
-
-        public DefaultUseCaseManager(UseCaseStore useCaseStore)
-        {
-            this.useCaseStore = useCaseStore;
-        }
+        private readonly DefaultUseCaseList useCases = new DefaultUseCaseList();
 
         public void Add(IUseCase useCase)
         {
-            useCaseStore.Default.ResolutionCases.Add(useCase.GetBaseBindingType(), useCase);
+            useCases.Add(useCase.GetBaseBindingType(), useCase);
+        }
+
+        public List<IUseCase> GetUseCasesForType(Type type)
+        {
+            return new List<IUseCase> { useCases.GetUseCaseForType(type) };
+        }
+
+        public bool Contains(Type type)
+        {
+            return useCases.Contains(type);
         }
     }
 }

@@ -21,7 +21,10 @@ namespace Siege.ServiceLocation
     public interface IInstanceResolver
 	{
 		object GetInstance(Type type, string key, params IResolutionArgument[] parameters);
-		object GetInstance(Type type, params IResolutionArgument[] parameters);
+        object GetInstance(Type type, params IResolutionArgument[] parameters);
+        TService GetInstance<TService>(Type type, params IResolutionArgument[] arguments);
+        TService GetInstance<TService>(string key, params IResolutionArgument[] arguments);
+        TService GetInstance<TService>(params IResolutionArgument[] arguments);
         bool HasTypeRegistered(Type type);
     }
 }

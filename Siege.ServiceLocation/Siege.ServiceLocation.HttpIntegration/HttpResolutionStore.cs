@@ -23,6 +23,11 @@ namespace Siege.ServiceLocation.HttpIntegration
 {
     public class HttpResolutionStore : IResolutionStore
     {
+        public HttpResolutionStore()
+        {
+            this.Clear();
+        }
+
         public void Add(List<IResolutionArgument> contextItem)
         {
             HttpContext.Current.Items.Add("Resolution" + Guid.NewGuid(), contextItem);
@@ -37,11 +42,13 @@ namespace Siege.ServiceLocation.HttpIntegration
         {
             get
             {
-                List<IResolutionArgument> items = new List<IResolutionArgument>();
+                var items = new List<IResolutionArgument>();
 
-                foreach (string key in HttpContext.Current.Items.Keys)
+                foreach (object keyObject in HttpContext.Current.Items.Keys)
                 {
-                    if (key.StartsWith("Resolution")) items.Add((IResolutionArgument) HttpContext.Current.Items[key]);
+                    var key = keyObject as string;
+                    if (!String.IsNullOrEmpty(key) && key.StartsWith("Resolution"))
+                        items.AddRange((List<IResolutionArgument>)HttpContext.Current.Items[key]);
                 }
 
                 return items;
@@ -50,6 +57,7 @@ namespace Siege.ServiceLocation.HttpIntegration
 
         public void Dispose()
         {
+            this.Clear();
         }
     }
 }

@@ -24,19 +24,24 @@ namespace Siege.ServiceLocation.HttpIntegration
 {
     public abstract class SiegeHttpApplication : HttpApplication
     {
-        private static IContextualServiceLocator locator;
+        protected static IContextualServiceLocator locator;
 
         public IContextualServiceLocator ServiceLocator
         {
-            get
-            {
-                return locator;
-            }
+            get { return locator; }
         }
 
+        protected abstract string GetApplicationName();
         protected abstract IServiceLocatorAdapter GetServiceLocatorAdapter();
 
-        public virtual void RegisterRoutes(RouteCollection routes) { }
+        protected virtual IControllerFactory GetControllerFactory()
+        {
+            return new SiegeControllerFactory(locator);
+        }
+
+        public virtual void RegisterRoutes(RouteCollection routes)
+        {
+        }
 
         protected virtual IContextStore GetContextStore()
         {
@@ -59,18 +64,12 @@ namespace Siege.ServiceLocation.HttpIntegration
         {
             lock (this)
             {
-                locator = new HttpSiegeContainer(GetServiceLocatorAdapter());
-                locator
-                    .Register(Given<RouteCollection>.Then(RouteTable.Routes))
-                    .Register(Given<IContextStore>.Then(locator.Store.ContextStore));
-
+                locator = new HttpSiegeContainer(GetServiceLocatorAdapter(), GetContextStore());
+                locator.Register(Given<RouteCollection>.Then(RouteTable.Routes));
 
                 RegisterRoutes(RouteTable.Routes);
-                ViewEngines.Engines.Clear();
-                ViewEngines.Engines.Add(new SiegeViewEngine());
-                ViewEngines.Engines.Add(new WebFormViewEngine());
 
-                ControllerBuilder.Current.SetControllerFactory(new SiegeControllerFactory(locator));
+                ControllerBuilder.Current.SetControllerFactory(GetControllerFactory());
 
                 OnApplicationStarted();
             }
@@ -92,6 +91,7 @@ namespace Siege.ServiceLocation.HttpIntegration
 
         protected void Application_Error(object sender, EventArgs e)
         {
+            OnApplicationError(Server.GetLastError());
         }
     }
 }

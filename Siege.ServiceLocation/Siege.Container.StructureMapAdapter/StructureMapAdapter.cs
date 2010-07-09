@@ -29,7 +29,7 @@ namespace Siege.ServiceLocation.StructureMapAdapter
 {
     public class StructureMapAdapter : IServiceLocatorAdapter
     {
-        private Container container;
+        private readonly Container container;
 
         public StructureMapAdapter()
             : this(new Container(x => x.IncludeConfigurationFromConfigFile = true))
@@ -50,8 +50,6 @@ namespace Siege.ServiceLocation.StructureMapAdapter
 
             container.Configure(x => x.AddRegistry(registry));
         }
-
-        #region IServiceLocatorAdapter Members
 
         public void Dispose()
         {
@@ -162,6 +160,21 @@ namespace Siege.ServiceLocation.StructureMapAdapter
             return expression != null ? expression.GetInstance(type) : container.GetInstance(type);
         }
 
+        public TService GetInstance<TService>(Type type, params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(type, arguments);
+        }
+
+        public TService GetInstance<TService>(string key, params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(typeof(TService), key, arguments);
+        }
+
+        public TService GetInstance<TService>(params IResolutionArgument[] arguments)
+        {
+            return (TService)GetInstance(typeof(TService), arguments);
+        }
+
         public void Register(Type from, Type to)
         {
             var registry = new Registry();
@@ -196,7 +209,5 @@ namespace Siege.ServiceLocation.StructureMapAdapter
             registry.For(type).LifecycleIs(InstanceScope.PerRequest).Use(x => func());
             container.Configure(configure => configure.AddRegistry(registry));
         }
-
-        #endregion
     }
 }

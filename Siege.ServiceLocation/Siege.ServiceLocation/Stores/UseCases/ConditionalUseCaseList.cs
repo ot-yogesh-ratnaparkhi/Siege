@@ -21,12 +21,7 @@ namespace Siege.ServiceLocation.Stores.UseCases
 {
     public class ConditionalUseCaseList
     {
-        private Dictionary<Type, List<IUseCase>> resolutionCases { get; set; }
-
-        public ConditionalUseCaseList()
-        {
-            this.resolutionCases = new Dictionary<Type, List<IUseCase>>();
-        }
+        private readonly Dictionary<Type, List<IUseCase>> resolutionCases = new Dictionary<Type, List<IUseCase>>();
 
         public List<IUseCase> GetUseCasesForType(Type type)
         {

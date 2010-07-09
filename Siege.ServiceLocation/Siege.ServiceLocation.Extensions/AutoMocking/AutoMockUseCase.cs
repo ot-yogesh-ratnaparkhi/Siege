@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,26 +14,29 @@
 */
 
 using System;
-using System.Collections.Generic;
+using Siege.ServiceLocation.Bindings.Default;
+using Siege.ServiceLocation.UseCases;
 
-namespace Siege.ServiceLocation.Planning
+namespace Siege.ServiceLocation.Extensions.AutoMocking
 {
-    public class ConstructorCandidate
+    public class AutoMockUseCase : InstanceUseCase<object>
     {
-        public ConstructorCandidate()
+        private readonly Type from;
+
+        public AutoMockUseCase(Type from, object to)
         {
-            Parameters = new List<ParameterSummary>();
+            this.from = from;
+            this.implementation = to;
         }
 
-        public Type Type { get; set; }
-        public List<ParameterSummary> Parameters { get; set; }
-        public Func<object[], object> Instantiate { get; set; }
-    }
+        public override Type GetUseCaseBindingType()
+        {
+            return typeof (DefaultUseCaseBinding);
+        }
 
-    public class ParameterSummary
-    {
-        public int Position { get; set; }
-        public Type ParameterType { get; set; }
-        public string Name { get; set; }
+        public override Type GetBaseBindingType()
+        {
+            return from;
+        }
     }
 }
