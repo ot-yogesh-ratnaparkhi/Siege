@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -19,27 +19,27 @@ using System.Linq;
 using System.Reflection;
 using Rhino.Mocks;
 using Siege.ServiceLocation.Extensions.AutoMocking;
-using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.Registrations;
 
 namespace Siege.ServiceLocation.RhinoMocks
 {
     public abstract class RhinoMock<T>
     {
-        public static List<IUseCase> Using(MockRepository repository)
+        public static List<IRegistration> Using(MockRepository repository)
         {
-            var useCases = new List<IUseCase>();
+            var registrations = new List<IRegistration>();
 
-            Register(typeof (T), typeof (T), repository, useCases);
+            Register(typeof (T), typeof (T), repository, registrations);
 
-            return useCases;
+            return registrations;
         }
 
-        private static object Register(Type baseType, Type to, MockRepository repository, ICollection<IUseCase> useCases)
+        private static object Register(Type baseType, Type to, MockRepository repository, ICollection<IRegistration> registrations)
         {
             if (to.IsInterface)
             {
                 object mock = repository.DynamicMock(to);
-                useCases.Add(new AutoMockUseCase(to, mock));
+                registrations.Add(new AutoMockRegistration(to, mock));
 
                 return mock;
             }
@@ -53,20 +53,20 @@ namespace Siege.ServiceLocation.RhinoMocks
 
                 foreach (ParameterInfo dependency in candidate.GetParameters())
                 {
-                    parameters.Add(Register(baseType, dependency.ParameterType, repository, useCases));
+                    parameters.Add(Register(baseType, dependency.ParameterType, repository, registrations));
                 }
 
                 if (baseType != to)
                 {
                     object stub = repository.Stub(to, parameters.ToArray());
-                    useCases.Add(new AutoMockUseCase(to, stub));
+                    registrations.Add(new AutoMockRegistration(to, stub));
 
                     return stub;
                 }
 
                 object instance = candidate.Invoke(parameters.ToArray());
 
-                useCases.Add(new AutoMockUseCase(to, instance));
+                registrations.Add(new AutoMockRegistration(to, instance));
 
                 return instance;
             }

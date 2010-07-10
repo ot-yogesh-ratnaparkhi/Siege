@@ -15,8 +15,8 @@
 
 using NUnit.Framework;
 using Siege.ServiceLocation.Exceptions;
-using Siege.ServiceLocation.Extensions.ExtendedSyntax;
-using Siege.ServiceLocation.Stores;
+using Siege.ServiceLocation.Extensions.ExtendedRegistrationSyntax;
+using Siege.ServiceLocation.InternalStorage;
 using Siege.ServiceLocation.UnitTests.TestClasses;
 
 namespace Siege.ServiceLocation.UnitTests

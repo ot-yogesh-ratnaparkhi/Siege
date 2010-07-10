@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
-using Siege.ServiceLocation.Stores;
+using Siege.ServiceLocation.InternalStorage;
 
 namespace Siege.ServiceLocation.HttpIntegration
 {

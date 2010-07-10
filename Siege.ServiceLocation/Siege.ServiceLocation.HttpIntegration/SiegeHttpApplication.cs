@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ using System;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Siege.ServiceLocation.Stores;
-using Siege.ServiceLocation.Syntax;
+using Siege.ServiceLocation.InternalStorage;
+using Siege.ServiceLocation.RegistrationSyntax;
 
 namespace Siege.ServiceLocation.HttpIntegration
 {

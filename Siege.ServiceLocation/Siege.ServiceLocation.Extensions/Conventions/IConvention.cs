@@ -14,12 +14,12 @@
 */
 
 using System.Collections.Generic;
-using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.Registrations;
 
 namespace Siege.ServiceLocation.Extensions.Conventions
 {
     public interface IConvention
     {
-        List<IUseCase> Build();
+        List<IRegistration> Build();
     }
 }

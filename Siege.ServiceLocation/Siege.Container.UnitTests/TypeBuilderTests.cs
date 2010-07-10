@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 using System;
 using NUnit.Framework;
 using Siege.ServiceLocation.AOP.Attributes;
-using Siege.ServiceLocation.Syntax;
+using Siege.ServiceLocation.RegistrationSyntax;
 
 namespace Siege.ServiceLocation.UnitTests
 {

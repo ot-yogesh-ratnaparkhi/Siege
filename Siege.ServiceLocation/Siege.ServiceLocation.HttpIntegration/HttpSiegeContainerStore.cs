@@ -13,7 +13,7 @@
      limitations under the License.
 */
 
-using Siege.ServiceLocation.Stores;
+using Siege.ServiceLocation.InternalStorage;
 
 namespace Siege.ServiceLocation.HttpIntegration
 {

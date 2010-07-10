@@ -17,12 +17,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Siege.ServiceLocation.ExtensionMethods;
-using Siege.ServiceLocation.Policies;
+using Siege.ServiceLocation.InternalStorage;
+using Siege.ServiceLocation.RegistrationPolicies;
+using Siege.ServiceLocation.RegistrationSyntax;
 using Siege.ServiceLocation.Resolution;
-using Siege.ServiceLocation.Stores;
-using Siege.ServiceLocation.Syntax;
-using Siege.ServiceLocation.UseCases;
-using Siege.ServiceLocation.UseCases.Managers;
+using Siege.ServiceLocation.Registrations;
+using Siege.ServiceLocation.Registrations.Containers;
 
 namespace Siege.ServiceLocation
 {
@@ -30,7 +30,7 @@ namespace Siege.ServiceLocation
     {
         private readonly IServiceLocatorAdapter serviceLocator;
         private readonly IServiceLocatorStore store;
-        private readonly IResolver resolver;
+        private readonly IResolutionTemplate resolutionTemplate;
         private readonly Foundation foundation;
         private readonly Hashtable factories = new Hashtable();
 
@@ -39,11 +39,9 @@ namespace Siege.ServiceLocation
             this.serviceLocator = serviceLocator;
             this.store = store;
             foundation = new Foundation();
-            resolver = new Resolver(serviceLocator, this.store, foundation);
+            resolutionTemplate = new DefaultResolutionTemplate(serviceLocator, this.store, foundation);
 
             serviceLocator.RegisterInstance(typeof (IServiceLocatorAdapter), serviceLocator);
-
-            Bind(Given<IResolver>.Then(resolver));
 
             RegisterPolicy(Given<Transient>.Then<Transient>());
             RegisterPolicy(Given<Singleton>.Then<Singleton>());
@@ -82,7 +80,7 @@ namespace Siege.ServiceLocation
         {
             store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
 
-            var instance = resolver.Resolve(type);
+            var instance = resolutionTemplate.Resolve(type);
 
             return instance;
         }
@@ -130,54 +128,49 @@ namespace Siege.ServiceLocation
             return serviceLocator.HasTypeRegistered(type);
         }
 
-        public IServiceLocator Register(List<IUseCase> useCases)
+        public IServiceLocator Register(List<IRegistration> registrations)
         {
-            return Register<Transient>(useCases);
+            return Register<Transient>(registrations);
         }
 
-        public IServiceLocator Register<TRegistrationPolicy>(List<IUseCase> useCases)
+        public IServiceLocator Register<TRegistrationPolicy>(List<IRegistration> registrations)
             where TRegistrationPolicy : IRegistrationPolicy
         {
-            foreach (IUseCase useCase in useCases) Register<TRegistrationPolicy>(useCase);
+            foreach (IRegistration registration in registrations) Register<TRegistrationPolicy>(registration);
 
             return this;
         }
 
-        public IServiceLocator Register<TRegistrationPolicy>(IUseCase useCase)
+        public IServiceLocator Register<TRegistrationPolicy>(IRegistration registration)
             where TRegistrationPolicy : IRegistrationPolicy
         {
-            IUseCaseManager caseManager = foundation.ContainsUseCaseManagerForBinding(useCase.GetUseCaseBinding())
-                                              ? foundation.GetUseCaseManager(useCase.GetUseCaseBinding())
-                                              : GetInstance<IUseCaseManager>(new ContextArgument(useCase));
+            IRegistrationContainer registrationContainer = foundation.ContainsRegistrationContainerForTemplate(registration.GetRegistrationTemplate())
+                                              ? foundation.GetRegistrationContainer(registration.GetRegistrationTemplate())
+                                              : GetInstance<IRegistrationContainer>(new ContextArgument(registration));
 
-            var policy = GetInstance<TRegistrationPolicy>(new ContextArgument(useCase),
-                                                          new ConstructorParameter {Name = "useCase", Value = useCase});
+            var policy = GetInstance<TRegistrationPolicy>(new ContextArgument(registration),
+                                                          new ConstructorParameter {Name = "registration", Value = registration});
 
-            caseManager.Add(policy);
-            Bind(policy);
+            registrationContainer.Add(policy);
+            policy.GetRegistrationTemplate().Register(serviceLocator, registration, this);
 
             return this;
         }
 
-        private void RegisterPolicy(IUseCase useCase)
+        private void RegisterPolicy(IRegistration registration)
         {
-            IUseCaseManager caseManager = foundation.ContainsUseCaseManagerForBinding(useCase.GetUseCaseBinding())
-                                              ? foundation.GetUseCaseManager(useCase.GetUseCaseBinding())
-                                              : GetInstance<IUseCaseManager>(new ContextArgument(useCase));
+            IRegistrationContainer registrationContainer = foundation.ContainsRegistrationContainerForTemplate(registration.GetRegistrationTemplate())
+                                              ? foundation.GetRegistrationContainer(registration.GetRegistrationTemplate())
+                                              : GetInstance<IRegistrationContainer>(new ContextArgument(registration));
 
-            caseManager.Add(useCase);
+            registrationContainer.Add(registration);
 
-            Bind(useCase);
+            registration.GetRegistrationTemplate().Register(serviceLocator, registration, this);
         }
 
-        public IServiceLocator Register(IUseCase useCase)
+        public IServiceLocator Register(IRegistration registration)
         {
-            return Register<Transient>(useCase);
-        }
-
-        private void Bind(IUseCase useCase)
-        {
-            useCase.GetUseCaseBinding().Bind(serviceLocator, useCase, this);
+            return Register<Transient>(registration);
         }
 
         public IServiceLocatorStore Store

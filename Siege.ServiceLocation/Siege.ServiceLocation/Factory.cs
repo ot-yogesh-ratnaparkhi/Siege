@@ -15,14 +15,14 @@
 
 using System;
 using System.Collections.Generic;
-using Siege.ServiceLocation.Bindings.Default;
+using Siege.ServiceLocation.RegistrationTemplates.Default;
 using Siege.ServiceLocation.EventHandlers;
 using Siege.ServiceLocation.Exceptions;
-using Siege.ServiceLocation.UseCases;
-using Siege.ServiceLocation.UseCases.Conditional;
-using Siege.ServiceLocation.UseCases.Default;
-using Siege.ServiceLocation.UseCases.Managers;
-using Siege.ServiceLocation.UseCases.PostResolution;
+using Siege.ServiceLocation.Registrations;
+using Siege.ServiceLocation.Registrations.Conditional;
+using Siege.ServiceLocation.Registrations.Default;
+using Siege.ServiceLocation.Registrations.Containers;
+using Siege.ServiceLocation.Registrations.PostResolution;
 
 namespace Siege.ServiceLocation
 {
@@ -30,8 +30,8 @@ namespace Siege.ServiceLocation
     {
         private readonly IContextualServiceLocator serviceLocator;
         private readonly Foundation foundation;
-        private readonly List<IUseCase> conditionalUseCases = new List<IUseCase>();
-        private readonly List<IUseCase> defaultCases = new List<IUseCase>();
+        private readonly List<IRegistration> conditionalRegistrations = new List<IRegistration>();
+        private readonly List<IRegistration> defaultRegistrations = new List<IRegistration>();
 
         public event TypeResolvedEventHandler TypeResolved;
 
@@ -42,10 +42,10 @@ namespace Siege.ServiceLocation
             this.serviceLocator.Store.ExecutionStore.WireEvent(this);
         }
 
-        public void AddCase(IUseCase useCase)
+        public void AddCase(IRegistration registration)
         {
-            if (useCase.GetUseCaseBinding() is DefaultUseCaseBinding) defaultCases.Add(useCase);
-            else conditionalUseCases.Add(useCase);
+            if (registration.GetRegistrationTemplate() is DefaultRegistrationTemplate) defaultRegistrations.Add(registration);
+            else conditionalRegistrations.Add(registration);
         }
 
         private void RaiseTypeResolvedEvent(Type type)
@@ -55,31 +55,31 @@ namespace Siege.ServiceLocation
 
         public object Build(Type type)
         {
-            for (int i = 0; i < conditionalUseCases.Count; i++)
+            for (int i = 0; i < conditionalRegistrations.Count; i++)
             {
-                var useCase = conditionalUseCases[i];
+                var registration = conditionalRegistrations[i];
                 object result = null;
 
-                if (useCase.IsValid(serviceLocator.Store))
+                if (registration.IsValid(serviceLocator.Store))
                 {
-                    result = Resolve(useCase, new ConditionalResolutionStrategy(serviceLocator, serviceLocator.Store));
+                    result = Resolve(registration, new ConditionalResolutionStrategy(serviceLocator, serviceLocator.Store));
                 }
 
                 if (result != null)
                 {
-                    RaiseTypeResolvedEvent(useCase.GetBaseBindingType());
+                    RaiseTypeResolvedEvent(registration.GetMappedFromType());
                     return result;
                 }
             }
 
-            for (int i = 0; i < defaultCases.Count; i++)
+            for (int i = 0; i < defaultRegistrations.Count; i++)
             {
-                var useCase = defaultCases[i];
-                object result = Resolve(useCase, new DefaultResolutionStrategy(serviceLocator, serviceLocator.Store));
+                var registration = defaultRegistrations[i];
+                object result = Resolve(registration, new DefaultResolutionStrategy(serviceLocator, serviceLocator.Store));
 
                 if (result != null)
                 {
-                    RaiseTypeResolvedEvent(useCase.GetBaseBindingType());
+                    RaiseTypeResolvedEvent(registration.GetMappedFromType());
                     return result;
                 }
             }
@@ -87,36 +87,36 @@ namespace Siege.ServiceLocation
             throw new RegistrationNotFoundException(type);
         }
 
-        private object Resolve(IUseCase useCase, IResolutionStrategy strategy)
+        private object Resolve(IRegistration registration, IResolutionStrategy strategy)
         {
-            var value = useCase.Resolve(strategy, this.serviceLocator.Store);
+            var value = registration.ResolveWith(strategy, this.serviceLocator.Store);
 
             if (value != null)
             {
-                this.RaiseTypeResolvedEvent(useCase.GetBoundType());
-                ExecutePostConditions<DefaultPostResolutionUseCaseManager>(useCase, actionUseCase => value = actionUseCase.Resolve(new PostResolutionStrategy(value), this.serviceLocator.Store));
-                ExecutePostConditions<ConditionalPostResolutionUseCaseManager>(useCase, actionUseCase =>
+                this.RaiseTypeResolvedEvent(registration.GetMappedToType());
+                ExecutePostConditions<DefaultPostResolutionRegistrationContainer>(registration, actionregistration => value = actionregistration.ResolveWith(new PostResolutionStrategy(value), this.serviceLocator.Store));
+                ExecutePostConditions<ConditionalPostResolutionRegistrationContainer>(registration, actionregistration =>
                 {
-                    if (actionUseCase.IsValid(this.serviceLocator.Store))
-                        value = actionUseCase.Resolve(new PostResolutionStrategy(value), this.serviceLocator.Store);
+                    if (actionregistration.IsValid(this.serviceLocator.Store))
+                        value = actionregistration.ResolveWith(new PostResolutionStrategy(value), this.serviceLocator.Store);
                 });
             }
 
             return value;
         }
 
-        private void ExecutePostConditions<TUseCaseManager>(IUseCase useCase, Action<IUseCase> action) where TUseCaseManager : IUseCaseManager
+        private void ExecutePostConditions<TregistrationManager>(IRegistration registration, Action<IRegistration> action) where TregistrationManager : IRegistrationContainer
         {
-            var manager = foundation.GetUseCaseManager<TUseCaseManager>();
-            IList<IUseCase> actions = manager.GetUseCasesForType(useCase.GetBoundType()) ??
-                                      manager.GetUseCasesForType(useCase.GetBaseBindingType());
+            var manager = foundation.GetRegistrationContainer<TregistrationManager>();
+            IList<IRegistration> actions = manager.GetregistrationsForType(registration.GetMappedToType()) ??
+                                      manager.GetregistrationsForType(registration.GetMappedFromType());
 
             if (actions != null)
             {
                 for (int i = 0; i < actions.Count; i++)
                 {
-                    var actionUseCase = actions[i];
-                    action(actionUseCase);
+                    var actionregistration = actions[i];
+                    action(actionregistration);
                 }
             }
         }

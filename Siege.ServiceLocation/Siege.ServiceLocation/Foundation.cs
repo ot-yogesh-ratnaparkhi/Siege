@@ -15,70 +15,69 @@
 
 using System;
 using System.Collections;
-using Siege.ServiceLocation.Bindings;
-using Siege.ServiceLocation.Bindings.Conditional;
-using Siege.ServiceLocation.Bindings.Default;
-using Siege.ServiceLocation.Bindings.Named;
-using Siege.ServiceLocation.Bindings.OpenGenerics;
-using Siege.ServiceLocation.Bindings.PostResolution;
-using Siege.ServiceLocation.Bindings.Registration;
-using Siege.ServiceLocation.UseCases.Managers;
+using Siege.ServiceLocation.Registrations.Containers;
+using Siege.ServiceLocation.RegistrationTemplates;
+using Siege.ServiceLocation.RegistrationTemplates.Conditional;
+using Siege.ServiceLocation.RegistrationTemplates.Default;
+using Siege.ServiceLocation.RegistrationTemplates.Named;
+using Siege.ServiceLocation.RegistrationTemplates.OpenGenerics;
+using Siege.ServiceLocation.RegistrationTemplates.PostResolution;
 
 namespace Siege.ServiceLocation
 {
     public class Foundation
     {
-        private readonly Hashtable useCaseManagers = new Hashtable();
-        private readonly Hashtable useCaseManagersByManagerType = new Hashtable();
+        private readonly Hashtable registrationContainers = new Hashtable();
+        private readonly Hashtable registrationContainersByType = new Hashtable();
         
         public Foundation()
         {
-            var conditionalManager = new ConditionalUseCaseManager();
-            var defaultManager = new DefaultUseCaseManager();
-            var namedManager = new ConditionalUseCaseManager();
+            var conditionalManager = new ConditionalRegistrationContainer();
+            var defaultManager = new DefaultRegistrationContainer();
+            var namedManager = new ConditionalRegistrationContainer();
 
-            AddUseCaseManager(typeof(ConditionalUseCaseBinding), conditionalManager);
-            AddUseCaseManager(typeof(ConditionalInstanceUseCaseBinding), conditionalManager);
-            AddUseCaseManager(typeof(OpenGenericUseCaseBinding), new ConditionalUseCaseManager());
-            AddUseCaseManager(typeof(DefaultUseCaseBinding), defaultManager);
-            AddUseCaseManager(typeof(DefaultInstanceUseCaseBinding), defaultManager);
-            AddUseCaseManager(typeof(NamedUseCaseBinding), namedManager);
-            AddUseCaseManager(typeof(NamedInstanceUseCaseBinding), namedManager);
-            AddUseCaseManager(typeof(DefaultPostResolutionUseCaseBinding), new DefaultPostResolutionUseCaseManager());
-            AddUseCaseManager(typeof(ConditionalPostResolutionUseCaseBinding), new ConditionalPostResolutionUseCaseManager());
-            AddUseCaseManager(typeof(ConditionalRegistrationUseCaseBinding), new ConditionalRegistrationUseCaseManager());
-            AddUseCaseManager(typeof(DefaultRegistrationUseCaseBinding), new DefaultRegistrationUseCaseManager());
+            AddRegistrationContainer(typeof(ConditionalRegistrationTemplate), conditionalManager);
+            AddRegistrationContainer(typeof(ConditionalInstanceRegistrationTemplate), conditionalManager);
+            AddRegistrationContainer(typeof(OpenGenericRegistrationTemplate), new ConditionalRegistrationContainer());
+            AddRegistrationContainer(typeof(DefaultRegistrationTemplate), defaultManager);
+            AddRegistrationContainer(typeof(DefaultInstanceRegistrationTemplate), defaultManager);
+            AddRegistrationContainer(typeof(NamedRegistrationTemplate), namedManager);
+            AddRegistrationContainer(typeof(NamedInstanceRegistrationTemplate), namedManager);
+            AddRegistrationContainer(typeof(DefaultPostResolutionRegistrationTemplate), new DefaultPostResolutionRegistrationContainer());
+            AddRegistrationContainer(typeof(ConditionalPostResolutionRegistrationTemplate), new ConditionalPostResolutionRegistrationContainer());
+            AddRegistrationContainer(typeof(ConditionalRegistrationTemplate), new ConditionalPreResolutionRegistrationContainer());
+            AddRegistrationContainer(typeof(DefaultRegistrationTemplate), new DefaultPreResolutionRegistrationContainer());
             
         }
 
-        private void AddUseCaseManager<TUseCaseManager>(Type bindingType, TUseCaseManager instance) where TUseCaseManager : IUseCaseManager
+        private void AddRegistrationContainer<TRegistrationContainer>(Type templateType, TRegistrationContainer instance) where TRegistrationContainer : IRegistrationContainer
         {
-            if (!useCaseManagers.ContainsKey(bindingType))
+            if (!registrationContainers.ContainsKey(templateType))
             {
-                lock (useCaseManagers.SyncRoot)
+                lock (registrationContainers.SyncRoot)
                 {
-                    if (!useCaseManagers.ContainsKey(bindingType))
+                    if (!registrationContainers.ContainsKey(templateType))
                     {
-                        useCaseManagers.Add(bindingType, instance);
-                        if(!useCaseManagersByManagerType.ContainsKey(typeof(TUseCaseManager))) useCaseManagersByManagerType.Add(typeof(TUseCaseManager), instance);
+                        registrationContainers.Add(templateType, instance);
+                        if(!registrationContainersByType.ContainsKey(typeof(TRegistrationContainer))) registrationContainersByType.Add(typeof(TRegistrationContainer), instance);
                     }
                 }
             }
         }
 
-        public IUseCaseManager GetUseCaseManager(IUseCaseBinding useCaseBinding)
+        public IRegistrationContainer GetRegistrationContainer(IRegistrationTemplate registrationTemplate)
         {
-            return (IUseCaseManager) useCaseManagers[useCaseBinding.GetType()];
+            return (IRegistrationContainer) registrationContainers[registrationTemplate.GetType()];
         }
 
-        public IUseCaseManager GetUseCaseManager<TUseCaseManager>() where TUseCaseManager : IUseCaseManager
+        public IRegistrationContainer GetRegistrationContainer<TRegistrationManager>() where TRegistrationManager : IRegistrationContainer
         {
-            return (TUseCaseManager)useCaseManagersByManagerType[typeof(TUseCaseManager)];
+            return (TRegistrationManager)registrationContainersByType[typeof(TRegistrationManager)];
         }
 
-        public bool ContainsUseCaseManagerForBinding(IUseCaseBinding useCaseBinding)
+        public bool ContainsRegistrationContainerForTemplate(IRegistrationTemplate registrationTemplate)
         {
-            return useCaseManagers.ContainsKey(useCaseBinding.GetType());
+            return registrationContainers.ContainsKey(registrationTemplate.GetType());
         }
     }
 }

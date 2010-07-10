@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Siege.ServiceLocation.AOP;
-using Siege.ServiceLocation.Bindings;
-using Siege.ServiceLocation.Bindings.Registration;
+using Siege.ServiceLocation.Extensions.ExtendedRegistrationSyntax;
+using Siege.ServiceLocation.InternalStorage;
+using Siege.ServiceLocation.RegistrationTemplates;
+using Siege.ServiceLocation.RegistrationTemplates.Registration;
 using Siege.ServiceLocation.Extensions.Conventions;
-using Siege.ServiceLocation.Extensions.ExtendedSyntax;
-using Siege.ServiceLocation.Stores;
-using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.Registrations;
 
 namespace Siege.ServiceLocation.UnitTests
 {
@@ -22,67 +22,67 @@ namespace Siege.ServiceLocation.UnitTests
 
     public class ProxyConvention : IConvention
     {
-        public List<IUseCase> Build()
+        public List<IRegistration> Build()
         {
-            return new List<IUseCase> {Given<IRegistrationUseCase>.Then<ProxyUseCase>()};
+            return new List<IRegistration> {Given<IRegistrationregistration>.Then<Proxyregistration>()};
         }
     }
 
-    public class ProxyUseCase : IUseCase, IRegistrationUseCase
+    public class Proxyregistration : IRegistration, IRegistrationregistration
     {
-        private readonly IUseCase useCase;
+        private readonly IRegistration registration;
         private readonly Type boundType;
 
-        public ProxyUseCase(SiegeProxy proxy, IUseCase useCase)
+        public Proxyregistration(SiegeProxy proxy, IRegistration registration)
         {
-            this.useCase = useCase;
-            boundType = proxy.WithServiceLocator().Create(useCase.GetBoundType());
+            this.registration = registration;
+            boundType = proxy.WithServiceLocator().Create(registration.GetMappedToType());
         }
 
-        public object GetBinding()
+        public object GetMappedTo()
         {
-            return useCase.GetBinding();
+            return registration.GetMappedTo();
         }
 
-        public Type GetBoundType()
+        public Type GetMappedToType()
         {
             return boundType;
         }
 
-        public IUseCaseBinding GetUseCaseBinding()
+        public IRegistrationTemplate GetRegistrationTemplate()
         {
-            return useCase.GetUseCaseBinding();
+            return registration.GetRegistrationTemplate();
         }
 
-        public Type GetBaseBindingType()
+        public Type GetMappedFromType()
         {
-            return useCase.GetBaseBindingType();
+            return registration.GetMappedFromType();
         }
 
-        public object Resolve(IResolutionStrategy strategy, IServiceLocatorStore accessor)
+        public object ResolveWith(IResolutionStrategy strategy, IServiceLocatorStore accessor)
         {
-            return useCase.Resolve(strategy, accessor);
+            return registration.ResolveWith(strategy, accessor);
         }
 
         public bool IsValid(IServiceLocatorStore context)
         {
-            return useCase.IsValid(context);
+            return registration.IsValid(context);
         }
 
-        Type IRegistrationUseCase.GetUseCaseBindingType()
+        Type IRegistrationregistration.GetregistrationBindingType()
         {
-            return typeof(DefaultRegistrationUseCaseBinding);
+            return typeof(DefaultRegistrationTemplate);
         }
 
-        bool IRegistrationUseCase.IsValid(IServiceLocatorStore context)
+        bool IRegistrationregistration.IsValid(IServiceLocatorStore context)
         {
             return true;
         }
     }
 
-    public interface IRegistrationUseCase
+    public interface IRegistrationregistration
     {
-        Type GetUseCaseBindingType();
+        Type GetregistrationBindingType();
         bool IsValid(IServiceLocatorStore context);
     }
 }

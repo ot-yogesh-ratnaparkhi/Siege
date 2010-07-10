@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Siege.ServiceLocation.Extensions.Conventions;
-using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.Registrations;
 
 namespace Siege.ServiceLocation.Extensions.AutoScanner
 {
@@ -37,25 +37,25 @@ namespace Siege.ServiceLocation.Extensions.AutoScanner
             baseTypes.Add(typeof(TType));
         }
 
-        public List<IUseCase> Build()
+        public List<IRegistration> Build()
         {
-            var useCases = new List<IUseCase>();
+            var registrations = new List<IRegistration>();
 
             foreach(Type type in assembly.GetExportedTypes())
             {
                 if(baseTypes.Count > 0)
                 {
-                    useCases.AddRange((from baseType in baseTypes
+                    registrations.AddRange((from baseType in baseTypes
                                        where baseType.IsAssignableFrom(type) && !type.IsInterface
-                                       select new AutoScannedUseCase(baseType, type)).Cast<IUseCase>());
+                                       select new AutoScannedRegistration(baseType, type)).Cast<IRegistration>());
                 }
                 else
                 {
-                    useCases.Add(new AutoScannedUseCase(type.BaseType, type));
+                    registrations.Add(new AutoScannedRegistration(type.BaseType, type));
                 }
             }
 
-            return useCases;
+            return registrations;
         }
     }
 }

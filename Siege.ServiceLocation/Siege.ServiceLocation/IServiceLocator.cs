@@ -15,17 +15,17 @@
 
 using System;
 using System.Collections.Generic;
-using Siege.ServiceLocation.Policies;
-using Siege.ServiceLocation.UseCases;
+using Siege.ServiceLocation.RegistrationPolicies;
+using Siege.ServiceLocation.Registrations;
 
 namespace Siege.ServiceLocation
 {
     public interface IServiceLocator : Microsoft.Practices.ServiceLocation.IServiceLocator, IDisposable, IInstanceResolver, IFactoryFetcher
     {
-        IServiceLocator Register(List<IUseCase> useCase);
-        IServiceLocator Register(IUseCase useCase);
-        IServiceLocator Register<TRegistrationPolicy>(List<IUseCase> useCase) where TRegistrationPolicy : IRegistrationPolicy;
-        IServiceLocator Register<TRegistrationPolicy>(IUseCase useCase) where TRegistrationPolicy : IRegistrationPolicy;
+        IServiceLocator Register(List<IRegistration> registration);
+        IServiceLocator Register(IRegistration registration);
+        IServiceLocator Register<TRegistrationPolicy>(List<IRegistration> registration) where TRegistrationPolicy : IRegistrationPolicy;
+        IServiceLocator Register<TRegistrationPolicy>(IRegistration registration) where TRegistrationPolicy : IRegistrationPolicy;
         new object GetInstance(Type type);
         new object GetInstance(Type type, string key);
     }

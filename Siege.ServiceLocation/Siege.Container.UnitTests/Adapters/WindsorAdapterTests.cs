@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using NUnit.Framework;
 using Siege.ServiceLocation.Exceptions;
-using Siege.ServiceLocation.Stores;
-using Siege.ServiceLocation.Syntax;
+using Siege.ServiceLocation.InternalStorage;
+using Siege.ServiceLocation.RegistrationSyntax;
 using Siege.ServiceLocation.UnitTests.TestClasses;
 using Siege.SeviceLocation.WindsorAdapter;
 
