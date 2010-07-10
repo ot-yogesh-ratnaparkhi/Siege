@@ -24,7 +24,7 @@ using Siege.ServiceLocation.Registrations.Containers;
 
 namespace Siege.ServiceLocation.Resolution
 {
-    public class DefaultResolutionTemplate : IResolutionTemplate, ITypeResolver
+    public class DefaultResolutionTemplate : IResolutionTemplate
     {
         protected readonly IInstanceResolver serviceLocator;
         protected readonly IServiceLocatorStore store;

@@ -19,10 +19,10 @@ using System.Collections.Generic;
 using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.InternalStorage;
 using Siege.ServiceLocation.RegistrationPolicies;
-using Siege.ServiceLocation.RegistrationSyntax;
-using Siege.ServiceLocation.Resolution;
 using Siege.ServiceLocation.Registrations;
 using Siege.ServiceLocation.Registrations.Containers;
+using Siege.ServiceLocation.RegistrationSyntax;
+using Siege.ServiceLocation.Resolution;
 
 namespace Siege.ServiceLocation
 {
@@ -49,6 +49,7 @@ namespace Siege.ServiceLocation
             Register<Singleton>(Given<IFactoryFetcher>.Then(this));
             Register<Singleton>(Given<IServiceLocator>.Then(this));
             Register<Singleton>(Given<IContextualServiceLocator>.Then(this));
+            Register<Singleton>(Given<Foundation>.Then<Foundation>());
         }
 
         public void AddContext(object contextItem)
@@ -80,7 +81,9 @@ namespace Siege.ServiceLocation
         {
             store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
 
-            var instance = resolutionTemplate.Resolve(type);
+            object instance = !HasTypeRegistered(typeof(IResolutionTemplate)) 
+                ? resolutionTemplate.Resolve(type) 
+                : GetInstance<IResolutionTemplate>().Resolve(type);
 
             return instance;
         }

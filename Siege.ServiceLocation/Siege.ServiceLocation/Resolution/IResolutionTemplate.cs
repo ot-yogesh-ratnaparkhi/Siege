@@ -14,10 +14,11 @@
 */
 
 using System;
+using Siege.ServiceLocation.EventHandlers;
 
 namespace Siege.ServiceLocation.Resolution
 {
-    public interface IResolutionTemplate
+    public interface IResolutionTemplate : ITypeResolver
     {
         object Resolve(Type type);
     }
