@@ -28,7 +28,7 @@ namespace Siege.ServiceLocation.RegistrationPolicies
 
         }
 
-        public override object ResolveWith(IResolutionStrategy strategy, IServiceLocatorStore accessor)
+        public override object ResolveWith(IInstanceResolver resolver, IServiceLocatorStore context)
         {
             if (instance == null)
             {
@@ -36,7 +36,7 @@ namespace Siege.ServiceLocation.RegistrationPolicies
                 {
                     if(instance == null)
                     {
-                        instance = registration.ResolveWith(strategy, accessor);
+                        instance = registration.ResolveWith(resolver, context);
                     }
                 }
             }

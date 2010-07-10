@@ -24,5 +24,7 @@ namespace Siege.ServiceLocation.InternalStorage
         List<Type> RequestedTypes{ get; }
         void WireEvent(ITypeResolver typeResolver);
         void WireEvent(ITypeRequester typeRequestor);
+        void UnWireEvent(ITypeResolver typeResolver);
+        void UnWireEvent(ITypeRequester typeRequestor);
     }
 }

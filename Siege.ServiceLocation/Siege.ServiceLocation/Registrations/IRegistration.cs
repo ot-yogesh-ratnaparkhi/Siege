@@ -25,7 +25,7 @@ namespace Siege.ServiceLocation.Registrations
         Type GetMappedToType();
         Type GetMappedFromType();
         IRegistrationTemplate GetRegistrationTemplate();
-        object ResolveWith(IResolutionStrategy strategy, IServiceLocatorStore accessor);
+        object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context);
         bool IsValid(IServiceLocatorStore context);
     }
 }

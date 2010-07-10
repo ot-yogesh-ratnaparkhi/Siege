@@ -19,10 +19,8 @@ using Siege.ServiceLocation.RegistrationTemplates.Default;
 using Siege.ServiceLocation.EventHandlers;
 using Siege.ServiceLocation.Exceptions;
 using Siege.ServiceLocation.Registrations;
-using Siege.ServiceLocation.Registrations.Conditional;
-using Siege.ServiceLocation.Registrations.Default;
 using Siege.ServiceLocation.Registrations.Containers;
-using Siege.ServiceLocation.Registrations.PostResolution;
+using Siege.ServiceLocation.Resolution;
 
 namespace Siege.ServiceLocation
 {
@@ -62,7 +60,7 @@ namespace Siege.ServiceLocation
 
                 if (registration.IsValid(serviceLocator.Store))
                 {
-                    result = Resolve(registration, new ConditionalResolutionStrategy(serviceLocator, serviceLocator.Store));
+                    result = Resolve(registration);
                 }
 
                 if (result != null)
@@ -75,7 +73,7 @@ namespace Siege.ServiceLocation
             for (int i = 0; i < defaultRegistrations.Count; i++)
             {
                 var registration = defaultRegistrations[i];
-                object result = Resolve(registration, new DefaultResolutionStrategy(serviceLocator, serviceLocator.Store));
+                object result = Resolve(registration);
 
                 if (result != null)
                 {
@@ -87,27 +85,27 @@ namespace Siege.ServiceLocation
             throw new RegistrationNotFoundException(type);
         }
 
-        private object Resolve(IRegistration registration, IResolutionStrategy strategy)
+        private object Resolve(IRegistration registration)
         {
-            var value = registration.ResolveWith(strategy, this.serviceLocator.Store);
+            var value = registration.ResolveWith(this.serviceLocator, this.serviceLocator.Store);
 
             if (value != null)
             {
                 this.RaiseTypeResolvedEvent(registration.GetMappedToType());
-                ExecutePostConditions<DefaultPostResolutionRegistrationContainer>(registration, actionregistration => value = actionregistration.ResolveWith(new PostResolutionStrategy(value), this.serviceLocator.Store));
+                ExecutePostConditions<DefaultPostResolutionRegistrationContainer>(registration, actionregistration => value = actionregistration.ResolveWith(new ValueResolver(value), this.serviceLocator.Store));
                 ExecutePostConditions<ConditionalPostResolutionRegistrationContainer>(registration, actionregistration =>
                 {
                     if (actionregistration.IsValid(this.serviceLocator.Store))
-                        value = actionregistration.ResolveWith(new PostResolutionStrategy(value), this.serviceLocator.Store);
+                        value = actionregistration.ResolveWith(new ValueResolver(value), this.serviceLocator.Store);
                 });
             }
 
             return value;
         }
 
-        private void ExecutePostConditions<TregistrationManager>(IRegistration registration, Action<IRegistration> action) where TregistrationManager : IRegistrationContainer
+        private void ExecutePostConditions<TRegistrationManager>(IRegistration registration, Action<IRegistration> action) where TRegistrationManager : IRegistrationContainer
         {
-            var manager = foundation.GetRegistrationContainer<TregistrationManager>();
+            var manager = foundation.GetRegistrationContainer<TRegistrationManager>();
             IList<IRegistration> actions = manager.GetregistrationsForType(registration.GetMappedToType()) ??
                                       manager.GetregistrationsForType(registration.GetMappedFromType());
 

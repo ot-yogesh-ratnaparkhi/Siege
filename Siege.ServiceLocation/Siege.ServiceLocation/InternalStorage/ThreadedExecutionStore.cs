@@ -41,6 +41,16 @@ namespace Siege.ServiceLocation.InternalStorage
             typeRequestor.TypeRequested += OnTypeRequested;
         }
 
+        public void UnWireEvent(ITypeResolver typeResolver)
+        {
+            typeResolver.TypeResolved -= OnTypeResolved;
+        }
+
+        public void UnWireEvent(ITypeRequester typeRequestor)
+        {
+            typeRequestor.TypeRequested -= OnTypeRequested;
+        }
+
         void OnTypeResolved(Type type)
         {
             Decrement();

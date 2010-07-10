@@ -14,13 +14,14 @@
 */
 
 using System;
+using Siege.ServiceLocation.EventHandlers;
 using Siege.ServiceLocation.InternalStorage;
 using Siege.ServiceLocation.RegistrationTemplates;
 using Siege.ServiceLocation.ResolutionRules;
 
 namespace Siege.ServiceLocation.Registrations
 {
-    public abstract class Registration : IRegistration
+    public abstract class Registration : IRegistration, ITypeRequester
     {
         protected abstract IActivationStrategy GetActivationStrategy();
         protected IActivationRule rule;
@@ -28,6 +29,7 @@ namespace Siege.ServiceLocation.Registrations
         public abstract Type GetMappedFromType();
         public abstract object GetMappedTo();
         public abstract Type GetMappedToType();
+        public event TypeRequestedEventHandler TypeRequested;
 
         public void SetActivationRule(IActivationRule rule)
         {
@@ -41,9 +43,33 @@ namespace Siege.ServiceLocation.Registrations
             return rule.GetRuleEvaluationStrategy().IsValid(rule, context);
         }
 
-        public virtual object ResolveWith(IResolutionStrategy strategy, IServiceLocatorStore accessor)
+        public virtual object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context)
         {
-            return strategy.Resolve(GetMappedToType(), rule, GetActivationStrategy());
+            context.ExecutionStore.WireEvent(this);
+            object instance = null;
+
+            if (rule == null)
+            {
+                RaiseTypeRequestedEvent(GetMappedToType());
+                instance = GetActivationStrategy().Resolve(locator, context);
+            }
+            else
+            {
+                if (rule.GetRuleEvaluationStrategy().IsValid(rule, context))
+                {
+                    RaiseTypeRequestedEvent(GetMappedToType());
+                    instance = GetActivationStrategy().Resolve(locator, context);
+                }
+            }
+
+            context.ExecutionStore.UnWireEvent(this);
+
+            return instance;
+        }
+
+        private void RaiseTypeRequestedEvent(Type type)
+        {
+            if (this.TypeRequested != null) this.TypeRequested(type);
         }
     }
 }

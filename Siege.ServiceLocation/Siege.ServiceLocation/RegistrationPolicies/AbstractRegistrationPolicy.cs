@@ -50,7 +50,7 @@ namespace Siege.ServiceLocation.RegistrationPolicies
             return registration.GetMappedFromType();
         }
 
-        public abstract object ResolveWith(IResolutionStrategy strategy, IServiceLocatorStore accessor);
+        public abstract object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context);
 
         public bool IsValid(IServiceLocatorStore context)
         {

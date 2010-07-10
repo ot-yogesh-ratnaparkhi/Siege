@@ -24,16 +24,16 @@ namespace Siege.ServiceLocation.UnitTests
     {
         public List<IRegistration> Build()
         {
-            return new List<IRegistration> {Given<IRegistrationregistration>.Then<Proxyregistration>()};
+            return new List<IRegistration> { Given<IPreResolutionRegistration>.Then<ProxyRegistration>() };
         }
     }
 
-    public class Proxyregistration : IRegistration, IRegistrationregistration
+    public class ProxyRegistration : IRegistration, IPreResolutionRegistration
     {
         private readonly IRegistration registration;
         private readonly Type boundType;
 
-        public Proxyregistration(SiegeProxy proxy, IRegistration registration)
+        public ProxyRegistration(SiegeProxy proxy, IRegistration registration)
         {
             this.registration = registration;
             boundType = proxy.WithServiceLocator().Create(registration.GetMappedToType());
@@ -59,9 +59,9 @@ namespace Siege.ServiceLocation.UnitTests
             return registration.GetMappedFromType();
         }
 
-        public object ResolveWith(IResolutionStrategy strategy, IServiceLocatorStore accessor)
+        public object ResolveWith(IInstanceResolver resolver, IServiceLocatorStore context)
         {
-            return registration.ResolveWith(strategy, accessor);
+            return registration.ResolveWith(resolver, context);
         }
 
         public bool IsValid(IServiceLocatorStore context)
@@ -69,20 +69,20 @@ namespace Siege.ServiceLocation.UnitTests
             return registration.IsValid(context);
         }
 
-        Type IRegistrationregistration.GetregistrationBindingType()
+        IRegistrationTemplate IPreResolutionRegistration.GetRegistrationTemplate()
         {
-            return typeof(DefaultRegistrationTemplate);
+            return new DefaultRegistrationTemplate();
         }
 
-        bool IRegistrationregistration.IsValid(IServiceLocatorStore context)
+        bool IPreResolutionRegistration.IsValid(IServiceLocatorStore context)
         {
             return true;
         }
     }
 
-    public interface IRegistrationregistration
+    public interface IPreResolutionRegistration
     {
-        Type GetregistrationBindingType();
+        IRegistrationTemplate GetRegistrationTemplate();
         bool IsValid(IServiceLocatorStore context);
     }
 }

@@ -29,12 +29,14 @@ namespace Siege.ServiceLocation
     {
         private readonly Hashtable registrationContainers = new Hashtable();
         private readonly Hashtable registrationContainersByType = new Hashtable();
+        private readonly IRegistrationContainer fallbackContainer;
         
         public Foundation()
         {
             var conditionalManager = new ConditionalRegistrationContainer();
             var defaultManager = new DefaultRegistrationContainer();
             var namedManager = new ConditionalRegistrationContainer();
+            this.fallbackContainer = conditionalManager;
 
             AddRegistrationContainer(typeof(ConditionalRegistrationTemplate), conditionalManager);
             AddRegistrationContainer(typeof(ConditionalInstanceRegistrationTemplate), conditionalManager);
@@ -67,6 +69,8 @@ namespace Siege.ServiceLocation
 
         public IRegistrationContainer GetRegistrationContainer(IRegistrationTemplate registrationTemplate)
         {
+            if(!ContainsRegistrationContainerForTemplate(registrationTemplate)) return this.fallbackContainer;
+
             return (IRegistrationContainer) registrationContainers[registrationTemplate.GetType()];
         }
 

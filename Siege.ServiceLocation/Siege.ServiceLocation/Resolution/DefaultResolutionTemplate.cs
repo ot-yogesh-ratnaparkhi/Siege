@@ -21,9 +21,6 @@ using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.InternalStorage;
 using Siege.ServiceLocation.Registrations;
 using Siege.ServiceLocation.Registrations.Containers;
-using Siege.ServiceLocation.Registrations.PostResolution;
-using Siege.ServiceLocation.Registrations.Conditional;
-using Siege.ServiceLocation.Registrations.Default;
 
 namespace Siege.ServiceLocation.Resolution
 {
@@ -59,7 +56,7 @@ namespace Siege.ServiceLocation.Resolution
 
                     if (registration.IsValid(this.store))
                     {
-                        value = Resolve(registration, new ConditionalResolutionStrategy(serviceLocator, this.store));
+                        value = Resolve(registration);
                     }
 
                     if (value != null)
@@ -72,7 +69,7 @@ namespace Siege.ServiceLocation.Resolution
             if (defaultManager.Contains(type))
             {
                 var registration = defaultManager.GetregistrationsForType(type)[0];
-                var value = Resolve(registration, new DefaultResolutionStrategy(serviceLocator, this.store));
+                var value = Resolve(registration);
 
                 if (value != null)
                 {
@@ -97,9 +94,9 @@ namespace Siege.ServiceLocation.Resolution
             return null;
         }
 
-        private object Resolve(IRegistration registration, IResolutionStrategy strategy)
+        private object Resolve(IRegistration registration)
         {
-            var value = registration.ResolveWith(strategy, this.store);
+            var value = registration.ResolveWith(this.serviceLocator, this.store);
 
             if (value != null)
             {
@@ -107,9 +104,9 @@ namespace Siege.ServiceLocation.Resolution
                 ExecutePostConditions<ConditionalPostResolutionRegistrationContainer>(registration, actionregistration =>
                 {
                     if (actionregistration.IsValid(this.store))
-                        value = actionregistration.ResolveWith(new PostResolutionStrategy(value), this.store);
-                }); 
-                ExecutePostConditions<DefaultPostResolutionRegistrationContainer>(registration, actionregistration => value = actionregistration.ResolveWith(new PostResolutionStrategy(value), this.store));
+                        value = actionregistration.ResolveWith(new ValueResolver(value), this.store);
+                });
+                ExecutePostConditions<DefaultPostResolutionRegistrationContainer>(registration, actionregistration => value = actionregistration.ResolveWith(new ValueResolver(value), this.store));
             }
 
             return value;

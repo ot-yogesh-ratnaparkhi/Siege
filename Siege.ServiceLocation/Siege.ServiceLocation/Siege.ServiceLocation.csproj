@@ -77,7 +77,6 @@
     <Compile Include="Resolution\DefaultResolutionTemplate.cs" />
     <Compile Include="Registrations\Containers\ConditionalPreResolutionRegistrationContainer.cs" />
     <Compile Include="Registrations\Containers\DefaultPreResolutionRegistrationContainer.cs" />
-    <Compile Include="Registrations\PostResolution\PostResolutionStrategy.cs" />
     <Compile Include="Registrations\Containers\ConditionalPostResolutionRegistrationContainer.cs" />
     <Compile Include="Registrations\Containers\ConditionalRegistrationContainer.cs" />
     <Compile Include="Registrations\Containers\DefaultPostResolutionRegistrationContainer.cs" />
@@ -106,9 +105,7 @@
     <Compile Include="Registrations\Conditional\ConditionalRegistration.cs" />
     <Compile Include="Registrations\Conditional\ConditionalInstanceRegistration.cs" />
     <Compile Include="ResolutionRules\ContextEvaluationStrategy.cs" />
-    <Compile Include="Registrations\Conditional\ConditionalResolutionStrategy.cs" />
     <Compile Include="Registrations\Default\DefaultInstanceRegistration.cs" />
-    <Compile Include="Registrations\Default\DefaultResolutionStrategy.cs" />
     <Compile Include="Registrations\Default\DefaultRegistration.cs" />
     <Compile Include="Registrations\TypedRegistration.cs" />
     <Compile Include="RegistrationSyntax\Given.cs" />
@@ -122,11 +119,11 @@
     <Compile Include="IServiceLocator.cs" />
     <Compile Include="IServiceLocatorAdapter.cs" />
     <Compile Include="ResolutionRules\IRuleEvaluationStrategy.cs" />
-    <Compile Include="Registrations\IResolutionStrategy.cs" />
     <Compile Include="Registrations\IRegistration.cs" />
     <Compile Include="Registrations\Named\NamedInstanceRegistration.cs" />
     <Compile Include="Registrations\Named\NamedRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resolution\ValueResolver.cs" />
     <Compile Include="SiegeContainer.cs" />
     <Compile Include="Registrations\Registration.cs" />
   </ItemGroup>

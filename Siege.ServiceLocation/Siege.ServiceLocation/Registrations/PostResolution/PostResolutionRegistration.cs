@@ -31,9 +31,9 @@ namespace Siege.ServiceLocation.Registrations.PostResolution
             this.action = action;
         }
 
-        public override object ResolveWith(IResolutionStrategy strategy, IServiceLocatorStore accessor)
+        public override object ResolveWith(IInstanceResolver resolver, IServiceLocatorStore context)
         {
-            return action((TService)base.ResolveWith(strategy, accessor));
+            return action((TService)base.ResolveWith(resolver, context));
         }
     }
 }
