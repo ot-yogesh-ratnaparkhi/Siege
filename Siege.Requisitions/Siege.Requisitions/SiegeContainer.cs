@@ -79,7 +79,9 @@ namespace Siege.Requisitions
                                               ? foundation.GetRegistrationContainer(registration.GetRegistrationTemplate())
                                               : GetInstance<IRegistrationContainer>(new ContextArgument(registration));
 
-            var processedRegistration = registrationTemplate.Process(registration);
+            var processedRegistration = HasTypeRegistered(typeof(IMetaRegistrationTemplate))
+                                           ? GetInstance<IMetaRegistrationTemplate>(new ContextArgument(registration)).Process(registration)
+                                           : registrationTemplate.Process(registration);
 
             var policy = GetInstance<TRegistrationPolicy>(new ConstructorParameter { Name = "registration", Value = processedRegistration });
 
