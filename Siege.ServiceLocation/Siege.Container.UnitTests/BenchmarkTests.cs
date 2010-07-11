@@ -22,7 +22,7 @@ namespace Siege.ServiceLocation.UnitTests
 {
 	public abstract partial class SiegeContainerTests
 	{
-		const double iterations = 100000;
+		const double iterations = 10000;
 
         [Test, Ignore]
 		[Category("Load")]
@@ -60,7 +60,8 @@ namespace Siege.ServiceLocation.UnitTests
 			for (int i = 0; i < iterations; i++)
             {
                 start = DateTime.Now;
-				ITestController controller = locator.GetInstance<ITestController>();
+				
+                var controller = locator.GetInstance<ITestController>();
 				Assert.IsInstanceOfType(typeof(DefaultTestService), controller.Service);
 				Assert.IsInstanceOfType(typeof(DefaultTestRepository), controller.Service.Repository);
 

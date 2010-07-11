@@ -14,16 +14,14 @@
 */
 
 using Siege.ServiceLocation.Registrations;
+using Siege.ServiceLocation.Resolution;
 
 namespace Siege.ServiceLocation.RegistrationTemplates.OpenGenerics
 {
     public class OpenGenericRegistrationTemplate : IRegistrationTemplate
     {
-        public void Register(IServiceLocatorAdapter adapter, IRegistration registration, IFactoryFetcher locator)
+        public void Register(IServiceLocatorAdapter adapter, IRegistration registration, IResolutionTemplate template)
         {
-            var factory = (Factory)locator.GetFactory(typeof(object));
-            factory.AddCase(registration);
-
             adapter.Register(registration.GetMappedFromType(), registration.GetMappedToType());
         }
     }

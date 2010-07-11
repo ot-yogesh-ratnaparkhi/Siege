@@ -14,12 +14,13 @@
 */
 
 using Siege.ServiceLocation.Registrations;
+using Siege.ServiceLocation.Resolution;
 
 namespace Siege.ServiceLocation.RegistrationTemplates.PostResolution
 {
     public class ConditionalPostResolutionRegistrationTemplate : IRegistrationTemplate
     {
-        public void Register(IServiceLocatorAdapter adapter, IRegistration registration, IFactoryFetcher locator)
+        public void Register(IServiceLocatorAdapter adapter, IRegistration registration, IResolutionTemplate template)
         {
         }
     }

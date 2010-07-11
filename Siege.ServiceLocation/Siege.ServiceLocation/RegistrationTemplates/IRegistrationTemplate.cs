@@ -14,11 +14,12 @@
 */
 
 using Siege.ServiceLocation.Registrations;
+using Siege.ServiceLocation.Resolution;
 
 namespace Siege.ServiceLocation.RegistrationTemplates
 {
     public interface IRegistrationTemplate
     {
-        void Register(IServiceLocatorAdapter adapter, IRegistration registration, IFactoryFetcher locator);
+        void Register(IServiceLocatorAdapter adapter, IRegistration registration, IResolutionTemplate template);
     }
 }

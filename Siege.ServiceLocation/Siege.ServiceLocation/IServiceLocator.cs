@@ -20,7 +20,7 @@ using Siege.ServiceLocation.Registrations;
 
 namespace Siege.ServiceLocation
 {
-    public interface IServiceLocator : Microsoft.Practices.ServiceLocation.IServiceLocator, IDisposable, IInstanceResolver, IFactoryFetcher
+    public interface IServiceLocator : Microsoft.Practices.ServiceLocation.IServiceLocator, IDisposable, IInstanceResolver
     {
         IServiceLocator Register(List<IRegistration> registration);
         IServiceLocator Register(IRegistration registration);

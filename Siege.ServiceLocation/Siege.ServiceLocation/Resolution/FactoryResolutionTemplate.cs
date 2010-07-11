@@ -1,4 +1,4 @@
-﻿/*   Copyright 2009 - 2010 Marcus Bratton
+/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,11 +14,20 @@
 */
 
 using System;
+using Siege.ServiceLocation.InternalStorage;
 
-namespace Siege.ServiceLocation
+namespace Siege.ServiceLocation.Resolution
 {
-    public interface IGenericFactory
+    public class FactoryResolutionTemplate : DefaultResolutionTemplate
     {
-        object Build(Type type);
+        public FactoryResolutionTemplate(IInstanceResolver serviceLocator, IServiceLocatorStore store, Foundation foundation) : base(serviceLocator, store, foundation)
+        {
+
+        }
+
+        protected override object ResolveFromLocator(Type type)
+        {
+            return null;
+        }
     }
 }

@@ -47,7 +47,7 @@ namespace Siege.ServiceLocation.Resolution
 
             if (conditionalManager.Contains(type))
             {
-                IList<IRegistration> conditionalCases = conditionalManager.GetregistrationsForType(type);
+                IList<IRegistration> conditionalCases = conditionalManager.GetRegistrationsForType(type);
 
                 for (int i = 0; i < conditionalCases.Count; i++)
                 {
@@ -68,7 +68,7 @@ namespace Siege.ServiceLocation.Resolution
 
             if (defaultManager.Contains(type))
             {
-                var registration = defaultManager.GetregistrationsForType(type)[0];
+                var registration = defaultManager.GetRegistrationsForType(type)[0];
                 var value = Resolve(registration);
 
                 if (value != null)
@@ -119,11 +119,11 @@ namespace Siege.ServiceLocation.Resolution
             
             if(manager.Contains(registration.GetMappedToType()))
             {
-                actions = manager.GetregistrationsForType(registration.GetMappedToType());
+                actions = manager.GetRegistrationsForType(registration.GetMappedToType());
             }
             else if (manager.Contains(registration.GetMappedFromType()))
             {
-                actions = manager.GetregistrationsForType(registration.GetMappedFromType());
+                actions = manager.GetRegistrationsForType(registration.GetMappedFromType());
             }
 
             if (actions != null)

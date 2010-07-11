@@ -14,19 +14,17 @@
 */
 
 using Siege.ServiceLocation.Registrations;
+using Siege.ServiceLocation.Resolution;
 
 namespace Siege.ServiceLocation.RegistrationTemplates.Default
 {
     public class DefaultInstanceRegistrationTemplate : DefaultRegistrationTemplate
     {
-        public override void Register(IServiceLocatorAdapter adapter, IRegistration registration, IFactoryFetcher locator)
+        public override void Register(IServiceLocatorAdapter adapter, IRegistration registration, IResolutionTemplate template)
         {
-            var factory = (Factory)locator.GetFactory(registration.GetMappedFromType());
-            factory.AddCase(registration);
-
             if (registration.GetMappedFromType() != registration.GetMappedToType())
             {
-                adapter.RegisterFactoryMethod(registration.GetMappedFromType(), () => factory.Build(registration.GetMappedToType()));
+                adapter.RegisterFactoryMethod(registration.GetMappedFromType(), () => template.Resolve(registration.GetMappedFromType()));
             }
 
             adapter.RegisterInstance(registration.GetMappedToType(), registration.GetMappedTo());

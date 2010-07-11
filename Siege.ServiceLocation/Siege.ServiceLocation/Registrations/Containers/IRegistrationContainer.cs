@@ -21,7 +21,7 @@ namespace Siege.ServiceLocation.Registrations.Containers
     public interface IRegistrationContainer
     {
         void Add(IRegistration registration);
-        List<IRegistration> GetregistrationsForType(Type type);
+        List<IRegistration> GetRegistrationsForType(Type type);
         bool Contains(Type type);
     }
 }

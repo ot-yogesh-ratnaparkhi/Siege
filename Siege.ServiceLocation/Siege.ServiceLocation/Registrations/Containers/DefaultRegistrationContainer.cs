@@ -27,7 +27,7 @@ namespace Siege.ServiceLocation.Registrations.Containers
             registrations.Add(registration.GetMappedFromType(), registration);
         }
 
-        public List<IRegistration> GetregistrationsForType(Type type)
+        public List<IRegistration> GetRegistrationsForType(Type type)
         {
             return new List<IRegistration> { registrations.GetregistrationForType(type) };
         }

@@ -14,7 +14,6 @@
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Siege.ServiceLocation.ExtensionMethods;
 using Siege.ServiceLocation.InternalStorage;
@@ -32,7 +31,6 @@ namespace Siege.ServiceLocation
         private readonly IServiceLocatorStore store;
         private readonly IResolutionTemplate resolutionTemplate;
         private readonly Foundation foundation;
-        private readonly Hashtable factories = new Hashtable();
 
         public SiegeContainer(IServiceLocatorAdapter serviceLocator, IServiceLocatorStore store)
         {
@@ -46,10 +44,10 @@ namespace Siege.ServiceLocation
             RegisterPolicy(Given<Transient>.Then<Transient>());
             RegisterPolicy(Given<Singleton>.Then<Singleton>());
 
-            Register<Singleton>(Given<IFactoryFetcher>.Then(this));
             Register<Singleton>(Given<IServiceLocator>.Then(this));
             Register<Singleton>(Given<IContextualServiceLocator>.Then(this));
-            Register<Singleton>(Given<Foundation>.Then<Foundation>());
+            Register<Singleton>(Given<Foundation>.Then(foundation)); 
+            Register<Singleton>(Given<IServiceLocatorStore>.Then(store));
         }
 
         public void AddContext(object contextItem)
@@ -154,8 +152,12 @@ namespace Siege.ServiceLocation
             var policy = GetInstance<TRegistrationPolicy>(new ContextArgument(registration),
                                                           new ConstructorParameter {Name = "registration", Value = registration});
 
+            var factoryResolutionTemplate = HasTypeRegistered(typeof (IResolutionTemplate))
+                                           ? GetInstance<IResolutionTemplate>()
+                                           : new FactoryResolutionTemplate(this, this.store, this.foundation);
+
             registrationContainer.Add(policy);
-            policy.GetRegistrationTemplate().Register(serviceLocator, registration, this);
+            policy.GetRegistrationTemplate().Register(serviceLocator, registration, factoryResolutionTemplate);
 
             return this;
         }
@@ -168,7 +170,11 @@ namespace Siege.ServiceLocation
 
             registrationContainer.Add(registration);
 
-            registration.GetRegistrationTemplate().Register(serviceLocator, registration, this);
+            var factoryResolutionTemplate = HasTypeRegistered(typeof(IResolutionTemplate))
+                                         ? GetInstance<IResolutionTemplate>()
+                                         : new FactoryResolutionTemplate(this, this.store, this.foundation);
+
+            registration.GetRegistrationTemplate().Register(serviceLocator, registration, factoryResolutionTemplate);
         }
 
         public IServiceLocator Register(IRegistration registration)
@@ -185,22 +191,6 @@ namespace Siege.ServiceLocation
         {
             serviceLocator.Dispose();
             store.Dispose();
-        }
-
-        IGenericFactory IFactoryFetcher.GetFactory(Type type)
-        {
-            if (!factories.ContainsKey(type))
-            {
-                lock (factories.SyncRoot)
-                {
-                    if (!factories.ContainsKey(type))
-                    {
-                        factories.Add(type, new Factory(this, foundation));
-                    }
-                }
-            }
-
-            return (Factory) factories[type];
         }
     }
 }

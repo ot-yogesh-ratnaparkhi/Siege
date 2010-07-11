@@ -68,11 +68,11 @@
     <Compile Include="EventHandlers\ITypeResolver.cs" />
     <Compile Include="ExtensionMethods\IResolutionArgumentExtensions.cs" />
     <Compile Include="Foundation.cs" />
-    <Compile Include="IFactoryFetcher.cs" />
     <Compile Include="RegistrationPolicies\AbstractRegistrationPolicy.cs" />
     <Compile Include="RegistrationPolicies\IRegistrationPolicy.cs" />
     <Compile Include="RegistrationPolicies\Singleton.cs" />
     <Compile Include="RegistrationPolicies\Transient.cs" />
+    <Compile Include="Resolution\FactoryResolutionTemplate.cs" />
     <Compile Include="Resolution\IResolutionTemplate.cs" />
     <Compile Include="Resolution\DefaultResolutionTemplate.cs" />
     <Compile Include="Registrations\Containers\ConditionalPreResolutionRegistrationContainer.cs" />
@@ -95,10 +95,8 @@
     <Compile Include="Registrations\Containers\CompositeRegistrationList.cs" />
     <Compile Include="Registrations\Containers\DefaultRegistrationList.cs" />
     <Compile Include="ResolutionRules\ConditionalActivationRule.cs" />
-    <Compile Include="Factory.cs" />
     <Compile Include="ResolutionRules\IConditionalActivationRule.cs" />
     <Compile Include="InternalStorage\IContextStore.cs" />
-    <Compile Include="IGenericFactory.cs" />
     <Compile Include="InternalStorage\IExecutionStore.cs" />
     <Compile Include="InternalStorage\ThreadedExecutionStore.cs" />
     <Compile Include="Registrations\PostResolution\PostResolutionRegistration.cs" />

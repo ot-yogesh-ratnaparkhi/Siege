@@ -14,17 +14,15 @@
 */
 
 using Siege.ServiceLocation.Registrations;
+using Siege.ServiceLocation.Resolution;
 
 namespace Siege.ServiceLocation.RegistrationTemplates.Conditional
 {
     public class ConditionalRegistrationTemplate : IRegistrationTemplate
     {
-        public virtual void Register(IServiceLocatorAdapter adapter, IRegistration registration, IFactoryFetcher locator)
+        public virtual void Register(IServiceLocatorAdapter adapter, IRegistration registration, IResolutionTemplate template)
         {
-            var factory = (Factory) locator.GetFactory(registration.GetMappedFromType());
-            factory.AddCase(registration);
-
-            adapter.RegisterFactoryMethod(registration.GetMappedFromType(), () => factory.Build(registration.GetMappedToType()));
+            adapter.RegisterFactoryMethod(registration.GetMappedFromType(), () => template.Resolve(registration.GetMappedFromType()));
             if (!registration.GetMappedToType().IsInterface) adapter.Register(registration.GetMappedToType(), registration.GetMappedToType());
         }
     }

@@ -15,12 +15,13 @@
 
 using Siege.ServiceLocation.Registrations;
 using Siege.ServiceLocation.Registrations.Named;
+using Siege.ServiceLocation.Resolution;
 
 namespace Siege.ServiceLocation.RegistrationTemplates.Named
 {
     public class NamedRegistrationTemplate : IRegistrationTemplate
     {
-        public virtual void Register(IServiceLocatorAdapter adapter, IRegistration registration, IFactoryFetcher locator)
+        public virtual void Register(IServiceLocatorAdapter adapter, IRegistration registration, IResolutionTemplate template)
         {
             var namedRegistration = (INamedRegistration)registration;
 
