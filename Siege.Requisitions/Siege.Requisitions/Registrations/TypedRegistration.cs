@@ -35,9 +35,9 @@ namespace Siege.Requisitions.Registrations
             MapsTo(typeof(TImplementationType));
         }
 
-        public void MapsTo(Type implementationType)
+        public override void MapsTo(object implementationType)
         {
-            mapsToType = implementationType;
+            mapsToType = (Type)implementationType;
         }
 
         protected override IActivationStrategy GetActivationStrategy()

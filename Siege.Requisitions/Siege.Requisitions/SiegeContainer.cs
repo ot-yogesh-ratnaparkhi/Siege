@@ -20,6 +20,7 @@ using Siege.Requisitions.RegistrationPolicies;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.Containers;
 using Siege.Requisitions.RegistrationSyntax;
+using Siege.Requisitions.RegistrationTemplates.Meta;
 using Siege.Requisitions.Resolution;
 using Siege.Requisitions.ExtensionMethods;
 
@@ -30,6 +31,7 @@ namespace Siege.Requisitions
         private readonly IServiceLocatorAdapter serviceLocator;
         private readonly IServiceLocatorStore store;
         private readonly IResolutionTemplate resolutionTemplate;
+        private readonly IMetaRegistrationTemplate registrationTemplate;
         private readonly Foundation foundation;
 
         public SiegeContainer(IServiceLocatorAdapter serviceLocator, IServiceLocatorStore store)
@@ -38,6 +40,7 @@ namespace Siege.Requisitions
             this.store = store;
             foundation = new Foundation();
             resolutionTemplate = new DefaultResolutionTemplate(serviceLocator, this.store, foundation);
+            registrationTemplate = new DefaultMetaRegistrationTemplate(this);
 
             serviceLocator.RegisterInstance(typeof (IServiceLocatorAdapter), serviceLocator);
 
@@ -46,8 +49,64 @@ namespace Siege.Requisitions
 
             Register<Singleton>(Given<IServiceLocator>.Then(this));
             Register<Singleton>(Given<IContextualServiceLocator>.Then(this));
+            Register<Singleton>(Given<Microsoft.Practices.ServiceLocation.IServiceLocator>.Then(this));
             Register<Singleton>(Given<Foundation>.Then(foundation)); 
             Register<Singleton>(Given<IServiceLocatorStore>.Then(store));
+        }
+
+        public object GetInstance(Type type, params IResolutionArgument[] arguments)
+        {
+            store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
+
+            object instance = !HasTypeRegistered(typeof(IResolutionTemplate))
+                ? resolutionTemplate.Resolve(type)
+                : GetInstance<IResolutionTemplate>().Resolve(type);
+
+            return instance;
+        }
+
+        public object GetInstance(Type type, string key, params IResolutionArgument[] arguments)
+        {
+            store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
+
+            return serviceLocator.GetInstance(type, key, store.ResolutionStore.Items.OfType<ConstructorParameter, IResolutionArgument>());
+        }
+
+        public IServiceLocator Register<TRegistrationPolicy>(IRegistration registration)
+            where TRegistrationPolicy : AbstractRegistrationPolicy
+        {
+            IRegistrationContainer registrationContainer = foundation.ContainsRegistrationContainerForTemplate(registration.GetRegistrationTemplate())
+                                              ? foundation.GetRegistrationContainer(registration.GetRegistrationTemplate())
+                                              : GetInstance<IRegistrationContainer>(new ContextArgument(registration));
+
+            var processedRegistration = registrationTemplate.Process(registration);
+
+            var policy = GetInstance<TRegistrationPolicy>(new ConstructorParameter { Name = "registration", Value = processedRegistration });
+
+            registrationContainer.Add(policy);
+
+            var factoryResolutionTemplate = HasTypeRegistered(typeof(IResolutionTemplate))
+                                           ? GetInstance<IResolutionTemplate>(new ContextArgument(registration))
+                                           : new FactoryResolutionTemplate(this, this.store, this.foundation);
+
+            policy.GetRegistrationTemplate().Register(serviceLocator, processedRegistration, factoryResolutionTemplate);
+
+            return this;
+        }
+
+        private void RegisterPolicy(IRegistration registration)
+        {
+            IRegistrationContainer registrationContainer = foundation.ContainsRegistrationContainerForTemplate(registration.GetRegistrationTemplate())
+                                              ? foundation.GetRegistrationContainer(registration.GetRegistrationTemplate())
+                                              : GetInstance<IRegistrationContainer>(new ContextArgument(registration));
+
+            registrationContainer.Add(registration);
+
+            var factoryResolutionTemplate = HasTypeRegistered(typeof(IResolutionTemplate))
+                                         ? GetInstance<IResolutionTemplate>()
+                                         : new FactoryResolutionTemplate(this, this.store, this.foundation);
+
+            registration.GetRegistrationTemplate().Register(serviceLocator, registration, factoryResolutionTemplate);
         }
 
         public void AddContext(object contextItem)
@@ -75,18 +134,6 @@ namespace Siege.Requisitions
             return GetInstance(type, new IResolutionArgument[] {});
         }
 
-        public object GetInstance(Type type, params IResolutionArgument[] arguments)
-        {
-            store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
-
-            object instance = !HasTypeRegistered(typeof(IResolutionTemplate)) 
-                ? resolutionTemplate.Resolve(type) 
-                : GetInstance<IResolutionTemplate>().Resolve(type);
-
-            return instance;
-        }
-
-
         public TService GetInstance<TService>(string key)
         {
             return (TService) GetInstance(typeof (TService), key, new IResolutionArgument[] {});
@@ -95,13 +142,6 @@ namespace Siege.Requisitions
         public TService GetInstance<TService>(string key, params IResolutionArgument[] arguments)
         {
             return (TService) GetInstance(typeof (TService), key, arguments);
-        }
-
-        public object GetInstance(Type type, string key, params IResolutionArgument[] arguments)
-        {
-            store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
-
-            return serviceLocator.GetInstance(type, key, store.ResolutionStore.Items.OfType<ConstructorParameter, IResolutionArgument>());
         }
 
         public object GetService(Type serviceType)
@@ -135,46 +175,11 @@ namespace Siege.Requisitions
         }
 
         public IServiceLocator Register<TRegistrationPolicy>(List<IRegistration> registrations)
-            where TRegistrationPolicy : IRegistrationPolicy
+            where TRegistrationPolicy : AbstractRegistrationPolicy
         {
             foreach (IRegistration registration in registrations) Register<TRegistrationPolicy>(registration);
 
             return this;
-        }
-
-        public IServiceLocator Register<TRegistrationPolicy>(IRegistration registration)
-            where TRegistrationPolicy : IRegistrationPolicy
-        {
-            IRegistrationContainer registrationContainer = foundation.ContainsRegistrationContainerForTemplate(registration.GetRegistrationTemplate())
-                                              ? foundation.GetRegistrationContainer(registration.GetRegistrationTemplate())
-                                              : GetInstance<IRegistrationContainer>(new ContextArgument(registration));
-
-            var policy = GetInstance<TRegistrationPolicy>(new ContextArgument(registration),
-                                                          new ConstructorParameter {Name = "registration", Value = registration});
-
-            var factoryResolutionTemplate = HasTypeRegistered(typeof (IResolutionTemplate))
-                                           ? GetInstance<IResolutionTemplate>()
-                                           : new FactoryResolutionTemplate(this, this.store, this.foundation);
-
-            registrationContainer.Add(policy);
-            policy.GetRegistrationTemplate().Register(serviceLocator, registration, factoryResolutionTemplate);
-
-            return this;
-        }
-
-        private void RegisterPolicy(IRegistration registration)
-        {
-            IRegistrationContainer registrationContainer = foundation.ContainsRegistrationContainerForTemplate(registration.GetRegistrationTemplate())
-                                              ? foundation.GetRegistrationContainer(registration.GetRegistrationTemplate())
-                                              : GetInstance<IRegistrationContainer>(new ContextArgument(registration));
-
-            registrationContainer.Add(registration);
-
-            var factoryResolutionTemplate = HasTypeRegistered(typeof(IResolutionTemplate))
-                                         ? GetInstance<IResolutionTemplate>()
-                                         : new FactoryResolutionTemplate(this, this.store, this.foundation);
-
-            registration.GetRegistrationTemplate().Register(serviceLocator, registration, factoryResolutionTemplate);
         }
 
         public IServiceLocator Register(IRegistration registration)

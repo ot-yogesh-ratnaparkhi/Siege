@@ -25,7 +25,6 @@ namespace Siege.Requisitions.RegistrationPolicies
 
         public Singleton(IRegistration registration) : base(registration)
         {
-
         }
 
         public override object ResolveWith(IInstanceResolver resolver, IServiceLocatorStore context)

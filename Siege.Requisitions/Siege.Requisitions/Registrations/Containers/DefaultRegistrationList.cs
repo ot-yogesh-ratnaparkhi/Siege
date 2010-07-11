@@ -33,11 +33,23 @@ namespace Siege.Requisitions.Registrations.Containers
             return this.internalList.ContainsKey(type);
         }
 
-        public IRegistration GetregistrationForType(Type type)
+        public IRegistration GetRegistrationForType(Type type)
         {
             if (!Contains(type)) return null;
 
             return this.internalList[type];
+        }
+
+        public List<IRegistration> All()
+        {
+            var allRegistrations = new List<IRegistration>();
+
+            foreach(Type key in this.internalList.Keys)
+            {
+                allRegistrations.Add(this.internalList[key]);
+            }
+
+            return allRegistrations;
         }
     }
 }

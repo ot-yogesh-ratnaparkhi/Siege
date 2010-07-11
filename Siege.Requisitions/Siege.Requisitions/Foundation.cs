@@ -47,9 +47,7 @@ namespace Siege.Requisitions
             AddRegistrationContainer(typeof(NamedInstanceRegistrationTemplate), namedManager);
             AddRegistrationContainer(typeof(DefaultPostResolutionRegistrationTemplate), new DefaultPostResolutionRegistrationContainer());
             AddRegistrationContainer(typeof(ConditionalPostResolutionRegistrationTemplate), new ConditionalPostResolutionRegistrationContainer());
-            AddRegistrationContainer(typeof(ConditionalRegistrationTemplate), new ConditionalPreResolutionRegistrationContainer());
-            AddRegistrationContainer(typeof(DefaultRegistrationTemplate), new DefaultPreResolutionRegistrationContainer());
-            
+            AddRegistrationContainer(typeof(MetaRegistrationContainer), new MetaRegistrationContainer());
         }
 
         private void AddRegistrationContainer<TRegistrationContainer>(Type templateType, TRegistrationContainer instance) where TRegistrationContainer : IRegistrationContainer
@@ -74,9 +72,9 @@ namespace Siege.Requisitions
             return (IRegistrationContainer) registrationContainers[registrationTemplate.GetType()];
         }
 
-        public IRegistrationContainer GetRegistrationContainer<TRegistrationManager>() where TRegistrationManager : IRegistrationContainer
+        public TRegistrationContainer GetRegistrationContainer<TRegistrationContainer>() where TRegistrationContainer : IRegistrationContainer
         {
-            return (TRegistrationManager)registrationContainersByType[typeof(TRegistrationManager)];
+            return (TRegistrationContainer)registrationContainersByType[typeof(TRegistrationContainer)];
         }
 
         public bool ContainsRegistrationContainerForTemplate(IRegistrationTemplate registrationTemplate)

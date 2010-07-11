@@ -20,33 +20,45 @@ namespace Siege.Requisitions.Registrations.Containers
 {
     public class CompositeRegistrationList
     {
-        private readonly Dictionary<Type, List<IRegistration>> resolutionCases = new Dictionary<Type, List<IRegistration>>();
+        private readonly Dictionary<Type, List<IRegistration>> registrations = new Dictionary<Type, List<IRegistration>>();
 
-        public List<IRegistration> GetregistrationsForType(Type type)
+        public List<IRegistration> GetRegistrationsForType(Type type)
         {
             if (!Contains(type)) return null;
 
-            return this.resolutionCases[type];
+            return this.registrations[type];
         }
 
         public void Add(Type type, IRegistration registration)
         {
-            if (!resolutionCases.ContainsKey(type))
+            if (!registrations.ContainsKey(type))
             {
                 var list = new List<IRegistration>();
-                resolutionCases.Add(type, list);
+                registrations.Add(type, list);
             }
 
-            List<IRegistration> selectedCase = GetregistrationsForType(type);
+            List<IRegistration> selectedRegistration = GetRegistrationsForType(type);
 
-            selectedCase.Add(registration);
+            selectedRegistration.Add(registration);
 
-            this.resolutionCases[type] = selectedCase;
+            this.registrations[type] = selectedRegistration;
         }
 
         public bool Contains(Type type)
         {
-            return this.resolutionCases.ContainsKey(type);
+            return this.registrations.ContainsKey(type);
+        }
+
+        public List<IRegistration> All()
+        {
+            var allRegistrations = new List<IRegistration>();
+
+            foreach(Type key in registrations.Keys)
+            {
+                allRegistrations.AddRange(this.registrations[key]);
+            }
+
+            return allRegistrations;
         }
     }
 }

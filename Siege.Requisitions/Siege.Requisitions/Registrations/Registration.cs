@@ -29,6 +29,7 @@ namespace Siege.Requisitions.Registrations
         public abstract Type GetMappedFromType();
         public abstract object GetMappedTo();
         public abstract Type GetMappedToType();
+        public abstract void MapsTo(object target);
         public event TypeRequestedEventHandler TypeRequested;
 
         public void SetActivationRule(IActivationRule rule)

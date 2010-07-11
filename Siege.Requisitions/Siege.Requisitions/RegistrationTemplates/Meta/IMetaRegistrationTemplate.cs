@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,22 +13,12 @@
      limitations under the License.
 */
 
-using System;
+using Siege.Requisitions.Registrations;
 
-namespace Siege.Requisitions.AOP
+namespace Siege.Requisitions.RegistrationTemplates.Meta
 {
-    public class SiegeProxyTypeBuilder
+    public interface IMetaRegistrationTemplate
     {
-        private readonly SiegeProxy proxy;
-        
-        public SiegeProxyTypeBuilder(IServiceLocator serviceLocator)
-        {
-			proxy = new SiegeProxy().WithServiceLocator();
-        }
-
-        public Type Build(Type typeToBuild)
-        {
-            return proxy.Create(typeToBuild);
-        }
+        IRegistration Process(IRegistration registration);
     }
 }

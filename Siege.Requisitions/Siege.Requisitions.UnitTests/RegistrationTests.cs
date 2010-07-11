@@ -4,19 +4,31 @@ using NUnit.Framework;
 using Siege.Requisitions.AOP;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 using Siege.Requisitions.InternalStorage;
+using Siege.Requisitions.Registrations.Meta;
+using Siege.Requisitions.Registrations.Named;
 using Siege.Requisitions.RegistrationTemplates;
-using Siege.Requisitions.RegistrationTemplates.Registration;
 using Siege.Requisitions.Extensions.Conventions;
 using Siege.Requisitions.Registrations;
+using Siege.Requisitions.UnitTests.AOP;
 
 namespace Siege.Requisitions.UnitTests
 {
     public abstract partial class SiegeContainerTests
     {
         [Test]
-        public void Should_Proxy_All_Types()
+        public virtual void Should_Proxy_All_Types()
         {
+            locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
+            locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
+            locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
             locator.Register(Using.Convention<ProxyConvention>());
+            locator.Register(Given<TestType2>.Then<TestType2>());
+
+            var testType2 = locator.GetInstance<TestType2>();
+            Assert.AreEqual("lolarg1", testType2.Test("arg1", "arg2"));
+            Assert.AreEqual(3, Counter.Count);
+
+            Counter.Count = 0;
         }
     }
 
@@ -24,19 +36,27 @@ namespace Siege.Requisitions.UnitTests
     {
         public List<IRegistration> Build()
         {
-            return new List<IRegistration> { Given<IPreResolutionRegistration>.Then<ProxyRegistration>() };
+            return new List<IRegistration>
+                       {
+                           Given<SiegeProxy>.Then<SiegeProxy>(),
+                           Given<IMetaRegistration>.Then<ProxyRegistration>()
+                       };
         }
     }
 
-    public class ProxyRegistration : IRegistration, IPreResolutionRegistration
+    public class ProxyRegistration : IMetaRegistration
     {
-        private readonly IRegistration registration;
-        private readonly Type boundType;
+        private readonly SiegeProxy proxy;
+        private IRegistration registration;
 
-        public ProxyRegistration(SiegeProxy proxy, IRegistration registration)
+        public ProxyRegistration(SiegeProxy proxy)
         {
-            this.registration = registration;
-            boundType = proxy.WithServiceLocator().Create(registration.GetMappedToType());
+            this.proxy = proxy;
+        }
+
+        public void MapsTo(object implementationType)
+        {
+            this.registration.MapsTo(implementationType);
         }
 
         public object GetMappedTo()
@@ -46,7 +66,7 @@ namespace Siege.Requisitions.UnitTests
 
         public Type GetMappedToType()
         {
-            return boundType;
+            return (Type)registration.GetMappedTo();
         }
 
         public IRegistrationTemplate GetRegistrationTemplate()
@@ -69,20 +89,20 @@ namespace Siege.Requisitions.UnitTests
             return registration.IsValid(context);
         }
 
-        IRegistrationTemplate IPreResolutionRegistration.GetRegistrationTemplate()
+        public void ChainTo(IRegistration registration)
         {
-            return new DefaultRegistrationTemplate();
+            this.registration = registration;
+            this.registration.MapsTo(proxy.WithServiceLocator().Create(registration.GetMappedToType()));
         }
 
-        bool IPreResolutionRegistration.IsValid(IServiceLocatorStore context)
+        public bool IsValid(IRegistration registration)
         {
             return true;
         }
-    }
 
-    public interface IPreResolutionRegistration
-    {
-        IRegistrationTemplate GetRegistrationTemplate();
-        bool IsValid(IServiceLocatorStore context);
+        public string Key
+        {
+            get { return ((INamedRegistration) registration).Key; }
+        }
     }
 }

@@ -21,13 +21,18 @@ using Siege.Requisitions.RegistrationTemplates;
 
 namespace Siege.Requisitions.RegistrationPolicies
 {
-    public abstract class AbstractRegistrationPolicy : IRegistrationPolicy
+    public abstract class AbstractRegistrationPolicy : IRegistration
     {
-        protected readonly IRegistration registration;
+        protected IRegistration registration;
 
         protected AbstractRegistrationPolicy(IRegistration registration)
         {
             this.registration = registration;
+        }
+
+        public void MapsTo(object implementationType)
+        {
+            this.registration.MapsTo(implementationType);
         }
 
         public object GetMappedTo()

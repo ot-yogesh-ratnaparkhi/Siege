@@ -15,7 +15,6 @@
 
 using System;
 using Siege.Requisitions.InternalStorage;
-using Siege.Requisitions.Registrations;
 
 namespace Siege.Requisitions.Registrations
 {
@@ -23,9 +22,9 @@ namespace Siege.Requisitions.Registrations
     {
         protected TBaseService implementation;
 
-        public virtual void MapsTo(TBaseService implementation)
+        public override void MapsTo(object implementation)
         {
-            this.implementation = implementation;
+            this.implementation = (TBaseService)implementation;
         }
 
         public override object GetMappedTo()

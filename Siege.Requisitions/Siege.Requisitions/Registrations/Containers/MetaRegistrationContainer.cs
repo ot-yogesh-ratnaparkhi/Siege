@@ -18,23 +18,28 @@ using System.Collections.Generic;
 
 namespace Siege.Requisitions.Registrations.Containers
 {
-    public class DefaultRegistrationContainer : IRegistrationContainer
+    public class MetaRegistrationContainer : IRegistrationContainer
     {
-        private readonly DefaultRegistrationList registrations = new DefaultRegistrationList();
+        private readonly CompositeRegistrationList registrations = new CompositeRegistrationList();
 
         public void Add(IRegistration registration)
         {
-            registrations.Add(registration.GetMappedFromType(), registration);
+            registrations.Add(registration.GetMappedToType(), registration);
         }
 
         public List<IRegistration> GetRegistrationsForType(Type type)
         {
-            return new List<IRegistration> { registrations.GetRegistrationForType(type) };
+            return registrations.GetRegistrationsForType(type);
         }
 
         public bool Contains(Type type)
         {
             return registrations.Contains(type);
+        }
+
+        public List<IRegistration> GetAllRegistrations()
+        {
+            return registrations.All();
         }
     }
 }

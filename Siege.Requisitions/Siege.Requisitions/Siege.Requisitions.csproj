@@ -49,8 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Registrations\Meta\IMetaRegistration.cs" />
     <Compile Include="RegistrationTemplates\Conditional\ConditionalInstanceRegistrationTemplate.cs" />
     <Compile Include="RegistrationTemplates\Default\DefaultInstanceRegistrationTemplate.cs" />
+    <Compile Include="RegistrationTemplates\Meta\DefaultMetaRegistrationTemplate.cs" />
+    <Compile Include="RegistrationTemplates\Meta\IMetaRegistrationTemplate.cs" />
     <Compile Include="RegistrationTemplates\Named\NamedInstanceRegistrationTemplate.cs" />
     <Compile Include="RegistrationTemplates\PostResolution\ConditionalPostResolutionRegistrationTemplate.cs" />
     <Compile Include="RegistrationTemplates\PostResolution\DefaultPostResolutionRegistrationTemplate.cs" />
@@ -59,8 +62,6 @@
     <Compile Include="RegistrationTemplates\IRegistrationTemplate.cs" />
     <Compile Include="RegistrationTemplates\Named\NamedRegistrationTemplate.cs" />
     <Compile Include="RegistrationTemplates\OpenGenerics\OpenGenericRegistrationTemplate.cs" />
-    <Compile Include="RegistrationTemplates\Registration\ConditionalRegistrationTemplate.cs" />
-    <Compile Include="RegistrationTemplates\Registration\DefaultRegistrationTemplate.cs" />
     <Compile Include="EventHandlers\ITypeRequester.cs" />
     <Compile Include="EventHandlers\TypeRequestedEventHandler.cs" />
     <Compile Include="EventHandlers\TypeResolvedEventHandler.cs" />
@@ -69,14 +70,12 @@
     <Compile Include="ExtensionMethods\IResolutionArgumentExtensions.cs" />
     <Compile Include="Foundation.cs" />
     <Compile Include="RegistrationPolicies\AbstractRegistrationPolicy.cs" />
-    <Compile Include="RegistrationPolicies\IRegistrationPolicy.cs" />
     <Compile Include="RegistrationPolicies\Singleton.cs" />
     <Compile Include="RegistrationPolicies\Transient.cs" />
     <Compile Include="Resolution\FactoryResolutionTemplate.cs" />
     <Compile Include="Resolution\IResolutionTemplate.cs" />
     <Compile Include="Resolution\DefaultResolutionTemplate.cs" />
-    <Compile Include="Registrations\Containers\ConditionalPreResolutionRegistrationContainer.cs" />
-    <Compile Include="Registrations\Containers\DefaultPreResolutionRegistrationContainer.cs" />
+    <Compile Include="Registrations\Containers\MetaRegistrationContainer.cs" />
     <Compile Include="Registrations\Containers\ConditionalPostResolutionRegistrationContainer.cs" />
     <Compile Include="Registrations\Containers\ConditionalRegistrationContainer.cs" />
     <Compile Include="Registrations\Containers\DefaultPostResolutionRegistrationContainer.cs" />

@@ -18,39 +18,15 @@ using System.Collections;
 using System.Reflection;
 using Siege.DynamicTypeGeneration;
 using Siege.Requisitions.AOP.Attributes;
-using Siege.Requisitions.AOP.Interceptors.Methods.PostProcessing;
-using Siege.Requisitions.AOP.Interceptors.Methods.PreProcessing;
 using Siege.Requisitions.AOP.Interceptors.Methods.ProcessEncapsulating;
-using Siege.Requisitions.RegistrationSyntax;
-using Siege.Requisitions.Resolution;
 
 namespace Siege.Requisitions.AOP
 {
     public class SiegeProxy
     {
-    	private readonly IServiceLocator serviceLocator;
     	private static readonly Hashtable definedTypes = new Hashtable();
         private bool useServiceLocator;
         private static readonly TypeGenerator generator = new TypeGenerator();
-
-		public SiegeProxy(IServiceLocator serviceLocator)
-		{
-			this.serviceLocator = serviceLocator;
-
-			this.serviceLocator
-				.Register(Given<IPreProcessorInterceptionStrategy>
-							.When<IPreProcessingAttribute>(attribute => attribute is IDefaultPreProcessingAttribute)
-							.Then<DefaultPreProcessorInterceptionStrategy>())
-				.Register(Given<IProcessEncapsulatingInterceptionStrategy>
-							.When<MethodCall>(method => method.ReturnType != typeof(void) && method.Attribute is IDefaultProcessEncapsulatingAttribute)
-							.Then<DefaultProcessEncapsulatingInterceptionStrategy>())
-				.Register(Given<IProcessEncapsulatingInterceptionStrategy>
-							.When<MethodCall>(method => method.ReturnType == typeof(void) && method.Attribute is IDefaultProcessEncapsulatingActionAttribute)
-							.Then<DefaultProcessEncapsulatingActionInterceptionStrategy>())
-				.Register(Given<IPostProcessorInterceptionStrategy>
-							.When<IPostProcessingAttribute>(attribute => attribute is IDefaultPostProcessingAttribute)
-							.Then<DefaultPostProcessorInterceptionStrategy>());
-		}
 
     	public SiegeProxy WithServiceLocator()
         {
@@ -149,9 +125,9 @@ namespace Siege.Requisitions.AOP
                 else
                 {
                     preProcessor.AssignFrom(body.Instantiate(attribute.GetType()));
-				} 
-				
-				this.serviceLocator.GetInstance<IPreProcessorInterceptionStrategy>(new ContextArgument(attribute)).Intercept(preProcessor);
+				}
+
+                preProcessor.Invoke<IDefaultPreProcessingAttribute>(processor => processor.Process());
             }
         }
 
@@ -172,7 +148,7 @@ namespace Siege.Requisitions.AOP
                     postProcessor.AssignFrom(body.Instantiate(attribute.GetType()));
                 }
 
-				this.serviceLocator.GetInstance<IPostProcessorInterceptionStrategy>(new ContextArgument(attribute)).Intercept(postProcessor);
+                postProcessor.Invoke<IDefaultPostProcessingAttribute>(processor => processor.Process());
 			}
         }
 
@@ -214,22 +190,16 @@ namespace Siege.Requisitions.AOP
    				RecursivelyGenerateCalls(attributes, 1, lambda, methodInfo, field);
    			});
 
-			var methodCall = new MethodCall
-			{
-				ReturnType = methodInfo.ReturnType,
-				Attribute = attributes[0]
-			};
-
 			var func = lambdaVariable.CreateFunc(target);
 
 			if (methodInfo.ReturnType != typeof(void))
 			{
 				variable = body.CreateVariable(methodInfo.ReturnType);
-				this.serviceLocator.GetInstance<IProcessEncapsulatingInterceptionStrategy>(new ContextArgument(methodCall)).Intercept(methodInfo, attributes[0], func, variable, encapsulating);
+                new DefaultProcessEncapsulatingInterceptionStrategy().Intercept(methodInfo, attributes[0], func, variable, encapsulating);
 			}
 			else
 			{
-				this.serviceLocator.GetInstance<IProcessEncapsulatingInterceptionStrategy>(new ContextArgument(methodCall)).Intercept(methodInfo, attributes[0], func, null, encapsulating);
+                new DefaultProcessEncapsulatingActionInterceptionStrategy().Intercept(methodInfo, attributes[0], func, null, encapsulating);
 			}
 
         	return variable;
@@ -239,11 +209,6 @@ namespace Siege.Requisitions.AOP
     	{
 			if (currentIndex >= attributes.Length) return;
     		var attribute = attributes[currentIndex];
-			var methodCall = new MethodCall
-			{
-				ReturnType = methodInfo.ReturnType,
-				Attribute = attribute
-			};
 			
 			lambda.CreateNestedLambda(nestedLambda => RecursivelyGenerateCalls(attributes, currentIndex + 1, lambda, methodInfo, field),
 			(exitContext, exitVariable, function, callingType) =>
@@ -265,11 +230,11 @@ namespace Siege.Requisitions.AOP
 
 				if (methodInfo.ReturnType != typeof(void))
 				{
-					this.serviceLocator.GetInstance<IProcessEncapsulatingInterceptionStrategy>(new ContextArgument(methodCall)).Intercept(methodInfo, attribute, func, exitVariable, encapsulating);
+                    new DefaultProcessEncapsulatingInterceptionStrategy().Intercept(methodInfo, attribute, func, exitVariable, encapsulating);
 				}
 				else
 				{
-					this.serviceLocator.GetInstance<IProcessEncapsulatingInterceptionStrategy>(new ContextArgument(methodCall)).Intercept(methodInfo, attribute, func, null, encapsulating);
+                    new DefaultProcessEncapsulatingActionInterceptionStrategy().Intercept(methodInfo, attribute, func, null, encapsulating);
 				}
 			});
 		}

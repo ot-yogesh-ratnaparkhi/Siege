@@ -40,7 +40,7 @@ namespace Siege.Requisitions.UnitTests.AOP
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
 
-            Type type = new SiegeProxy(locator).WithServiceLocator().Create<TestType>();
+            Type type = new SiegeProxy().WithServiceLocator().Create<TestType>();
 
             var instance = Activator.CreateInstance(type, locator);
 
@@ -56,7 +56,7 @@ namespace Siege.Requisitions.UnitTests.AOP
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
 
-            Type type = new SiegeProxy(locator).WithServiceLocator().Create<TestType>();
+            Type type = new SiegeProxy().WithServiceLocator().Create<TestType>();
 
             var instance = Activator.CreateInstance(type, locator);
 
@@ -72,7 +72,7 @@ namespace Siege.Requisitions.UnitTests.AOP
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
 
-            Type type = new SiegeProxy(locator).Create<TestType>();
+            Type type = new SiegeProxy().Create<TestType>();
 
             var instance = Activator.CreateInstance(type);
 
@@ -88,7 +88,7 @@ namespace Siege.Requisitions.UnitTests.AOP
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
 
-            Type type = new SiegeProxy(locator).Create<TestType>();
+            Type type = new SiegeProxy().Create<TestType>();
 
             var instance = Activator.CreateInstance(type);
 
@@ -104,7 +104,7 @@ namespace Siege.Requisitions.UnitTests.AOP
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
 
-            Type type = new SiegeProxy(locator).WithServiceLocator().Create<TestType2>();
+            Type type = new SiegeProxy().WithServiceLocator().Create<TestType2>();
 
             var instance = Activator.CreateInstance(type, locator);
 

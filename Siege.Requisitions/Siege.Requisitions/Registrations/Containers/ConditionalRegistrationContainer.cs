@@ -29,7 +29,7 @@ namespace Siege.Requisitions.Registrations.Containers
 
         public List<IRegistration> GetRegistrationsForType(Type type)
         {
-            return registrations.GetregistrationsForType(type);
+            return registrations.GetRegistrationsForType(type);
         }
 
         public bool Contains(Type type)

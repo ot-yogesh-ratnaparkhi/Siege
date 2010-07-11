@@ -30,9 +30,9 @@ namespace Siege.Requisitions.Registrations.OpenGenerics
             this.mapsFromType = mapsFromType;
         }
 
-        public void MapsTo(Type mapsToType)
+        public override void MapsTo(object mapsToType)
         {
-            this.mapsToType = mapsToType;
+            this.mapsToType = (Type)mapsToType;
         }
 
         public override object GetMappedTo()

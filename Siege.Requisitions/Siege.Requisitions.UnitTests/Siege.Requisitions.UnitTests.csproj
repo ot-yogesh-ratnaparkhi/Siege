@@ -159,7 +159,6 @@
     <Compile Include="TestClasses\UnregisteredClass.cs" />
     <Compile Include="Adapters\UnityAdapterTests.cs" />
     <Compile Include="Adapters\WindsorAdapterTests.cs" />
-    <Compile Include="TypeBuilderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Siege.Requisitions.NinjectAdapter\Siege.Requisitions.NinjectAdapter.csproj">

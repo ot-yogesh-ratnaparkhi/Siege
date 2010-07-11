@@ -21,6 +21,7 @@ namespace Siege.Requisitions.Registrations
 {
     public interface IRegistration
     {
+        void MapsTo(object implementationType);
         object GetMappedTo();
         Type GetMappedToType();
         Type GetMappedFromType();

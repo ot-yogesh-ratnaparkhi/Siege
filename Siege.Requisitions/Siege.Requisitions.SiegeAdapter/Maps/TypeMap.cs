@@ -134,6 +134,7 @@ namespace Siege.Requisitions.SiegeAdapter.Maps
             Candidates = new List<ConstructorCandidate>();
 
             BuildCandidateList();
+            Candidates.Sort(new ConstructorCandidateComparer());
         }
 
         public string Name { get; private set; }
@@ -148,6 +149,7 @@ namespace Siege.Requisitions.SiegeAdapter.Maps
             for (int counter = 0; counter < constructorCount; counter++)
             {
                 ConstructorInfo constructor = constructors[counter];
+
                 var candidate = new ConstructorCandidate {Type = To};
                 ParameterInfo[] parameters = constructor.GetParameters();
                 int count = parameters.Length;
@@ -169,6 +171,17 @@ namespace Siege.Requisitions.SiegeAdapter.Maps
 
                 Candidates.Add(candidate);
             }
+        }
+    }
+
+    public class ConstructorCandidateComparer : IComparer<ConstructorCandidate>
+    {
+        public int Compare(ConstructorCandidate x, ConstructorCandidate y)
+        {
+            if (x.Parameters.Count == y.Parameters.Count) return 0;
+            if (x.Parameters.Count > y.Parameters.Count) return -1;
+            
+            return 1;
         }
     }
 }
