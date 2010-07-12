@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Web;
 using Siege.Requisitions.InternalStorage;
 
-namespace Siege.Requisitions.HttpIntegration
+namespace Siege.Requisitions.Web
 {
     public class HttpSessionStore : IContextStore
     {

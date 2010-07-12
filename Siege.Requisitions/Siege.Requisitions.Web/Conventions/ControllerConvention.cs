@@ -16,7 +16,7 @@
 using System.Web.Mvc;
 using Siege.Requisitions.Extensions.AutoScanner;
 
-namespace Siege.Requisitions.HttpIntegration.Conventions
+namespace Siege.Requisitions.Web.Conventions
 {
     public class ControllerConvention : AutoScanningConvention
     {

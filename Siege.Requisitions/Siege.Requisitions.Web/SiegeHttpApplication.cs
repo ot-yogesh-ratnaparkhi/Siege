@@ -20,7 +20,7 @@ using System.Web.Routing;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.RegistrationSyntax;
 
-namespace Siege.Requisitions.HttpIntegration
+namespace Siege.Requisitions.Web
 {
     public abstract class SiegeHttpApplication : HttpApplication
     {

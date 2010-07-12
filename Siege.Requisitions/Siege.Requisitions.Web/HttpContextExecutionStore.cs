@@ -19,7 +19,7 @@ using System.Web;
 using Siege.Requisitions.EventHandlers;
 using Siege.Requisitions.InternalStorage;
 
-namespace Siege.Requisitions.HttpIntegration
+namespace Siege.Requisitions.Web
 {
     public class HttpContextExecutionStore : IExecutionStore
     {

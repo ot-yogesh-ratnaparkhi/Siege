@@ -19,7 +19,7 @@ using System.Web;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Resolution;
 
-namespace Siege.Requisitions.HttpIntegration
+namespace Siege.Requisitions.Web
 {
     public class HttpResolutionStore : IResolutionStore
     {

@@ -17,7 +17,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 
-namespace Siege.Requisitions.HttpIntegration
+namespace Siege.Requisitions.Web
 {
     public class SiegeViewEngine : WebFormViewEngine
     {
