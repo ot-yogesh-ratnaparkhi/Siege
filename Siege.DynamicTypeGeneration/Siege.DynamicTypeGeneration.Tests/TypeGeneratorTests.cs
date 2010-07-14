@@ -219,9 +219,9 @@ namespace Siege.DynamicTypeGeneration.Tests
                 type.AddField<BaseType>("field2");
             });
 
-            Assert.AreEqual(2, generatedType.GetFields().Length);
-            Assert.AreEqual(typeof(string), generatedType.GetField("field1").FieldType);
-            Assert.AreEqual(typeof(BaseType), generatedType.GetField("field2").FieldType);
+            Assert.AreEqual(2, generatedType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Length);
+            Assert.AreEqual(typeof(string), generatedType.GetField("field1", BindingFlags.NonPublic | BindingFlags.Instance).FieldType);
+            Assert.AreEqual(typeof(BaseType), generatedType.GetField("field2", BindingFlags.NonPublic | BindingFlags.Instance).FieldType);
         }
 
         [Test]

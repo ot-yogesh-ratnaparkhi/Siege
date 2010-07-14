@@ -19,7 +19,7 @@ using Siege.Requisitions.RegistrationTemplates.PostResolution;
 
 namespace Siege.Requisitions.Extensions.Initialization
 {
-    public class ConditionalInitializationRegistration<TService> : PostResolutionRegistration<TService>, IInitializationregistration<TService>
+    public class ConditionalInitializationRegistration<TService> : PostResolutionRegistration<TService>, IInitializationRegistration<TService>
     {
         public override IRegistrationTemplate GetRegistrationTemplate()
         {

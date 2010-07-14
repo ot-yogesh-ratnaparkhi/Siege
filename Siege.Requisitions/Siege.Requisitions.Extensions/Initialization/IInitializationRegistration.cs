@@ -18,7 +18,7 @@ using Siege.Requisitions.Registrations;
 
 namespace Siege.Requisitions.Extensions.Initialization
 {
-    public interface IInitializationregistration<TService> : IRegistration
+    public interface IInitializationRegistration<TService> : IRegistration
     {
         void Associate(Func<TService, TService> action);
     }

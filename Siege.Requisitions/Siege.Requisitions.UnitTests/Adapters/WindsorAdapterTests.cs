@@ -75,11 +75,5 @@ namespace Siege.Requisitions.UnitTests.Adapters
 		{
 			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
 		}
-
-        [Ignore("Castle Dynamic Proxy doesn't seem to play nice!")]
-        public override void Should_Proxy_All_Types()
-        {
-            base.Should_Proxy_All_Types();
-        }
 	}
 }

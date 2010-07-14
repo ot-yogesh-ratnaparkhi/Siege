@@ -49,6 +49,7 @@ namespace Siege.Requisitions.AOP
                 type.Named(typeToProxy.Name + Guid.NewGuid());
                 type.InheritFrom(typeToProxy);
                 GeneratedField field = null;
+                
                 if(useServiceLocator)
                 {
                     field = type.AddField<Microsoft.Practices.ServiceLocation.IServiceLocator>("serviceLocator");
