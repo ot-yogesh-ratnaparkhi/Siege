@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Castle.Facilities.FactorySupport;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
+using Castle.MicroKernel.Releasers;
 using Siege.Requisitions.Exceptions;
 using Siege.Requisitions.ExtensionMethods;
 using Siege.Requisitions.Resolution;
@@ -28,9 +29,9 @@ namespace Siege.Requisitions.WindsorAdapter
     {
         private readonly IKernel kernel;
 
-        public WindsorAdapter()
-            : this(new DefaultKernel())
+        public WindsorAdapter() : this(new DefaultKernel())
         {
+            this.kernel.ReleasePolicy = new NoTrackingReleasePolicy();
         }
 
         public WindsorAdapter(IKernel kernel)
@@ -44,7 +45,6 @@ namespace Siege.Requisitions.WindsorAdapter
 
         public void Dispose()
         {
-            //bug in windsor lol
             //kernel.Dispose();
         }
 
