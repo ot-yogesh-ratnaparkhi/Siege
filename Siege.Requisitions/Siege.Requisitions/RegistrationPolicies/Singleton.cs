@@ -14,7 +14,6 @@
 */
 
 using Siege.Requisitions.InternalStorage;
-using Siege.Requisitions.Registrations;
 
 namespace Siege.Requisitions.RegistrationPolicies
 {
@@ -22,10 +21,6 @@ namespace Siege.Requisitions.RegistrationPolicies
     {
         private readonly object lockObject = new object();
         private object instance;
-
-        public Singleton(IRegistration registration) : base(registration)
-        {
-        }
 
         public override object ResolveWith(IInstanceResolver resolver, IServiceLocatorStore context)
         {
