@@ -76,7 +76,7 @@ namespace Siege.Requisitions
         }
 
         public IServiceLocator Register<TRegistrationPolicy>(IRegistration registration)
-            where TRegistrationPolicy : AbstractRegistrationPolicy
+            where TRegistrationPolicy : IRegistrationPolicy
         {
             IRegistrationContainer registrationContainer = foundation.ContainsRegistrationContainerForTemplate(registration.GetRegistrationTemplate())
                                               ? foundation.GetRegistrationContainer(registration.GetRegistrationTemplate())
@@ -86,7 +86,8 @@ namespace Siege.Requisitions
                                            ? GetInstance<IMetaRegistrationTemplate>(new ContextArgument(registration)).Process(registration)
                                            : registrationTemplate.Process(registration);
 
-            var policy = GetInstance<TRegistrationPolicy>(new ConstructorParameter { Name = "registration", Value = processedRegistration });
+            var policy = GetInstance<TRegistrationPolicy>();
+            policy.Handle(processedRegistration);
 
             registrationContainer.Add(policy);
 
@@ -180,7 +181,7 @@ namespace Siege.Requisitions
         }
 
         public IServiceLocator Register<TRegistrationPolicy>(List<IRegistration> registrations)
-            where TRegistrationPolicy : AbstractRegistrationPolicy
+            where TRegistrationPolicy : IRegistrationPolicy
         {
             foreach (IRegistration registration in registrations) Register<TRegistrationPolicy>(registration);
 

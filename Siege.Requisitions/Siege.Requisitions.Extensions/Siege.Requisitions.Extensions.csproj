@@ -56,7 +56,7 @@
     <Compile Include="Conventions\Using.cs" />
     <Compile Include="Initialization\ConditionalInitializationRegistration.cs" />
     <Compile Include="Initialization\DefaultInitializationRegistration.cs" />
-    <Compile Include="Initialization\IInitializationUseCase.cs" />
+    <Compile Include="Initialization\IInitializationRegistration.cs" />
     <Compile Include="ConditionalInjection\InjectionInstanceRegistration.cs" />
     <Compile Include="ConditionalInjection\InjectionRule.cs" />
     <Compile Include="ConditionalInjection\InjectionRuleEvaluationStrategy.cs" />

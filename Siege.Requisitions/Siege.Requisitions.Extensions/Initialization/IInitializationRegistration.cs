@@ -13,16 +13,13 @@
      limitations under the License.
 */
 
-using System.Web.Mvc;
-using Siege.Requisitions.Extensions.AutoScanner;
+using System;
+using Siege.Requisitions.Registrations;
 
-namespace Siege.Requisitions.Web.Conventions
+namespace Siege.Requisitions.Extensions.Initialization
 {
-    public class ControllerConvention : AutoScanningConvention
+    public interface IInitializationRegistration<TService> : IRegistration
     {
-        public ControllerConvention()
-        {
-            ForTypesImplementing<Controller>();
-        }
+        void Associate(Func<TService, TService> action);
     }
 }

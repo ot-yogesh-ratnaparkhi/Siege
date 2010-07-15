@@ -14,16 +14,11 @@
 */
 
 using Siege.Requisitions.InternalStorage;
-using Siege.Requisitions.Registrations;
 
 namespace Siege.Requisitions.RegistrationPolicies
 {
     public class Transient : AbstractRegistrationPolicy
     {
-        public Transient(IRegistration registration) : base(registration)
-        {
-        }
-
         public override object ResolveWith(IInstanceResolver resolver, IServiceLocatorStore context)
         {
             return registration.ResolveWith(resolver, context);

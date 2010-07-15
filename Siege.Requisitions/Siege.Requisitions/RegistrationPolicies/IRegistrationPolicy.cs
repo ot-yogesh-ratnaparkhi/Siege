@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,13 +13,12 @@
      limitations under the License.
 */
 
-using System;
 using Siege.Requisitions.Registrations;
 
-namespace Siege.Requisitions.Extensions.Initialization
+namespace Siege.Requisitions.RegistrationPolicies
 {
-    public interface IInitializationregistration<TService> : IRegistration
+    public interface IRegistrationPolicy : IRegistration
     {
-        void Associate(Func<TService, TService> action);
+        void Handle(IRegistration registration);
     }
 }

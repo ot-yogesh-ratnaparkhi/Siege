@@ -21,14 +21,9 @@ using Siege.Requisitions.RegistrationTemplates;
 
 namespace Siege.Requisitions.RegistrationPolicies
 {
-    public abstract class AbstractRegistrationPolicy : IRegistration
+    public abstract class AbstractRegistrationPolicy : IRegistrationPolicy
     {
         protected IRegistration registration;
-
-        protected AbstractRegistrationPolicy(IRegistration registration)
-        {
-            this.registration = registration;
-        }
 
         public void MapsTo(object implementationType)
         {
@@ -60,6 +55,11 @@ namespace Siege.Requisitions.RegistrationPolicies
         public bool IsValid(IServiceLocatorStore context)
         {
             return registration.IsValid(context);
+        }
+
+        public void Handle(IRegistration registration)
+        {
+            this.registration = registration;
         }
 
         public string Key

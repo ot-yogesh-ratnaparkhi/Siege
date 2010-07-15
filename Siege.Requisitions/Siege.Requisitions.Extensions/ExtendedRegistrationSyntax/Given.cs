@@ -61,7 +61,7 @@ namespace Siege.Requisitions.Extensions.ExtendedRegistrationSyntax
             return rule;
         }
 
-        public static IInitializationregistration<TService> InitializeWith(Action<TService> action)
+        public static IInitializationRegistration<TService> InitializeWith(Action<TService> action)
         {
             var registration = new DefaultInitializationRegistration<TService>();
 

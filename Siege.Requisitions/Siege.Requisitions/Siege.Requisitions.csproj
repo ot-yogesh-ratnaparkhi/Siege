@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RegistrationPolicies\IRegistrationPolicy.cs" />
     <Compile Include="Registrations\Meta\IMetaRegistration.cs" />
     <Compile Include="RegistrationTemplates\Conditional\ConditionalInstanceRegistrationTemplate.cs" />
     <Compile Include="RegistrationTemplates\Default\DefaultInstanceRegistrationTemplate.cs" />

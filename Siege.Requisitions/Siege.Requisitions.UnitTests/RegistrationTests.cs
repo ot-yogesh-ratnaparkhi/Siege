@@ -18,9 +18,7 @@ namespace Siege.Requisitions.UnitTests
         [Test]
         public virtual void Should_Proxy_All_Types()
         {
-            locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
-            locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
-            locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
+            locator.Register(Using.Convention<SampleProxyAttributeConvention>());
             locator.Register(Using.Convention<ProxyConvention>());
             locator.Register(Given<TestType2>.Then<TestType2>());
 
@@ -29,6 +27,19 @@ namespace Siege.Requisitions.UnitTests
             Assert.AreEqual(3, Counter.Count);
 
             Counter.Count = 0;
+        }
+    }
+
+    public class SampleProxyAttributeConvention : IConvention
+    {
+        public List<IRegistration> Build()
+        {
+            return new List<IRegistration>
+                       {
+                           Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>(),
+                           Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>(),
+                           Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>()
+                       };
         }
     }
 

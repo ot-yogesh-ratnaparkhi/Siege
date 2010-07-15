@@ -27,6 +27,11 @@ namespace Siege.Requisitions.Extensions.AutoScanner
         private Assembly assembly;
         private readonly List<Type> baseTypes = new List<Type>();
 
+        public AutoScanningConvention()
+        {
+            assembly = Assembly.GetCallingAssembly();
+        }
+
         protected void FromAssemblyContaining<TType>()
         {
             assembly = typeof (TType).Assembly;

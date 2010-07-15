@@ -15,7 +15,7 @@
 
 using Siege.Requisitions.InternalStorage;
 
-namespace Siege.Requisitions.HttpIntegration
+namespace Siege.Requisitions.Web
 {
     public class HttpSiegeContainerStore : IServiceLocatorStore
     {

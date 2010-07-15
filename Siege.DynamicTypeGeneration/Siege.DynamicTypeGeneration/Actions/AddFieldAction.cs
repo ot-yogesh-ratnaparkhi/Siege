@@ -50,11 +50,11 @@ namespace Siege.DynamicTypeGeneration.Actions
         {
             if(fieldType != null)
             {
-                fieldBuilder = bundle().TypeBuilder.DefineField(fieldName(), fieldType(), FieldAttributes.Public);
+                fieldBuilder = bundle().TypeBuilder.DefineField(fieldName(), fieldType(), FieldAttributes.Family);
             }
             else if(fieldBundle != null)
             {
-                fieldBuilder = bundle().TypeBuilder.DefineField(fieldName(), fieldBundle().TypeBuilder, FieldAttributes.Public);
+                fieldBuilder = bundle().TypeBuilder.DefineField(fieldName(), fieldBundle().TypeBuilder, FieldAttributes.Family);
             }
         }
     }

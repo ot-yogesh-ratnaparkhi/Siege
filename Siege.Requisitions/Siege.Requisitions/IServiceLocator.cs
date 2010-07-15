@@ -24,8 +24,8 @@ namespace Siege.Requisitions
     {
         IServiceLocator Register(List<IRegistration> registration);
         IServiceLocator Register(IRegistration registration);
-        IServiceLocator Register<TRegistrationPolicy>(List<IRegistration> registration) where TRegistrationPolicy : AbstractRegistrationPolicy;
-        IServiceLocator Register<TRegistrationPolicy>(IRegistration registration) where TRegistrationPolicy : AbstractRegistrationPolicy;
+        IServiceLocator Register<TRegistrationPolicy>(List<IRegistration> registration) where TRegistrationPolicy : IRegistrationPolicy;
+        IServiceLocator Register<TRegistrationPolicy>(IRegistration registration) where TRegistrationPolicy : IRegistrationPolicy;
         new object GetInstance(Type type);
         new object GetInstance(Type type, string key);
     }
