@@ -33,7 +33,7 @@ namespace Siege.Requisitions
         public Foundation()
         {
             var conditionalManager = new CompositeRegistrationList();
-            var defaultManager = new DefaultRegistrationList();
+            var defaultManager = new CompositeRegistrationList();
             var namedManager = new CompositeRegistrationList();
             this.fallbackContainer = conditionalManager;
 
