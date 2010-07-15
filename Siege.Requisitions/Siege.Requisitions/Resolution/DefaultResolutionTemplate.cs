@@ -17,10 +17,11 @@ using System;
 using System.Collections.Generic;
 using Siege.Requisitions.EventHandlers;
 using Siege.Requisitions.Exceptions;
+using Siege.Requisitions.ExtensionMethods;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
-using Siege.Requisitions.Registrations.Containers;
-using Siege.Requisitions.ExtensionMethods;
+using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.RegistrationTemplates.PostResolution;
 
 namespace Siege.Requisitions.Resolution
 {
@@ -42,8 +43,8 @@ namespace Siege.Requisitions.Resolution
 
         public virtual object Resolve(Type type)
         {
-            var conditionalManager = foundation.GetRegistrationContainer<ConditionalRegistrationContainer>();
-            var defaultManager = foundation.GetRegistrationContainer<DefaultRegistrationContainer>();
+            var conditionalManager = foundation.GetConditionalRegistrationContainer();
+            var defaultManager = foundation.GetDefaultRegistrationContainer();
 
             if (conditionalManager.Contains(type))
             {
@@ -54,7 +55,7 @@ namespace Siege.Requisitions.Resolution
                     var registration = conditionalCases[i];
                     object value = null;
 
-                    if (registration.IsValid(this.store))
+                    if (registration.IsValid(store))
                     {
                         value = Resolve(registration);
                     }
@@ -88,7 +89,7 @@ namespace Siege.Requisitions.Resolution
         {
             if (serviceLocator.HasTypeRegistered(type) || type.IsGenericType)
             {
-                return serviceLocator.GetInstance(type, this.store.ResolutionStore.Items.OfType<ConstructorParameter, IResolutionArgument>());
+                return serviceLocator.GetInstance(type, store.ResolutionStore.Items.OfType<ConstructorParameter, IResolutionArgument>());
             }
 
             return null;
@@ -96,25 +97,25 @@ namespace Siege.Requisitions.Resolution
 
         private object Resolve(IRegistration registration)
         {
-            var value = registration.ResolveWith(this.serviceLocator, this.store);
+            var value = registration.ResolveWith(serviceLocator, store);
 
             if (value != null)
             {
-                this.RaiseTypeResolvedEvent(registration.GetMappedToType());
-                ExecutePostConditions<ConditionalPostResolutionRegistrationContainer>(registration, actionregistration =>
+                RaiseTypeResolvedEvent(registration.GetMappedToType());
+                ExecutePostConditions<ConditionalPostResolutionRegistrationTemplate>(registration, actionregistration =>
                 {
-                    if (actionregistration.IsValid(this.store))
-                        value = actionregistration.ResolveWith(new ValueResolver(value), this.store);
+                    if (actionregistration.IsValid(store))
+                        value = actionregistration.ResolveWith(new ValueResolver(value), store);
                 });
-                ExecutePostConditions<DefaultPostResolutionRegistrationContainer>(registration, actionregistration => value = actionregistration.ResolveWith(new ValueResolver(value), this.store));
+                ExecutePostConditions<DefaultPostResolutionRegistrationTemplate>(registration, actionregistration => value = actionregistration.ResolveWith(new ValueResolver(value), store));
             }
 
             return value;
         }
 
-        private void ExecutePostConditions<TRegistrationManager>(IRegistration registration, Action<IRegistration> action) where TRegistrationManager : IRegistrationContainer
+        private void ExecutePostConditions<TRegistrationManager>(IRegistration registration, Action<IRegistration> action) where TRegistrationManager : IRegistrationTemplate, new()
         {
-            var manager = foundation.GetRegistrationContainer<TRegistrationManager>();
+            var manager = foundation.GetRegistrationContainer(new TRegistrationManager());
             IList<IRegistration> actions = null;
             
             if(manager.Contains(registration.GetMappedToType()))
@@ -138,7 +139,7 @@ namespace Siege.Requisitions.Resolution
 
         private void RaiseTypeResolvedEvent(Type type)
         {
-            if (this.TypeResolved != null) this.TypeResolved(type);
+            if (TypeResolved != null) TypeResolved(type);
         }
     }
 }

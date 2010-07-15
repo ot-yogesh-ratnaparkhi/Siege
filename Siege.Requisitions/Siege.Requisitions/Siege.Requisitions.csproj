@@ -75,11 +75,6 @@
     <Compile Include="Resolution\FactoryResolutionTemplate.cs" />
     <Compile Include="Resolution\IResolutionTemplate.cs" />
     <Compile Include="Resolution\DefaultResolutionTemplate.cs" />
-    <Compile Include="Registrations\Containers\MetaRegistrationContainer.cs" />
-    <Compile Include="Registrations\Containers\ConditionalPostResolutionRegistrationContainer.cs" />
-    <Compile Include="Registrations\Containers\ConditionalRegistrationContainer.cs" />
-    <Compile Include="Registrations\Containers\DefaultPostResolutionRegistrationContainer.cs" />
-    <Compile Include="Registrations\Containers\DefaultRegistrationContainer.cs" />
     <Compile Include="Registrations\Containers\IRegistrationContainer.cs" />
     <Compile Include="Registrations\OpenGenerics\IOpenGenericRegistration.cs" />
     <Compile Include="Registrations\OpenGenerics\OpenGenericRegistration.cs" />

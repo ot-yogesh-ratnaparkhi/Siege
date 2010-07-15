@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace Siege.Requisitions.Registrations.Containers
 {
-    public class CompositeRegistrationList
+    public class CompositeRegistrationList : IRegistrationContainer
     {
         private readonly Dictionary<Type, List<IRegistration>> registrations = new Dictionary<Type, List<IRegistration>>();
 
@@ -29,6 +29,10 @@ namespace Siege.Requisitions.Registrations.Containers
             return this.registrations[type];
         }
 
+        public void Add(IRegistration registration)
+        {
+            Add(registration.GetMappedFromType(), registration);
+        }
         public void Add(Type type, IRegistration registration)
         {
             if (!registrations.ContainsKey(type))

@@ -22,7 +22,7 @@ namespace Siege.Requisitions.Registrations.Default
     {
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return new DefaultRegistrationTemplate();
+            return new DefaultInstanceRegistrationTemplate();
         }
     }
 }

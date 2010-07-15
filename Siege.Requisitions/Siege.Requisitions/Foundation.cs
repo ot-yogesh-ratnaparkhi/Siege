@@ -28,26 +28,24 @@ namespace Siege.Requisitions
     public class Foundation
     {
         private readonly Hashtable registrationContainers = new Hashtable();
-        private readonly Hashtable registrationContainersByType = new Hashtable();
-        private readonly IRegistrationContainer fallbackContainer;
+        private readonly CompositeRegistrationList fallbackContainer;
         
         public Foundation()
         {
-            var conditionalManager = new ConditionalRegistrationContainer();
-            var defaultManager = new DefaultRegistrationContainer();
-            var namedManager = new ConditionalRegistrationContainer();
+            var conditionalManager = new CompositeRegistrationList();
+            var defaultManager = new DefaultRegistrationList();
+            var namedManager = new CompositeRegistrationList();
             this.fallbackContainer = conditionalManager;
 
             AddRegistrationContainer(typeof(ConditionalRegistrationTemplate), conditionalManager);
             AddRegistrationContainer(typeof(ConditionalInstanceRegistrationTemplate), conditionalManager);
-            AddRegistrationContainer(typeof(OpenGenericRegistrationTemplate), new ConditionalRegistrationContainer());
+            AddRegistrationContainer(typeof(OpenGenericRegistrationTemplate), new CompositeRegistrationList());
             AddRegistrationContainer(typeof(DefaultRegistrationTemplate), defaultManager);
             AddRegistrationContainer(typeof(DefaultInstanceRegistrationTemplate), defaultManager);
             AddRegistrationContainer(typeof(NamedRegistrationTemplate), namedManager);
             AddRegistrationContainer(typeof(NamedInstanceRegistrationTemplate), namedManager);
-            AddRegistrationContainer(typeof(DefaultPostResolutionRegistrationTemplate), new DefaultPostResolutionRegistrationContainer());
-            AddRegistrationContainer(typeof(ConditionalPostResolutionRegistrationTemplate), new ConditionalPostResolutionRegistrationContainer());
-            AddRegistrationContainer(typeof(MetaRegistrationContainer), new MetaRegistrationContainer());
+            AddRegistrationContainer(typeof(DefaultPostResolutionRegistrationTemplate), new CompositeRegistrationList());
+            AddRegistrationContainer(typeof(ConditionalPostResolutionRegistrationTemplate), new CompositeRegistrationList());
         }
 
         private void AddRegistrationContainer<TRegistrationContainer>(Type templateType, TRegistrationContainer instance) where TRegistrationContainer : IRegistrationContainer
@@ -59,7 +57,6 @@ namespace Siege.Requisitions
                     if (!registrationContainers.ContainsKey(templateType))
                     {
                         registrationContainers.Add(templateType, instance);
-                        if(!registrationContainersByType.ContainsKey(typeof(TRegistrationContainer))) registrationContainersByType.Add(typeof(TRegistrationContainer), instance);
                     }
                 }
             }
@@ -72,9 +69,14 @@ namespace Siege.Requisitions
             return (IRegistrationContainer) registrationContainers[registrationTemplate.GetType()];
         }
 
-        public TRegistrationContainer GetRegistrationContainer<TRegistrationContainer>() where TRegistrationContainer : IRegistrationContainer
+        public IRegistrationContainer GetConditionalRegistrationContainer()
         {
-            return (TRegistrationContainer)registrationContainersByType[typeof(TRegistrationContainer)];
+            return GetRegistrationContainer(new ConditionalRegistrationTemplate());
+        }
+
+        public IRegistrationContainer GetDefaultRegistrationContainer()
+        {
+            return GetRegistrationContainer(new DefaultRegistrationTemplate());
         }
 
         public bool ContainsRegistrationContainerForTemplate(IRegistrationTemplate registrationTemplate)

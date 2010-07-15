@@ -18,12 +18,13 @@ using System.Collections.Generic;
 
 namespace Siege.Requisitions.Registrations.Containers
 {
-    public class DefaultRegistrationList
+    public class DefaultRegistrationList : IRegistrationContainer
     {
         private readonly Dictionary<Type, IRegistration> internalList = new Dictionary<Type, IRegistration>();
 
-        public void Add(Type type, IRegistration registration)
+        public void Add(IRegistration registration)
         {
+            var type = registration.GetMappedFromType();
             if (!Contains(type))
                 internalList.Add(type, registration);
         }
@@ -33,11 +34,11 @@ namespace Siege.Requisitions.Registrations.Containers
             return this.internalList.ContainsKey(type);
         }
 
-        public IRegistration GetRegistrationForType(Type type)
+        public List<IRegistration> GetRegistrationsForType(Type type)
         {
             if (!Contains(type)) return null;
 
-            return this.internalList[type];
+            return new List<IRegistration> {this.internalList[type]};
         }
 
         public List<IRegistration> All()

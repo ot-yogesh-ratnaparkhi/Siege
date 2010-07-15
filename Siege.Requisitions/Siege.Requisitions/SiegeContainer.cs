@@ -50,8 +50,11 @@ namespace Siege.Requisitions
             Register<Singleton>(Given<IServiceLocator>.Then(this));
             Register<Singleton>(Given<IContextualServiceLocator>.Then(this));
             Register<Singleton>(Given<Microsoft.Practices.ServiceLocation.IServiceLocator>.Then(this));
-            Register<Singleton>(Given<Foundation>.Then(foundation)); 
-            Register<Singleton>(Given<IServiceLocatorStore>.Then(store));
+            Register<Singleton>(Given<Foundation>.Then(this.foundation)); 
+            Register<Singleton>(Given<IServiceLocatorStore>.Then(this.store));
+            Register<Singleton>(Given<IContextStore>.Then(this.store.ContextStore));
+            Register<Singleton>(Given<IExecutionStore>.Then(this.store.ExecutionStore));
+            Register<Singleton>(Given<IResolutionStore>.Then(this.store.ResolutionStore));
         }
 
         public object GetInstance(Type type, params IResolutionArgument[] arguments)
