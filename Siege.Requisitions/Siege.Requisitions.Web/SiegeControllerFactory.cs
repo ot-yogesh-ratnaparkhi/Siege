@@ -20,9 +20,9 @@ namespace Siege.Requisitions.Web
 {
     public class SiegeControllerFactory : DefaultControllerFactory
     {
-        private readonly IContextualServiceLocator locator;
+        private readonly IServiceLocator locator;
 
-		public SiegeControllerFactory(IContextualServiceLocator locator)
+        public SiegeControllerFactory(IServiceLocator locator)
 		{
 			this.locator = locator;
 		}

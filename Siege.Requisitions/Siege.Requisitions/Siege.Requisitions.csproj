@@ -88,7 +88,6 @@
     <Compile Include="InternalStorage\ThreadedServiceLocatorStore.cs" />
     <Compile Include="InternalStorage\ThreadLocalStore.cs" />
     <Compile Include="Registrations\Containers\CompositeRegistrationList.cs" />
-    <Compile Include="Registrations\Containers\DefaultRegistrationList.cs" />
     <Compile Include="ResolutionRules\ConditionalActivationRule.cs" />
     <Compile Include="ResolutionRules\IConditionalActivationRule.cs" />
     <Compile Include="InternalStorage\IContextStore.cs" />
@@ -104,7 +103,6 @@
     <Compile Include="RegistrationSyntax\Given.cs" />
     <Compile Include="ResolutionRules\IActivationRule.cs" />
     <Compile Include="Registrations\IActivationStrategy.cs" />
-    <Compile Include="IContextualServiceLocator.cs" />
     <Compile Include="IGetAllInstancesServiceLocator.cs" />
     <Compile Include="IInstanceResolver.cs" />
     <Compile Include="Registrations\Named\INamedRegistration.cs" />
@@ -119,6 +117,7 @@
     <Compile Include="Resolution\ValueResolver.cs" />
     <Compile Include="SiegeContainer.cs" />
     <Compile Include="Registrations\Registration.cs" />
+    <Compile Include="ThreadedSiegeContainer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -24,9 +24,9 @@ namespace Siege.Requisitions.Web
 {
     public abstract class SiegeHttpApplication : HttpApplication
     {
-        protected static IContextualServiceLocator locator;
+        protected static IServiceLocator locator;
 
-        public IContextualServiceLocator ServiceLocator
+        public IServiceLocator ServiceLocator
         {
             get { return locator; }
         }

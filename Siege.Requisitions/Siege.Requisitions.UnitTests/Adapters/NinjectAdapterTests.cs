@@ -16,7 +16,6 @@
 using Ninject;
 using NUnit.Framework;
 using Siege.Requisitions.UnitTests.TestClasses;
-using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.RegistrationSyntax;
 
 namespace Siege.Requisitions.UnitTests.Adapters
@@ -53,8 +52,7 @@ namespace Siege.Requisitions.UnitTests.Adapters
 		{
 			var disposableContainer = new StandardKernel();
 			using (
-				var disposableLocater = new SiegeContainer(new NinjectAdapter.NinjectAdapter(disposableContainer),
-				                                           new ThreadedServiceLocatorStore()))
+				var disposableLocater = new ThreadedSiegeContainer(new NinjectAdapter.NinjectAdapter(disposableContainer)))
 			{
 				disposableLocater.Register(Given<ITestInterface>.Then<TestCase1>());
 				Assert.IsTrue(disposableLocater.GetInstance<ITestInterface>() is TestCase1);

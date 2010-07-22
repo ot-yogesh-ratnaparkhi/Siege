@@ -18,7 +18,6 @@ using Castle.MicroKernel.Registration;
 using NUnit.Framework;
 using Siege.Requisitions.UnitTests.TestClasses;
 using Siege.Requisitions.Exceptions;
-using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.RegistrationSyntax;
 
 namespace Siege.Requisitions.UnitTests.Adapters
@@ -55,7 +54,7 @@ namespace Siege.Requisitions.UnitTests.Adapters
 		{
 			var disposableKernel = new DefaultKernel();
 			using (
-				var disposableLocater = new SiegeContainer(new WindsorAdapter.WindsorAdapter(disposableKernel), new ThreadedServiceLocatorStore()))
+				var disposableLocater = new ThreadedSiegeContainer(new WindsorAdapter.WindsorAdapter(disposableKernel)))
 			{
 				disposableLocater.Register(Given<ITestInterface>.Then<TestCase1>());
 				Assert.IsTrue(disposableLocater.GetInstance<ITestInterface>() is TestCase1);

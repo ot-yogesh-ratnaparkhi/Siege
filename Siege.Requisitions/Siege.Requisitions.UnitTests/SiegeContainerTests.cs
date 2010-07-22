@@ -17,14 +17,13 @@ using NUnit.Framework;
 using Siege.Requisitions.UnitTests.TestClasses;
 using Siege.Requisitions.Exceptions;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
-using Siege.Requisitions.InternalStorage;
 
 namespace Siege.Requisitions.UnitTests
 {
 	[TestFixture]
     public abstract partial class SiegeContainerTests
     {
-        protected IContextualServiceLocator locator;
+        protected IServiceLocator locator;
         protected abstract IServiceLocatorAdapter GetAdapter();
 		protected abstract void RegisterWithoutSiege<TFrom, TTo>() where TTo : TFrom;
 		protected abstract void ResolveWithoutSiege<T>();
@@ -32,7 +31,7 @@ namespace Siege.Requisitions.UnitTests
         [SetUp]
         public virtual void SetUp()
         {
-            locator = new SiegeContainer(GetAdapter(), new ThreadedServiceLocatorStore());
+            locator = new ThreadedSiegeContainer(GetAdapter());
         }
 
         [TearDown]

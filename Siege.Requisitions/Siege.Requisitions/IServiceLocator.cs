@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.RegistrationPolicies;
 using Siege.Requisitions.Registrations;
 
@@ -28,5 +29,7 @@ namespace Siege.Requisitions
         IServiceLocator Register<TRegistrationPolicy>(IRegistration registration) where TRegistrationPolicy : IRegistrationPolicy;
         new object GetInstance(Type type);
         new object GetInstance(Type type, string key);
+        void AddContext(object contextItem);
+        IServiceLocatorStore Store { get; }
     }
 }

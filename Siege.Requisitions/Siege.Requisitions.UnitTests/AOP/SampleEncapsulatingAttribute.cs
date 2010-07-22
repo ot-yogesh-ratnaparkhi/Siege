@@ -21,16 +21,16 @@ namespace Siege.Requisitions.UnitTests.AOP
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
     public class SampleEncapsulatingAttribute : Attribute, IDefaultProcessEncapsulatingAttribute, IDefaultProcessEncapsulatingActionAttribute
     {
-        private readonly IContextualServiceLocator locator;
+        private readonly IServiceLocator locator;
 
         public SampleEncapsulatingAttribute() { }
 
-        public SampleEncapsulatingAttribute(IContextualServiceLocator locator)
+        public SampleEncapsulatingAttribute(IServiceLocator locator)
         {
             this.locator = locator;
         }
 
-        public IContextualServiceLocator Locator
+        public IServiceLocator Locator
         {
             get { return locator; }
         }

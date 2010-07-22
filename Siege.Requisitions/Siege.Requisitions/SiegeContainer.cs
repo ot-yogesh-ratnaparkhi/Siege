@@ -26,7 +26,7 @@ using Siege.Requisitions.ExtensionMethods;
 
 namespace Siege.Requisitions
 {
-    public class SiegeContainer : IContextualServiceLocator
+    public abstract class SiegeContainer : IServiceLocator
     {
         private readonly IServiceLocatorAdapter serviceLocator;
         private readonly IServiceLocatorStore store;
@@ -34,7 +34,7 @@ namespace Siege.Requisitions
         private readonly IMetaRegistrationTemplate registrationTemplate;
         private readonly Foundation foundation;
 
-        public SiegeContainer(IServiceLocatorAdapter serviceLocator, IServiceLocatorStore store)
+        protected SiegeContainer(IServiceLocatorAdapter serviceLocator, IServiceLocatorStore store)
         {
             this.serviceLocator = serviceLocator;
             this.store = store;
@@ -48,7 +48,6 @@ namespace Siege.Requisitions
             RegisterPolicy(Given<Singleton>.Then<Singleton>());
 
             Register<Singleton>(Given<IServiceLocator>.Then(this));
-            Register<Singleton>(Given<IContextualServiceLocator>.Then(this));
             Register<Singleton>(Given<Microsoft.Practices.ServiceLocation.IServiceLocator>.Then(this));
             Register<Singleton>(Given<Foundation>.Then(this.foundation)); 
             Register<Singleton>(Given<IServiceLocatorStore>.Then(this.store));

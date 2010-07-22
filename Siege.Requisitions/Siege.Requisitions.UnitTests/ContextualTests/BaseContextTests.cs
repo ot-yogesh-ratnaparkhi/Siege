@@ -23,13 +23,13 @@ namespace Siege.Requisitions.UnitTests.ContextualTests
 	[TestFixture]
 	public abstract class BaseContextTests
 	{
-		protected IContextualServiceLocator locator;
+        protected IServiceLocator locator;
 		protected abstract IServiceLocatorAdapter GetAdapter();
 
 		[SetUp]
 		public virtual void SetUp()
 		{
-			locator = new SiegeContainer(GetAdapter(), new ThreadedServiceLocatorStore());
+			locator = new ThreadedSiegeContainer(GetAdapter());
 		}
 
 		[TearDown]
