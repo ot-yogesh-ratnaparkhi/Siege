@@ -19,6 +19,16 @@ using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 
 namespace Siege.Requisitions.UnitTests
 {
+    public interface ISimpleType
+    {
+        string Property { get; set; }
+    }
+
+    public class SimpleType : ISimpleType
+    {
+        public string Property { get; set; }
+    }
+
     public abstract partial class SiegeContainerTests
     {
         [Test]
@@ -29,6 +39,16 @@ namespace Siege.Requisitions.UnitTests
 
             var instance = (TestCase1) locator.GetInstance<ITestInterface>();
             Assert.AreEqual("lulz", instance.Property1);
+        }
+
+        [Test]
+        public void Should_Initialize_Property_After_Resolution_For_Base_Type()
+        {
+            locator.Register(Given<ISimpleType>.Then<SimpleType>());
+            locator.Register(Given<ISimpleType>.InitializeWith(testCase1 => testCase1.Property = "lulz"));
+
+            var instance = locator.GetInstance<ISimpleType>();
+            Assert.AreEqual("lulz", instance.Property);
         }
 
         [Test]

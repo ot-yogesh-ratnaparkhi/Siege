@@ -60,7 +60,7 @@ namespace Siege.Requisitions
         {
             store.ResolutionStore.Add(new List<IResolutionArgument>(arguments));
 
-            object instance = !HasTypeRegistered(typeof(IResolutionTemplate))
+            object instance = !HasTypeRegistered(typeof(IResolutionTemplate)) && type != typeof(IResolutionTemplate)
                 ? resolutionTemplate.Resolve(type)
                 : GetInstance<IResolutionTemplate>().Resolve(type);
 
