@@ -20,7 +20,7 @@ namespace Siege.Requisitions.UnitTests.Adapters
 {
 	[TestFixture]
 	[Category("Unity")]
-	public class UnityAdapterTests : SiegeContainerTests
+	public class UnityAdapterTests : ServiceLocatorTests
 	{
 		private UnityContainer container;
 

@@ -20,10 +20,10 @@ using Siege.Requisitions.RegistrationPolicies;
 
 namespace Siege.Requisitions.UnitTests
 {
-    public abstract partial class SiegeContainerTests
+    public abstract partial class ServiceLocatorTests
     {
         [Test]
-        public void Registering_Transient_Should_Return_New_Item()
+        public void RegisteringTransientShouldReturnNewItem()
         {
             locator.Register<Transient>(Given<ITestInterface>.Then<TestCase1>());
 
@@ -34,7 +34,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Registering_Singleton_Should_Not_Return_New_Item()
+        public void RegisteringSingletonShouldNotReturnNewItem()
         {
             locator.Register<Singleton>(Given<ITestInterface>.Then<TestCase1>());
 

@@ -20,10 +20,10 @@ using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 
 namespace Siege.Requisitions.UnitTests
 {
-    public abstract partial class SiegeContainerTests
+    public abstract partial class ServiceLocatorTests
     {
         [Test]
-        public void Should_Choose_Constructor_Argument_Based_On_Type_Injected_Into()
+        public void ShouldChooseConstructorArgumentBasedOnTypeInjectedInto()
         {
             locator
                 .Register(Given<ITestInterface>
@@ -43,13 +43,12 @@ namespace Siege.Requisitions.UnitTests
 
             var instance = locator.GetInstance<ITestInterface>();
 
-            Assert.IsInstanceOfType(typeof (DependsOnAlternateConstructorImplicitly), instance);
-            Assert.IsInstanceOfType(typeof (AlternateConstructorArgument),
-                                    ((DependsOnAlternateConstructorImplicitly) instance).Argument);
+            Assert.IsInstanceOf<DependsOnAlternateConstructorImplicitly>(instance);
+            Assert.IsInstanceOf<AlternateConstructorArgument>(((DependsOnAlternateConstructorImplicitly)instance).Argument);
         }
 
         [Test]
-        public void Should_Choose_Constructor_Argument_Based_On_Type_Injected_Into_And_Use_Instance()
+        public void ShouldChooseConstructorArgumentBasedOnTypeInjectedIntoAndUseInstance()
         {
             var arg = new AlternateConstructorArgument();
 
@@ -71,14 +70,13 @@ namespace Siege.Requisitions.UnitTests
 
             var instance = locator.GetInstance<ITestInterface>();
 
-            Assert.IsInstanceOfType(typeof (DependsOnAlternateConstructorImplicitly), instance);
-            Assert.IsInstanceOfType(typeof (AlternateConstructorArgument),
-                                    ((DependsOnAlternateConstructorImplicitly) instance).Argument);
+            Assert.IsInstanceOf<DependsOnAlternateConstructorImplicitly>(instance);
+            Assert.IsInstanceOf<AlternateConstructorArgument>(((DependsOnAlternateConstructorImplicitly)instance).Argument);
             Assert.AreSame(arg, ((DependsOnAlternateConstructorImplicitly) instance).Argument);
         }
 
         [Test]
-        public void Should_Construct_With_A_Factory_When_Injected_Into_Particular_Type()
+        public void ShouldConstructWithAFactoryWhenInjectedIntoParticularType()
         {
             bool factoryMethodInvoked = false;
             Func<IInstanceResolver, IConstructorArgument> func = container =>
@@ -109,7 +107,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Not_Construct_With_A_Factory_When_Not_Injected_Into_Particular_Type()
+        public void ShouldNotConstructWithAFactoryWhenNotInjectedIntoParticularType()
         {
             bool factoryMethodInvoked = false;
             Func<IInstanceResolver, IConstructorArgument> func = container =>

@@ -22,8 +22,8 @@ namespace Siege.Foundry
 {
     public class TypeGenerator
     {
-        private static AssemblyBuilder assemblyBuilder;
-        private static ModuleBuilder module;
+        private static readonly AssemblyBuilder assemblyBuilder;
+        private static readonly ModuleBuilder module;
 
         static TypeGenerator()
         {

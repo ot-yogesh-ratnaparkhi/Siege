@@ -14,7 +14,7 @@
 */
 
 using System;
-using Siege.Requisitions.AOP.Attributes;
+using Siege.Arsenal.Attributes;
 
 namespace Siege.Requisitions.UnitTests.AOP
 {

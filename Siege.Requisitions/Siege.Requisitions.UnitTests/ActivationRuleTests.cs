@@ -17,13 +17,14 @@ using NUnit.Framework;
 using Siege.Requisitions.UnitTests.TestClasses;
 using Siege.Requisitions.Exceptions;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
+using TestContext = Siege.Requisitions.UnitTests.TestClasses.TestContext;
 
 namespace Siege.Requisitions.UnitTests
 {
-    public abstract partial class SiegeContainerTests
+    public abstract partial class ServiceLocatorTests
     {
         [Test]
-        public void Should_Be_Able_To_Bind_An_Interface_To_A_Type_Based_On_Rule()
+        public void ShouldBeAbleToBindAnInterfaceToATypeBasedOnRule()
         {
             locator
                 .Register(Given<ITestInterface>
@@ -31,11 +32,11 @@ namespace Siege.Requisitions.UnitTests
                             .Then<TestCase2>());
             locator.AddContext(CreateContext(TestEnum.Case2));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase2);
+            Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>());
         }
 
         [Test]
-        public void Should_Be_Able_To_Bind_An_Interface_To_An_Implementation_Based_On_Rule()
+        public void ShouldBeAbleToBindAnInterfaceToAnImplementationBasedOnRule()
         {
             locator
                 .Register(Given<ITestInterface>
@@ -43,11 +44,11 @@ namespace Siege.Requisitions.UnitTests
                             .Then(new TestCase2()));
             locator.AddContext(CreateContext(TestEnum.Case2));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase2);
+            Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>());
         }
 
         [Test]
-        public void Should_Use_Rule_When_Satisfied()
+        public void ShouldUseRuleWhenSatisfied()
         {
             locator
                 .Register(Given<ITestInterface>.Then<TestCase1>())
@@ -56,11 +57,11 @@ namespace Siege.Requisitions.UnitTests
                             .Then<TestCase2>());
             locator.AddContext(CreateContext(TestEnum.Case2));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase2);
+            Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>());
         }
 
         [Test]
-        public void Should_Use_Correct_Rule_Given_Multiple_Rules()
+        public void ShouldUseCorrectRuleGivenMultipleRules()
         {
             locator
                 .Register(Given<ITestInterface>
@@ -71,11 +72,11 @@ namespace Siege.Requisitions.UnitTests
                             .Then<TestCase1>());
             locator.AddContext(CreateContext(TestEnum.Case1));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
+            Assert.IsInstanceOf<TestCase1>(locator.GetInstance<ITestInterface>());
         }
 
         [Test]
-        public void Should_Change_Implementation_When_Context_Is_Added()
+        public void ShouldChangeImplementationWhenContextIsAdded()
         {
             locator
                 .Register(Given<ITestInterface>.Then<TestCase1>())
@@ -86,15 +87,15 @@ namespace Siege.Requisitions.UnitTests
                             .When<TestContext>(context => context.TestCases == TestEnum.Case1)
                             .Then<TestCase1>());
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
+            Assert.IsInstanceOf<TestCase1>(locator.GetInstance<ITestInterface>());
 
             locator.AddContext(CreateContext(TestEnum.Case2));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase2);
+            Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>());
         }
 
         [Test]
-        public void Should_Use_Correct_Rule_Given_Multiple_Rules_And_Default()
+        public void ShouldUseCorrectRuleGivenMultipleRulesAndDefault()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>())
                    .Register(Given<ITestInterface>
@@ -105,11 +106,11 @@ namespace Siege.Requisitions.UnitTests
                                 .Then<TestCase1>());
             locator.AddContext(CreateContext(TestEnum.Case1));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
+            Assert.IsInstanceOf<TestCase1>(locator.GetInstance<ITestInterface>());
         }
 
         [Test, ExpectedException(typeof(RegistrationNotFoundException))]
-        public void Should_Throw_Exception_When_Type_No_Default_Specified_And_No_Rules_Match()
+        public void ShouldThrowExceptionWhenTypeNoDefaultSpecifiedAndNoRulesMatch()
         {
             locator.Register(Given<ITestInterface>
                                 .When<TestContext>(context => context.TestCases == TestEnum.Case2)
@@ -118,11 +119,11 @@ namespace Siege.Requisitions.UnitTests
                                 .When<TestContext>(context => context.TestCases == TestEnum.Case1)
                                 .Then<TestCase1>());
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
+            Assert.IsInstanceOf<TestCase1>(locator.GetInstance<ITestInterface>());
         }
 
         [Test]
-        public void Should_Not_Use_Rule_When_Not_Satisfied()
+        public void ShouldNotUseRuleWhenNotSatisfied()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>())
                    .Register(Given<ITestInterface>
@@ -130,11 +131,11 @@ namespace Siege.Requisitions.UnitTests
                                 .Then<TestCase2>());
             locator.AddContext(CreateContext(TestEnum.Case3));
 
-            Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
+            Assert.IsInstanceOf<TestCase1>(locator.GetInstance<ITestInterface>());
         }
 
         [Test]
-        public void Should_Resolve_All_From_Service_Locator_Regardless_Of_Context()
+        public void ShouldResolveAllFromServiceLocatorRegardlessOfContext()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>())
                    .Register(Given<ITestInterface>
@@ -145,23 +146,23 @@ namespace Siege.Requisitions.UnitTests
 
             foreach (ITestInterface item in instances)
             {
-                Assert.IsInstanceOfType(typeof(ITestInterface), item);
+                Assert.IsInstanceOf<ITestInterface>(item);
             }
         }
 
         [Test]
-        public void Should_Resolve_All_From_Service_Locator_Regardless_Of_Context_Non_Generic()
+        public void ShouldResolveAllFromServiceLocatorRegardlessOfContextNonGeneric()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>())
                    .Register(Given<ITestInterface>
                                 .When<TestContext>(context => context.TestCases == TestEnum.Case2)
                                 .Then<TestCase2>());
 
-            var instances = locator.GetAllInstances(typeof(ITestInterface));
+            var instances = locator.GetAllInstances<ITestInterface>();
 
             foreach (ITestInterface item in instances)
             {
-                Assert.IsInstanceOfType(typeof(ITestInterface), item);
+                Assert.IsInstanceOf<ITestInterface>(item);
             }
         }
     }

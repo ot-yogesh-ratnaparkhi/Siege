@@ -18,10 +18,10 @@ using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 
 namespace Siege.Requisitions.UnitTests
 {
-    public abstract partial class SiegeContainerTests
+    public abstract partial class ServiceLocatorTests
     {
         [Test, Ignore]
-        public void Should_Resolve_Partially_Closed_Generics()
+        public void ShouldResolvePartiallyClosedGenerics()
         {
             var genericType = typeof (IHandler<>).MakeGenericType(typeof (GenericType<>));
             locator
@@ -31,7 +31,7 @@ namespace Siege.Requisitions.UnitTests
 
             var instance = locator.GetInstance<IHandler<GenericType<string>>>();
 
-            Assert.IsInstanceOfType(typeof(PartiallyClosedGenericHandler<string>), instance);
+            Assert.IsInstanceOf<PartiallyClosedGenericHandler<string>>(instance);
         }
     }
 

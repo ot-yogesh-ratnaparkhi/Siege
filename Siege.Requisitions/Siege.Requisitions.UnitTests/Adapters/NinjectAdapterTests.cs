@@ -20,9 +20,8 @@ using Siege.Requisitions.RegistrationSyntax;
 
 namespace Siege.Requisitions.UnitTests.Adapters
 {
-	[TestFixture]
 	[Category("Ninject")]
-	public class NinjectAdapterTests : SiegeContainerTests
+	public class NinjectAdapterTests : ServiceLocatorTests
 	{
 		private IKernel kernel;
 
@@ -48,11 +47,11 @@ namespace Siege.Requisitions.UnitTests.Adapters
 		}
 
 		[Test]
-		public virtual void Should_Dispose_From_Containers()
+		public void ShouldDisposeFromContainers()
 		{
 			var disposableContainer = new StandardKernel();
 			using (
-				var disposableLocater = new ThreadedSiegeContainer(new NinjectAdapter.NinjectAdapter(disposableContainer)))
+				var disposableLocater = new ThreadedServiceLocator(new NinjectAdapter.NinjectAdapter(disposableContainer)))
 			{
 				disposableLocater.Register(Given<ITestInterface>.Then<TestCase1>());
 				Assert.IsTrue(disposableLocater.GetInstance<ITestInterface>() is TestCase1);
@@ -61,9 +60,9 @@ namespace Siege.Requisitions.UnitTests.Adapters
 			Assert.IsTrue(disposableContainer.IsDisposed);
 		}
 
-		public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
+		public override void ShouldNotBeAbleToBindAnInterfaceToATypeWithANameWhenNoNameProvided()
 		{
-			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
+			base.ShouldNotBeAbleToBindAnInterfaceToATypeWithANameWhenNoNameProvided();
 
 			Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
 		}

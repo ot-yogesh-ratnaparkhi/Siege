@@ -17,7 +17,7 @@ using Siege.Requisitions.SiegeAdapter.ConstructionStrategies;
 
 namespace Siege.Requisitions.UnitTests.ContextualTests
 {
-    public class ILSiegeContextTests : SiegeContextTests
+    public class ILSiegeContextTests : ServiceLocatorContextTests
     {
         protected override IServiceLocatorAdapter GetAdapter()
         {

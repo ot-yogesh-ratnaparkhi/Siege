@@ -27,7 +27,7 @@ namespace Siege.Foundry
         internal BaseTypeGenerationContext TypeGenerationContext { get; private set; }
         internal BaseMethodGenerationContext MethodContext { get; private set; }
         private int index;
-        private DelegateGenerator generator;
+        private readonly DelegateGenerator generator;
 
         public MethodBodyContext(GeneratedMethod method, BaseTypeGenerationContext typeGenerationContext, BaseMethodGenerationContext context)
         {

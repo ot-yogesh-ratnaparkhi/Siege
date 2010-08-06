@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Foundry", "Siege.Foundry\Siege.Foundry.csproj", "{D9F74E30-B6F0-481D-A7AA-C7D30C0EA43C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Foundry.Tests", "Siege.Foundry.Tests\Siege.Foundry.Tests.csproj", "{89A54FEC-3C53-4E4F-8E95-FAD85603093D}"

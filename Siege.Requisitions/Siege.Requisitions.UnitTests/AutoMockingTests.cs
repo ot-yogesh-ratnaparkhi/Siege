@@ -20,10 +20,10 @@ using Siege.Requisitions.RhinoMocks;
 
 namespace Siege.Requisitions.UnitTests
 {
-    public partial class SiegeContainerTests
+    public partial class ServiceLocatorTests
     {
         [Test]
-        public void Should_AutoMock_All_Dependencies()
+        public void ShouldAutoMockAllDependencies()
         {
             var repository = new MockRepository();
 
@@ -35,7 +35,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_AutoStub_All_Dependencies()
+        public void ShouldAutoStubAllDependencies()
         {
             var repository = new MockRepository();
 

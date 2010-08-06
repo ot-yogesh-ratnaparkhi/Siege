@@ -29,7 +29,7 @@ namespace Siege.Requisitions.UnitTests.ContextualTests
 		[SetUp]
 		public virtual void SetUp()
 		{
-			locator = new ThreadedSiegeContainer(GetAdapter());
+			locator = new ThreadedServiceLocator(GetAdapter());
 		}
 
 		[TearDown]

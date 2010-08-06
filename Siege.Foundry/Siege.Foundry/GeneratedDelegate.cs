@@ -20,12 +20,9 @@ namespace Siege.Foundry
         {
             method.TargettingSelf();
 
-            int counter = 1;
-
-            foreach (ParameterInfo info in target.GetParameters())
+            for (int counter = 1; counter <= target.GetParameters().Length; counter++)
             {
                 method.LoadVariable(counter);
-                counter++;
             }
 
             if (!context.TypeGenerationContext.TypesToComplete.Contains(generator.NestedType.Builder))

@@ -29,10 +29,10 @@ namespace Siege.Requisitions.UnitTests
         public string Property { get; set; }
     }
 
-    public abstract partial class SiegeContainerTests
+    public abstract partial class ServiceLocatorTests
     {
         [Test]
-        public void Should_Initialize_Property_After_Resolution()
+        public void ShouldInitializePropertyAfterResolution()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
             locator.Register(Given<TestCase1>.InitializeWith(testCase1 => testCase1.Property1 = "lulz"));
@@ -42,7 +42,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Initialize_Property_After_Resolution_For_Base_Type()
+        public void ShouldInitializePropertyAfterResolutionForBaseType()
         {
             locator.Register(Given<ISimpleType>.Then<SimpleType>());
             locator.Register(Given<ISimpleType>.InitializeWith(testCase1 => testCase1.Property = "lulz"));
@@ -52,7 +52,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Initialize_Property_After_Resolution_Depending_On_Context()
+        public void ShouldInitializePropertyAfterResolutionDependingOnContext()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
             locator.Register(
@@ -67,7 +67,7 @@ namespace Siege.Requisitions.UnitTests
 
 
         [Test]
-        public void Should_Initialize_Property_After_Resolution_With_No_Context()
+        public void ShouldInitializePropertyAfterResolutionWithNoContext()
         {
             locator
                 .Register(Given<ITestInterface>.Then<TestCase1>())

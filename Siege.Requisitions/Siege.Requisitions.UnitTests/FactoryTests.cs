@@ -20,10 +20,10 @@ using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 
 namespace Siege.Requisitions.UnitTests
 {
-    public abstract partial class SiegeContainerTests
+    public abstract partial class ServiceLocatorTests
     {
         [Test]
-        public void Should_Construct_With_A_Factory()
+        public void ShouldConstructWithAFactory()
         {
             bool factoryMethodInvoked = false;
             Func<IInstanceResolver, ITestInterface> func = container =>
@@ -40,7 +40,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Construct_With_A_Factory_When_Context_Is_Satisfied()
+        public void ShouldConstructWithAFactoryWhenContextIsSatisfied()
         {
             bool factoryMethodInvoked = false;
             Func<IInstanceResolver, ITestInterface> func = container =>
@@ -61,7 +61,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Not_Construct_With_A_Factory_When_Context_Is_Satisfied()
+        public void ShouldNotConstructWithAFactoryWhenContextIsSatisfied()
         {
             bool factoryMethodInvoked = false;
             Func<IInstanceResolver, ITestInterface> func = container =>

@@ -22,11 +22,10 @@ namespace Siege.Requisitions.UnitTests.Adapters
 {
 	[TestFixture]
 	[Category("Autofac")]
-	public class AutofacAdapterTests : SiegeContainerTests
+	public class AutofacAdapterTests : ServiceLocatorTests
 	{
 		private IContainer container;
-
-
+        
 		protected override void ResolveWithoutSiege<T>()
 		{
 			container.Resolve<T>();
@@ -51,15 +50,15 @@ namespace Siege.Requisitions.UnitTests.Adapters
 		}
 
 		[ExpectedException(typeof (RegistrationNotFoundException))]
-		public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided()
+		public override void ShouldNotBeAbleToBindAnInterfaceToATypeWithANameWhenWrongNameProvided()
 		{
-			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided();
+			base.ShouldNotBeAbleToBindAnInterfaceToATypeWithANameWhenWrongNameProvided();
 		}
 
 		[ExpectedException(typeof (RegistrationNotFoundException))]
-		public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
+		public override void ShouldNotBeAbleToBindAnInterfaceToATypeWithANameWhenNoNameProvided()
 		{
-			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
+			base.ShouldNotBeAbleToBindAnInterfaceToATypeWithANameWhenNoNameProvided();
 		}
 	}
 }

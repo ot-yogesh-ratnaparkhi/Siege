@@ -24,7 +24,7 @@ namespace Siege.Requisitions.UnitTests.Adapters
 {
 	[TestFixture]
 	[Category("Windsor")]
-	public class WindsorAdapterTests : SiegeContainerTests
+	public class WindsorAdapterTests : ServiceLocatorTests
 	{
 		private IKernel kernel;
 
@@ -50,11 +50,10 @@ namespace Siege.Requisitions.UnitTests.Adapters
 		}
 
 		[Test, Ignore("Bug in Windsor lol")]
-		public virtual void Should_Dispose_From_Containers()
+		public void ShouldDisposeFromContainers()
 		{
 			var disposableKernel = new DefaultKernel();
-			using (
-				var disposableLocater = new ThreadedSiegeContainer(new WindsorAdapter.WindsorAdapter(disposableKernel)))
+			using (var disposableLocater = new ThreadedServiceLocator(new WindsorAdapter.WindsorAdapter(disposableKernel)))
 			{
 				disposableLocater.Register(Given<ITestInterface>.Then<TestCase1>());
 				Assert.IsTrue(disposableLocater.GetInstance<ITestInterface>() is TestCase1);
@@ -64,21 +63,21 @@ namespace Siege.Requisitions.UnitTests.Adapters
 		}
 
 		[ExpectedException(typeof (RegistrationNotFoundException))]
-		public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided()
+		public override void ShouldNotBeAbleToBindAnInterfaceToATypeWithANameWhenWrongNameProvided()
 		{
-			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_Wrong_Name_Provided();
+			base.ShouldNotBeAbleToBindAnInterfaceToATypeWithANameWhenWrongNameProvided();
 		}
 
 		[ExpectedException(typeof (RegistrationNotFoundException))]
-		public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
+		public override void ShouldNotBeAbleToBindAnInterfaceToATypeWithANameWhenNoNameProvided()
 		{
-			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
+			base.ShouldNotBeAbleToBindAnInterfaceToATypeWithANameWhenNoNameProvided();
 		}
 
         [Ignore("Castle Dynamic Proxy doesn't play nice!")]
-        public override void Should_Proxy_All_Types()
+        public override void ShouldProxyAllTypes()
         {
-            base.Should_Proxy_All_Types();
+            base.ShouldProxyAllTypes();
         }
 	}
 }

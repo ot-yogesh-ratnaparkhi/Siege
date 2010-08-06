@@ -26,9 +26,9 @@ namespace Siege.Foundry
         internal Func<string> Name { get; private set; }
         internal Func<Type> ReturnType { get; private set;}
 
-        private List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
+        private readonly List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
         private int argCount;
-        private AddMethodAction addMethodAction;
+        private readonly AddMethodAction addMethodAction;
 
         public MethodGenerationContext(BaseTypeGenerationContext typeGenerationContext, Action<MethodGenerationContext> closure) : base(typeGenerationContext)
         {
@@ -43,7 +43,7 @@ namespace Siege.Foundry
 
         private Type[] GetParameters()
         {
-            List<Type> types = new List<Type>();
+            var types = new List<Type>();
             for(int i = 0; i < ParameterTypes().Count(); i++)
             {
                 types.Add(ParameterTypes()[i].Type);

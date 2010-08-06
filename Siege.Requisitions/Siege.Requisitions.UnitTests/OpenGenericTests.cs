@@ -20,38 +20,38 @@ using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 
 namespace Siege.Requisitions.UnitTests
 {
-    public abstract partial class SiegeContainerTests
+    public abstract partial class ServiceLocatorTests
     {
         [Test]
-        public void Should_Resolve_Open_Generic()
+        public void ShouldResolveOpenGeneric()
         {
             locator
                 .Register(Given<TestCase1>.Then<TestCase1>())
                 .Register(Given.OpenType(typeof (ISomeType<>)).Then(typeof (ConcreteType<>)));
 
-            Assert.IsInstanceOfType(typeof(ConcreteType<TestCase1>), locator.GetInstance<ISomeType<TestCase1>>());
+            Assert.IsInstanceOf<ConcreteType<TestCase1>>(locator.GetInstance<ISomeType<TestCase1>>());
         }
 
         [Test]
         [ExpectedException(typeof(Exception), ExpectedMessage = "Type: Siege.Requisitions.UnitTests.TestClasses.ITestInterface is not a generic type.")]
-        public void Should_Throw_Exception_On_NonGeneric_Source()
+        public void ShouldThrowExceptionOnNonGenericSource()
         {
             locator
                 .Register(Given<TestCase1>.Then<TestCase1>())
                 .Register(Given.OpenType(typeof(ITestInterface)).Then(typeof(ConcreteType<>)));
 
-            Assert.IsInstanceOfType(typeof(ConcreteType<TestCase1>), locator.GetInstance<ISomeType<TestCase1>>());
+            Assert.IsInstanceOf<ConcreteType<TestCase1>>(locator.GetInstance<ISomeType<TestCase1>>());
         }
 
         [Test]
         [ExpectedException(typeof(Exception), ExpectedMessage = "Type: Siege.Requisitions.UnitTests.TestClasses.ITestInterface is not a generic type.")]
-        public void Should_Throw_Exception_On_NonGeneric_Target()
+        public void ShouldThrowExceptionOnNonGenericTarget()
         {
             locator
                 .Register(Given<TestCase1>.Then<TestCase1>())
                 .Register(Given.OpenType(typeof(ISomeType<>)).Then(typeof(ITestInterface)));
 
-            Assert.IsInstanceOfType(typeof(ConcreteType<TestCase1>), locator.GetInstance<ISomeType<TestCase1>>());
+            Assert.IsInstanceOf<ConcreteType<TestCase1>>(locator.GetInstance<ISomeType<TestCase1>>());
         }
     }
 

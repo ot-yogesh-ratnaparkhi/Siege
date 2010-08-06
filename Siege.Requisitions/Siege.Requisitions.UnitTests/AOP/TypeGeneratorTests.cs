@@ -15,7 +15,7 @@
 
 using System;
 using NUnit.Framework;
-using Siege.Requisitions.AOP;
+using Siege.Arsenal;
 using Siege.Requisitions.RegistrationSyntax;
 
 namespace Siege.Requisitions.UnitTests.AOP
@@ -32,9 +32,9 @@ namespace Siege.Requisitions.UnitTests.AOP
         }
 
         [Test]
-        public void Should_Override_Virtual_Methods_With_Return_Types_With_ServiceLocator()
+        public void ShouldOverrideVirtualMethodsWithReturnTypesWithServiceLocator()
         {
-            locator = new ThreadedSiegeContainer(new NinjectAdapter.NinjectAdapter());
+            locator = new ThreadedServiceLocator(new NinjectAdapter.NinjectAdapter());
             locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
@@ -48,9 +48,9 @@ namespace Siege.Requisitions.UnitTests.AOP
         }
 
         [Test]
-        public void Should_Override_Virtual_Methods_Without_Return_Types_With_ServiceLocator()
+        public void ShouldOverrideVirtualMethodsWithoutReturnTypesWithServiceLocator()
         {
-            locator = new ThreadedSiegeContainer(new NinjectAdapter.NinjectAdapter());
+            locator = new ThreadedServiceLocator(new NinjectAdapter.NinjectAdapter());
             locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
@@ -64,9 +64,9 @@ namespace Siege.Requisitions.UnitTests.AOP
         }
 
         [Test]
-        public void Should_Override_Virtual_Methods_With_Return_Types_Without_ServiceLocator()
+        public void ShouldOverrideVirtualMethodsWithReturnTypesWithoutServiceLocator()
         {
-            locator = new ThreadedSiegeContainer(new NinjectAdapter.NinjectAdapter());
+            locator = new ThreadedServiceLocator(new NinjectAdapter.NinjectAdapter());
             locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
@@ -80,9 +80,9 @@ namespace Siege.Requisitions.UnitTests.AOP
         }
 
         [Test]
-        public void Should_Override_Virtual_Methods_Without_Return_Types_Without_ServiceLocator()
+        public void ShouldOverrideVirtualMethodsWithoutReturnTypesWithoutServiceLocator()
         {
-            locator = new ThreadedSiegeContainer(new NinjectAdapter.NinjectAdapter());
+            locator = new ThreadedServiceLocator(new NinjectAdapter.NinjectAdapter());
             locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());
@@ -96,9 +96,9 @@ namespace Siege.Requisitions.UnitTests.AOP
         }
 
         [Test]
-        public void Should_Override_Virtual_Methods_With_Return_Types_With_ServiceLocator_Multiple_Encapsulation()
+        public void ShouldOverrideVirtualMethodsWithReturnTypesWithServiceLocatorMultipleEncapsulation()
         {
-            locator = new ThreadedSiegeContainer(new NinjectAdapter.NinjectAdapter());
+            locator = new ThreadedServiceLocator(new NinjectAdapter.NinjectAdapter());
             locator.Register(Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>());
             locator.Register(Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>());
             locator.Register(Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>());

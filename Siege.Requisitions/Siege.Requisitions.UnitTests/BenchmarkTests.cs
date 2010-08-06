@@ -20,13 +20,13 @@ using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 
 namespace Siege.Requisitions.UnitTests
 {
-	public abstract partial class SiegeContainerTests
+	public abstract partial class ServiceLocatorTests
 	{
 		const double iterations = 10000;
 
         [Test, Ignore]
 		[Category("Load")]
-		public virtual void Load_Performance_Test()
+		public virtual void LoadPerformanceTest()
         {
             var totalTime = new TimeSpan();
             DateTime start = DateTime.Now;
@@ -62,20 +62,20 @@ namespace Siege.Requisitions.UnitTests
                 start = DateTime.Now;
 				
                 var controller = locator.GetInstance<ITestController>();
-				Assert.IsInstanceOfType(typeof(DefaultTestService), controller.Service);
-				Assert.IsInstanceOfType(typeof(DefaultTestRepository), controller.Service.Repository);
+                Assert.IsInstanceOf<DefaultTestService>(controller.Service);
+				Assert.IsInstanceOf<DefaultTestRepository>(controller.Service.Repository);
 
 				locator.AddContext(new TestCondition(TestTypes.Test1));
 
 				controller = locator.GetInstance<ITestController>();
-				Assert.IsInstanceOfType(typeof(TestService1), controller.Service);
-				Assert.IsInstanceOfType(typeof(DefaultTestRepository), controller.Service.Repository);
+				Assert.IsInstanceOf<TestService1>(controller.Service);
+				Assert.IsInstanceOf<DefaultTestRepository>(controller.Service.Repository);
 
 				locator.AddContext(new RepositoryCondition(Conditions.ConditionB));
 
 				controller = locator.GetInstance<ITestController>();
-				Assert.IsInstanceOfType(typeof(TestService1), controller.Service);
-				Assert.IsInstanceOfType(typeof(TestRepository2), controller.Service.Repository);
+				Assert.IsInstanceOf<TestService1>(controller.Service);
+				Assert.IsInstanceOf<TestRepository2>(controller.Service.Repository);
 
                 locator.Store.ContextStore.Clear();
                 end = DateTime.Now;
@@ -90,7 +90,7 @@ namespace Siege.Requisitions.UnitTests
 
         [Test, Ignore]
 		[Category("With Siege")]
-		public virtual void With_Siege()
+		public virtual void WithSiege()
         {
             var totalTime = new TimeSpan();
             DateTime start = DateTime.Now;

@@ -103,20 +103,20 @@ namespace Siege.Foundry
 
         public ILocalIndexer Invoke<TType>(Expression<Action<TType>> expression)
         {
-            MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+            var methodCall = (MethodCallExpression)expression.Body;
             return Invoke(methodCall.Method);
         }
 
         public ILocalIndexer Invoke<TType>(Expression<Action<TType>> expression, params ILocalIndexer[] variable)
         {
-            MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+            var methodCall = (MethodCallExpression)expression.Body;
             
             return Invoke(methodCall.Method, variable);
         }
 
         public ILocalIndexer Invoke(MethodInfo methodInfo)
         {
-            List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
+            var parameters = new List<IGeneratedParameter>();
 
             int argCount = 0;
             foreach (ParameterInfo info in methodInfo.GetParameters())
@@ -160,13 +160,13 @@ namespace Siege.Foundry
 
         public MethodInfo GetMethod<TType>(Expression<Action<TType>> expression)
         {
-            var methodCall = expression.Body as MethodCallExpression;
+            var methodCall = (MethodCallExpression)expression.Body;
             return methodCall.Method;
         }
 
         public void SetValue<TType, TValue>(Expression<Func<TType, TValue>> expression, TValue value)
         {
-            var property = expression.Body as MemberExpression;
+            var property = (MemberExpression)expression.Body;
             var info = (PropertyInfo) property.Member;
             var setMethod = info.GetSetMethod();
 

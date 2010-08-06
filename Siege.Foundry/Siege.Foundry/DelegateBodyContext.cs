@@ -34,9 +34,9 @@ namespace Siege.Foundry
 
 		public MethodInfo Target<TTarget>(Expression<Action<TTarget>> expression)
 		{
-			MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+			var methodCall = (MethodCallExpression)expression.Body;
 
-			List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
+			var parameters = new List<IGeneratedParameter>();
 
 			int counter = 1;
 			generator.Returns(methodCall.Method.ReturnType);
@@ -55,9 +55,9 @@ namespace Siege.Foundry
 
 		public MethodInfo Target<TTarget>(GeneratedVariable variable, Expression<Action<TTarget>> expression)
 		{
-			MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+			var methodCall = (MethodCallExpression)expression.Body;
 
-			List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
+			var parameters = new List<IGeneratedParameter>();
 
 			int counter = 1;
 			generator.Returns(methodCall.Method.ReturnType);
@@ -76,7 +76,7 @@ namespace Siege.Foundry
 
 		public MethodInfo Target(MethodInfo info)
 		{
-			List<IGeneratedParameter> parameters = new List<IGeneratedParameter>();
+			var parameters = new List<IGeneratedParameter>();
 
 			int counter = 1;
 			generator.Returns(info.ReturnType);

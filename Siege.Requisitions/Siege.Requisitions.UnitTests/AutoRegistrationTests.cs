@@ -19,14 +19,14 @@ using Siege.Requisitions.Extensions.Conventions;
 
 namespace Siege.Requisitions.UnitTests
 {
-    public partial class SiegeContainerTests
+    public partial class ServiceLocatorTests
     {
         [Test]
-        public void Should_Use_Simple_Auto_Scanning_Conventions()
+        public void ShouldUseSimpleAutoScanningConventions()
         {
             locator.Register(Using.Convention<TestConvention>());
 
-            Assert.IsInstanceOfType(typeof (AutoScannedType), locator.GetInstance<IAutoScannedInterface>());
+            Assert.IsInstanceOf<AutoScannedType>(locator.GetInstance<IAutoScannedInterface>());
         }
     }
 

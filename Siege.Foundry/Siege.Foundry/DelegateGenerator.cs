@@ -22,15 +22,16 @@ namespace Siege.Foundry
 {
     public class DelegateGenerator
     {
-        private List<DelegateMethod> methods = new List<DelegateMethod>();
+        private readonly List<DelegateMethod> methods = new List<DelegateMethod>();
         private readonly BaseTypeGenerationContext context;
-        private List<Type> argumentTypes = new List<Type>();
+        private readonly List<Type> argumentTypes;
         internal NestedTypeGenerationContext NestedType { get; set; }
         internal Func<ConstructorBuilder> Constructor { get; set; }
         private Type returnType;
 
         public DelegateGenerator(BaseTypeGenerationContext context)
         {
+            argumentTypes = new List<Type>();
             this.context = context;
         }
 
@@ -51,7 +52,7 @@ namespace Siege.Foundry
             {
             	var callingType = type.AddField(context.Builder, "CallingType");
 
-                List<GeneratedField> fields = new List<GeneratedField>
+                var fields = new List<GeneratedField>
                 {
                     callingType
                 };
@@ -63,7 +64,7 @@ namespace Siege.Foundry
 
                 var constructorAction = type.AddConstructor(constructor =>
                 {
-                    Hashtable constructorArguments = new Hashtable();
+                    var constructorArguments = new Hashtable();
                     for (int i = 0; i < fields.Count; i++)
                     {
                         GeneratedField field = fields[i];

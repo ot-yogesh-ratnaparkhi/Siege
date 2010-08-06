@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Siege.Requisitions.AOP;
+using Siege.Arsenal;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations.Meta;
@@ -13,10 +13,10 @@ using Siege.Requisitions.UnitTests.AOP;
 
 namespace Siege.Requisitions.UnitTests
 {
-    public abstract partial class SiegeContainerTests
+    public abstract partial class ServiceLocatorTests
     {
         [Test]
-        public virtual void Should_Proxy_All_Types()
+        public virtual void ShouldProxyAllTypes()
         {
             locator.Register(Using.Convention<SampleProxyAttributeConvention>());
             locator.Register(Using.Convention<ProxyConvention>());

@@ -29,7 +29,7 @@ namespace Siege.Foundry
         private readonly Func<GeneratedField> field;
         private readonly BaseTypeGenerationContext context;
         private readonly Func<Func<ILGenerator>> builder;
-        private Type type;
+        private readonly Type type;
         public int LocalIndex { get; private set; }
         public Type Type { get { return type ?? field().Type; } }
 

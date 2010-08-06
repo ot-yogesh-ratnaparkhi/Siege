@@ -21,7 +21,7 @@ namespace Siege.Foundry
 {
     public class NestedTypeGenerationContext : BaseTypeGenerationContext
     {
-        private DefineNestedTypeAction nestedType;
+        private readonly DefineNestedTypeAction nestedType;
         internal Func<MethodBuilderBundle> EntryPoint { get; set; }
 
         public NestedTypeGenerationContext(TypeGenerator generator, Func<BuilderBundle> bundle, Action<BaseTypeGenerationContext> nestedClosure, IList<ITypeGenerationAction> actions) : base(generator)

@@ -19,10 +19,10 @@ using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 
 namespace Siege.Requisitions.UnitTests
 {
-    public abstract partial class SiegeContainerTests
+    public abstract partial class ServiceLocatorTests
     {
         [Test]
-        public void Should_Decorate_With_All_Conditions_Met()
+        public void ShouldDecorateWithAllConditionsMet()
         {
             locator
                 .Register(Given<ICoffee>.Then<Coffee>())
@@ -42,7 +42,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Decorate_With_Some_Conditions_Met()
+        public void ShouldDecorateWithSomeConditionsMet()
         {
             locator
                 .Register(Given<ICoffee>.Then<Coffee>())
@@ -61,7 +61,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Decorate_With_No_Conditions_Met()
+        public void ShouldDecorateWithNoConditionsMet()
         {
             locator
                 .Register(Given<ICoffee>.Then<Coffee>())
@@ -78,7 +78,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Decorate_As_Default()
+        public void ShouldDecorateAsDefault()
         {
             locator
                 .Register(Given<ICoffee>.Then<Coffee>())
@@ -91,7 +91,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Decorate_Nested_Dependencies()
+        public void ShouldDecorateNestedDependencies()
         {
             locator
                 .Register(Given<CoffeeWrapper>.Then<CoffeeWrapper>())

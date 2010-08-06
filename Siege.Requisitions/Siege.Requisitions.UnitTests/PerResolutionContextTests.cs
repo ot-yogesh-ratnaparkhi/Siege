@@ -17,23 +17,24 @@ using NUnit.Framework;
 using Siege.Requisitions.UnitTests.TestClasses;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 using Siege.Requisitions.Resolution;
+using TestContext = Siege.Requisitions.UnitTests.TestClasses.TestContext;
 
 namespace Siege.Requisitions.UnitTests
 {
-	public abstract partial class SiegeContainerTests
+	public abstract partial class ServiceLocatorTests
 	{
 		[Test]
-		public void Should_Resolve_With_Request_Level_Context()
+		public void ShouldResolveWithRequestLevelContext()
 		{
 			locator.Register(Given<ITestInterface>
 			                 	.When<TestContext>(context => context.TestCases == TestEnum.Case2)
 			                 	.Then<TestCase2>());
 
-			Assert.IsTrue(locator.GetInstance<ITestInterface>(new ContextArgument(CreateContext(TestEnum.Case2))) is TestCase2);
+            Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>(new ContextArgument(CreateContext(TestEnum.Case2))));
 		}
 
 		[Test]
-		public void Should_Resolve_With_Request_Level_Context_Differently_Per_Request()
+		public void ShouldResolveWithRequestLevelContextDifferentlyPerRequest()
 		{
 			locator
 				.Register(Given<ITestInterface>
@@ -43,12 +44,12 @@ namespace Siege.Requisitions.UnitTests
 				          	.When<TestContext>(context => context.TestCases == TestEnum.Case1)
 				          	.Then<TestCase1>());
 
-			Assert.IsTrue(locator.GetInstance<ITestInterface>(new ContextArgument(CreateContext(TestEnum.Case2))) is TestCase2);
-			Assert.IsTrue(locator.GetInstance<ITestInterface>(new ContextArgument(CreateContext(TestEnum.Case1))) is TestCase1);
+            Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>(new ContextArgument(CreateContext(TestEnum.Case2))));
+            Assert.IsInstanceOf<TestCase1>(locator.GetInstance<ITestInterface>(new ContextArgument(CreateContext(TestEnum.Case1))));
 		}
 
 		[Test]
-		public void Should_Resolve_With_Request_Level_Context_Instead_Of_ContextStore()
+		public void ShouldResolveWithRequestLevelContextInsteadOfContextStore()
 		{
 			locator
 				.Register(Given<ITestInterface>
@@ -60,8 +61,8 @@ namespace Siege.Requisitions.UnitTests
 
 			locator.AddContext(CreateContext(TestEnum.Case1));
 
-			Assert.IsTrue(locator.GetInstance<ITestInterface>(new ContextArgument(CreateContext(TestEnum.Case2))) is TestCase2);
-			Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
+            Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>(new ContextArgument(CreateContext(TestEnum.Case2))));
+            Assert.IsInstanceOf<TestCase1>(locator.GetInstance<ITestInterface>());
 		}
 	}
 }

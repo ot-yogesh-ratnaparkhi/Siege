@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -8,10 +8,15 @@
     <ProjectGuid>{D9F74E30-B6F0-481D-A7AA-C7D30C0EA43C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Siege.DynamicTypeGeneration</RootNamespace>
-    <AssemblyName>Siege.DynamicTypeGeneration</AssemblyName>
+    <RootNamespace>Siege.Foundry</RootNamespace>
+    <AssemblyName>Siege.Foundry</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -63,7 +68,6 @@
     <Compile Include="Actions\CallBaseAction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Actions\CompleteTypeAction.cs" />
     <Compile Include="Actions\ConstructorReturnAction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -97,9 +101,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Actions\LoadVariableFunctionAction.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Actions\PopAction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Actions\ReturnAction.cs">

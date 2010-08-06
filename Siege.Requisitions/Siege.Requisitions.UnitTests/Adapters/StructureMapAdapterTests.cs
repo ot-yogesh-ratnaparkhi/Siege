@@ -21,7 +21,7 @@ namespace Siege.Requisitions.UnitTests.Adapters
 {
 	[TestFixture]
 	[Category("StructureMap")]
-	public class StructureMapAdapterTests : SiegeContainerTests
+	public class StructureMapAdapterTests : ServiceLocatorTests
 	{
 		private Container container;
 
@@ -42,9 +42,9 @@ namespace Siege.Requisitions.UnitTests.Adapters
 			container.GetInstance<T>();
 		}
 
-		public override void Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided()
+		public override void ShouldNotBeAbleToBindAnInterfaceToATypeWithANameWhenNoNameProvided()
 		{
-			base.Should_Not_Be_Able_To_Bind_An_Interface_To_A_Type_With_A_Name_When_No_Name_Provided();
+			base.ShouldNotBeAbleToBindAnInterfaceToATypeWithANameWhenNoNameProvided();
 			Assert.IsTrue(locator.GetInstance<ITestInterface>() is TestCase1);
 		}
 	}

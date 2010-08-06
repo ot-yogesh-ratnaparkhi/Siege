@@ -20,10 +20,10 @@ using Siege.Requisitions.Resolution;
 
 namespace Siege.Requisitions.UnitTests
 {
-	public abstract partial class SiegeContainerTests
+	public abstract partial class ServiceLocatorTests
 	{
 		[Test]
-		public void Should_Use_Unregistered_Constructor_Argument()
+		public void ShouldUseUnregisteredConstructorArgument()
 		{
 			locator.Register(Given<ITestInterface>.Then<DependsOnInterface>());
 
@@ -34,7 +34,7 @@ namespace Siege.Requisitions.UnitTests
 		}
 
 		[Test]
-		public void Should_Use_Multiple_Unregistered_Constructor_Argument()
+		public void ShouldUseMultipleUnregisteredConstructorArgument()
 		{
 			locator.Register(Given<ITestInterface>.Then<DependsOnMultipleInterface>());
 
@@ -48,7 +48,7 @@ namespace Siege.Requisitions.UnitTests
 		}
 
 		[Test]
-		public virtual void Should_Use_Unregistered_Constructor_Argument_With_Name()
+		public virtual void ShouldUseUnregisteredConstructorArgumentWithName()
 		{
 			locator.Register(Given<ITestInterface>.Then<DependsOnInterface>("test"));
 
@@ -60,7 +60,7 @@ namespace Siege.Requisitions.UnitTests
 		}
 
 		[Test]
-		public void Should_Resolve_With_Args_In_Any_Order()
+		public void ShouldResolveWithArgsInAnyOrder()
 		{
 			locator.Register(Given<ITestInterface>.Then<DependsOnMultipleInterfaceTypes>());
 

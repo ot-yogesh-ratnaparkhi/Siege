@@ -21,7 +21,7 @@ using Siege.Requisitions.SiegeAdapter.ConstructionStrategies;
 namespace Siege.Requisitions.UnitTests.Adapters
 {
     [Category("Siege")]
-	public class SiegeAdapterTests : SiegeContainerTests
+	public class SiegeAdapterTests : ServiceLocatorTests
 	{
         private SiegeTypeResolver reflectionResolver;
 
@@ -47,9 +47,9 @@ namespace Siege.Requisitions.UnitTests.Adapters
 		}
 
 		[Ignore]
-		public override void Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container()
+		public override void ShouldResolveIfExistsInIoCButNotRegisteredInContainer()
 		{
-			base.Should_Resolve_If_Exists_In_IoC_But_Not_Registered_In_Container();
+			base.ShouldResolveIfExistsInIoCButNotRegisteredInContainer();
 		}
 	}
 }
