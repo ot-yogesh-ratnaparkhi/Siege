@@ -31,7 +31,6 @@ namespace Siege.Requisitions.Web
             get { return locator; }
         }
 
-        protected abstract string GetApplicationName();
         protected abstract IServiceLocatorAdapter GetServiceLocatorAdapter();
 
         protected virtual IControllerFactory GetControllerFactory()
