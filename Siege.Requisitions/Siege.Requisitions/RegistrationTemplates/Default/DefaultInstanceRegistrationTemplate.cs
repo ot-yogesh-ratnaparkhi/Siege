@@ -25,9 +25,11 @@ namespace Siege.Requisitions.RegistrationTemplates.Default
             if (registration.GetMappedFromType() != registration.GetMappedToType())
             {
                 adapter.RegisterFactoryMethod(registration.GetMappedFromType(), () => template.Resolve(registration.GetMappedFromType()));
+                RegisterLazy(adapter, registration.GetMappedFromType(), template);
             }
 
             adapter.RegisterInstance(registration.GetMappedToType(), registration.GetMappedTo());
+            RegisterLazy(adapter, registration.GetMappedToType(), template);
         }
     }
 }

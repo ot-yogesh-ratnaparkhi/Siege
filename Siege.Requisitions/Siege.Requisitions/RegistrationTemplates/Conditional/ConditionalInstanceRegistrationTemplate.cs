@@ -24,6 +24,8 @@ namespace Siege.Requisitions.RegistrationTemplates.Conditional
         {
             adapter.RegisterFactoryMethod(registration.GetMappedFromType(), () => template.Resolve(registration.GetMappedFromType()));
             adapter.RegisterInstance(registration.GetMappedToType(), registration.GetMappedTo());
+            RegisterLazy(adapter, registration.GetMappedFromType(), template);
+            RegisterLazy(adapter, registration.GetMappedToType(), template);
         }
     }
 }

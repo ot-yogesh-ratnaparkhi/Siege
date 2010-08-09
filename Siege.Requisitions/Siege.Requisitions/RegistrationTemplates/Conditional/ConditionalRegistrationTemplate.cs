@@ -18,12 +18,18 @@ using Siege.Requisitions.Resolution;
 
 namespace Siege.Requisitions.RegistrationTemplates.Conditional
 {
-    public class ConditionalRegistrationTemplate : IRegistrationTemplate
+    public class ConditionalRegistrationTemplate : AbstractRegistrationTemplate
     {
-        public virtual void Register(IServiceLocatorAdapter adapter, IRegistration registration, IResolutionTemplate template)
+        public override void Register(IServiceLocatorAdapter adapter, IRegistration registration, IResolutionTemplate template)
         {
             adapter.RegisterFactoryMethod(registration.GetMappedFromType(), () => template.Resolve(registration.GetMappedFromType()));
-            if (!registration.GetMappedToType().IsInterface) adapter.Register(registration.GetMappedToType(), registration.GetMappedToType());
+            RegisterLazy(adapter, registration.GetMappedFromType(), template);
+           
+            if (!registration.GetMappedToType().IsInterface)
+            {
+                adapter.Register(registration.GetMappedToType(), registration.GetMappedToType());
+                RegisterLazy(adapter, registration.GetMappedToType(), template);
+            }
         }
     }
 }

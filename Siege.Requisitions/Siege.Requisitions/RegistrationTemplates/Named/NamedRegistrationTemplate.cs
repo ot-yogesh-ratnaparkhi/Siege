@@ -19,9 +19,9 @@ using Siege.Requisitions.Resolution;
 
 namespace Siege.Requisitions.RegistrationTemplates.Named
 {
-    public class NamedRegistrationTemplate : IRegistrationTemplate
+    public class NamedRegistrationTemplate : AbstractRegistrationTemplate
     {
-        public virtual void Register(IServiceLocatorAdapter adapter, IRegistration registration, IResolutionTemplate template)
+        public override void Register(IServiceLocatorAdapter adapter, IRegistration registration, IResolutionTemplate template)
         {
             var namedRegistration = (INamedRegistration)registration;
 

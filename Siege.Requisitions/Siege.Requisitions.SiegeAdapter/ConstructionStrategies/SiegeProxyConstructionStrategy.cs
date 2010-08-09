@@ -16,7 +16,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Siege.DynamicTypeGeneration;
+using Siege.Foundry;
 using Siege.Requisitions.SiegeAdapter.Maps;
 using Siege.Requisitions.ExtensionMethods;
 

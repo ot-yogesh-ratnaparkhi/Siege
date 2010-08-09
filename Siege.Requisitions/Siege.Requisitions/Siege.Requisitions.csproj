@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="RegistrationPolicies\IRegistrationPolicy.cs" />
     <Compile Include="Registrations\Meta\IMetaRegistration.cs" />
+    <Compile Include="RegistrationTemplates\AbstractRegistrationTemplate.cs" />
     <Compile Include="RegistrationTemplates\Conditional\ConditionalInstanceRegistrationTemplate.cs" />
     <Compile Include="RegistrationTemplates\Default\DefaultInstanceRegistrationTemplate.cs" />
     <Compile Include="RegistrationTemplates\Meta\DefaultMetaRegistrationTemplate.cs" />

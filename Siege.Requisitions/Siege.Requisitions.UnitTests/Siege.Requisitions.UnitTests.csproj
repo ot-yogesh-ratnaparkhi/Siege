@@ -150,6 +150,7 @@
     <Compile Include="FactoryTests.cs" />
     <Compile Include="InitializationTests.cs" />
     <Compile Include="InjectorTests.cs" />
+    <Compile Include="LazyInjectionTests.cs" />
     <Compile Include="OpenGenericTests.cs" />
     <Compile Include="PartiallyClosedGenericsTests.cs" />
     <Compile Include="PerResolutionContextTests.cs" />
