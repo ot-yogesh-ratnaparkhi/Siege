@@ -69,6 +69,7 @@ namespace Siege.Requisitions.Web
                 RegisterRoutes(RouteTable.Routes);
 
                 ControllerBuilder.Current.SetControllerFactory(GetControllerFactory());
+                ModelBinders.Binders.DefaultBinder = new ServiceLocatorModelBinder(this.ServiceLocator);
 
                 OnApplicationStarted();
             }

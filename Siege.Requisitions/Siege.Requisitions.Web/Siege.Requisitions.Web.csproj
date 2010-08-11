@@ -83,6 +83,7 @@
     <Compile Include="ServiceLocatorControllerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceLocatorHttpApplication.cs" />
+    <Compile Include="ServiceLocatorModelBinder.cs" />
     <Compile Include="ServiceLocatorViewEngine.cs" />
   </ItemGroup>
   <ItemGroup>
