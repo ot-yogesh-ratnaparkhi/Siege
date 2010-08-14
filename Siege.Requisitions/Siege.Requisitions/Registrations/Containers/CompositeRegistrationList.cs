@@ -14,6 +14,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Siege.Requisitions.Registrations.Containers
@@ -33,6 +34,7 @@ namespace Siege.Requisitions.Registrations.Containers
         {
             Add(registration.GetMappedFromType(), registration);
         }
+
         public void Add(Type type, IRegistration registration)
         {
             if (!registrations.ContainsKey(type))
@@ -41,7 +43,8 @@ namespace Siege.Requisitions.Registrations.Containers
                 registrations.Add(type, list);
             }
 
-            List<IRegistration> selectedRegistration = GetRegistrationsForType(type);
+            var selectedRegistration = GetRegistrationsForType(type);
+            if (selectedRegistration.Contains(registration)) return;
 
             selectedRegistration.Add(registration);
 

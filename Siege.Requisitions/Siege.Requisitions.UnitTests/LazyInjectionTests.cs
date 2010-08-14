@@ -105,6 +105,7 @@ namespace Siege.Requisitions.UnitTests
 
             var instance = locator.GetInstance<TestClass>();
             Assert.IsInstanceOf<TestCase1>(instance.Invoke());
+            Assert.IsTrue(factoryMethodInvoked);
         }
     }
 

@@ -15,7 +15,6 @@
 
 using NUnit.Framework;
 using Siege.Requisitions.UnitTests.ContextualTests.Classes;
-using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.RegistrationSyntax;
 
 namespace Siege.Requisitions.UnitTests.ContextualTests
@@ -39,189 +38,219 @@ namespace Siege.Requisitions.UnitTests.ContextualTests
 		}
 
 		[Test]
-		public void Should_Choose_Test_Service_2()
+		public void ShouldChooseTestService2()
 		{
-			locator.Register(Given<ITestController>.Then<TestController>())
+			locator
+                .Register(Given<ITestController>.Then<TestController>())
 				.Register(Given<ITestRepository>.Then<TestRepository1>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test1).Then<TestService1>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test2).Then<TestService2>());
+				.Register(Given<IBaseService>
+                        .When<ITestCondition>(context => context.TestType == TestTypes.Test1)
+                        .Then<TestService1>())
+				.Register(Given<IBaseService>
+                        .When<ITestCondition>(context => context.TestType == TestTypes.Test2)
+                        .Then<TestService2>());
 
 			locator.AddContext(new TestCondition(TestTypes.Test2));
+			var controller = locator.GetInstance<ITestController>();
 
-			ITestController controller = locator.GetInstance<ITestController>();
-			Assert.IsInstanceOfType(typeof (TestService2), controller.Service);
+            Assert.IsInstanceOf<TestService2>(controller.Service);
 		}
 
 		[Test]
-		public void Should_Choose_Test_Service_1()
+		public void ShouldChooseTestService1()
 		{
-			locator.Register(Given<ITestController>.Then<TestController>())
+			locator
+                .Register(Given<ITestController>.Then<TestController>())
 				.Register(Given<ITestRepository>.Then<TestRepository1>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test2).Then<TestService2>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test1).Then<TestService1>());
-			locator.AddContext(new TestCondition(TestTypes.Test1));
+				.Register(Given<IBaseService>
+                            .When<ITestCondition>(context => context.TestType == TestTypes.Test2)
+                            .Then<TestService2>())
+				.Register(Given<IBaseService>
+                            .When<ITestCondition>(context => context.TestType == TestTypes.Test1)
+                            .Then<TestService1>());
+			
+            locator.AddContext(new TestCondition(TestTypes.Test1));
+			var controller = locator.GetInstance<ITestController>();
 
-			ITestController controller = locator.GetInstance<ITestController>();
-			Assert.IsInstanceOfType(typeof (TestService1), controller.Service);
-			Assert.IsInstanceOfType(typeof (TestRepository1), controller.Service.Repository);
+            Assert.IsInstanceOf<TestService1>(controller.Service);
+            Assert.IsInstanceOf<TestRepository1>(controller.Service.Repository);
 		}
 
 		[Test]
-		public void Should_Choose_Service1_And_Repository_1()
+		public void ShouldChooseService1AndRepository1()
 		{
-			locator.Register(Given<ITestController>.Then<TestController>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test1).Then<TestService1>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test2).Then<TestService2>())
-				.Register(
-				Given<ITestRepository>.When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionA).Then
-					<TestRepository1>())
-				.Register(
-				Given<ITestRepository>.When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionB).Then
-					<TestRepository2>());
+			locator
+                .Register(Given<ITestController>.Then<TestController>())
+				.Register(Given<IBaseService>
+                            .When<ITestCondition>(context => context.TestType == TestTypes.Test1)
+                            .Then<TestService1>())
+				.Register(Given<IBaseService>
+                            .When<ITestCondition>(context => context.TestType == TestTypes.Test2)
+                            .Then<TestService2>())
+				.Register(Given<ITestRepository>
+                            .When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionA)
+                            .Then<TestRepository1>())
+				.Register(Given<ITestRepository>
+                            .When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionB)
+                            .Then<TestRepository2>());
 
 			locator.AddContext(new TestCondition(TestTypes.Test1));
 			locator.AddContext(new RepositoryCondition(Conditions.ConditionA));
 
-			ITestController controller = locator.GetInstance<ITestController>();
-			Assert.IsInstanceOfType(typeof (TestService1), controller.Service);
-			Assert.IsInstanceOfType(typeof (TestRepository1), controller.Service.Repository);
+			var controller = locator.GetInstance<ITestController>();
+
+            Assert.IsInstanceOf<TestService1>(controller.Service);
+            Assert.IsInstanceOf<TestRepository1>(controller.Service.Repository);
 		}
 
 		[Test]
-		public void Should_Choose_Service2_And_Repository_2()
+		public void ShouldChooseService2AndRepository2()
 		{
-			locator.Register(Given<ITestController>.Then<TestController>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test1).Then<TestService1>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test2).Then<TestService2>())
-				.Register(
-				Given<ITestRepository>.When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionA).Then
-					<TestRepository1>())
-				.Register(
-				Given<ITestRepository>.When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionB).Then
-					<TestRepository2>());
+			locator
+                .Register(Given<ITestController>.Then<TestController>())
+				.Register(Given<IBaseService>
+                        .When<ITestCondition>(context => context.TestType == TestTypes.Test1)
+                        .Then<TestService1>())
+				.Register(Given<IBaseService>
+                        .When<ITestCondition>(context => context.TestType == TestTypes.Test2)
+                        .Then<TestService2>())
+				.Register(Given<ITestRepository>
+                        .When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionA)
+                        .Then<TestRepository1>())
+				.Register(Given<ITestRepository>
+                        .When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionB)
+                        .Then<TestRepository2>());
 
 			locator.AddContext(new TestCondition(TestTypes.Test2));
 			locator.AddContext(new RepositoryCondition(Conditions.ConditionB));
 
-			ITestController controller = locator.GetInstance<ITestController>();
-			Assert.IsInstanceOfType(typeof (TestService2), controller.Service);
-			Assert.IsInstanceOfType(typeof (TestRepository2), controller.Service.Repository);
+			var controller = locator.GetInstance<ITestController>();
+
+            Assert.IsInstanceOf<TestService2>(controller.Service);
+            Assert.IsInstanceOf<TestRepository2>(controller.Service.Repository);
 		}
 
 		[Test]
-		public void Should_Choose_DefaultTestService_And_Repository_2()
+		public void ShouldChooseDefaultTestServiceAndRepository2()
 		{
-			locator.Register(Given<ITestController>.Then<TestController>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test1).Then<TestService1>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test2).Then<TestService2>())
-				.Register(
-				Given<ITestRepository>.When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionA).Then
-					<TestRepository1>())
-				.Register(
-				Given<ITestRepository>.When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionB).Then
-					<TestRepository2>())
+			locator
+                .Register(Given<ITestController>.Then<TestController>())
+				.Register(Given<IBaseService>
+                            .When<ITestCondition>(context => context.TestType == TestTypes.Test1)
+                            .Then<TestService1>())
+				.Register(Given<IBaseService>
+                            .When<ITestCondition>(context => context.TestType == TestTypes.Test2)
+                            .Then<TestService2>())
+				.Register(Given<ITestRepository>
+                            .When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionA)
+                            .Then<TestRepository1>())
+				.Register(Given<ITestRepository>
+                            .When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionB)
+                            .Then<TestRepository2>())
 				.Register(Given<IBaseService>.Then<DefaultTestService>());
 
 			locator.AddContext(new TestCondition(TestTypes.Test3));
 			locator.AddContext(new RepositoryCondition(Conditions.ConditionB));
 
-			ITestController controller = locator.GetInstance<ITestController>();
-			Assert.IsInstanceOfType(typeof (DefaultTestService), controller.Service);
-			Assert.IsInstanceOfType(typeof (TestRepository2), controller.Service.Repository);
+			var controller = locator.GetInstance<ITestController>();
+
+            Assert.IsInstanceOf<DefaultTestService>(controller.Service);
+            Assert.IsInstanceOf<TestRepository2>(controller.Service.Repository);
 		}
 
 		[Test]
-		public void Should_Choose_Defaults_When_No_Context_Applies()
+		public void ShouldChooseDefaultsWhenNoContextApplies()
 		{
-			locator.Register(Given<ITestController>.Then<TestController>())
+			locator
+                .Register(Given<ITestController>.Then<TestController>())
 				.Register(Given<IBaseService>.Then<DefaultTestService>())
 				.Register(Given<ITestRepository>.Then<DefaultTestRepository>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test1).Then<TestService1>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test2).Then<TestService2>())
-				.Register(
-				Given<ITestRepository>.When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionA).Then
-					<TestRepository1>())
-				.Register(
-				Given<ITestRepository>.When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionB).Then
-					<TestRepository2>());
+				.Register(Given<IBaseService>
+                            .When<ITestCondition>(context => context.TestType == TestTypes.Test1)
+                            .Then<TestService1>())
+				.Register(Given<IBaseService>
+                            .When<ITestCondition>(context => context.TestType == TestTypes.Test2)
+                            .Then<TestService2>())
+				.Register(Given<ITestRepository>
+                            .When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionA)
+                            .Then<TestRepository1>())
+				.Register(Given<ITestRepository>
+                            .When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionB)
+                            .Then<TestRepository2>());
 
 			locator.AddContext(new TestCondition(TestTypes.Test3));
 			locator.AddContext(new RepositoryCondition(Conditions.ConditionC));
 
-			ITestController controller = locator.GetInstance<ITestController>();
-			Assert.IsInstanceOfType(typeof (DefaultTestService), controller.Service);
-			Assert.IsInstanceOfType(typeof (DefaultTestRepository), controller.Service.Repository);
+			var controller = locator.GetInstance<ITestController>();
+
+            Assert.IsInstanceOf<DefaultTestService>(controller.Service);
+            Assert.IsInstanceOf<DefaultTestRepository>(controller.Service.Repository);
 		}
 
 		[Test]
-		public void Should_Change_Selection_As_Context_Is_Applied()
+		public void ShouldChangeSelectionAsContextIsApplied()
 		{
 			Assert.AreEqual(0, locator.Store.ExecutionStore.RequestedTypes.Count);
 
-			locator.Register(Given<ITestController>.Then<TestController>())
+			locator
+                .Register(Given<ITestController>.Then<TestController>())
 				.Register(Given<IBaseService>.Then<DefaultTestService>())
 				.Register(Given<ITestRepository>.Then<DefaultTestRepository>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test1).Then<TestService1>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test2).Then<TestService2>())
-				.Register(
-				Given<ITestRepository>.When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionA).Then
-					<TestRepository1>())
-				.Register(
-				Given<ITestRepository>.When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionB).Then
-					<TestRepository2>());
+				.Register(Given<IBaseService>
+                            .When<ITestCondition>(context => context.TestType == TestTypes.Test1)
+                            .Then<TestService1>())
+				.Register(Given<IBaseService>
+                            .When<ITestCondition>(context => context.TestType == TestTypes.Test2)
+                            .Then<TestService2>())
+				.Register(Given<ITestRepository>
+                            .When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionA)
+                            .Then<TestRepository1>())
+				.Register(Given<ITestRepository>
+                            .When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionB)
+                            .Then<TestRepository2>());
 
-			ITestController controller = locator.GetInstance<ITestController>();
-			Assert.IsInstanceOfType(typeof (DefaultTestService), controller.Service);
-			Assert.IsInstanceOfType(typeof (DefaultTestRepository), controller.Service.Repository);
+			var controller = locator.GetInstance<ITestController>();
+			
+            Assert.IsInstanceOf<DefaultTestService>(controller.Service);
+            Assert.IsInstanceOf<DefaultTestRepository>(controller.Service.Repository);
 
 			locator.AddContext(new TestCondition(TestTypes.Test1));
 
 			controller = locator.GetInstance<ITestController>();
-			Assert.IsInstanceOfType(typeof (TestService1), controller.Service);
-			Assert.IsInstanceOfType(typeof (DefaultTestRepository), controller.Service.Repository);
+            Assert.IsInstanceOf<TestService1>(controller.Service);
+            Assert.IsInstanceOf<DefaultTestRepository>(controller.Service.Repository);
 
 			locator.AddContext(new RepositoryCondition(Conditions.ConditionB));
 
 			controller = locator.GetInstance<ITestController>();
-			Assert.IsInstanceOfType(typeof (TestService1), controller.Service);
-			Assert.IsInstanceOfType(typeof (TestRepository2), controller.Service.Repository);
+            Assert.IsInstanceOf<TestService1>(controller.Service);
+            Assert.IsInstanceOf<TestRepository2>(controller.Service.Repository);
 		}
 
 		[Test]
-		public void Should_Choose_Defaults_When_No_Context_Provided()
+		public void ShouldChooseDefaultsWhenNoContextProvided()
 		{
-			locator.Register(Given<ITestController>.Then<TestController>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test1).Then<TestService1>())
-				.Register(
-				Given<IBaseService>.When<ITestCondition>(context => context.TestType == TestTypes.Test2).Then<TestService2>())
-				.Register(
-				Given<ITestRepository>.When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionA).Then
-					<TestRepository1>())
-				.Register(
-				Given<ITestRepository>.When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionB).Then
-					<TestRepository2>())
+			locator
+                .Register(Given<ITestController>.Then<TestController>())
+				.Register(Given<IBaseService>
+                            .When<ITestCondition>(context => context.TestType == TestTypes.Test1)
+                            .Then<TestService1>())
+				.Register(Given<IBaseService>
+                            .When<ITestCondition>(context => context.TestType == TestTypes.Test2)
+                            .Then<TestService2>())
+				.Register(Given<ITestRepository>
+                            .When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionA)
+                            .Then<TestRepository1>())
+				.Register(Given<ITestRepository>
+                            .When<IRepositoryCondition>(context => context.Condition == Conditions.ConditionB)
+                            .Then<TestRepository2>())
 				.Register(Given<IBaseService>.Then<DefaultTestService>())
 				.Register(Given<ITestRepository>.Then<DefaultTestRepository>());
 
 
-			ITestController controller = locator.GetInstance<ITestController>();
-			Assert.IsInstanceOfType(typeof (DefaultTestService), controller.Service);
-			Assert.IsInstanceOfType(typeof (DefaultTestRepository), controller.Service.Repository);
+			var controller = locator.GetInstance<ITestController>();
+            Assert.IsInstanceOf<DefaultTestService>(controller.Service);
+            Assert.IsInstanceOf<DefaultTestRepository>(controller.Service.Repository);
 		}
 	}
 }

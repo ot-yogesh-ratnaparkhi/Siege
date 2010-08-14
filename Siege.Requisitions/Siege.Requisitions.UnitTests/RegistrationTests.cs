@@ -115,5 +115,10 @@ namespace Siege.Requisitions.UnitTests
         {
             get { return ((INamedRegistration) registration).Key; }
         }
+
+        public bool Equals(IRegistration other)
+        {
+            return this.registration.Equals(other);
+        }
     }
 }

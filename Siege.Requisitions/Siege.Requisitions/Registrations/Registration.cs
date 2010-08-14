@@ -72,5 +72,12 @@ namespace Siege.Requisitions.Registrations
         {
             if (this.TypeRequested != null) this.TypeRequested(type);
         }
+
+        public virtual bool Equals(IRegistration registration)
+        {
+            return registration.GetType() == this.GetType() && 
+                   registration.GetMappedFromType() == this.GetMappedFromType() &&
+                   registration.GetMappedToType() == this.GetMappedToType();
+        }
     }
 }

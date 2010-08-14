@@ -66,5 +66,10 @@ namespace Siege.Requisitions.RegistrationPolicies
         {
             get { return ((INamedRegistration)registration).Key; }
         }
+
+        public bool Equals(IRegistration other)
+        {
+            return this.registration.Equals(other);
+        }
     }
 }

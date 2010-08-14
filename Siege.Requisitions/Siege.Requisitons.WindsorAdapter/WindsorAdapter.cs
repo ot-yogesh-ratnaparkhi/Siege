@@ -68,7 +68,7 @@ namespace Siege.Requisitions.WindsorAdapter
                 for (int i = 0; i < constructorParameters.Length; i++)
                 {
                     var parameter = constructorParameters[i];
-					args.Add(parameter.Name, parameter.Value);
+					args[parameter.Name] = parameter.Value;
 				}
 
 				return kernel.Resolve(key, type, args);
@@ -89,7 +89,7 @@ namespace Siege.Requisitions.WindsorAdapter
                 for (int i = 0; i < constructorParameters.Length; i++)
                 {
                     var parameter = constructorParameters[i];
-					args.Add(parameter.Name, parameter.Value);
+					args[parameter.Name] = parameter.Value;
 				}
 
 				return kernel.Resolve(type, args);

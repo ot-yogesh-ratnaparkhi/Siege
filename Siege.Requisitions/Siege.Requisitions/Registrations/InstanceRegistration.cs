@@ -47,6 +47,13 @@ namespace Siege.Requisitions.Registrations
             return typeof(TBaseService);
         }
 
+        public override bool Equals(IRegistration registration)
+        {
+            return registration.GetType() == this.GetType() &&
+                   registration.GetMappedFromType() == this.GetMappedFromType() &&
+                   registration.GetMappedTo() == this.GetMappedTo();
+        }
+
         public class InstanceRegistrationActivationStrategy : IActivationStrategy
         {
             private readonly TBaseService implementation;

@@ -36,7 +36,7 @@ namespace Siege.Requisitions.Extensions.ConditionalInjection
 
         public override bool Evaluate(object context)
         {
-            return context == basedOnType;
+            return (Type)context == basedOnType;
         }
 
         public new IRegistration Then<TImplementingType>() where TImplementingType : TService

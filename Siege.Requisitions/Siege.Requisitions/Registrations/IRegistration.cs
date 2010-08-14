@@ -19,7 +19,7 @@ using Siege.Requisitions.RegistrationTemplates;
 
 namespace Siege.Requisitions.Registrations
 {
-    public interface IRegistration
+    public interface IRegistration : IEquatable<IRegistration>
     {
         void MapsTo(object implementationType);
         object GetMappedTo();

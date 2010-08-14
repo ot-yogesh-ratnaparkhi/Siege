@@ -36,5 +36,15 @@ namespace Siege.Requisitions.Registrations.Named
         {
             return new NamedRegistrationTemplate();
         }
+
+        public override bool Equals(IRegistration registration)
+        {
+            if (!(registration is NamedRegistration<TBaseService>)) return false;
+
+            var namedRegistration = registration as NamedRegistration<TBaseService>;
+
+            return namedRegistration.Key == this.key && base.Equals(registration);
+
+        }
     }
 }
