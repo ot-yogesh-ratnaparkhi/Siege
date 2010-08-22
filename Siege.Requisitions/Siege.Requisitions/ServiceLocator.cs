@@ -174,6 +174,13 @@ namespace Siege.Requisitions
             return serviceLocator.HasTypeRegistered(type);
         }
 
+        public IServiceLocator Register(Action<IServiceLocator> serviceLocator)
+        {
+            serviceLocator(this);
+
+            return this;
+        }
+
         public IServiceLocator Register(List<IRegistration> registrations)
         {
             return Register<Transient>(registrations);

@@ -34,11 +34,6 @@ namespace Siege.Requisitions.SiegeAdapter.Maps
 
         public bool Contains(Type type)
         {
-            if (!entries.ContainsKey(type) && type.IsClass)
-            {
-                Add(type, type, null);
-            }
-
             return entries.ContainsKey(type);
         }
 

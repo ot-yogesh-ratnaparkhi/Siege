@@ -166,6 +166,7 @@ namespace Siege.Requisitions.WindsorAdapter
            {
            }
        }
+
        private class GenericFactory 
        {  
            private readonly Func<object> factoryMethod;  

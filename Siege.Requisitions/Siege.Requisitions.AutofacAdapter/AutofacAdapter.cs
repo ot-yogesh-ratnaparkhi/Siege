@@ -102,31 +102,23 @@ namespace Siege.Requisitions.AutofacAdapter
         {
             var type = typeof(IEnumerable<>).MakeGenericType(serviceType);
             object instance;
-            if (container.TryResolve(type, out instance))
-            {
-                return ((IEnumerable)instance).Cast<object>();
-            }
-
-            return new List<object>();
+            
+            return container.TryResolve(type, out instance) ? ((IEnumerable)instance).Cast<object>() : new List<object>();
         }
 
         public IEnumerable<TService> GetAllInstances<TService>()
         {
             var type = typeof(IEnumerable<>).MakeGenericType(typeof(TService));
             object instance;
-            if (container.TryResolve(type, out instance))
-            {
-                return ((IEnumerable)instance).Cast<TService>();
-            }
-
-            return new List<TService>();
+            
+            return container.TryResolve(type, out instance) ? ((IEnumerable)instance).Cast<TService>() : new List<TService>();
         }
 
         public void Register(Type from, Type to)
         {
             var builder = new ContainerBuilder();
 
-            Type genericType = typeof(IEnumerable<>).MakeGenericType(from);
+            var genericType = typeof(IEnumerable<>).MakeGenericType(from);
             if (!from.IsGenericType && !container.IsRegistered(genericType))
             {
                 builder.RegisterCollection(from).As(genericType);
@@ -147,7 +139,7 @@ namespace Siege.Requisitions.AutofacAdapter
         {
             var builder = new ContainerBuilder();
 
-            Type genericType = typeof(IEnumerable<>).MakeGenericType(type);
+            var genericType = typeof(IEnumerable<>).MakeGenericType(type);
             if (!container.IsRegistered(genericType))
             {
                 builder.RegisterCollection(type).As(genericType);
@@ -182,7 +174,7 @@ namespace Siege.Requisitions.AutofacAdapter
         public void RegisterFactoryMethod(Type type, Func<object> func)
         {
             var builder = new ContainerBuilder();
-            Type genericType = typeof(IEnumerable<>).MakeGenericType(type);
+            var genericType = typeof(IEnumerable<>).MakeGenericType(type);
             
             if (!container.IsRegistered(genericType))
             {

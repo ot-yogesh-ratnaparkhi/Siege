@@ -32,26 +32,26 @@ namespace Siege.Requisitions.UnitTests
 
     public class SampleProxyAttributeConvention : IConvention
     {
-        public List<IRegistration> Build()
+        public Action<IServiceLocator> Build()
         {
-            return new List<IRegistration>
+            return serviceLocator => serviceLocator.Register(new List<IRegistration>
                        {
                            Given<SampleEncapsulatingAttribute>.Then<SampleEncapsulatingAttribute>(),
                            Given<SamplePreProcessingAttribute>.Then<SamplePreProcessingAttribute>(),
                            Given<SamplePostProcessingAttribute>.Then<SamplePostProcessingAttribute>()
-                       };
+                       });
         }
     }
 
     public class ProxyConvention : IConvention
     {
-        public List<IRegistration> Build()
+        public Action<IServiceLocator> Build()
         {
-            return new List<IRegistration>
+            return serviceLocator => serviceLocator.Register(new List<IRegistration>
                        {
                            Given<SiegeProxy>.Then<SiegeProxy>(),
                            Given<IMetaRegistration>.Then<ProxyRegistration>()
-                       };
+                       });
         }
     }
 

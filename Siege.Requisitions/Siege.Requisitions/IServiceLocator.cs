@@ -23,6 +23,7 @@ namespace Siege.Requisitions
 {
     public interface IServiceLocator : Microsoft.Practices.ServiceLocation.IServiceLocator, IDisposable, IInstanceResolver
     {
+        IServiceLocator Register(Action<IServiceLocator> serviceLocator);
         IServiceLocator Register(List<IRegistration> registration);
         IServiceLocator Register(IRegistration registration);
         IServiceLocator Register<TRegistrationPolicy>(List<IRegistration> registration) where TRegistrationPolicy : IRegistrationPolicy;

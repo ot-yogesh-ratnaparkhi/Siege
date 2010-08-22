@@ -8,7 +8,7 @@
     <ProjectGuid>{2360AD60-0D6D-4ECC-919A-2F64E4E295D3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Siege.Requistions.StructureMapAdapter</RootNamespace>
+    <RootNamespace>Siege.Requisitions.StructureMapAdapter</RootNamespace>
     <AssemblyName>Siege.Requisitions.StructureMapAdapter</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

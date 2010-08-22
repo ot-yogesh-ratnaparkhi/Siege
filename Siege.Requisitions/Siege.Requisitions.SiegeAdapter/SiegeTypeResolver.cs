@@ -165,7 +165,7 @@ namespace Siege.Requisitions.SiegeAdapter
 
 				for (int j = 0; j < summaryCount; j++)
 				{
-					var summary = summaries[i];
+					var summary = summaries[j];
 					var parameterType = summary.ParameterType;
 
 					if (!map.Contains(parameterType))

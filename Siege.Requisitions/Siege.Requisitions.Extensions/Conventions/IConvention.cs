@@ -13,13 +13,12 @@
      limitations under the License.
 */
 
-using System.Collections.Generic;
-using Siege.Requisitions.Registrations;
+using System;
 
 namespace Siege.Requisitions.Extensions.Conventions
 {
     public interface IConvention
     {
-        List<IRegistration> Build();
+        Action<IServiceLocator> Build();
     }
 }

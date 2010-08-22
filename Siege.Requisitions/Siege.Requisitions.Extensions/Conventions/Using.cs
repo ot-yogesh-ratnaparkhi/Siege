@@ -13,19 +13,18 @@
      limitations under the License.
 */
 
-using System.Collections.Generic;
-using Siege.Requisitions.Registrations;
+using System;
 
 namespace Siege.Requisitions.Extensions.Conventions
 {
     public abstract class Using
     {
-        public static List<IRegistration> Convention<TConvention>() where TConvention : IConvention, new()
+        public static Action<IServiceLocator> Convention<TConvention>() where TConvention : IConvention, new()
         {
             return new TConvention().Build();
         }
 
-        public static List<IRegistration> Convention(IConvention convention)
+        public static Action<IServiceLocator> Convention(IConvention convention)
         {
             return convention.Build();
         }

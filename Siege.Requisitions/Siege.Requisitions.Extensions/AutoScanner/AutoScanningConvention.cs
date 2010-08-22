@@ -42,7 +42,7 @@ namespace Siege.Requisitions.Extensions.AutoScanner
             baseTypes.Add(typeof(TType));
         }
 
-        public List<IRegistration> Build()
+        public Action<IServiceLocator> Build()
         {
             var registrations = new List<IRegistration>();
 
@@ -51,8 +51,8 @@ namespace Siege.Requisitions.Extensions.AutoScanner
                 if(baseTypes.Count > 0)
                 {
                     registrations.AddRange((from baseType in baseTypes
-                                       where baseType.IsAssignableFrom(type) && !type.IsInterface
-                                       select new AutoScannedRegistration(baseType, type)).Cast<IRegistration>());
+                                            where baseType.IsAssignableFrom(type) && !type.IsInterface
+                                            select new AutoScannedRegistration(baseType, type)));
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace Siege.Requisitions.Extensions.AutoScanner
                 }
             }
 
-            return registrations;
+            return serviceLocator => serviceLocator.Register(registrations);
         }
     }
 }
