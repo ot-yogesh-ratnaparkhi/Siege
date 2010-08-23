@@ -86,7 +86,7 @@ namespace Siege.Requisitions.SiegeAdapter
 			{
                 var arg = candidateParameters[i];
 
-				var value = Get(arg.ParameterType, null, null);
+				var value = Get(arg.ParameterType, null, new ConstructorParameter[0]);
 
 				if (value != null)
 				{
