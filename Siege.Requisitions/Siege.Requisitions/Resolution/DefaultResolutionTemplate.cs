@@ -91,7 +91,7 @@ namespace Siege.Requisitions.Resolution
             {
                 var value = serviceLocator.GetInstance(type, store.ResolutionStore.Items.OfType<ConstructorParameter, IResolutionArgument>());
 
-                RaiseTypeResolvedEvent(type);
+                //RaiseTypeResolvedEvent(type);
                 ExecutePostConditions<ConditionalPostResolutionRegistrationTemplate>(type, type, actionregistration =>
                 {
                     if (actionregistration.IsValid(store))
