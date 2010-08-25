@@ -1,13 +1,7 @@
 h1. Siege - A set of general abstraction frameworks for .NET
 
-* "Introduction":http://www.lostechies.com/blogs/marcus_bratton/archive/2009/12/06/introducing-siege.aspx
-* "The Siege Project: Siege.ServiceLocation Part 1 - Introduction and General Use":http://www.lostechies.com/blogs/marcus_bratton/archive/2009/12/06/the-siege-project-siege-servicelocation.aspx
-* "The Siege Project: Siege.ServiceLocation, Part 2 - Contextual Registration and Resolution":http://www.lostechies.com/blogs/marcus_bratton/archive/2009/12/09/the-siege-project-siege-servicelocation-part-2-contextual-registration-and-resolution.aspx
-* "The Siege Project: Siege.ServiceLocation, Part 3 – Extending the container with custom use cases":http://www.lostechies.com/blogs/marcus_bratton/archive/2009/12/10/the-siege-project-siege-servicelocation-part-3-extending-the-container-with-custom-use-cases.aspx
-* "The Siege Project: Siege.ServiceLocation, Part 4 – Integrating Siege.ServiceLocation with ASP.NET MVC":http://www.lostechies.com/blogs/marcus_bratton/archive/2009/12/18/the-siege-project-siege-servicelocation-part-4-integrating-siege-servicelocation-with-asp-net-mvc.aspx
-* "The Siege Project: Siege.ServiceLocation, Part 5 – A guide to getting started with Siege.ServiceLocation":http://www.lostechies.com/blogs/marcus_bratton/archive/2009/12/18/the-siege-project-siege-servicelocation-part-5-a-guide-to-getting-started-with-siege-servicelocation.aspx
-* "Added support for Unity, Autofac to Siege.ServiceLocation":http://www.lostechies.com/blogs/marcus_bratton/archive/2009/12/23/added-support-for-unity-autofac-to-siege-servicelocation.aspx
-* "Introducing Siege.ServiceLocation.Extensions: FactoryMethod Support, Dependency Resolution based on type injected into added":http://www.lostechies.com/blogs/marcus_bratton/archive/2009/12/27/introducing-siege-servicelocation-extensions-factorymethod-support-dependency-resolution-based-on-type-injected-into-added.aspx
+"Wiki":http://github.com/MarcusTheBold/Siege/wiki
+"Blog Posts":http://www.lostechies.com/blogs/marcus_bratton/archive/tags/Siege/default.aspx
 
 ==<hr />==
 
