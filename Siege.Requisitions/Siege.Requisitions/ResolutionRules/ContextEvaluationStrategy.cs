@@ -16,9 +16,8 @@
 using System.Collections.Generic;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Resolution;
-using Siege.Requisitions.ResolutionRules;
 
-namespace Siege.Requisitions.Rules
+namespace Siege.Requisitions.ResolutionRules
 {
     public class ContextEvaluationStrategy : IRuleEvaluationStrategy
     {
