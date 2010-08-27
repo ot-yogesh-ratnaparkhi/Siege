@@ -25,7 +25,10 @@ namespace Siege.Requisitions.ResolutionRules
 
         public void SetEvaluation(Func<TContext, bool> evaluation)
         {
-            this.evaluation = x => (x is TContext) ? evaluation.Invoke((TContext)x) : false;
+            this.evaluation = x => (x is Func<TContext>) ? 
+                                        evaluation.Invoke(((Func<TContext>)x).Invoke()) :
+                                   (x is TContext) ? 
+                                        evaluation.Invoke((TContext)x) : false;
         }
 
         public IRegistration Then<TImplementingType>() where TImplementingType : TBaseService

@@ -22,9 +22,9 @@ namespace Siege.Requisitions.Extensions.ConditionalAwareness
 {
     public class ContextualRegistration<T> : TypedRegistration
     {
-        private readonly Func<IInstanceResolver, T> func;
+        private readonly Func<T> func;
 
-        public ContextualRegistration(Func<IInstanceResolver, T> func) : base(typeof(T))
+        public ContextualRegistration(Func<T> func) : base(typeof(T))
         {
             this.func = func;
         }

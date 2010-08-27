@@ -22,7 +22,7 @@ namespace Siege.Requisitions.Extensions.ConditionalAwareness
 {
     public class Awareness
     {
-        public static Action<IServiceLocator> Of<T>(Func<IInstanceResolver, T> func)
+        public static Action<IServiceLocator> Of<T>(Func<T> func)
         {
             var registration = new ContextualRegistration<T>(func);
 

@@ -7,11 +7,11 @@ namespace Siege.Requisitions.UnitTests
 {
     public partial class ServiceLocatorTests
     {
-        [Test, Ignore]
+        [Test]
         public void ShouldFindContextWithoutExplicitlyAdding()
         {
             locator
-                .Register(Awareness.Of(serviceLocator => serviceLocator.GetInstance<ISomeService>()))
+                .Register(Awareness.Of(() => locator.GetInstance<ISomeService>()))
                 .Register(Given<ISomeService>.Then<SomeService>())
                 .Register(Given<ITestInterface>.When<ISomeService>(i => i.SomeMethod()).Then<TestCase1>())
                 .Register(Given<ITestInterface>.Then<TestCase2>());
