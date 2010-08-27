@@ -71,7 +71,7 @@ namespace Siege.Requisitions.Registrations
 
             public object Resolve(IInstanceResolver locator, IServiceLocatorStore context)
             {
-                return locator.GetInstance(mapsToType, context.ResolutionStore.Items.OfType<IResolutionArgument, IResolutionArgument>());
+                return locator.GetInstance(mapsToType, context.Get<IResolutionStore>().Items.OfType<IResolutionArgument, IResolutionArgument>());
             }
         }
     }

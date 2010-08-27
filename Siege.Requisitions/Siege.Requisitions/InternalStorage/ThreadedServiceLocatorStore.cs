@@ -13,13 +13,15 @@
      limitations under the License.
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Siege.Requisitions.InternalStorage
 {
     public class ThreadedServiceLocatorStore : IServiceLocatorStore
     {
-        private readonly IContextStore store;
-        private IResolutionStore resolutionStore;
-        private readonly IExecutionStore executionStore;
+        private readonly Dictionary<Type, IStore> stores = new Dictionary<Type, IStore>();
 
         public ThreadedServiceLocatorStore()
             : this(new ThreadLocalStore())
@@ -28,28 +30,35 @@ namespace Siege.Requisitions.InternalStorage
 
         public ThreadedServiceLocatorStore(IContextStore store)
         {
-            this.store = store;
-            this.resolutionStore = new ThreadedResolutionStore();
-            this.executionStore = ThreadedExecutionStore.New(this);
+            AddStore<IContextStore>(store);
+            AddStore<IResolutionStore>(new ThreadedResolutionStore());
+            AddStore<IExecutionStore>(ThreadedExecutionStore.New(this));
         }
 
-        public IContextStore ContextStore
+
+        public void SetStore<TStoreType>(IStore store) where TStoreType : IStore
         {
-            get { return this.store; }
+            this.stores[typeof (TStoreType)] = store;
         }
 
-        public IResolutionStore ResolutionStore
+        public TStoreType Get<TStoreType>() where TStoreType : IStore
         {
-            get { return this.resolutionStore; }
-            set { this.resolutionStore = value; }
+            return (TStoreType)this.stores[typeof (TStoreType)];
         }
 
-        public IExecutionStore ExecutionStore { get { return this.executionStore; } }
+        public List<TStoreType> All<TStoreType>() where TStoreType : IStore
+        {
+            return this.stores.Values.ToList().Where(x => typeof(TStoreType).IsInstanceOfType(x)).Cast<TStoreType>().ToList();
+        }
+
+        public void AddStore<TStoreType>(IStore store) where TStoreType : IStore
+        {
+            if(!this.stores.ContainsKey(typeof(TStoreType))) this.stores.Add(typeof(TStoreType), store);
+        }
 
         public void Dispose()
         {
-            this.store.Dispose();
-            this.resolutionStore.Dispose();
+            foreach(IStore store in this.stores.Values) store.Dispose();
         }
     }
 }

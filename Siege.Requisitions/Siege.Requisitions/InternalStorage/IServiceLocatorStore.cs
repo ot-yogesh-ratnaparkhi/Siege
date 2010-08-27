@@ -14,13 +14,15 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace Siege.Requisitions.InternalStorage
 {
     public interface IServiceLocatorStore : IDisposable
     {
-        IContextStore ContextStore { get; }
-        IResolutionStore ResolutionStore { get; set; }
-        IExecutionStore ExecutionStore { get; }
+        void AddStore<TStoreType>(IStore store) where TStoreType : IStore;
+        void SetStore<TStoreType>(IStore store) where TStoreType : IStore;
+        TStoreType Get<TStoreType>() where TStoreType : IStore;
+        List<TStoreType> All<TStoreType>() where TStoreType : IStore;
     }
 }

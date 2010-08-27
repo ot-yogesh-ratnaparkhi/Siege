@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InternalStorage\IStore.cs" />
     <Compile Include="RegistrationPolicies\IRegistrationPolicy.cs" />
     <Compile Include="Registrations\Meta\IMetaRegistration.cs" />
     <Compile Include="RegistrationTemplates\AbstractRegistrationTemplate.cs" />

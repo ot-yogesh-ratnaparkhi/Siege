@@ -16,9 +16,8 @@
 using System;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.Conditional;
-using Siege.Requisitions.ResolutionRules;
 
-namespace Siege.Requisitions.Rules
+namespace Siege.Requisitions.ResolutionRules
 {
     public class ConditionalActivationRule<TBaseService, TContext> : IConditionalActivationRule
     {

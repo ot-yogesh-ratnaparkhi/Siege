@@ -17,7 +17,7 @@ using System;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.Default;
 using Siege.Requisitions.Registrations.Named;
-using Siege.Requisitions.Rules;
+using Siege.Requisitions.ResolutionRules;
 
 namespace Siege.Requisitions.RegistrationSyntax
 {

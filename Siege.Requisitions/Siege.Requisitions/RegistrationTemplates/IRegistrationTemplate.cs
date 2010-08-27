@@ -13,6 +13,7 @@
      limitations under the License.
 */
 
+using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Resolution;
 
@@ -20,6 +21,6 @@ namespace Siege.Requisitions.RegistrationTemplates
 {
     public interface IRegistrationTemplate
     {
-        void Register(IServiceLocatorAdapter adapter, IRegistration registration, IResolutionTemplate template);
+        void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, IResolutionTemplate template);
     }
 }

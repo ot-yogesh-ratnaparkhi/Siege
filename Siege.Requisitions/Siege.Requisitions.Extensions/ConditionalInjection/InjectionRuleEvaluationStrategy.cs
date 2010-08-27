@@ -22,7 +22,7 @@ namespace Siege.Requisitions.Extensions.ConditionalInjection
     {
         public bool IsValid(IActivationRule rule, IServiceLocatorStore context)
         {
-            var types = context.ExecutionStore.RequestedTypes;
+            var types = context.Get<IExecutionStore>().RequestedTypes;
             for(int i = 0; i < types.Count; i++)
             {
                 var dependency = types[i];
