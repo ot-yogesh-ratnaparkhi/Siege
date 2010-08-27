@@ -24,7 +24,7 @@ namespace Siege.Requisitions.Web
     {
         public void Add(object contextItem)
         {
-            if (SessionExists())
+            if (this.SessionExists())
             {
                 HttpContext.Current.Session.Add(contextItem.GetType() + Guid.NewGuid().ToString(), contextItem);
             }
@@ -38,9 +38,9 @@ namespace Siege.Requisitions.Web
         {
             get
             {
-                var items = new List<object>();
+                List<object> items = new List<object>();
 
-                if (SessionExists())
+                if (this.SessionExists())
                 {
                     foreach (string item in HttpContext.Current.Session)
                     {
@@ -56,14 +56,14 @@ namespace Siege.Requisitions.Web
             }
         }
 
-        private static bool SessionExists()
+        private bool SessionExists()
         {
             return HttpContext.Current.Session != null;
         }
 
         public void Clear()
         {
-            if (SessionExists())
+            if (this.SessionExists())
                 HttpContext.Current.Session.Clear();
             HttpContext.Current.Application.Clear();
         }

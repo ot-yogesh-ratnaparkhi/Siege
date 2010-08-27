@@ -80,6 +80,7 @@
     <Compile Include="HttpSessionStore.cs" />
     <Compile Include="HttpServiceLocator.cs" />
     <Compile Include="HttpServiceLocatorStore.cs" />
+    <Compile Include="ModelBinding.cs" />
     <Compile Include="ServiceLocatorControllerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceLocatorHttpApplication.cs" />
