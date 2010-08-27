@@ -15,6 +15,7 @@
 
 using System;
 using NUnit.Framework;
+using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.UnitTests.ContextualTests.Classes;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 
@@ -77,7 +78,7 @@ namespace Siege.Requisitions.UnitTests
 				Assert.IsInstanceOf<TestService1>(controller.Service);
 				Assert.IsInstanceOf<TestRepository2>(controller.Service.Repository);
 
-                locator.Store.ContextStore.Clear();
+                locator.Store.Get<IContextStore>().Clear();
                 end = DateTime.Now;
 
                 totalTime += end - start;

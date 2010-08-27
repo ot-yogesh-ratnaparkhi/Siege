@@ -123,6 +123,7 @@
     <Compile Include="AutoRegistrationTests.cs" />
     <Compile Include="BenchmarkTests.cs" />
     <Compile Include="ConstructorArgumentTests.cs" />
+    <Compile Include="ContextAwarenessTests.cs" />
     <Compile Include="ContextualTests\AutofacContextTests.cs" />
     <Compile Include="ContextualTests\BaseContextTests.cs" />
     <Compile Include="ContextualTests\Classes\DefaultTestRepository.cs" />

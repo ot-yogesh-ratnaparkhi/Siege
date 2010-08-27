@@ -13,6 +13,7 @@
      limitations under the License.
 */
 
+using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Resolution;
 
@@ -20,7 +21,7 @@ namespace Siege.Requisitions.RegistrationTemplates.Conditional
 {
     public class ConditionalInstanceRegistrationTemplate : ConditionalRegistrationTemplate
     {
-        public override void Register(IServiceLocatorAdapter adapter, IRegistration registration, IResolutionTemplate template)
+        public override void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, IResolutionTemplate template)
         {
             adapter.RegisterFactoryMethod(registration.GetMappedFromType(), () => template.Resolve(registration.GetMappedFromType()));
             adapter.RegisterInstance(registration.GetMappedToType(), registration.GetMappedTo());

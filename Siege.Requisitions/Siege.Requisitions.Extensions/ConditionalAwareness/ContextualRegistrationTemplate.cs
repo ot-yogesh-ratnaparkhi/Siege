@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,14 +15,16 @@
 
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
+using Siege.Requisitions.RegistrationTemplates;
 using Siege.Requisitions.Resolution;
 
-namespace Siege.Requisitions.RegistrationTemplates.PostResolution
+namespace Siege.Requisitions.Extensions.ConditionalAwareness
 {
-    public class ConditionalPostResolutionRegistrationTemplate : IRegistrationTemplate
+    public class ContextualRegistrationTemplate : IRegistrationTemplate
     {
         public void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, IResolutionTemplate template)
         {
+            store.Get<IAwarenessStore>().Add(registration.GetMappedTo());
         }
     }
 }

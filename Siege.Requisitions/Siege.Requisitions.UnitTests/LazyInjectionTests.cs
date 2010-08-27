@@ -16,6 +16,7 @@
 using System;
 using NUnit.Framework;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
+using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.UnitTests.TestClasses;
 
 namespace Siege.Requisitions.UnitTests
@@ -60,7 +61,7 @@ namespace Siege.Requisitions.UnitTests
             var instance = locator.GetInstance<TestClass>();
             Assert.IsInstanceOf<TestCase1>(instance.Invoke());
 
-            locator.Store.ContextStore.Clear();
+            locator.Store.Get<IContextStore>().Clear();
             locator.AddContext(2);
 
             instance = locator.GetInstance<TestClass>();
@@ -82,7 +83,7 @@ namespace Siege.Requisitions.UnitTests
             var instance = locator.GetInstance<TestClass>();
             Assert.AreSame(sample1, instance.Invoke());
 
-            locator.Store.ContextStore.Clear();
+            locator.Store.Get<IContextStore>().Clear();
             locator.AddContext(2);
 
             instance = locator.GetInstance<TestClass>();

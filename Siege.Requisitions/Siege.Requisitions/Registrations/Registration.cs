@@ -37,16 +37,14 @@ namespace Siege.Requisitions.Registrations
             this.rule = rule;
         }
 
-        public bool IsValid(IServiceLocatorStore context)
+        public virtual bool IsValid(IServiceLocatorStore context)
         {
-            if(rule == null) return false;
-
-            return rule.GetRuleEvaluationStrategy().IsValid(rule, context);
+            return rule != null && rule.GetRuleEvaluationStrategy().IsValid(rule, context);
         }
 
         public virtual object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context)
         {
-            context.ExecutionStore.WireEvent(this);
+            context.Get<IExecutionStore>().WireEvent(this);
             object instance = null;
 
             if (rule == null)
@@ -63,7 +61,7 @@ namespace Siege.Requisitions.Registrations
                 }
             }
 
-            context.ExecutionStore.UnWireEvent(this);
+            context.Get<IExecutionStore>().UnWireEvent(this);
 
             return instance;
         }

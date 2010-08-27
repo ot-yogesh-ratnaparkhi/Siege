@@ -14,6 +14,7 @@
 */
 
 using NUnit.Framework;
+using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.UnitTests.ContextualTests.Classes;
 using Siege.Requisitions.RegistrationSyntax;
 
@@ -190,7 +191,7 @@ namespace Siege.Requisitions.UnitTests.ContextualTests
 		[Test]
 		public void ShouldChangeSelectionAsContextIsApplied()
 		{
-			Assert.AreEqual(0, locator.Store.ExecutionStore.RequestedTypes.Count);
+            Assert.AreEqual(0, locator.Store.Get<IExecutionStore>().RequestedTypes.Count);
 
 			locator
                 .Register(Given<ITestController>.Then<TestController>())

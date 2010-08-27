@@ -13,15 +13,14 @@
      limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using Siege.Requisitions.Resolution;
 
 namespace Siege.Requisitions.InternalStorage
 {
-    public interface IResolutionStore : IDisposable
+    public interface IResolutionStore : IStore
     {
-        void Add(List<IResolutionArgument> items);
+        void Add(List<IResolutionArgument> contextItems);
         List<IResolutionArgument> Items { get; }
         void Clear();
     }

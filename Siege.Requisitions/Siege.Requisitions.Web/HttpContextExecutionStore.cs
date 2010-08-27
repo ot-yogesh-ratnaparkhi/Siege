@@ -28,7 +28,7 @@ namespace Siege.Requisitions.Web
         protected HttpContextExecutionStore(IServiceLocatorStore store)
         {
             this.store = store;
-            this.store.ResolutionStore = new HttpResolutionStore();
+            this.store.SetStore<IResolutionStore>(new HttpResolutionStore());
             HttpContext.Current.Items["executionCount"] = 0;
         }
 
@@ -107,8 +107,13 @@ namespace Siege.Requisitions.Web
             HttpContext.Current.Items["executionCount"] = Count - 1;
             if (Count == 0)
             {
-                store.ResolutionStore = new HttpResolutionStore();
+                store.SetStore<IResolutionStore>(new HttpResolutionStore());
             }
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }

@@ -13,12 +13,11 @@
      limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 
 namespace Siege.Requisitions.InternalStorage
 {
-    public interface IContextStore : IDisposable
+    public interface IContextStore : IStore
     {
         void Add(object contextItem);
         List<object> Items { get; }

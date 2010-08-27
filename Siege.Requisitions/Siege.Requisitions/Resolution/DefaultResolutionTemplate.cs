@@ -38,7 +38,7 @@ namespace Siege.Requisitions.Resolution
             this.serviceLocator = serviceLocator;
             this.store = store;
             this.foundation = foundation;
-            this.store.ExecutionStore.WireEvent(this);
+            this.store.Get<IExecutionStore>().WireEvent(this);
         }
 
         public virtual object Resolve(Type type)
@@ -89,7 +89,7 @@ namespace Siege.Requisitions.Resolution
         {
             if (serviceLocator.HasTypeRegistered(type) || type.IsGenericType)
             {
-                var value = serviceLocator.GetInstance(type, store.ResolutionStore.Items.OfType<ConstructorParameter, IResolutionArgument>());
+                var value = serviceLocator.GetInstance(type, store.Get<IResolutionStore>().Items.OfType<ConstructorParameter, IResolutionArgument>());
 
                 //RaiseTypeResolvedEvent(type);
                 ExecutePostConditions<ConditionalPostResolutionRegistrationTemplate>(type, type, actionregistration =>

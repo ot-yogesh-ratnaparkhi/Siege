@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,16 +13,16 @@
      limitations under the License.
 */
 
+using System;
+using System.Collections.Generic;
 using Siege.Requisitions.InternalStorage;
-using Siege.Requisitions.Registrations;
-using Siege.Requisitions.Resolution;
 
-namespace Siege.Requisitions.RegistrationTemplates.PostResolution
+namespace Siege.Requisitions.Extensions.ConditionalAwareness
 {
-    public class ConditionalPostResolutionRegistrationTemplate : IRegistrationTemplate
+    public interface IAwarenessStore : IStore
     {
-        public void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, IResolutionTemplate template)
-        {
-        }
+        void Add(object contextItem);
+        List<object> Items { get; }
+        void Clear();
     }
 }

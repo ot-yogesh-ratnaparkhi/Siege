@@ -84,7 +84,7 @@ namespace Siege.Requisitions.InternalStorage
             
             if (Index == 0)
             {
-                store.ResolutionStore = new ThreadedResolutionStore();
+                store.SetStore<IResolutionStore>(new ThreadedResolutionStore());
                 RequestedTypes = new List<Type>();
             }
         }
@@ -94,12 +94,16 @@ namespace Siege.Requisitions.InternalStorage
             this.store = store;
             RequestedTypes = new List<Type>();
             Index = 0;
-            store.ResolutionStore = new ThreadedResolutionStore();
+            store.SetStore<IResolutionStore>(new ThreadedResolutionStore());
         }
 
         public static IExecutionStore New(IServiceLocatorStore store)
         {
             return new ThreadedExecutionStore(store);
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

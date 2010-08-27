@@ -15,6 +15,7 @@
 
 using System;
 using System.Linq.Expressions;
+using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Resolution;
 
@@ -22,7 +23,7 @@ namespace Siege.Requisitions.RegistrationTemplates
 {
     public abstract class AbstractRegistrationTemplate : IRegistrationTemplate
     {
-        public abstract void Register(IServiceLocatorAdapter adapter, IRegistration registration, IResolutionTemplate template);
+        public abstract void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, IResolutionTemplate template);
 
         protected void RegisterLazy(IServiceLocatorAdapter adapter, Type type, IResolutionTemplate resolutionTemplate)
         {

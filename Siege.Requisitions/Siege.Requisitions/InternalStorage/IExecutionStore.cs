@@ -19,7 +19,7 @@ using Siege.Requisitions.EventHandlers;
 
 namespace Siege.Requisitions.InternalStorage
 {
-    public interface IExecutionStore
+    public interface IExecutionStore : IStore
     {
         List<Type> RequestedTypes{ get; }
         void WireEvent(ITypeResolver typeResolver);
