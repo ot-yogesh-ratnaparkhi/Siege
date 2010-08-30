@@ -16,6 +16,7 @@
 using System;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace Siege.Requisitions.Web
 {
@@ -23,20 +24,55 @@ namespace Siege.Requisitions.Web
     {
         public Func<T> Using<TModelBinder>(IServiceLocator serviceLocator) where TModelBinder : IModelBinder
         {
-            return () => (T)serviceLocator.GetInstance<TModelBinder>().BindModel(new ControllerContext(), new ModelBindingContext
+            return () =>
             {
-                ValueProvider = new NameValueCollectionValueProvider(HttpContext.Current.Request.Form, null),
-                ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(null, typeof(T))
-            });
+                var controllerContext = GetControllerContext();
+                var valueProvider = GetValueProvider(controllerContext);
+
+                return (T)serviceLocator.GetInstance<TModelBinder>().BindModel(
+                    controllerContext,
+                    new ModelBindingContext
+                    {
+                        ValueProvider = valueProvider,
+                        ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(null, typeof(T))
+                    });
+            };
         }
 
         public Func<T> UsingDefaultBinder()
         {
-            return () => (T)new DefaultModelBinder().BindModel(new ControllerContext(), new ModelBindingContext
+            return () =>
             {
-                ValueProvider = new NameValueCollectionValueProvider(HttpContext.Current.Request.Form, null),
-                ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(null, typeof(T))
-            });
+                var controllerContext = GetControllerContext();
+                var valueProvider = GetValueProvider(controllerContext);
+
+                return (T)new DefaultModelBinder().BindModel(
+                    controllerContext,
+                    new ModelBindingContext
+                    {
+                        ValueProvider = valueProvider,
+                        ModelMetadata =
+                            ModelMetadataProviders.Current.
+                            GetMetadataForType(null, typeof(T))
+                    });
+            };
+        }
+
+        private IValueProvider GetValueProvider(ControllerContext controllerContext)
+        {
+            return new ValueProviderCollection
+                       {
+                           new FormValueProvider(controllerContext),
+                           new RouteDataValueProvider(controllerContext),
+                           new QueryStringValueProvider(controllerContext)
+                       };
+        }
+
+        private ControllerContext GetControllerContext()
+        {
+            HttpContextBase context = new HttpContextWrapper(HttpContext.Current);
+            var routeData = RouteTable.Routes.GetRouteData(context);
+            return new ControllerContext(context, routeData, new DummyController());
         }
     }
 
@@ -46,5 +82,9 @@ namespace Siege.Requisitions.Web
         {
             return new ModelBinding<T>();
         }
+    }
+
+    internal class DummyController : Controller
+    {
     }
 }
