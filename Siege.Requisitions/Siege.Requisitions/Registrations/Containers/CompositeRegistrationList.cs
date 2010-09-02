@@ -21,7 +21,7 @@ namespace Siege.Requisitions.Registrations.Containers
     public class CompositeRegistrationList : IRegistrationContainer
     {
         private readonly Dictionary<Type, List<IRegistration>> registrations = new Dictionary<Type, List<IRegistration>>();
-        private List<IRegistration> addedRegistrations = new List<IRegistration>();
+        private readonly List<IRegistration> addedRegistrations = new List<IRegistration>();
 
         public List<IRegistration> GetRegistrationsForType(Type type)
         {
