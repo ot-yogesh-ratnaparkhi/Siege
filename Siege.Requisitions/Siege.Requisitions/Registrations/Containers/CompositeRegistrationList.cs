@@ -14,7 +14,6 @@
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Siege.Requisitions.Registrations.Containers
@@ -22,6 +21,7 @@ namespace Siege.Requisitions.Registrations.Containers
     public class CompositeRegistrationList : IRegistrationContainer
     {
         private readonly Dictionary<Type, List<IRegistration>> registrations = new Dictionary<Type, List<IRegistration>>();
+        private List<IRegistration> addedRegistrations = new List<IRegistration>();
 
         public List<IRegistration> GetRegistrationsForType(Type type)
         {
@@ -49,11 +49,17 @@ namespace Siege.Requisitions.Registrations.Containers
             selectedRegistration.Add(registration);
 
             this.registrations[type] = selectedRegistration;
+            this.addedRegistrations.Add(registration);
         }
 
         public bool Contains(Type type)
         {
             return this.registrations.ContainsKey(type);
+        }
+
+        public bool Contains(IRegistration registration)
+        {
+            return addedRegistrations.Contains(registration);
         }
 
         public List<IRegistration> All()

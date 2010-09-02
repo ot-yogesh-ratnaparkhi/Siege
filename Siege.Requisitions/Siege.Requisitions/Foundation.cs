@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections;
+using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.Containers;
 using Siege.Requisitions.RegistrationTemplates;
 using Siege.Requisitions.RegistrationTemplates.Conditional;
@@ -82,6 +83,16 @@ namespace Siege.Requisitions
         public bool ContainsRegistrationContainerForTemplate(IRegistrationTemplate registrationTemplate)
         {
             return registrationContainers.ContainsKey(registrationTemplate.GetType());
+        }
+
+        public bool IsRegistered(IRegistration registration)
+        {
+            foreach(IRegistrationContainer container in this.registrationContainers.Values)
+            {
+                if (container.Contains(registration)) return true;
+            }
+
+            return false;
         }
     }
 }

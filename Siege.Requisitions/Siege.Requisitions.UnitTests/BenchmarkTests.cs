@@ -25,7 +25,7 @@ namespace Siege.Requisitions.UnitTests
 	{
 		const double iterations = 10000;
 
-        [Test, Ignore]
+        [Test]
 		[Category("Load")]
 		public virtual void LoadPerformanceTest()
         {
@@ -89,7 +89,7 @@ namespace Siege.Requisitions.UnitTests
 		}
 
 
-        [Test, Ignore]
+        [Test]
 		[Category("With Siege")]
 		public virtual void WithSiege()
         {
@@ -119,7 +119,7 @@ namespace Siege.Requisitions.UnitTests
 			Console.WriteLine("Average Execution Time (with Siege in milliseconds): " + totalTime.TotalMilliseconds / iterations);
 		}
 
-        [Test, Ignore]
+        [Test]
 		[Category("Without Siege")]
 		public virtual void WithoutSiege()
         {

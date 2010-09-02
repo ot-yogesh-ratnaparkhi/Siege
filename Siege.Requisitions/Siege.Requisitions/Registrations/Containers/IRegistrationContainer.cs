@@ -23,5 +23,6 @@ namespace Siege.Requisitions.Registrations.Containers
         void Add(IRegistration registration);
         List<IRegistration> GetRegistrationsForType(Type type);
         bool Contains(Type type);
+        bool Contains(IRegistration registration);
     }
 }

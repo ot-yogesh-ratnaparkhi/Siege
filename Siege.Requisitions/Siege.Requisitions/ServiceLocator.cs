@@ -76,6 +76,8 @@ namespace Siege.Requisitions
 
         public IServiceLocator Register<TRegistrationPolicy>(IRegistration registration) where TRegistrationPolicy : IRegistrationPolicy
         {
+            if (foundation.IsRegistered(registration)) return this;
+
             IRegistrationContainer registrationContainer = foundation.ContainsRegistrationContainerForTemplate(registration.GetRegistrationTemplate())
                                               ? foundation.GetRegistrationContainer(registration.GetRegistrationTemplate())
                                               : GetInstance<IRegistrationContainer>(new ContextArgument(registration));
@@ -100,6 +102,8 @@ namespace Siege.Requisitions
 
         private void RegisterPolicy(IRegistration registration)
         {
+            if (foundation.IsRegistered(registration)) return;
+
             IRegistrationContainer registrationContainer = foundation.ContainsRegistrationContainerForTemplate(registration.GetRegistrationTemplate())
                                               ? foundation.GetRegistrationContainer(registration.GetRegistrationTemplate())
                                               : GetInstance<IRegistrationContainer>(new ContextArgument(registration));
