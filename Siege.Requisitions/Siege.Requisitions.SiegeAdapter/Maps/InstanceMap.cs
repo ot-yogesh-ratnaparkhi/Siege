@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace Siege.Requisitions.SiegeAdapter.Maps
 {
-	public class InstanceMap : AbstractMap
+	public class InstanceMap : AbstractMap<InstanceMapList>
 	{
 		public void Add(Type from, object to, string key)
 		{
@@ -51,7 +51,7 @@ namespace Siege.Requisitions.SiegeAdapter.Maps
 		}
 	}
 
-    internal class InstanceMapList : AbstractMapList
+    public class InstanceMapList : AbstractMapList
 	{
 		private List<object> registeredInstances = new List<object>();
 		public List<MappedInstance> MappedInstances { get; private set; }
@@ -71,7 +71,7 @@ namespace Siege.Requisitions.SiegeAdapter.Maps
 		}
 	}
 
-	internal class MappedInstance
+	public class MappedInstance
 	{
 		public string Name { get; private set; }
 		public Type From { get; private set; }

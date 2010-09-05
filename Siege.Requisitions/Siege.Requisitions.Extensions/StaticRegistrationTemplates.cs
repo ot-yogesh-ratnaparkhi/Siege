@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,20 +13,19 @@
      limitations under the License.
 */
 
-using Siege.Requisitions.Registrations;
+using Siege.Requisitions.Extensions.ConditionalAwareness;
 using Siege.Requisitions.RegistrationTemplates;
 
-namespace Siege.Requisitions.Extensions.ConditionalInjection
+namespace Siege.Requisitions.Extensions
 {
-    public class InjectionRegistration<TService> : TypedRegistration
+    //this exists for performance purposes only
+    public class StaticRegistrationTemplates : RegistrationTemplates.StaticRegistrationTemplates
     {
-        public InjectionRegistration() : base(typeof (TService))
-        {
-        }
+        public static IRegistrationTemplate ContextualRegistrationTemplate { get; private set; }
 
-        public override IRegistrationTemplate GetRegistrationTemplate()
+        static StaticRegistrationTemplates()
         {
-            return StaticRegistrationTemplates.ConditionalRegistrationTemplate;
+            ContextualRegistrationTemplate = new ContextualRegistrationTemplate();
         }
     }
 }

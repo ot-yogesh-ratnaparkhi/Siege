@@ -14,7 +14,7 @@
 */
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.Containers;
 using Siege.Requisitions.RegistrationTemplates;
@@ -28,8 +28,9 @@ namespace Siege.Requisitions
 {
     public class Foundation
     {
-        private readonly Hashtable registrationContainers = new Hashtable();
+        private readonly Dictionary<Type, IRegistrationContainer> registrationContainers = new Dictionary<Type, IRegistrationContainer>();
         private readonly CompositeRegistrationList fallbackContainer;
+        private static readonly object lockObject = new object();
         
         public Foundation()
         {
@@ -53,7 +54,7 @@ namespace Siege.Requisitions
         {
             if (!registrationContainers.ContainsKey(templateType))
             {
-                lock (registrationContainers.SyncRoot)
+                lock (lockObject)
                 {
                     if (!registrationContainers.ContainsKey(templateType))
                     {
@@ -67,17 +68,29 @@ namespace Siege.Requisitions
         {
             if(!ContainsRegistrationContainerForTemplate(registrationTemplate)) return this.fallbackContainer;
 
-            return (IRegistrationContainer) registrationContainers[registrationTemplate.GetType()];
+            return registrationContainers[registrationTemplate.GetType()];
+        }
+
+        public IRegistrationContainer GetRegistrationContainer<TRegistrationTemplate>() where TRegistrationTemplate : IRegistrationTemplate
+        {
+            if (!ContainsRegistrationContainerForTemplate<TRegistrationTemplate>()) return this.fallbackContainer;
+
+            return registrationContainers[typeof(TRegistrationTemplate)];
         }
 
         public IRegistrationContainer GetConditionalRegistrationContainer()
         {
-            return GetRegistrationContainer(new ConditionalRegistrationTemplate());
+            return GetRegistrationContainer<ConditionalRegistrationTemplate>();
         }
 
         public IRegistrationContainer GetDefaultRegistrationContainer()
         {
-            return GetRegistrationContainer(new DefaultRegistrationTemplate());
+            return GetRegistrationContainer<DefaultRegistrationTemplate>();
+        }
+
+        public bool ContainsRegistrationContainerForTemplate<TRegistrationTemplate>() where TRegistrationTemplate : IRegistrationTemplate
+        {
+            return registrationContainers.ContainsKey(typeof(TRegistrationTemplate));
         }
 
         public bool ContainsRegistrationContainerForTemplate(IRegistrationTemplate registrationTemplate)
@@ -87,7 +100,7 @@ namespace Siege.Requisitions
 
         public bool IsRegistered(IRegistration registration)
         {
-            foreach(IRegistrationContainer container in this.registrationContainers.Values)
+            foreach (IRegistrationContainer container in this.registrationContainers.Values)
             {
                 if (container.Contains(registration)) return true;
             }

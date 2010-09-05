@@ -16,7 +16,6 @@
 using System;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.RegistrationTemplates;
-using Siege.Requisitions.RegistrationTemplates.Default;
 
 namespace Siege.Requisitions.Extensions.AutoScanner
 {
@@ -29,7 +28,7 @@ namespace Siege.Requisitions.Extensions.AutoScanner
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return new DefaultRegistrationTemplate();
+            return StaticRegistrationTemplates.DefaultRegistrationTemplate;
         }
     }
 }

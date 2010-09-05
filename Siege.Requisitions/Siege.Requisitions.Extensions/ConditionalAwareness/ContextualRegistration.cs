@@ -41,7 +41,7 @@ namespace Siege.Requisitions.Extensions.ConditionalAwareness
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return new ContextualRegistrationTemplate();
+            return StaticRegistrationTemplates.ContextualRegistrationTemplate;
         }
     }
 }

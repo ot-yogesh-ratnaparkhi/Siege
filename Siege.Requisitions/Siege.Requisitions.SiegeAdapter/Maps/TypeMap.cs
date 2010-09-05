@@ -20,7 +20,7 @@ using Siege.Requisitions.SiegeAdapter.ConstructionStrategies;
 
 namespace Siege.Requisitions.SiegeAdapter.Maps
 {
-    public class TypeMap : AbstractMap
+    public class TypeMap : AbstractMap<TypeMapList>
     {
         public void Add(Type from, Type to, string key)
         {
@@ -95,7 +95,7 @@ namespace Siege.Requisitions.SiegeAdapter.Maps
         }
     }
 
-    internal class TypeMapList : AbstractMapList
+    public class TypeMapList : AbstractMapList
     {
         private List<Type> registeredTypes = new List<Type>();
 

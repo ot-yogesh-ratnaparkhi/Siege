@@ -15,7 +15,6 @@
 
 using System;
 using Siege.Requisitions.RegistrationTemplates;
-using Siege.Requisitions.RegistrationTemplates.OpenGenerics;
 
 namespace Siege.Requisitions.Registrations.OpenGenerics
 {
@@ -52,7 +51,7 @@ namespace Siege.Requisitions.Registrations.OpenGenerics
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return new OpenGenericRegistrationTemplate();
+            return StaticRegistrationTemplates.OpenGenericRegistrationTemplate;
         }
 
         public override Type GetMappedFromType()

@@ -95,6 +95,7 @@
     <Compile Include="RegistrationPolicies\AbstractRegistrationPolicy.cs" />
     <Compile Include="RegistrationPolicies\Singleton.cs" />
     <Compile Include="RegistrationPolicies\Transient.cs" />
+    <Compile Include="RegistrationTemplates\StaticRegistrationTemplates.cs" />
     <Compile Include="Resolution\FactoryResolutionTemplate.cs" />
     <Compile Include="Resolution\IResolutionTemplate.cs" />
     <Compile Include="Resolution\DefaultResolutionTemplate.cs" />

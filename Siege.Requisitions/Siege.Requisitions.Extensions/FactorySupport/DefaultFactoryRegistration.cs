@@ -14,7 +14,6 @@
 */
 
 using Siege.Requisitions.RegistrationTemplates;
-using Siege.Requisitions.RegistrationTemplates.Default;
 
 namespace Siege.Requisitions.Extensions.FactorySupport
 {
@@ -22,7 +21,7 @@ namespace Siege.Requisitions.Extensions.FactorySupport
     {
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return new DefaultRegistrationTemplate();
+            return RegistrationTemplates.StaticRegistrationTemplates.DefaultRegistrationTemplate;
         }
     }
 }

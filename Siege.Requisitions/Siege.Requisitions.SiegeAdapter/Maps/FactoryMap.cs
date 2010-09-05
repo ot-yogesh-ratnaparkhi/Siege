@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace Siege.Requisitions.SiegeAdapter.Maps
 {
-	public class FactoryMap : AbstractMap
+	public class FactoryMap : AbstractMap<FactoryMapList>
 	{
 		public void Add(Type from, Func<object> to, string key)
 		{
@@ -51,7 +51,7 @@ namespace Siege.Requisitions.SiegeAdapter.Maps
 		}
 	}
 
-	internal class FactoryMapList : AbstractMapList
+	public class FactoryMapList : AbstractMapList
 	{
 		private List<Func<object>> registeredFactories = new List<Func<object>>();
 		public List<MappedFactory> MappedFactories { get; private set; }
@@ -71,7 +71,7 @@ namespace Siege.Requisitions.SiegeAdapter.Maps
 		}
 	}
 
-	internal class MappedFactory
+	public class MappedFactory
 	{
 		public string Name { get; private set; }
 		public Type From { get; private set; }

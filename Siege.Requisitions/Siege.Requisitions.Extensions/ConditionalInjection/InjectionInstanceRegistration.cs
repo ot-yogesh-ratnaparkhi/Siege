@@ -15,7 +15,6 @@
 
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.RegistrationTemplates;
-using Siege.Requisitions.RegistrationTemplates.Conditional;
 
 namespace Siege.Requisitions.Extensions.ConditionalInjection
 {
@@ -23,7 +22,7 @@ namespace Siege.Requisitions.Extensions.ConditionalInjection
     {
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return new ConditionalInstanceRegistrationTemplate();
+            return StaticRegistrationTemplates.ConditionalInstanceRegistrationTemplate;
         }
     }
 }

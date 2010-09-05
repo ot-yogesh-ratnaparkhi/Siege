@@ -14,7 +14,6 @@
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Siege.Foundry;
 using Siege.Requisitions.SiegeAdapter.Maps;
@@ -29,7 +28,7 @@ namespace Siege.Requisitions.SiegeAdapter.ConstructionStrategies
 
 	public class SiegeProxyConstructionStrategy : IConstructionStrategy
 	{
-		private readonly Hashtable activators = new Hashtable();
+		private readonly Dictionary<Type, SiegeActivator> activators = new Dictionary<Type, SiegeActivator>();
 
 		public bool CanConstruct(ConstructorCandidate candidate)
 		{
@@ -96,7 +95,7 @@ namespace Siege.Requisitions.SiegeAdapter.ConstructionStrategies
 
                 var constructor = activatorType.GetConstructor(new Type[] { });
 
-                activators.Add(candidate.Type, constructor.Invoke(new object[] { }));
+                activators.Add(candidate.Type, (SiegeActivator)constructor.Invoke(new object[] { }));
             }
 		}
 	}

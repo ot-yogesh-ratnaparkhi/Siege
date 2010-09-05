@@ -14,16 +14,15 @@
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Siege.Requisitions.SiegeAdapter.Maps
 {
-    public abstract class AbstractMap
+    public abstract class AbstractMap<TMapList> where TMapList : AbstractMapList
     {
-        protected Hashtable entries = new Hashtable();
+        protected Dictionary<Type, TMapList> entries = new Dictionary<Type, TMapList>();
 
-        public List<Type> GetRegisteredTypesMatching<TMapList>(Type type) where TMapList : AbstractMapList
+        public List<Type> GetRegisteredTypesMatching(Type type) 
         {
             var list = new Type[entries.Keys.Count];
             entries.Keys.CopyTo(list, 0);

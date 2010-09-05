@@ -78,8 +78,9 @@ namespace Siege.Requisitions
         {
             //if (foundation.IsRegistered(registration)) return this;
 
-            IRegistrationContainer registrationContainer = foundation.ContainsRegistrationContainerForTemplate(registration.GetRegistrationTemplate())
-                                              ? foundation.GetRegistrationContainer(registration.GetRegistrationTemplate())
+            var template = registration.GetRegistrationTemplate();
+            IRegistrationContainer registrationContainer = foundation.ContainsRegistrationContainerForTemplate(template)
+                                              ? foundation.GetRegistrationContainer(template)
                                               : GetInstance<IRegistrationContainer>(new ContextArgument(registration));
 
             var processedRegistration = HasTypeRegistered(typeof(IMetaRegistrationTemplate))
@@ -95,7 +96,7 @@ namespace Siege.Requisitions
                                            ? GetInstance<IResolutionTemplate>(new ContextArgument(registration))
                                            : new FactoryResolutionTemplate(this, this.store, this.foundation);
 
-            policy.GetRegistrationTemplate().Register(serviceLocator, this.store, processedRegistration, factoryResolutionTemplate);
+            template.Register(serviceLocator, this.store, processedRegistration, factoryResolutionTemplate);
 
             return this;
         }
@@ -104,8 +105,9 @@ namespace Siege.Requisitions
         {
             //if (foundation.IsRegistered(registration)) return;
 
-            IRegistrationContainer registrationContainer = foundation.ContainsRegistrationContainerForTemplate(registration.GetRegistrationTemplate())
-                                              ? foundation.GetRegistrationContainer(registration.GetRegistrationTemplate())
+            var template = registration.GetRegistrationTemplate();
+            IRegistrationContainer registrationContainer = foundation.ContainsRegistrationContainerForTemplate(template)
+                                              ? foundation.GetRegistrationContainer(template)
                                               : GetInstance<IRegistrationContainer>(new ContextArgument(registration));
 
             registrationContainer.Add(registration);
@@ -114,7 +116,7 @@ namespace Siege.Requisitions
                                          ? GetInstance<IResolutionTemplate>()
                                          : new FactoryResolutionTemplate(this, this.store, this.foundation);
 
-            registration.GetRegistrationTemplate().Register(serviceLocator, this.store, registration, factoryResolutionTemplate);
+            template.Register(serviceLocator, this.store, registration, factoryResolutionTemplate);
         }
 
         public void AddContext(object contextItem)

@@ -15,7 +15,6 @@
 
 using Siege.Requisitions.Registrations.PostResolution;
 using Siege.Requisitions.RegistrationTemplates;
-using Siege.Requisitions.RegistrationTemplates.PostResolution;
 
 namespace Siege.Requisitions.Extensions.Initialization
 {
@@ -23,7 +22,7 @@ namespace Siege.Requisitions.Extensions.Initialization
     {
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return new DefaultPostResolutionRegistrationTemplate();
+            return RegistrationTemplates.StaticRegistrationTemplates.DefaultPostResolutionRegistrationTemplate;
         }
     }
 }

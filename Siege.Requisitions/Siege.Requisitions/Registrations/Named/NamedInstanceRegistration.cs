@@ -14,7 +14,6 @@
 */
 
 using Siege.Requisitions.RegistrationTemplates;
-using Siege.Requisitions.RegistrationTemplates.Named;
 
 namespace Siege.Requisitions.Registrations.Named
 {
@@ -34,7 +33,7 @@ namespace Siege.Requisitions.Registrations.Named
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return new NamedInstanceRegistrationTemplate();
+            return StaticRegistrationTemplates.NamedInstanceRegistrationTemplate;
         }
 
         public override bool Equals(IRegistration registration)
@@ -44,6 +43,11 @@ namespace Siege.Requisitions.Registrations.Named
             var namedRegistration = registration as NamedRegistration<TBaseService>;
 
             return namedRegistration.Key == this.key && base.Equals(registration);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode() ^ Key.GetHashCode();
         }
     }
 }

@@ -77,5 +77,11 @@ namespace Siege.Requisitions.Registrations
                    registration.GetMappedFromType() == this.GetMappedFromType() &&
                    registration.GetMappedToType() == this.GetMappedToType();
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode() ^ this.GetMappedFromType().GetHashCode() ^
+                   this.GetMappedToType().GetHashCode();
+        }
     }
 }

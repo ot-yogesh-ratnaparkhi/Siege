@@ -125,7 +125,7 @@ namespace Siege.Requisitions.Resolution
 
         private void ExecutePostConditions<TRegistrationManager>(Type fromType, Type toType, Action<IRegistration> action) where TRegistrationManager : IRegistrationTemplate, new()
         {
-            var manager = foundation.GetRegistrationContainer(new TRegistrationManager());
+            var manager = foundation.GetRegistrationContainer<TRegistrationManager>();
             IList<IRegistration> actions = null;
 
             if (manager.Contains(toType))
