@@ -17,19 +17,19 @@ using System;
 using System.Linq.Expressions;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
-using Siege.Requisitions.Resolution;
+using Siege.Requisitions.Resolution.Pipeline;
 
 namespace Siege.Requisitions.RegistrationTemplates
 {
     public abstract class AbstractRegistrationTemplate : IRegistrationTemplate
     {
-        public abstract void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, IResolutionTemplate template);
+        public abstract void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, ResolutionPipeline pipeline);
 
-        protected void RegisterLazy(IServiceLocatorAdapter adapter, Type type, IResolutionTemplate resolutionTemplate)
+        protected void RegisterLazy(IServiceLocatorAdapter adapter, Type type, ResolutionPipeline pipeline)
         {
             Type lazyLoader = typeof (Func<>).MakeGenericType(type);
 
-            Expression<Func<object>> func = () => resolutionTemplate.Resolve(type);
+            Expression<Func<object>> func = () => pipeline.Execute(type);
 
             var lambda = Expression.Lambda(lazyLoader, Expression.Convert(Expression.Invoke(func), type)).Compile();
             

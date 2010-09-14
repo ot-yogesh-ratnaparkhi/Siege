@@ -14,15 +14,21 @@
 */
 
 using Siege.Requisitions.Registrations;
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
 
 namespace Siege.Requisitions.Extensions.ConditionalInjection
 {
     public class InjectionInstanceRegistration<TService> : InstanceRegistration<TService>
     {
+        public override IRegistrationStore GetRegistrationStore()
+        {
+            return new ConditionalRegistrationStore();
+        }
+
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return StaticRegistrationTemplates.ConditionalInstanceRegistrationTemplate;
+            return RegistrationTemplates.StaticRegistrationTemplates.ConditionalInstanceRegistrationTemplate;
         }
     }
 }

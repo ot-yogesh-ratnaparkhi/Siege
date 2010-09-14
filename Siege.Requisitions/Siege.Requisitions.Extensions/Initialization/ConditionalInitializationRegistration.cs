@@ -14,12 +14,19 @@
 */
 
 using Siege.Requisitions.Registrations.PostResolution;
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
 
 namespace Siege.Requisitions.Extensions.Initialization
 {
-    public class ConditionalInitializationRegistration<TService> : PostResolutionRegistration<TService>, IInitializationRegistration<TService>
+    public class ConditionalInitializationRegistration<TService> : PostResolutionRegistration<TService>,
+                                                                   IInitializationRegistration<TService>
     {
+        public override IRegistrationStore GetRegistrationStore()
+        {
+            return new ConditionalPostResolutionStore();
+        }
+
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
             return RegistrationTemplates.StaticRegistrationTemplates.ConditionalPostResolutionRegistrationTemplate;

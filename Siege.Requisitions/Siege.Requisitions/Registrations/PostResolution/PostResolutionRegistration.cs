@@ -15,6 +15,7 @@
 
 using System;
 using Siege.Requisitions.InternalStorage;
+using Siege.Requisitions.Resolution.Pipeline;
 
 namespace Siege.Requisitions.Registrations.PostResolution
 {
@@ -31,9 +32,9 @@ namespace Siege.Requisitions.Registrations.PostResolution
             this.action = action;
         }
 
-        public override object ResolveWith(IInstanceResolver resolver, IServiceLocatorStore context)
+        public override object ResolveWith(IInstanceResolver resolver, IServiceLocatorStore context, PostResolutionPipeline pipeline)
         {
-            return action((TService)base.ResolveWith(resolver, context));
+            return action((TService)base.ResolveWith(resolver, context, pipeline));
         }
     }
 }

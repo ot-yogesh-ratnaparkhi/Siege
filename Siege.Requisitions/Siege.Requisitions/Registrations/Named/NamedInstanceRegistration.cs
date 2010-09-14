@@ -13,6 +13,7 @@
      limitations under the License.
 */
 
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
 
 namespace Siege.Requisitions.Registrations.Named
@@ -29,6 +30,11 @@ namespace Siege.Requisitions.Registrations.Named
         public string Key
         {
             get { return key; }
+        }
+
+        public override IRegistrationStore GetRegistrationStore()
+        {
+            return new NamedRegistrationStore();
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()

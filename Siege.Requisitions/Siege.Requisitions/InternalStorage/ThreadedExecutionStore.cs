@@ -61,28 +61,22 @@ namespace Siege.Requisitions.InternalStorage
             AddRequestedType(type);
         }
 
-        private int Index
-        {
-            get { return index; }
-            set { index = value; }
-        }
-
         private void AddRequestedType(Type type)
         {
             RequestedTypes.Add(type);
             Increment();
         }
 
-        private void Increment()
+        private static void Increment()
         {
-            Index++;
+            index++;
         }
 
         private void Decrement()
         {
-            Index--; 
+            index--; 
             
-            if (Index == 0)
+            if (index == 0)
             {
                 store.SetStore<IResolutionStore>(new ThreadedResolutionStore());
                 RequestedTypes = new List<Type>();
@@ -93,7 +87,7 @@ namespace Siege.Requisitions.InternalStorage
         {
             this.store = store;
             RequestedTypes = new List<Type>();
-            Index = 0;
+            index = 0;
             store.SetStore<IResolutionStore>(new ThreadedResolutionStore());
         }
 

@@ -15,6 +15,7 @@
 
 using System;
 using Siege.Requisitions.Registrations;
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
 
 namespace Siege.Requisitions.Extensions.AutoScanner
@@ -24,6 +25,11 @@ namespace Siege.Requisitions.Extensions.AutoScanner
         public AutoScannedRegistration(Type baseType, Type targetType) : base(baseType)
         {
             MapsTo(targetType);
+        }
+
+        public override IRegistrationStore GetRegistrationStore()
+        {
+            return new DefaultRegistrationStore();
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()

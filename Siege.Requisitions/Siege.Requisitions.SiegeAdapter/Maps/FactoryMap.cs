@@ -47,6 +47,8 @@ namespace Siege.Requisitions.SiegeAdapter.Maps
                 if (factory.Name == name) return factory.To();
             }
 
+            if(!string.IsNullOrEmpty(name)) return null;
+
 			return factories[0].To();
 		}
 	}

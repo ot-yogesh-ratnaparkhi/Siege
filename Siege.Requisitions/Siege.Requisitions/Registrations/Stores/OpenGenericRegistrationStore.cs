@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,16 +13,9 @@
      limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
-
-namespace Siege.Requisitions.Registrations.Containers
+namespace Siege.Requisitions.Registrations.Stores
 {
-    public interface IRegistrationContainer
+    public class OpenGenericRegistrationStore : RegistrationStore
     {
-        void Add(IRegistration registration);
-        List<IRegistration> GetRegistrationsForType(Type type);
-        bool Contains(Type type);
-        bool Contains(IRegistration registration);
     }
 }

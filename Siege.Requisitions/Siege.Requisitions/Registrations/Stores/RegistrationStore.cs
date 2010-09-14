@@ -16,21 +16,21 @@
 using System;
 using System.Collections.Generic;
 
-namespace Siege.Requisitions.Registrations.Containers
+namespace Siege.Requisitions.Registrations.Stores
 {
-    public class CompositeRegistrationList : IRegistrationContainer
+    public class RegistrationStore : IRegistrationStore
     {
-        private readonly Dictionary<Type, List<IRegistration>> registrations = new Dictionary<Type, List<IRegistration>>();
+        private readonly Dictionary<Type, IList<IRegistration>> registrations = new Dictionary<Type, IList<IRegistration>>();
         private readonly List<IRegistration> addedRegistrations = new List<IRegistration>();
 
-        public List<IRegistration> GetRegistrationsForType(Type type)
+        public IList<IRegistration> GetRegistrationsForType(Type type)
         {
             if (!Contains(type)) return null;
 
             return this.registrations[type];
         }
 
-        public void Add(IRegistration registration)
+        public virtual void Add(IRegistration registration)
         {
             Add(registration.GetMappedFromType(), registration);
         }

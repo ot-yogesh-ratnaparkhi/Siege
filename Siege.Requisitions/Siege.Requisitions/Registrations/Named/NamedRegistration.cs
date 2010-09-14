@@ -13,15 +13,35 @@
      limitations under the License.
 */
 
+using System;
+using Siege.Requisitions.ExtensionMethods;
+using Siege.Requisitions.InternalStorage;
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.Resolution;
+using Siege.Requisitions.Resolution.Pipeline;
 
 namespace Siege.Requisitions.Registrations.Named
 {
-    public class NamedRegistration<TBaseService> : TypedRegistration, INamedRegistration
+    public class NamedRegistration<TBaseService> : NamedRegistration
+    {
+        public NamedRegistration(string key) : base(typeof(TBaseService), key)
+        {
+            
+        }
+    }
+
+    public class NamedRegistration : TypedRegistration, INamedRegistration
     {
         private readonly string key;
 
-        public NamedRegistration(string key) : base(typeof (TBaseService))
+        public NamedRegistration(Type to, Type from, string key) : base(from)
+        {
+            this.key = key;
+            MapsTo(to);
+        }
+
+        public NamedRegistration(Type from, string key) : base(from)
         {
             this.key = key;
         }
@@ -31,24 +51,59 @@ namespace Siege.Requisitions.Registrations.Named
             get { return key; }
         }
 
+        public override IRegistrationStore GetRegistrationStore()
+        {
+            return new NamedRegistrationStore();
+        }
+
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
             return StaticRegistrationTemplates.NamedRegistrationTemplate;
         }
 
+        protected override PipelineResult GetResult(object instance)
+        {
+            var result = base.GetResult(instance);
+
+            result.Name = this.key;
+
+            return result;
+        }
+
+        protected override IActivationStrategy GetActivationStrategy()
+        {
+            return new NamedActivationStrategy(this.key, this.GetMappedToType());
+        }
+
         public override bool Equals(IRegistration registration)
         {
-            if (!(registration is NamedRegistration<TBaseService>)) return false;
+            if (!(registration is NamedRegistration)) return false;
 
-            var namedRegistration = registration as NamedRegistration<TBaseService>;
+            var namedRegistration = registration as NamedRegistration;
 
             return namedRegistration.Key == this.key && base.Equals(registration);
-
         }
 
         public override int GetHashCode()
         {
             return base.GetHashCode() ^ Key.GetHashCode();
+        }
+
+        private class NamedActivationStrategy : IActivationStrategy
+        {
+            private readonly string name;
+            private readonly Type type;
+
+            public NamedActivationStrategy(string name, Type type)
+            {
+                this.name = name;
+                this.type = type;
+            }
+
+            public object Resolve(IInstanceResolver locator, IServiceLocatorStore context)
+            {
+                return locator.GetInstance(type, name, context.Get<IResolutionStore>().Items.OfType<IResolutionArgument, IResolutionArgument>());
+            }
         }
     }
 }

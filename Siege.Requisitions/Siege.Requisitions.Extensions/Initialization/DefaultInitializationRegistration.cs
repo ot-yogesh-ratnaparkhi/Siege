@@ -14,12 +14,19 @@
 */
 
 using Siege.Requisitions.Registrations.PostResolution;
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
 
 namespace Siege.Requisitions.Extensions.Initialization
 {
-    public class DefaultInitializationRegistration<TService> : PostResolutionRegistration<TService>, IInitializationRegistration<TService>
+    public class DefaultInitializationRegistration<TService> : PostResolutionRegistration<TService>,
+                                                               IInitializationRegistration<TService>
     {
+        public override IRegistrationStore GetRegistrationStore()
+        {
+            return new DefaultPostResolutionStore();
+        }
+
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
             return RegistrationTemplates.StaticRegistrationTemplates.DefaultPostResolutionRegistrationTemplate;

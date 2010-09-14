@@ -96,6 +96,16 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
+        public virtual void ShouldDistinguishImplementationsBasedOnName()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase1>("test"));
+            locator.Register(Given<ITestInterface>.Then<TestCase2>("test2"));
+
+            Assert.IsInstanceOf<TestCase1>(locator.GetInstance<ITestInterface>("test"));
+            Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>("test2"));
+        }
+
+        [Test]
         public void ShouldBeAbleToBindAnInterfaceToAnImplementation()
         {
             locator.Register(Given<ITestInterface>.Then(new TestCase1()));

@@ -16,7 +16,9 @@
 using System;
 using Siege.Requisitions.EventHandlers;
 using Siege.Requisitions.InternalStorage;
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.Resolution.Pipeline;
 using Siege.Requisitions.ResolutionRules;
 
 namespace Siege.Requisitions.Registrations
@@ -25,6 +27,7 @@ namespace Siege.Requisitions.Registrations
     {
         protected abstract IActivationStrategy GetActivationStrategy();
         protected IActivationRule rule;
+        public abstract IRegistrationStore GetRegistrationStore();
         public abstract IRegistrationTemplate GetRegistrationTemplate();
         public abstract Type GetMappedFromType();
         public abstract object GetMappedTo();
@@ -42,28 +45,45 @@ namespace Siege.Requisitions.Registrations
             return rule != null && rule.GetRuleEvaluationStrategy().IsValid(rule, context);
         }
 
-        public virtual object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context)
+        public virtual object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context, PostResolutionPipeline pipeline)
         {
-            context.Get<IExecutionStore>().WireEvent(this);
+            //context.Get<IExecutionStore>().WireEvent(this);
             object instance = null;
 
             if (rule == null)
             {
-                RaiseTypeRequestedEvent(GetMappedToType());
+                //RaiseTypeRequestedEvent(GetMappedToType());
                 instance = GetActivationStrategy().Resolve(locator, context);
             }
             else
             {
                 if (rule.GetRuleEvaluationStrategy().IsValid(rule, context))
                 {
-                    RaiseTypeRequestedEvent(GetMappedToType());
+                    //RaiseTypeRequestedEvent(GetMappedToType());
                     instance = GetActivationStrategy().Resolve(locator, context);
                 }
             }
 
-            context.Get<IExecutionStore>().UnWireEvent(this);
+            //context.Get<IExecutionStore>().UnWireEvent(this);
+
+            if(pipeline !=null)
+            {
+                var result = GetResult(instance);
+
+                pipeline.Execute(result);
+            }
 
             return instance;
+        }
+
+        protected virtual PipelineResult GetResult(object instance)
+        {
+            return new PipelineResult
+                       {
+                           MappedTo = GetMappedToType(),
+                           MappedFrom = GetMappedFromType(),
+                           Result = instance
+                       };
         }
 
         private void RaiseTypeRequestedEvent(Type type)

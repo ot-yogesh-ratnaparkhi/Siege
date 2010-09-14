@@ -15,18 +15,21 @@
 
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
-using Siege.Requisitions.Resolution;
+using Siege.Requisitions.Resolution.Pipeline;
 
 namespace Siege.Requisitions.RegistrationTemplates.Conditional
 {
     public class ConditionalInstanceRegistrationTemplate : ConditionalRegistrationTemplate
     {
-        public override void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, IResolutionTemplate template)
+        public override void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, ResolutionPipeline pipeline)
         {
-            adapter.RegisterFactoryMethod(registration.GetMappedFromType(), () => template.Resolve(registration.GetMappedFromType()));
-            adapter.RegisterInstance(registration.GetMappedToType(), registration.GetMappedTo());
-            RegisterLazy(adapter, registration.GetMappedFromType(), template);
-            RegisterLazy(adapter, registration.GetMappedToType(), template);
+            var mappedFromType = registration.GetMappedFromType();
+            var mappedToType = registration.GetMappedToType();
+
+            adapter.RegisterFactoryMethod(mappedFromType, () => pipeline.Execute(mappedFromType));
+            adapter.RegisterInstance(mappedToType, registration.GetMappedTo());
+            RegisterLazy(adapter, mappedFromType, pipeline);
+            RegisterLazy(adapter, mappedToType, pipeline);
         }
     }
 }

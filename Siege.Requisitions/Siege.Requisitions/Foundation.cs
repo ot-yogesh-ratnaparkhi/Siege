@@ -16,91 +16,63 @@
 using System;
 using System.Collections.Generic;
 using Siege.Requisitions.Registrations;
-using Siege.Requisitions.Registrations.Containers;
-using Siege.Requisitions.RegistrationTemplates;
-using Siege.Requisitions.RegistrationTemplates.Conditional;
-using Siege.Requisitions.RegistrationTemplates.Default;
-using Siege.Requisitions.RegistrationTemplates.Named;
-using Siege.Requisitions.RegistrationTemplates.OpenGenerics;
-using Siege.Requisitions.RegistrationTemplates.PostResolution;
+using Siege.Requisitions.Registrations.Stores;
 
 namespace Siege.Requisitions
 {
     public class Foundation
     {
-        private readonly Dictionary<Type, IRegistrationContainer> registrationContainers = new Dictionary<Type, IRegistrationContainer>();
-        private readonly CompositeRegistrationList fallbackContainer;
+        private readonly Dictionary<Type, IRegistrationStore> registrationContainers = new Dictionary<Type, IRegistrationStore>();
         private static readonly object lockObject = new object();
         
         public Foundation()
         {
-            var conditionalManager = new CompositeRegistrationList();
-            var defaultManager = new CompositeRegistrationList();
-            var namedManager = new CompositeRegistrationList();
-            this.fallbackContainer = conditionalManager;
-
-            AddRegistrationContainer(typeof(ConditionalRegistrationTemplate), conditionalManager);
-            AddRegistrationContainer(typeof(ConditionalInstanceRegistrationTemplate), conditionalManager);
-            AddRegistrationContainer(typeof(OpenGenericRegistrationTemplate), new CompositeRegistrationList());
-            AddRegistrationContainer(typeof(DefaultRegistrationTemplate), defaultManager);
-            AddRegistrationContainer(typeof(DefaultInstanceRegistrationTemplate), defaultManager);
-            AddRegistrationContainer(typeof(NamedRegistrationTemplate), namedManager);
-            AddRegistrationContainer(typeof(NamedInstanceRegistrationTemplate), namedManager);
-            AddRegistrationContainer(typeof(DefaultPostResolutionRegistrationTemplate), new CompositeRegistrationList());
-            AddRegistrationContainer(typeof(ConditionalPostResolutionRegistrationTemplate), new CompositeRegistrationList());
+            AddRegistrationStore<ConditionalRegistrationStore>();
+            AddRegistrationStore<OpenGenericRegistrationStore>();
+            AddRegistrationStore<DefaultRegistrationStore>();
+            AddRegistrationStore<NamedRegistrationStore>();
+            AddRegistrationStore<DefaultPostResolutionStore>();
+            AddRegistrationStore<ConditionalPostResolutionStore>();
         }
 
-        private void AddRegistrationContainer<TRegistrationContainer>(Type templateType, TRegistrationContainer instance) where TRegistrationContainer : IRegistrationContainer
+        private void AddRegistrationStore<TRegistrationStore>() where TRegistrationStore : IRegistrationStore, new()
         {
+            var templateType = typeof(TRegistrationStore);
             if (!registrationContainers.ContainsKey(templateType))
             {
                 lock (lockObject)
                 {
                     if (!registrationContainers.ContainsKey(templateType))
                     {
-                        registrationContainers.Add(templateType, instance);
+                        registrationContainers.Add(templateType, new TRegistrationStore());
                     }
                 }
             }
         }
 
-        public IRegistrationContainer GetRegistrationContainer(IRegistrationTemplate registrationTemplate)
+        public IRegistrationStore StoreFor(IRegistration registration)
         {
-            if(!ContainsRegistrationContainerForTemplate(registrationTemplate)) return this.fallbackContainer;
-
-            return registrationContainers[registrationTemplate.GetType()];
+            return registrationContainers[registration.GetRegistrationStore().GetType()];
         }
 
-        public IRegistrationContainer GetRegistrationContainer<TRegistrationTemplate>() where TRegistrationTemplate : IRegistrationTemplate
+        public TRegistrationStore StoreFor<TRegistrationStore>() where TRegistrationStore : IRegistrationStore
         {
-            if (!ContainsRegistrationContainerForTemplate<TRegistrationTemplate>()) return this.fallbackContainer;
-
-            return registrationContainers[typeof(TRegistrationTemplate)];
+            return (TRegistrationStore)registrationContainers[typeof(TRegistrationStore)];
         }
 
-        public IRegistrationContainer GetConditionalRegistrationContainer()
+        public bool HasStoreFor<TRegistrationStore>() where TRegistrationStore : IRegistrationStore
         {
-            return GetRegistrationContainer<ConditionalRegistrationTemplate>();
+            return registrationContainers.ContainsKey(typeof(TRegistrationStore));
         }
 
-        public IRegistrationContainer GetDefaultRegistrationContainer()
+        public bool HasStoreFor(IRegistration registration)
         {
-            return GetRegistrationContainer<DefaultRegistrationTemplate>();
-        }
-
-        public bool ContainsRegistrationContainerForTemplate<TRegistrationTemplate>() where TRegistrationTemplate : IRegistrationTemplate
-        {
-            return registrationContainers.ContainsKey(typeof(TRegistrationTemplate));
-        }
-
-        public bool ContainsRegistrationContainerForTemplate(IRegistrationTemplate registrationTemplate)
-        {
-            return registrationContainers.ContainsKey(registrationTemplate.GetType());
+            return registrationContainers.ContainsKey(registration.GetRegistrationStore().GetType());
         }
 
         public bool IsRegistered(IRegistration registration)
         {
-            foreach (IRegistrationContainer container in this.registrationContainers.Values)
+            foreach (IRegistrationStore container in this.registrationContainers.Values)
             {
                 if (container.Contains(registration)) return true;
             }

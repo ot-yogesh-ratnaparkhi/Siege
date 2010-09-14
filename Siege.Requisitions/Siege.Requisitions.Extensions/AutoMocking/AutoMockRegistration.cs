@@ -15,6 +15,7 @@
 
 using System;
 using Siege.Requisitions.Registrations;
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
 
 namespace Siege.Requisitions.Extensions.AutoMocking
@@ -27,6 +28,11 @@ namespace Siege.Requisitions.Extensions.AutoMocking
         {
             this.from = from;
             this.implementation = to;
+        }
+
+        public override IRegistrationStore GetRegistrationStore()
+        {
+            return new DefaultRegistrationStore();
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()

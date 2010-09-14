@@ -16,6 +16,7 @@
 using System;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
 
 namespace Siege.Requisitions.Extensions.ConditionalAwareness
@@ -37,6 +38,11 @@ namespace Siege.Requisitions.Extensions.ConditionalAwareness
         public override object GetMappedTo()
         {
             return this.func;
+        }
+
+        public override IRegistrationStore GetRegistrationStore()
+        {
+            return new ContextualRegistrationStore();
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()

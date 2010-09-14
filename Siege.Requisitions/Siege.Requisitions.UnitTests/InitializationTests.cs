@@ -37,7 +37,7 @@ namespace Siege.Requisitions.UnitTests
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
             locator.Register(Given<TestCase1>.InitializeWith(testCase1 => testCase1.Property1 = "lulz"));
 
-            var instance = (TestCase1) locator.GetInstance<ITestInterface>();
+            var instance = (TestCase1)locator.GetInstance<ITestInterface>();
             Assert.AreEqual("lulz", instance.Property1);
         }
 
@@ -61,7 +61,7 @@ namespace Siege.Requisitions.UnitTests
 
             locator.AddContext(TestEnum.Case2);
 
-            var instance = (TestCase1) locator.GetInstance<ITestInterface>();
+            var instance = (TestCase1)locator.GetInstance<ITestInterface>();
             Assert.AreEqual("lulz", instance.Property1);
         }
 
@@ -75,8 +75,46 @@ namespace Siege.Requisitions.UnitTests
                 .Register(Given<TestCase1>.When<TestEnum>(x => x == TestEnum.Case2).InitializeWith(
                     testCase1 => testCase1.Property1 = "rofl"));
 
-            var instance = (TestCase1) locator.GetInstance<ITestInterface>();
+            var instance = (TestCase1)locator.GetInstance<ITestInterface>();
             Assert.AreEqual("lulz", instance.Property1);
+        }
+
+        [Test]
+        public void ShouldInitializeDirectMappedTypes()
+        {
+            locator
+                .Register(Given<TestCase1>.Then<TestCase1>())
+                .Register(Given<TestCase1>.InitializeWith(testCase1 => testCase1.Property1 = "lulz"));
+
+            var instance = locator.GetInstance<TestCase1>();
+            Assert.AreEqual("lulz", instance.Property1);
+        }
+
+        [Test]
+        public void ShouldInitializeDirectMappedTypesWhenNested()
+        {
+            locator
+                .Register(Given<TestContainer>.Then<TestContainer>())
+                .Register(Given<TestCase1>.Then<TestCase1>())
+                .Register(Given<TestCase1>.InitializeWith(testCase1 => testCase1.Property1 = "lulz"));
+
+            var instance = locator.GetInstance<TestContainer>();
+            Assert.AreEqual("lulz", instance.TestCase.Property1);
+        }
+
+        public class TestContainer
+        {
+            private readonly TestCase1 testCase;
+
+            public TestContainer(TestCase1 testCase)
+            {
+                this.testCase = testCase;
+            }
+
+            public TestCase1 TestCase
+            {
+                get { return testCase; }
+            }
         }
     }
 }
