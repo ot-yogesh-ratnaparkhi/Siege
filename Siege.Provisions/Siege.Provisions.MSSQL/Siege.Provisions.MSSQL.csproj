@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{DFF4777E-D6A1-4EBE-BDCB-21180AC9EAB1}</ProjectGuid>
+    <ProjectGuid>{2C7FD68D-E2FF-4726-B7F3-0364C4B19485}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Siege.Provisions</RootNamespace>
-    <AssemblyName>Siege.Provisions</AssemblyName>
+    <RootNamespace>Siege.Provisions.MSSQL</RootNamespace>
+    <AssemblyName>Siege.Provisions.MSSQL</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,33 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Finders\Finder.cs" />
-    <Compile Include="Finders\ICountQuery.cs" />
-    <Compile Include="Finders\IFinder.cs" />
-    <Compile Include="Finders\IFindQuery.cs" />
-    <Compile Include="IPersistenceModule.cs" />
-    <Compile Include="IRepository.cs" />
-    <Compile Include="Mapping\DomainMap.cs" />
-    <Compile Include="Mapping\DomainMapper.cs" />
-    <Compile Include="Mapping\DomainMapping.cs" />
-    <Compile Include="Mapping\IComponentPropertyMapping.cs" />
-    <Compile Include="Mapping\IDomainMapping.cs" />
-    <Compile Include="Mapping\IElementMapping.cs" />
-    <Compile Include="Mapping\IPropertyMapping.cs" />
-    <Compile Include="Mapping\PropertyMappings\ComponentMapping.cs" />
-    <Compile Include="Mapping\PropertyMappings\ElementMapping.cs" />
-    <Compile Include="Mapping\PropertyMappings\IdMapping.cs" />
-    <Compile Include="Mapping\PropertyMappings\ListMapping.cs" />
-    <Compile Include="Mapping\PropertyMappings\PropertyMapping.cs" />
-    <Compile Include="UnitOfWork\IUnitOfWork.cs" />
-    <Compile Include="UnitOfWork\IUnitOfWorkFactory.cs" />
-    <Compile Include="UnitOfWork\IUnitOfWorkStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository.cs" />
-    <Compile Include="UnitOfWork\ThreadedUnitOfWorkStore.cs" />
-    <Compile Include="UnitOfWork\UnitOfWorkManager.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
