@@ -14,6 +14,8 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Resolution;
 using Siege.Requisitions.ExtensionMethods;
@@ -71,7 +73,11 @@ namespace Siege.Requisitions.Registrations
 
             public object Resolve(IInstanceResolver locator, IServiceLocatorStore context)
             {
-                return locator.GetInstance(mapsToType, context.Get<IResolutionStore>().Items.OfType<IResolutionArgument, IResolutionArgument>());
+                var stores = context.All<IResolutionStore>().ToList();
+                var items = new List<IResolutionArgument>();
+                stores.ForEach(x => items.AddRange(x.Items));
+                
+                return locator.GetInstance(mapsToType, items.OfType<IResolutionArgument, IResolutionArgument>());
             }
         }
     }

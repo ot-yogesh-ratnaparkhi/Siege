@@ -15,38 +15,38 @@
 
 using System;
 using System.Collections.Generic;
-using Siege.Requisitions.InternalStorage;
+using Siege.Requisitions.Resolution;
 
-namespace Siege.Requisitions.Extensions.ConditionalAwareness
+namespace Siege.Requisitions.Extensions.InjectionOverrides
 {
-    public class AwarenessStore : IContextStore, IAwarenessStore
+    public class InjectionOverrideStore : IInjectionOverrideStore
     {
-        private readonly List<object> items = new List<object>();
+        private readonly List<IResolutionArgument> arguments = new List<IResolutionArgument>();
 
         public void Dispose()
         {
-            foreach(var item in items)
+            foreach (var item in arguments)
             {
-                if(item is IDisposable)
+                if (item is IDisposable)
                 {
                     (item as IDisposable).Dispose();
                 }
             }
         }
 
-        public void Add(object contextItem)
+        public void Add(List<IResolutionArgument> contextItems)
         {
-            items.Add(contextItem);
+            arguments.AddRange(contextItems);
         }
 
-        public List<object> Items
+        public List<IResolutionArgument> Items
         {
-            get { return items; }
+            get { return arguments; }
         }
 
         public void Clear()
         {
-            items.Clear();
+            arguments.Clear();
         }
     }
 }

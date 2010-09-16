@@ -13,6 +13,7 @@
      limitations under the License.
 */
 
+using System.Collections.Generic;
 using NUnit.Framework;
 using Siege.Requisitions.UnitTests.TestClasses;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
@@ -71,5 +72,26 @@ namespace Siege.Requisitions.UnitTests
 			Assert.AreSame(argument, ((DependsOnMultipleInterfaceTypes)instance).Arg);
 			Assert.AreSame(locator, ((DependsOnMultipleInterfaceTypes)instance).Locator);
 		}
+
+        [Test]
+        public void ShouldBeAbleToSpecifyArgumentsAtRegistration()
+        {
+            var argument = new ConstructorArgument();
+            var argument2 = new ConstructorArgument();
+
+            var arguments = new List<IResolutionArgument>
+                                {
+                                    new ConstructorParameter {Name = "argument1", Value = argument},
+                                    new ConstructorParameter {Name = "argument2", Value = argument2}
+                                };
+
+            locator.Register(Given<ITestInterface>.Then<DependsOnMultipleInterface>());
+            locator.Register(Given<DependsOnMultipleInterface>.ConstructWith(arguments));
+
+            var instance = locator.GetInstance<ITestInterface>();
+
+            Assert.AreSame(argument, ((DependsOnMultipleInterface)instance).Argument);
+            Assert.AreSame(argument2, ((DependsOnMultipleInterface)instance).Argument2);
+        }
 	}
 }

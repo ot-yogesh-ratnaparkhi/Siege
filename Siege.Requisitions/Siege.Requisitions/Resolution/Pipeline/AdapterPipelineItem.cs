@@ -14,6 +14,8 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Siege.Requisitions.ExtensionMethods;
 using Siege.Requisitions.InternalStorage;
 
@@ -42,18 +44,19 @@ namespace Siege.Requisitions.Resolution.Pipeline
                 result.Name = value == null ? null : value.Name;
                 result.MappedFrom = requestedType;
                 result.MappedTo = type;
+
+                var stores = store.All<IResolutionStore>().ToList();
+                var items = new List<IResolutionArgument>();
+                stores.ForEach(x => items.AddRange(x.Items));
                 
+
                 if(result.Name == null)
                 {
-                    result.Result = serviceLocator.GetInstance(type, 
-                                                           store.Get<IResolutionStore>().Items.OfType
-                                                               <ConstructorParameter, IResolutionArgument>());
+                    result.Result = serviceLocator.GetInstance(type, items.OfType<ConstructorParameter, IResolutionArgument>());
                 }
                 else
                 {
-                    result.Result = serviceLocator.GetInstance(type, result.Name,
-                                                           store.Get<IResolutionStore>().Items.OfType
-                                                               <ConstructorParameter, IResolutionArgument>());
+                    result.Result = serviceLocator.GetInstance(type, result.Name,items.OfType<ConstructorParameter, IResolutionArgument>());
                 }
 
                 result = pipeline.Execute(result);

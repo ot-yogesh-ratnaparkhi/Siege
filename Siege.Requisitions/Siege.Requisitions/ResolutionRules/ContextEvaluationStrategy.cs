@@ -14,6 +14,7 @@
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Resolution;
 
@@ -35,8 +36,12 @@ namespace Siege.Requisitions.ResolutionRules
 
         private static List<object> MergeContextItems(IServiceLocatorStore context)
         {
-            var contextItems = new List<object>();
-            var resolutionItems = context.Get<IResolutionStore>().Items;
+            var contextItems = new List<object>(); 
+            var stores = context.All<IResolutionStore>().ToList();
+            var resolutionItems = new List<IResolutionArgument>();
+            
+            stores.ForEach(x => resolutionItems.AddRange(x.Items));
+                
             for (int i = 0; i < resolutionItems.Count; i++)
             {
                 var argument = resolutionItems[i];

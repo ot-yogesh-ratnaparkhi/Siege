@@ -14,12 +14,16 @@
 */
 
 using System;
+using System.Collections.Generic;
 using Siege.Requisitions.Extensions.ConditionalInjection;
 using Siege.Requisitions.Extensions.Decorator;
 using Siege.Requisitions.Extensions.FactorySupport;
 using Siege.Requisitions.Extensions.Initialization;
+using Siege.Requisitions.Extensions.InjectionOverrides;
+using Siege.Requisitions.RegistrationPolicies;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.OpenGenerics;
+using Siege.Requisitions.Resolution;
 
 namespace Siege.Requisitions.Extensions.ExtendedRegistrationSyntax
 {
@@ -41,6 +45,20 @@ namespace Siege.Requisitions.Extensions.ExtendedRegistrationSyntax
             registration.ConstructWith(factoryMethod);
 
             return registration;
+        }
+
+        public static Action<IServiceLocator> ConstructWith(List<IResolutionArgument> arguments)
+        {
+            var registration = new ConstructorRegistration { Arguments = arguments };
+         
+            return serviceLocator =>
+            {
+                serviceLocator.Store.AddStore<IInjectionOverrideStore>(new InjectionOverrideStore());
+
+                if (!serviceLocator.HasTypeRegistered(typeof(InjectionOverrideRegistrationStore))) serviceLocator.Register<Singleton>(Given<InjectionOverrideRegistrationStore>.Then<InjectionOverrideRegistrationStore>());
+
+                serviceLocator.Register(registration);
+            };
         }
 
         public static InjectionRule<TService> WhenInjectingInto<TResolvedType>()

@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Siege.Requisitions.EventHandlers;
+using System.Linq;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.RegistrationPolicies;
 using Siege.Requisitions.Registrations;
@@ -79,7 +79,11 @@ namespace Siege.Requisitions
                 return registration.ResolveWith(serviceLocator, store, postResolutionPipeline);
             }
             
-            return serviceLocator.GetInstance(type, key, store.Get<IResolutionStore>().Items.OfType<ConstructorParameter, IResolutionArgument>());
+            var stores = store.All<IResolutionStore>().ToList();
+            var items = new List<IResolutionArgument>();
+            stores.ForEach(x => items.AddRange(x.Items));
+                
+            return serviceLocator.GetInstance(type, key, items.OfType<ConstructorParameter, IResolutionArgument>());
         }
 
         public IServiceLocator Register<TRegistrationPolicy>(IRegistration registration) where TRegistrationPolicy : IRegistrationPolicy

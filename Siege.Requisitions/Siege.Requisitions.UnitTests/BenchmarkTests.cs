@@ -23,7 +23,7 @@ namespace Siege.Requisitions.UnitTests
 {
 	public abstract partial class ServiceLocatorTests
 	{
-		const double iterations = 10000;
+		const double iterations = 1;
 
         [Test]
 		[Category("Load")]
