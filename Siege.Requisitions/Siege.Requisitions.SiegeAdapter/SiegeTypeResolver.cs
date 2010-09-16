@@ -65,7 +65,11 @@ namespace Siege.Requisitions.SiegeAdapter
 
 		public object Get(Type type, string key, ConstructorParameter[] parameters)
 		{
-			if (resolutionMap.FactoryMap.Contains(type)) return resolutionMap.FactoryMap.Get(type, key);
+			if (resolutionMap.FactoryMap.Contains(type))
+			{
+			    var instance = resolutionMap.FactoryMap.Get(type, key);
+                if (instance != null) return instance;
+			}
 			if (resolutionMap.InstanceMap.Contains(type)) return resolutionMap.InstanceMap.Get(type, key);
 
 			if (!resolutionMap.TypeMap.Contains(type) && type.IsClass)

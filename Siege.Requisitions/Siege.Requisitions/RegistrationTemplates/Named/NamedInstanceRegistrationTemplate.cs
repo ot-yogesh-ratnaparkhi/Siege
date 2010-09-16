@@ -16,18 +16,20 @@
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.Named;
-using Siege.Requisitions.Resolution;
+using Siege.Requisitions.Resolution.Pipeline;
 
 namespace Siege.Requisitions.RegistrationTemplates.Named
 {
     public class NamedInstanceRegistrationTemplate : NamedRegistrationTemplate
     {
-        public override void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, IResolutionTemplate template)
+        public override void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, ResolutionPipeline pipeline)
         {
             var namedRegistration = (INamedRegistration)registration;
 
-            adapter.RegisterInstanceWithName(registration.GetMappedToType(), registration.GetMappedTo(), namedRegistration.Key);
-            adapter.RegisterInstanceWithName(registration.GetMappedFromType(), registration.GetMappedTo(), namedRegistration.Key);
+            var mappedTo = registration.GetMappedTo();
+
+            adapter.RegisterInstanceWithName(registration.GetMappedToType(), mappedTo, namedRegistration.Key);
+            adapter.RegisterInstanceWithName(registration.GetMappedFromType(), mappedTo, namedRegistration.Key);
 
         }
     }

@@ -13,6 +13,7 @@
      limitations under the License.
 */
 
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
 
 namespace Siege.Requisitions.Registrations.Conditional
@@ -21,6 +22,11 @@ namespace Siege.Requisitions.Registrations.Conditional
     {
         public ConditionalRegistration() : base(typeof (TBaseService))
         {
+        }
+
+        public override IRegistrationStore GetRegistrationStore()
+        {
+            return new ConditionalRegistrationStore();
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()

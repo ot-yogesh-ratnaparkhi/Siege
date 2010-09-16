@@ -20,8 +20,7 @@ using Siege.Requisitions.Exceptions;
 using Siege.Requisitions.ExtensionMethods;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
-using Siege.Requisitions.RegistrationTemplates;
-using Siege.Requisitions.RegistrationTemplates.PostResolution;
+using Siege.Requisitions.Registrations.Stores;
 
 namespace Siege.Requisitions.Resolution
 {
@@ -38,13 +37,13 @@ namespace Siege.Requisitions.Resolution
             this.serviceLocator = serviceLocator;
             this.store = store;
             this.foundation = foundation;
-            this.store.Get<IExecutionStore>().WireEvent(this);
+            //this.store.Get<IExecutionStore>().WireEvent(this);
         }
 
         public virtual object Resolve(Type type)
         {
-            var conditionalManager = foundation.GetConditionalRegistrationContainer();
-            var defaultManager = foundation.GetDefaultRegistrationContainer();
+            var conditionalManager = foundation.StoreFor<ConditionalRegistrationStore>();
+            var defaultManager = foundation.StoreFor<DefaultRegistrationStore>();
 
             if (conditionalManager.Contains(type))
             {
@@ -92,12 +91,12 @@ namespace Siege.Requisitions.Resolution
                 var value = serviceLocator.GetInstance(type, store.Get<IResolutionStore>().Items.OfType<ConstructorParameter, IResolutionArgument>());
 
                 //RaiseTypeResolvedEvent(type);
-                ExecutePostConditions<ConditionalPostResolutionRegistrationTemplate>(type, type, actionregistration =>
+                ExecutePostConditions<ConditionalPostResolutionStore>(type, type, actionregistration =>
                 {
                     if (actionregistration.IsValid(store))
-                        value = actionregistration.ResolveWith(new ValueResolver(value), store);
+                        value = actionregistration.ResolveWith(new ValueResolver(value), store, null);
                 });
-                ExecutePostConditions<DefaultPostResolutionRegistrationTemplate>(type, type, actionregistration => value = actionregistration.ResolveWith(new ValueResolver(value), store));
+                ExecutePostConditions<DefaultPostResolutionStore>(type, type, actionregistration => value = actionregistration.ResolveWith(new ValueResolver(value), store, null));
 
                 return value;
             }
@@ -107,25 +106,25 @@ namespace Siege.Requisitions.Resolution
 
         private object Resolve(IRegistration registration)
         {
-            var value = registration.ResolveWith(serviceLocator, store);
+            var value = registration.ResolveWith(serviceLocator, store, null);
 
             if (value != null)
             {
                 RaiseTypeResolvedEvent(registration.GetMappedToType());
-                ExecutePostConditions<ConditionalPostResolutionRegistrationTemplate>(registration.GetMappedFromType(), registration.GetMappedToType(), actionRegistration =>
+                ExecutePostConditions<ConditionalPostResolutionStore>(registration.GetMappedFromType(), registration.GetMappedToType(), actionRegistration =>
                 {
                     if (actionRegistration.IsValid(store))
-                        value = actionRegistration.ResolveWith(new ValueResolver(value), store);
+                        value = actionRegistration.ResolveWith(new ValueResolver(value), store, null);
                 });
-                ExecutePostConditions<DefaultPostResolutionRegistrationTemplate>(registration.GetMappedFromType(), registration.GetMappedToType(), actionRegistration => value = actionRegistration.ResolveWith(new ValueResolver(value), store));
+                ExecutePostConditions<DefaultPostResolutionStore>(registration.GetMappedFromType(), registration.GetMappedToType(), actionRegistration => value = actionRegistration.ResolveWith(new ValueResolver(value), store, null));
             }
 
             return value;
         }
 
-        private void ExecutePostConditions<TRegistrationManager>(Type fromType, Type toType, Action<IRegistration> action) where TRegistrationManager : IRegistrationTemplate, new()
+        private void ExecutePostConditions<TRegistrationStore>(Type fromType, Type toType, Action<IRegistration> action) where TRegistrationStore : IRegistrationStore
         {
-            var manager = foundation.GetRegistrationContainer<TRegistrationManager>();
+            var manager = foundation.StoreFor<TRegistrationStore>();
             IList<IRegistration> actions = null;
 
             if (manager.Contains(toType))

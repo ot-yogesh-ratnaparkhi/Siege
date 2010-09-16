@@ -17,7 +17,9 @@ using System;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.Named;
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.Resolution.Pipeline;
 
 namespace Siege.Requisitions.RegistrationPolicies
 {
@@ -40,6 +42,11 @@ namespace Siege.Requisitions.RegistrationPolicies
             return registration.GetMappedToType();
         }
 
+        public IRegistrationStore GetRegistrationStore()
+        {
+            return registration.GetRegistrationStore();
+        }
+
         public IRegistrationTemplate GetRegistrationTemplate()
         {
             return registration.GetRegistrationTemplate();
@@ -50,7 +57,7 @@ namespace Siege.Requisitions.RegistrationPolicies
             return registration.GetMappedFromType();
         }
 
-        public abstract object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context);
+        public abstract object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context, PostResolutionPipeline pipeline);
 
         public bool IsValid(IServiceLocatorStore context)
         {
@@ -64,7 +71,12 @@ namespace Siege.Requisitions.RegistrationPolicies
 
         public string Key
         {
-            get { return ((INamedRegistration)registration).Key; }
+            get
+            {
+                if(registration is INamedRegistration) return ((INamedRegistration)registration).Key;
+
+                return null;
+            }
         }
 
         public bool Equals(IRegistration other)

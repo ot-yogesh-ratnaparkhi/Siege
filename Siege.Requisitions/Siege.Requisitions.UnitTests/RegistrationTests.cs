@@ -6,9 +6,11 @@ using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations.Meta;
 using Siege.Requisitions.Registrations.Named;
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
 using Siege.Requisitions.Extensions.Conventions;
 using Siege.Requisitions.Registrations;
+using Siege.Requisitions.Resolution.Pipeline;
 using Siege.Requisitions.UnitTests.AOP;
 
 namespace Siege.Requisitions.UnitTests
@@ -80,6 +82,11 @@ namespace Siege.Requisitions.UnitTests
             return (Type)registration.GetMappedTo();
         }
 
+        public IRegistrationStore GetRegistrationStore()
+        {
+            return registration.GetRegistrationStore();
+        }
+
         public IRegistrationTemplate GetRegistrationTemplate()
         {
             return registration.GetRegistrationTemplate();
@@ -90,9 +97,9 @@ namespace Siege.Requisitions.UnitTests
             return registration.GetMappedFromType();
         }
 
-        public object ResolveWith(IInstanceResolver resolver, IServiceLocatorStore context)
+        public object ResolveWith(IInstanceResolver resolver, IServiceLocatorStore context, PostResolutionPipeline pipeline)
         {
-            return registration.ResolveWith(resolver, context);
+            return registration.ResolveWith(resolver, context, pipeline);
         }
 
         public bool IsValid(IServiceLocatorStore context)
@@ -113,7 +120,12 @@ namespace Siege.Requisitions.UnitTests
 
         public string Key
         {
-            get { return ((INamedRegistration) registration).Key; }
+            get
+            {
+                if(registration is INamedRegistration) return ((INamedRegistration) registration).Key;
+
+                return null;
+            }
         }
 
         public bool Equals(IRegistration other)

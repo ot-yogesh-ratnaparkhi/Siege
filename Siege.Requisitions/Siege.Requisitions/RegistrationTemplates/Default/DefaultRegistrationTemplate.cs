@@ -15,22 +15,37 @@
 
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
+using Siege.Requisitions.Registrations.Named;
 using Siege.Requisitions.Resolution;
+using Siege.Requisitions.Resolution.Pipeline;
 
 namespace Siege.Requisitions.RegistrationTemplates.Default
 {
     public class DefaultRegistrationTemplate : AbstractRegistrationTemplate
     {
-        public override void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, IResolutionTemplate template)
+        public override void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, ResolutionPipeline pipeline)
         {
-            if (registration.GetMappedFromType() != registration.GetMappedToType())
-            {
-                adapter.RegisterFactoryMethod(registration.GetMappedFromType(), () => template.Resolve(registration.GetMappedFromType()));
-                RegisterLazy(adapter, registration.GetMappedFromType(), template);
-            }
+            var mappedFromType = registration.GetMappedFromType();
+            var mappedToType = registration.GetMappedToType();  
 
-            adapter.Register(registration.GetMappedToType(), registration.GetMappedToType());
-            RegisterLazy(adapter, registration.GetMappedToType(), template);
+            if (mappedFromType != mappedToType)
+            {
+                adapter.RegisterFactoryMethod(mappedFromType, () => pipeline.Execute(mappedFromType));
+                RegisterLazy(adapter, mappedFromType, pipeline);
+                adapter.Register(mappedToType, mappedToType);
+            }
+            else
+            {
+                var serviceLocator = adapter.GetInstance<IServiceLocator>();
+                adapter.RegisterFactoryMethod(mappedToType, () =>
+                {
+                    var instance = serviceLocator.GetInstance(mappedToType, "default." + mappedToType, new IResolutionArgument[0]);
+                    return instance;
+                }); 
+                serviceLocator.Register(new NamedRegistration(mappedToType, mappedToType, "default." + mappedToType));
+            }
+  
+            RegisterLazy(adapter, mappedToType, pipeline);
         }
     }
 }

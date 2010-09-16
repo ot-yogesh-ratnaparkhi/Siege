@@ -15,7 +15,9 @@
 
 using System;
 using Siege.Requisitions.InternalStorage;
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.Resolution.Pipeline;
 
 namespace Siege.Requisitions.Registrations
 {
@@ -25,8 +27,9 @@ namespace Siege.Requisitions.Registrations
         object GetMappedTo();
         Type GetMappedToType();
         Type GetMappedFromType();
+        IRegistrationStore GetRegistrationStore();
         IRegistrationTemplate GetRegistrationTemplate();
-        object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context);
+        object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context, PostResolutionPipeline pipeline);
         bool IsValid(IServiceLocatorStore context);
     }
 }

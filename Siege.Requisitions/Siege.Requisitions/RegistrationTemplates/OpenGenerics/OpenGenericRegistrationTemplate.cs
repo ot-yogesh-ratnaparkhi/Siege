@@ -15,13 +15,13 @@
 
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
-using Siege.Requisitions.Resolution;
+using Siege.Requisitions.Resolution.Pipeline;
 
 namespace Siege.Requisitions.RegistrationTemplates.OpenGenerics
 {
     public class OpenGenericRegistrationTemplate : IRegistrationTemplate
     {
-        public void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, IResolutionTemplate template)
+        public void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, ResolutionPipeline pipeline)
         {
             adapter.Register(registration.GetMappedFromType(), registration.GetMappedToType());
         }

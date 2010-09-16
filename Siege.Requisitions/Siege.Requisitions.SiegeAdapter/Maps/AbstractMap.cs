@@ -31,7 +31,7 @@ namespace Siege.Requisitions.SiegeAdapter.Maps
             for (int i = 0; i < list.Length; i++)
             {
                 var key = list[i];
-                var item = (TMapList)entries[key];
+                var item = entries[key];
                 var itemType = item.Type;
 
                 if (itemType == type || itemType.IsAssignableFrom(type)) types.Add(type);

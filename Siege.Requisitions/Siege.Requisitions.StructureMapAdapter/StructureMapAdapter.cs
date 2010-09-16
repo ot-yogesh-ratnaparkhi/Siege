@@ -44,11 +44,6 @@ namespace Siege.Requisitions.StructureMapAdapter
         public StructureMapAdapter(Container container)
         {
             this.container = container;
-            var registry = new Registry();
-
-            registry.For<Container>().Use(container);
-
-            container.Configure(x => x.AddRegistry(registry));
         }
 
         public void Dispose()
@@ -178,7 +173,7 @@ namespace Siege.Requisitions.StructureMapAdapter
         public void Register(Type from, Type to)
         {
             var registry = new Registry();
-            registry.For(from).LifecycleIs(InstanceScope.PerRequest).Use(to);
+            registry.For(from).LifecycleIs(InstanceScope.Transient).Use(to);
             container.Configure(configure => configure.AddRegistry(registry));
         }
 
@@ -191,22 +186,23 @@ namespace Siege.Requisitions.StructureMapAdapter
 
         public void RegisterWithName(Type from, Type to, string name)
         {
-            var registry = new Registry();
-            registry.For(from).LifecycleIs(InstanceScope.PerRequest).Use(to).Named(name);
-            container.Configure(configure => configure.AddRegistry(registry));
+            //var registry = new Registry();
+            
+            //registry.For(from).LifecycleIs(InstanceScope.Transient).Use(to).Named(name);
+            //container.Configure(configure => configure.AddRegistry(registry));
         }
 
         public void RegisterInstanceWithName(Type type, object instance, string name)
         {
-            var registry = new Registry();
-            registry.For(type).Use(instance).Named(name);
-            container.Configure(configure => configure.AddRegistry(registry));
+            //var registry = new Registry();
+            //registry.For(type).LifecycleIs(InstanceScope.Transient).Use(instance).Named(name);
+            //container.Configure(configure => configure.AddRegistry(registry));
         }
 
         public void RegisterFactoryMethod(Type type, Func<object> func)
         {
             var registry = new Registry();
-            registry.For(type).LifecycleIs(InstanceScope.PerRequest).Use(x => func());
+            registry.For(type).LifecycleIs(InstanceScope.Transient).Use(x => func());
             container.Configure(configure => configure.AddRegistry(registry));
         }
     }

@@ -14,6 +14,7 @@
 */
 
 using Siege.Requisitions.InternalStorage;
+using Siege.Requisitions.Resolution.Pipeline;
 
 namespace Siege.Requisitions.RegistrationPolicies
 {
@@ -22,7 +23,7 @@ namespace Siege.Requisitions.RegistrationPolicies
         private readonly object lockObject = new object();
         private object instance;
 
-        public override object ResolveWith(IInstanceResolver resolver, IServiceLocatorStore context)
+        public override object ResolveWith(IInstanceResolver resolver, IServiceLocatorStore context, PostResolutionPipeline pipeline)
         {
             if (instance == null)
             {
@@ -30,7 +31,7 @@ namespace Siege.Requisitions.RegistrationPolicies
                 {
                     if(instance == null)
                     {
-                        instance = registration.ResolveWith(resolver, context);
+                        instance = registration.ResolveWith(resolver, context, pipeline);
                     }
                 }
             }

@@ -14,6 +14,7 @@
 */
 
 using System;
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
 
 namespace Siege.Requisitions.Registrations.OpenGenerics
@@ -47,6 +48,11 @@ namespace Siege.Requisitions.Registrations.OpenGenerics
         protected override IActivationStrategy GetActivationStrategy()
         {
             throw new NotImplementedException();
+        }
+
+        public override IRegistrationStore GetRegistrationStore()
+        {
+            return new OpenGenericRegistrationStore();
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()

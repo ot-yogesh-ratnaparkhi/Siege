@@ -74,6 +74,7 @@
     <Compile Include="ConditionalAwareness\Awareness.cs" />
     <Compile Include="ConditionalAwareness\AwarenessStore.cs" />
     <Compile Include="ConditionalAwareness\ContextualRegistration.cs" />
+    <Compile Include="ConditionalAwareness\ContextualRegistrationStore.cs" />
     <Compile Include="ConditionalAwareness\ContextualRegistrationTemplate.cs" />
     <Compile Include="ConditionalAwareness\IAwarenessStore.cs" />
     <Compile Include="Decorator\ConditionalDecoratorRegistration.cs" />

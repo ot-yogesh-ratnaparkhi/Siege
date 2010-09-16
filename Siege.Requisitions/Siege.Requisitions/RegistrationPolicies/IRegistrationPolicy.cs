@@ -14,10 +14,11 @@
 */
 
 using Siege.Requisitions.Registrations;
+using Siege.Requisitions.Registrations.Named;
 
 namespace Siege.Requisitions.RegistrationPolicies
 {
-    public interface IRegistrationPolicy : IRegistration
+    public interface IRegistrationPolicy : INamedRegistration
     {
         void Handle(IRegistration registration);
     }

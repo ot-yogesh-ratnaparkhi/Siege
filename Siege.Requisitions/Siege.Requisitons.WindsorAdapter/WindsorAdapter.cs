@@ -128,13 +128,15 @@ namespace Siege.Requisitions.WindsorAdapter
 
         public void RegisterInstance(Type type, object instance)
         {
-            kernel.Register(Component.For(type).Instance(instance).Unless(Component.ServiceAlreadyRegistered));
+            kernel.AddComponentInstance(type.ToString(), type, instance);
+            //if() throw new NotImplementedException();
+            //kernel.Register(Component.For(type).Instance(instance).Unless(Component.ServiceAlreadyRegistered));
         }
 
         public void RegisterWithName(Type from, Type to, string name)
         {
             if(kernel.HasComponent(name)) return;
-            kernel.Register(Component.For(from).ImplementedBy(to).Named(name).LifeStyle.Transient.Unless(Component.ServiceAlreadyRegistered));
+            kernel.Register(Component.For(from).ImplementedBy(to).Named(name).LifeStyle.Transient);
         }
 
         public void RegisterInstanceWithName(Type type, object instance, string name)

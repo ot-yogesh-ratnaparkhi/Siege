@@ -14,12 +14,19 @@
 */
 
 using Siege.Requisitions.Registrations.PostResolution;
+using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
 
 namespace Siege.Requisitions.Extensions.Decorator
 {
-    public class ConditionalDecoratorRegistration<TService> : PostResolutionRegistration<TService>, IDecoratorRegistration<TService>
+    public class ConditionalDecoratorRegistration<TService> : PostResolutionRegistration<TService>,
+                                                              IDecoratorRegistration<TService>
     {
+        public override IRegistrationStore GetRegistrationStore()
+        {
+            return new ConditionalPostResolutionStore();
+        }
+
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
             return RegistrationTemplates.StaticRegistrationTemplates.ConditionalPostResolutionRegistrationTemplate;

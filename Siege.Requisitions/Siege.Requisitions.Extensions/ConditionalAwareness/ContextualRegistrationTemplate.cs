@@ -16,13 +16,13 @@
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.RegistrationTemplates;
-using Siege.Requisitions.Resolution;
+using Siege.Requisitions.Resolution.Pipeline;
 
 namespace Siege.Requisitions.Extensions.ConditionalAwareness
 {
     public class ContextualRegistrationTemplate : IRegistrationTemplate
     {
-        public void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, IResolutionTemplate template)
+        public void Register(IServiceLocatorAdapter adapter, IServiceLocatorStore store, IRegistration registration, ResolutionPipeline pipeline)
         {
             store.Get<IAwarenessStore>().Add(registration.GetMappedTo());
         }
