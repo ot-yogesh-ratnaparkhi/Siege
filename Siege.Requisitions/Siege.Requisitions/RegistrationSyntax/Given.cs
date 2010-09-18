@@ -26,7 +26,9 @@ namespace Siege.Requisitions.RegistrationSyntax
         public static ConditionalActivationRule<TBaseService, TContext> When<TContext>(Func<TContext, bool> evaluation)
         {
             var rule = new ConditionalActivationRule<TBaseService, TContext>();
+
             rule.SetEvaluation(evaluation);
+
             return rule;
         }
 

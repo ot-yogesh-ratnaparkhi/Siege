@@ -20,6 +20,7 @@ using Siege.Requisitions.Extensions.Decorator;
 using Siege.Requisitions.Extensions.FactorySupport;
 using Siege.Requisitions.Extensions.Initialization;
 using Siege.Requisitions.Extensions.InjectionOverrides;
+using Siege.Requisitions.Extensions.MultiConditionalActivation;
 using Siege.Requisitions.RegistrationPolicies;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.OpenGenerics;
@@ -77,6 +78,16 @@ namespace Siege.Requisitions.Extensions.ExtendedRegistrationSyntax
             rule.SetEvaluation(evaluation);
 
             return rule;
+        }
+
+        public static MultiConditionalActivationRule<TService> When(Action<MultiConditionalActivationRule<TService>> generator)
+        {
+            var rule = new MultiConditionalActivationRule<TService>();
+
+            generator.Invoke(rule);
+
+            return rule;
+
         }
 
         public static IInitializationRegistration<TService> InitializeWith(Action<TService> action)
