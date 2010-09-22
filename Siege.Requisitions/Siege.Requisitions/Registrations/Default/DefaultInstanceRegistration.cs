@@ -15,19 +15,23 @@
 
 using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.RegistrationTemplates.Default;
 
 namespace Siege.Requisitions.Registrations.Default
 {
     public class DefaultInstanceRegistration<TBaseService> : InstanceRegistration<TBaseService>
     {
+        private readonly DefaultInstanceRegistrationTemplate defaultInstanceRegistrationTemplate = new DefaultInstanceRegistrationTemplate();
+        private readonly DefaultRegistrationStore defaultRegistrationStore = new DefaultRegistrationStore();
+
         public override IRegistrationStore GetRegistrationStore()
         {
-            return new DefaultRegistrationStore();
+            return defaultRegistrationStore;
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return StaticRegistrationTemplates.DefaultInstanceRegistrationTemplate;
+            return defaultInstanceRegistrationTemplate;
         }
     }
 }

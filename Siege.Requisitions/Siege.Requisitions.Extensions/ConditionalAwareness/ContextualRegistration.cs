@@ -24,6 +24,7 @@ namespace Siege.Requisitions.Extensions.ConditionalAwareness
     public class ContextualRegistration<T> : TypedRegistration
     {
         private readonly Func<T> func;
+        private readonly ContextualRegistrationTemplate contextualRegistrationTemplate = new ContextualRegistrationTemplate();
 
         public ContextualRegistration(Func<T> func) : base(typeof(T))
         {
@@ -47,7 +48,7 @@ namespace Siege.Requisitions.Extensions.ConditionalAwareness
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return StaticRegistrationTemplates.ContextualRegistrationTemplate;
+            return contextualRegistrationTemplate;
         }
     }
 }

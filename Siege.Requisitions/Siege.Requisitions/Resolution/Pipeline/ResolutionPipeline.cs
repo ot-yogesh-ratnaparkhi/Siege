@@ -21,11 +21,6 @@ using Siege.Requisitions.InternalStorage;
 
 namespace Siege.Requisitions.Resolution.Pipeline
 {
-    public interface IResolutionPipeline
-    {
-        List<IPipelineItem> Items { get; }
-    }
-
     public class ResolutionPipeline : IResolutionPipeline
     {
         private readonly List<IPipelineItem> items = new List<IPipelineItem>();

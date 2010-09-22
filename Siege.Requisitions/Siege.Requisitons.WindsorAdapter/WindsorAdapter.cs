@@ -128,7 +128,7 @@ namespace Siege.Requisitions.WindsorAdapter
 
         public void RegisterInstance(Type type, object instance)
         {
-            kernel.AddComponentInstance(type.ToString(), type, instance);
+            if(!kernel.HasComponent(type.ToString())) kernel.AddComponentInstance(type.ToString(), type, instance);
             //if() throw new NotImplementedException();
             //kernel.Register(Component.For(type).Instance(instance).Unless(Component.ServiceAlreadyRegistered));
         }

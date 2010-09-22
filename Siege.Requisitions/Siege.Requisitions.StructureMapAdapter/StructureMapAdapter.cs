@@ -63,6 +63,7 @@ namespace Siege.Requisitions.StructureMapAdapter
                 objects.Add(item);
             }
 
+
             return objects;
         }
 

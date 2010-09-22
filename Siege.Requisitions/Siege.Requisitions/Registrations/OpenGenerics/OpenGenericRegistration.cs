@@ -16,6 +16,7 @@
 using System;
 using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.RegistrationTemplates.OpenGenerics;
 
 namespace Siege.Requisitions.Registrations.OpenGenerics
 {
@@ -23,6 +24,8 @@ namespace Siege.Requisitions.Registrations.OpenGenerics
     {
         private readonly Type mapsFromType;
         protected Type mapsToType;
+        private readonly OpenGenericRegistrationTemplate openGenericRegistrationTemplate = new OpenGenericRegistrationTemplate();
+        private readonly OpenGenericRegistrationStore openGenericRegistrationStore = new OpenGenericRegistrationStore();
 
         public OpenGenericRegistration(Type mapsFromType)
         {
@@ -52,12 +55,12 @@ namespace Siege.Requisitions.Registrations.OpenGenerics
 
         public override IRegistrationStore GetRegistrationStore()
         {
-            return new OpenGenericRegistrationStore();
+            return openGenericRegistrationStore;
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return StaticRegistrationTemplates.OpenGenericRegistrationTemplate;
+            return openGenericRegistrationTemplate;
         }
 
         public override Type GetMappedFromType()

@@ -21,6 +21,7 @@ namespace Siege.Requisitions.InternalStorage
 {
     public interface IExecutionStore : IStore
     {
+        int Index { get; }
         List<Type> RequestedTypes{ get; }
         void WireEvent(ITypeResolver typeResolver);
         void WireEvent(ITypeRequester typeRequestor);

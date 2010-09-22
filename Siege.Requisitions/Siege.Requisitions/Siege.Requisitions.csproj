@@ -102,10 +102,6 @@
     <Compile Include="Foundation.cs" />
     <Compile Include="RegistrationPolicies\AbstractRegistrationPolicy.cs" />
     <Compile Include="RegistrationPolicies\Singleton.cs" />
-    <Compile Include="RegistrationTemplates\StaticRegistrationTemplates.cs" />
-    <Compile Include="Resolution\FactoryResolutionTemplate.cs" />
-    <Compile Include="Resolution\IResolutionTemplate.cs" />
-    <Compile Include="Resolution\DefaultResolutionTemplate.cs" />
     <Compile Include="Registrations\OpenGenerics\IOpenGenericRegistration.cs" />
     <Compile Include="Registrations\OpenGenerics\OpenGenericRegistration.cs" />
     <Compile Include="Resolution\ConstructorParameter.cs" />
@@ -152,6 +148,7 @@
     <Compile Include="Resolution\Pipeline\DefaultResolutionPipeline.cs" />
     <Compile Include="Resolution\Pipeline\FactoryResolutionPipeline.cs" />
     <Compile Include="Resolution\Pipeline\IPipelineItem.cs" />
+    <Compile Include="Resolution\Pipeline\IResolutionPipeline.cs" />
     <Compile Include="Resolution\Pipeline\PipelineResult.cs" />
     <Compile Include="Resolution\Pipeline\PostResolutionPipeline.cs" />
     <Compile Include="Resolution\Pipeline\ResolutionPipeline.cs" />

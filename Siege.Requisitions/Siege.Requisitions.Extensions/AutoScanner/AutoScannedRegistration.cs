@@ -17,11 +17,15 @@ using System;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.RegistrationTemplates.Default;
 
 namespace Siege.Requisitions.Extensions.AutoScanner
 {
     public class AutoScannedRegistration : TypedRegistration
     {
+        private readonly DefaultRegistrationTemplate defaultRegistrationTemplate = new DefaultRegistrationTemplate();
+        private readonly DefaultRegistrationStore defaultRegistrationStore = new DefaultRegistrationStore();
+
         public AutoScannedRegistration(Type baseType, Type targetType) : base(baseType)
         {
             MapsTo(targetType);
@@ -29,12 +33,12 @@ namespace Siege.Requisitions.Extensions.AutoScanner
 
         public override IRegistrationStore GetRegistrationStore()
         {
-            return new DefaultRegistrationStore();
+            return defaultRegistrationStore;
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return StaticRegistrationTemplates.DefaultRegistrationTemplate;
+            return defaultRegistrationTemplate;
         }
     }
 }

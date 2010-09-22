@@ -13,19 +13,12 @@
      limitations under the License.
 */
 
-using Siege.Requisitions.Extensions.ConditionalAwareness;
-using Siege.Requisitions.RegistrationTemplates;
+using System.Collections.Generic;
 
-namespace Siege.Requisitions.Extensions
+namespace Siege.Requisitions.Resolution.Pipeline
 {
-    //this exists for performance purposes only
-    public class StaticRegistrationTemplates : RegistrationTemplates.StaticRegistrationTemplates
+    public interface IResolutionPipeline
     {
-        public static IRegistrationTemplate ContextualRegistrationTemplate { get; private set; }
-
-        static StaticRegistrationTemplates()
-        {
-            ContextualRegistrationTemplate = new ContextualRegistrationTemplate();
-        }
+        List<IPipelineItem> Items { get; }
     }
 }

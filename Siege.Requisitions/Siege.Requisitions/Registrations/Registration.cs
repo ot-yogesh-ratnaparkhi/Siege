@@ -14,7 +14,6 @@
 */
 
 using System;
-using Siege.Requisitions.EventHandlers;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
@@ -23,7 +22,7 @@ using Siege.Requisitions.ResolutionRules;
 
 namespace Siege.Requisitions.Registrations
 {
-    public abstract class Registration : IRegistration, ITypeRequester
+    public abstract class Registration : IRegistration
     {
         protected abstract IActivationStrategy GetActivationStrategy();
         protected IActivationRule rule;
@@ -33,7 +32,6 @@ namespace Siege.Requisitions.Registrations
         public abstract object GetMappedTo();
         public abstract Type GetMappedToType();
         public abstract void MapsTo(object target);
-        public event TypeRequestedEventHandler TypeRequested;
 
         public void SetActivationRule(IActivationRule rule)
         {
@@ -47,24 +45,19 @@ namespace Siege.Requisitions.Registrations
 
         public virtual object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context, PostResolutionPipeline pipeline)
         {
-            //context.Get<IExecutionStore>().WireEvent(this);
             object instance = null;
 
             if (rule == null)
             {
-                //RaiseTypeRequestedEvent(GetMappedToType());
                 instance = GetActivationStrategy().Resolve(locator, context);
             }
             else
             {
                 if (rule.GetRuleEvaluationStrategy().IsValid(rule, context))
                 {
-                    //RaiseTypeRequestedEvent(GetMappedToType());
                     instance = GetActivationStrategy().Resolve(locator, context);
                 }
             }
-
-            //context.Get<IExecutionStore>().UnWireEvent(this);
 
             if(pipeline !=null)
             {
@@ -84,11 +77,6 @@ namespace Siege.Requisitions.Registrations
                            MappedFrom = GetMappedFromType(),
                            Result = instance
                        };
-        }
-
-        private void RaiseTypeRequestedEvent(Type type)
-        {
-            if (this.TypeRequested != null) this.TypeRequested(type);
         }
 
         public virtual bool Equals(IRegistration registration)

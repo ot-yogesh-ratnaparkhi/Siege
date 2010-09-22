@@ -25,6 +25,11 @@ namespace Siege.Requisitions.InternalStorage
         [ThreadStatic] private static int index;
         private readonly IServiceLocatorStore store;
 
+        public int Index
+        {
+            get { return index; }
+        }
+
         public List<Type> RequestedTypes
         {
             get { return requestedTypes; }

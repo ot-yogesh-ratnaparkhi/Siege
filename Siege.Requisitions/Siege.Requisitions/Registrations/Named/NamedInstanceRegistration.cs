@@ -15,12 +15,15 @@
 
 using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.RegistrationTemplates.Named;
 
 namespace Siege.Requisitions.Registrations.Named
 {
     public class NamedInstanceRegistration<TBaseService> : InstanceRegistration<TBaseService>, INamedRegistration
     {
         private readonly string key;
+        private readonly NamedInstanceRegistrationTemplate namedInstanceRegistrationTemplate = new NamedInstanceRegistrationTemplate();
+        private readonly NamedRegistrationStore namedRegistrationStore = new NamedRegistrationStore();
 
         public NamedInstanceRegistration(string key)
         {
@@ -34,12 +37,12 @@ namespace Siege.Requisitions.Registrations.Named
 
         public override IRegistrationStore GetRegistrationStore()
         {
-            return new NamedRegistrationStore();
+            return namedRegistrationStore;
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return StaticRegistrationTemplates.NamedInstanceRegistrationTemplate;
+            return namedInstanceRegistrationTemplate;
         }
 
         public override bool Equals(IRegistration registration)

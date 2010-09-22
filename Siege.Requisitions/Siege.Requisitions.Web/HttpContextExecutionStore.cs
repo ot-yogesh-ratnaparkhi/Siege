@@ -32,7 +32,7 @@ namespace Siege.Requisitions.Web
             HttpContext.Current.Items["executionCount"] = 0;
         }
 
-        private int Count
+        public int Index
         {
             get
             {
@@ -99,13 +99,13 @@ namespace Siege.Requisitions.Web
 
         private void Increment()
         {
-            HttpContext.Current.Items["executionCount"] = Count + 1;
+            HttpContext.Current.Items["executionCount"] = Index + 1;
         }
 
         private void Decrement()
         {
-            HttpContext.Current.Items["executionCount"] = Count - 1;
-            if (Count == 0)
+            HttpContext.Current.Items["executionCount"] = Index - 1;
+            if (Index == 0)
             {
                 store.SetStore<IResolutionStore>(new HttpResolutionStore());
             }

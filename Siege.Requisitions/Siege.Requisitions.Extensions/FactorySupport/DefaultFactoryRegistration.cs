@@ -15,19 +15,23 @@
 
 using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.RegistrationTemplates.Default;
 
 namespace Siege.Requisitions.Extensions.FactorySupport
 {
     public class DefaultFactoryRegistration<TService> : FactoryRegistration<TService>
     {
+        private readonly DefaultRegistrationTemplate defaultRegistrationTemplate = new DefaultRegistrationTemplate();
+        private readonly DefaultRegistrationStore defaultRegistrationStore = new DefaultRegistrationStore();
+
         public override IRegistrationStore GetRegistrationStore()
         {
-            return new DefaultRegistrationStore();
+            return defaultRegistrationStore;
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return RegistrationTemplates.StaticRegistrationTemplates.DefaultRegistrationTemplate;
+            return defaultRegistrationTemplate;
         }
     }
 }

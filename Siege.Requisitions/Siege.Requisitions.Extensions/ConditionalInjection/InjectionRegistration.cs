@@ -16,23 +16,27 @@
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.RegistrationTemplates.Conditional;
 
 namespace Siege.Requisitions.Extensions.ConditionalInjection
 {
     public class InjectionRegistration<TService> : TypedRegistration
     {
+        private readonly ConditionalRegistrationTemplate conditionalRegistrationTemplate = new ConditionalRegistrationTemplate();
+        private readonly ConditionalRegistrationStore conditionalRegistrationStore = new ConditionalRegistrationStore();
+
         public InjectionRegistration() : base(typeof (TService))
         {
         }
 
         public override IRegistrationStore GetRegistrationStore()
         {
-            return new ConditionalRegistrationStore();
+            return conditionalRegistrationStore;
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return RegistrationTemplates.StaticRegistrationTemplates.ConditionalRegistrationTemplate;
+            return conditionalRegistrationTemplate;
         }
     }
 }

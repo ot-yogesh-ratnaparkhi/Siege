@@ -13,22 +13,25 @@
      limitations under the License.
 */
 
-using System;
 using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.RegistrationTemplates.Conditional;
 
 namespace Siege.Requisitions.Extensions.FactorySupport
 {
     public class ConditionalFactoryRegistration<TService> : FactoryRegistration<TService>
     {
+        private readonly ConditionalRegistrationTemplate conditionalRegistrationTemplate = new ConditionalRegistrationTemplate();
+        private readonly ConditionalRegistrationStore conditionalRegistrationStore = new ConditionalRegistrationStore();
+
         public override IRegistrationStore GetRegistrationStore()
         {
-            return new ConditionalRegistrationStore();
+            return conditionalRegistrationStore;
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return RegistrationTemplates.StaticRegistrationTemplates.ConditionalRegistrationTemplate;
+            return conditionalRegistrationTemplate;
         }
     }
 }

@@ -20,6 +20,7 @@ using Siege.Requisitions.ExtensionMethods;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.RegistrationTemplates.Named;
 using Siege.Requisitions.Resolution;
 using Siege.Requisitions.Resolution.Pipeline;
 
@@ -36,6 +37,8 @@ namespace Siege.Requisitions.Registrations.Named
     public class NamedRegistration : TypedRegistration, INamedRegistration
     {
         private readonly string key;
+        private readonly NamedRegistrationTemplate namedRegistrationTemplate = new NamedRegistrationTemplate();
+        private readonly NamedRegistrationStore namedRegistrationStore = new NamedRegistrationStore();
 
         public NamedRegistration(Type to, Type from, string key) : base(from)
         {
@@ -55,12 +58,12 @@ namespace Siege.Requisitions.Registrations.Named
 
         public override IRegistrationStore GetRegistrationStore()
         {
-            return new NamedRegistrationStore();
+            return namedRegistrationStore;
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return StaticRegistrationTemplates.NamedRegistrationTemplate;
+            return namedRegistrationTemplate;
         }
 
         protected override PipelineResult GetResult(object instance)

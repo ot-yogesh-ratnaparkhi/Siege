@@ -102,7 +102,6 @@
     <Compile Include="InjectionOverrides\InjectionOverrideStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AutoMocking\AutoMockRegistration.cs" />
-    <Compile Include="StaticRegistrationTemplates.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Siege.Requisitions\Siege.Requisitions.csproj">

@@ -13,26 +13,29 @@
      limitations under the License.
 */
 
-using System;
 using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.RegistrationTemplates.Default;
 
 namespace Siege.Requisitions.Registrations.Default
 {
     public class DefaultRegistration<TBaseService> : TypedRegistration
     {
+        private readonly DefaultRegistrationTemplate defaultRegistrationTemplate = new DefaultRegistrationTemplate();
+        private readonly DefaultRegistrationStore defaultRegistrationStore = new DefaultRegistrationStore();
+
         public DefaultRegistration() : base(typeof (TBaseService))
         {
         }
 
         public override IRegistrationStore GetRegistrationStore()
         {
-            return new DefaultRegistrationStore();
+            return defaultRegistrationStore;
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return StaticRegistrationTemplates.DefaultRegistrationTemplate;
+            return defaultRegistrationTemplate;
         }
     }
 }

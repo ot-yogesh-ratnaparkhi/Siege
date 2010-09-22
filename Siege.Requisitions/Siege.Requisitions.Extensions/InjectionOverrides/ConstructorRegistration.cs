@@ -23,16 +23,18 @@ namespace Siege.Requisitions.Extensions.InjectionOverrides
 {
     public class ConstructorRegistration : InstanceRegistration<object>
     {
+        private readonly InjectionOverrideRegistrationStore injectionOverrideRegistrationStore = new InjectionOverrideRegistrationStore();
+        private readonly InjectionOverrideRegistrationTemplate injectionOverrideRegistrationTemplate = new InjectionOverrideRegistrationTemplate();
         public List<IResolutionArgument> Arguments { get; set; }
 
         public override IRegistrationStore GetRegistrationStore()
         {
-            return new InjectionOverrideRegistrationStore();
+            return injectionOverrideRegistrationStore;
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return new InjectionOverrideRegistrationTemplate();
+            return injectionOverrideRegistrationTemplate;
         }
     }
 }

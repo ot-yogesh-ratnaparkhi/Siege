@@ -15,19 +15,23 @@
 
 using Siege.Requisitions.Registrations.Stores;
 using Siege.Requisitions.RegistrationTemplates;
+using Siege.Requisitions.RegistrationTemplates.Conditional;
 
 namespace Siege.Requisitions.Registrations.Conditional
 {
     public class ConditionalInstanceRegistration<TBaseService> : InstanceRegistration<TBaseService>
     {
+        private readonly ConditionalInstanceRegistrationTemplate conditionalInstanceRegistrationTemplate = new ConditionalInstanceRegistrationTemplate();
+        private readonly ConditionalRegistrationStore conditionalRegistrationStore = new ConditionalRegistrationStore();
+
         public override IRegistrationStore GetRegistrationStore()
         {
-            return new ConditionalRegistrationStore();
+            return conditionalRegistrationStore;
         }
 
         public override IRegistrationTemplate GetRegistrationTemplate()
         {
-            return StaticRegistrationTemplates.ConditionalInstanceRegistrationTemplate;
+            return conditionalInstanceRegistrationTemplate;
         }
     }
 }
