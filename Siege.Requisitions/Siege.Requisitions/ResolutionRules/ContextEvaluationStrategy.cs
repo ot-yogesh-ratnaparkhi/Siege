@@ -22,7 +22,7 @@ namespace Siege.Requisitions.ResolutionRules
 {
     public class ContextEvaluationStrategy : IRuleEvaluationStrategy
     {
-        public bool IsValid(IActivationRule rule, IServiceLocatorStore context)
+        public virtual bool IsValid(IActivationRule rule, IServiceLocatorStore context)
         {
             var items = MergeContextItems(context);
             for (int i = 0; i < items.Count; i++)
@@ -34,7 +34,7 @@ namespace Siege.Requisitions.ResolutionRules
             return false;
         }
 
-        private static List<object> MergeContextItems(IServiceLocatorStore context)
+        protected static List<object> MergeContextItems(IServiceLocatorStore context)
         {
             var contextItems = new List<object>(); 
             var stores = context.All<IResolutionStore>().ToList();
