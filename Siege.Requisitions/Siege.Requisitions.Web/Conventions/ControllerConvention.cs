@@ -18,10 +18,11 @@ using Siege.Requisitions.Extensions.AutoScanner;
 
 namespace Siege.Requisitions.Web.Conventions
 {
-    public class ControllerConvention : AutoScanningConvention
+    public class ControllerConvention<TController> : AutoScanningConvention
     {
         public ControllerConvention()
         {
+            FromAssemblyContaining<TController>();
             ForTypesImplementing<Controller>();
         }
     }
