@@ -154,6 +154,7 @@
     <Compile Include="InjectorTests.cs" />
     <Compile Include="LazyInjectionTests.cs" />
     <Compile Include="MultiConditionalActivationTests.cs" />
+    <Compile Include="MultiRegistrationTests.cs" />
     <Compile Include="OpenGenericTests.cs" />
     <Compile Include="PartiallyClosedGenericsTests.cs" />
     <Compile Include="PerResolutionContextTests.cs" />

@@ -117,5 +117,10 @@ namespace Siege.Requisitions.Extensions.ExtendedRegistrationSyntax
 
             return registration;
         }
+
+        public static List<IRegistration> Then(Func<Given<TService>, List<IRegistration>> given)
+        {
+            return given(new Given<TService>());
+        }
     }
 }
