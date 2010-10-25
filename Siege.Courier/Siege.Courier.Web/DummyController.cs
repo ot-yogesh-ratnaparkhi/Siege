@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace Siege.Courier
+namespace Siege.Courier.Web
 {
     internal class DummyController : Controller
     {

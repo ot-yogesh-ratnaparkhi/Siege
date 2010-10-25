@@ -35,22 +35,22 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.ServiceLocation">
-      <HintPath>..\..\Siege.Requisitions\Siege.Requisitions.Web\bin\Release\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <HintPath>..\dependencies\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="Siege.Foundry">
-      <HintPath>..\..\Siege.Requisitions\Siege.Requisitions.SiegeAdapter\bin\Release\Siege.Foundry.dll</HintPath>
+      <HintPath>..\dependencies\Siege.Foundry.dll</HintPath>
     </Reference>
     <Reference Include="Siege.Requisitions">
-      <HintPath>..\..\Siege.Requisitions\Siege.Requisitions.Web\bin\Release\Siege.Requisitions.dll</HintPath>
+      <HintPath>..\dependencies\Siege.Requisitions.dll</HintPath>
     </Reference>
     <Reference Include="Siege.Requisitions.Extensions">
-      <HintPath>..\..\Siege.Requisitions\Siege.Requisitions.Web\bin\Release\Siege.Requisitions.Extensions.dll</HintPath>
+      <HintPath>..\dependencies\Siege.Requisitions.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="Siege.Requisitions.SiegeAdapter">
-      <HintPath>..\..\Siege.Requisitions\Siege.Requisitions.SiegeAdapter\bin\Release\Siege.Requisitions.SiegeAdapter.dll</HintPath>
+      <HintPath>..\dependencies\Siege.Requisitions.SiegeAdapter.dll</HintPath>
     </Reference>
     <Reference Include="Siege.Requisitions.Web">
-      <HintPath>..\..\Siege.Requisitions\Siege.Requisitions.Web\bin\Release\Siege.Requisitions.Web.dll</HintPath>
+      <HintPath>..\dependencies\Siege.Requisitions.Web.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -130,6 +130,10 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Siege.Courier.Web\Siege.Courier.Web.csproj">
+      <Project>{15ED8965-6655-4415-AE09-FFAEE8FC4444}</Project>
+      <Name>Siege.Courier.Web</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Siege.Courier\Siege.Courier.csproj">
       <Project>{F69A060A-DA93-439D-94C3-1B82F72C347D}</Project>
       <Name>Siege.Courier</Name>

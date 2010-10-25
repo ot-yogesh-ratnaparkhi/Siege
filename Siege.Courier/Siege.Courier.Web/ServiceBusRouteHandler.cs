@@ -3,20 +3,20 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace Siege.Courier
+namespace Siege.Courier.Web
 {
     public class ServiceBusRouteHandler : MvcRouteHandler
     {
-        private readonly Func<IServiceBus> serviceBus;
+        private readonly Func<IHttpHandler> serviceBusHandler;
 
-        public ServiceBusRouteHandler(Func<IServiceBus> serviceBus)
+        public ServiceBusRouteHandler(Func<IHttpHandler> serviceBusHandler)
         {
-            this.serviceBus = serviceBus;
+            this.serviceBusHandler = serviceBusHandler;
         }
 
         protected override IHttpHandler GetHttpHandler(RequestContext requestContext)
         {
-            return new ServiceBusHandler(serviceBus, requestContext);
+            return serviceBusHandler();
         }
     }
 }

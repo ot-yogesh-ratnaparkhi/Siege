@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Web.Routing;
+﻿using System.Web.Routing;
 
-namespace Siege.Courier
+namespace Siege.Courier.Web
 {
     public class ServiceBusRoute : Route
     {

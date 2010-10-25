@@ -1,6 +1,8 @@
 ﻿using System.Web.Routing;
 using Courier_Sample.Controllers;
 using Siege.Courier;
+using Siege.Courier.Web;
+using Siege.Courier.Web.Conventions;
 using Siege.Requisitions;
 using Siege.Requisitions.Extensions.Conventions;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
@@ -20,10 +22,9 @@ namespace Courier_Sample
         protected override void OnApplicationStarted()
         {
             ServiceLocator
-                .Register(Using.Convention<ControllerConvention<HomeController>>())
-                .Register(Given<ServiceBusRoute>.Then<ServiceBusRoute>())
-                .Register(Given<ServiceBusRouteHandler>.Then<ServiceBusRouteHandler>())
-                .Register(Given<IServiceBus>.Then<SimpleServiceBus>());
+                .Register(Using.Convention<AspNetMvcConvention>())
+                .Register(Using.Convention<ServiceBusConvention>())
+                .Register(Using.Convention<ControllerConvention<HomeController>>());
 
             RouteTable.Routes.Add(ServiceLocator.GetInstance<ServiceBusRoute>());
         }

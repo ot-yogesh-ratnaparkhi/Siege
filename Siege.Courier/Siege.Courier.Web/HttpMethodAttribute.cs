@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Siege.Courier
+namespace Siege.Courier.Web
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class HttpMethodAttribute : Attribute
