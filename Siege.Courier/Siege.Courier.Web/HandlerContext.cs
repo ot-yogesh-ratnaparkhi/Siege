@@ -2,19 +2,20 @@
 using System.Linq;
 using System.Web;
 using System.Web.Routing;
+using Siege.Courier.Messages;
 
 namespace Siege.Courier.Web
 {
     public class HandlerContext
     {
-        private readonly HttpRequestBase request;
+        private readonly HttpContextBase httpContextBase;
         private readonly RequestContext requestContext;
         private readonly Func<TypeFinder> typeFinder;
         private TypeContext typeContext;
 
-        public HandlerContext(HttpRequestBase request, RequestContext requestContext, Func<TypeFinder> typeFinder)
+        public HandlerContext(HttpContextBase httpContextBase, RequestContext requestContext, Func<TypeFinder> typeFinder)
         {
-            this.request = request;
+            this.httpContextBase = httpContextBase;
             this.requestContext = requestContext;
             this.typeFinder = typeFinder;
         }
@@ -26,7 +27,7 @@ namespace Siege.Courier.Web
                 if (typeContext != null) return typeContext.Type;
 
                 typeContext = new TypeContext();
-                var method = this.request.HttpMethod;
+                var method = this.httpContextBase.Request.HttpMethod;
                 var noun = this.requestContext.RouteData.GetRequiredString("noun");
 
                 var type = GetTypeForName(noun);
@@ -53,12 +54,12 @@ namespace Siege.Courier.Web
 
         public ModelBinding ModelBinding
         {
-            get { return new ModelBinding(this.Type); }
+            get { return new ModelBinding(this.Type).WithHttpContext(this.httpContextBase); }
         }
 
         private Type GetTypeForName(string type)
         {
-            return typeFinder().Named(type).Implementing<IMessage>().Find();
+            return typeFinder().Named(type).WithPossibleSuffix("Message").Implementing<IMessage>().Find();
         }
 
         private static bool TypeMatchesMethod(Type type, string method)

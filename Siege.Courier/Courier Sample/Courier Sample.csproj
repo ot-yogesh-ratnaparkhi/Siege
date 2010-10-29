@@ -83,6 +83,9 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\MemberAuthenticatedMessage.cs" />
+    <Compile Include="Messages\MemberFailedAuthenticationMessage.cs" />
+    <Compile Include="Subscribers\AccountSubscriber.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -130,6 +133,10 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Siege.Courier.WCF\Siege.Courier.WCF.csproj">
+      <Project>{565AA9CD-6896-49DD-8472-EB128BED7064}</Project>
+      <Name>Siege.Courier.WCF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Siege.Courier.Web\Siege.Courier.Web.csproj">
       <Project>{15ED8965-6655-4415-AE09-FFAEE8FC4444}</Project>
       <Name>Siege.Courier.Web</Name>

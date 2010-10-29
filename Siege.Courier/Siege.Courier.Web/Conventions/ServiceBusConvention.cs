@@ -4,6 +4,7 @@ using Siege.Requisitions;
 using Siege.Requisitions.Extensions.ConditionalAwareness;
 using Siege.Requisitions.Extensions.Conventions;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
+using Siege.Requisitions.RegistrationPolicies;
 
 namespace Siege.Courier.Web.Conventions
 {
@@ -16,9 +17,9 @@ namespace Siege.Courier.Web.Conventions
                        .Register(Awareness.Of(serviceLocator.GetInstance<HandlerContext>))
                        .Register(Given<ServiceBusRoute>.Then<ServiceBusRoute>())
                        .Register(Given<IHttpHandler>.When<HandlerContext>(ctx => ctx.Type == null).Then<MvcControllerHandler>())
-                       .Register(Given<IHttpHandler>.When<HandlerContext>(ctx => ctx.Type != null).Then<ServiceBusHandler>())
+                       .Register(Given<IHttpHandler>.Then<ServiceBusHandler>())
                        .Register(Given<ServiceBusRouteHandler>.Then<ServiceBusRouteHandler>())
-                       .Register(Given<IServiceBus>.Then<SimpleServiceBus>())
+                       .Register<Singleton>(Given<IServiceBus>.Then<SimpleServiceBus>())
                        .Register(Given<TypeFinder>.Then<TypeFinder>())
                        .Register(Given<HandlerContext>.Then<HandlerContext>());
         }

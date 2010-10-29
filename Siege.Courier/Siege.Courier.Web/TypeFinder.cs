@@ -9,6 +9,7 @@ namespace Siege.Courier.Web
         private string name;
         private string @namespace;
         private Type baseType;
+        private string suffix;
 
         public TypeFinder Named(string name)
         {
@@ -25,6 +26,12 @@ namespace Siege.Courier.Web
         public TypeFinder Implementing<TBaseType>()
         {
             this.baseType = typeof(TBaseType);
+            return this;
+        }
+
+        public TypeFinder WithPossibleSuffix(string suffix)
+        {
+            this.suffix = suffix;
             return this;
         }
 
@@ -45,7 +52,7 @@ namespace Siege.Courier.Web
 
             if (!string.IsNullOrEmpty(this.name))
             {
-                types = types.Where(t => t.Name.ToLower() == this.name.ToLower());
+                types = types.Where(t => t.Name.ToLower() == this.name.ToLower() || t.Name.ToLower() == this.name.ToLower() + this.suffix.ToLower());
             }
 
             return types.FirstOrDefault();

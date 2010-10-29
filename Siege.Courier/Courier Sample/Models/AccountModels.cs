@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Siege.Courier;
+using Siege.Courier.Messages;
 using Siege.Courier.Web;
 
 namespace Courier_Sample.Models
@@ -50,7 +51,7 @@ namespace Courier_Sample.Models
     }
 
     [HttpMethod("POST")]
-    public class LogOnAccount : IMessage
+    public class LogOnAccountMessage : IMessage
     {
         [Required]
         [DisplayName("User name")]

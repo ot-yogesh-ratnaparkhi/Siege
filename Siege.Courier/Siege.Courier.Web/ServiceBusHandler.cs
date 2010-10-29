@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using System.Web.Mvc;
+using Siege.Courier.Messages;
 
 namespace Siege.Courier.Web
 {
@@ -17,9 +18,7 @@ namespace Siege.Courier.Web
 
         public void ProcessRequest(HttpContext httpContext)
         {
-            var modelBindingResult =
-                handlerContext.ModelBinding.WithHttpContext(new HttpContextWrapper(httpContext)).Using(
-                    new DefaultModelBinder()).BindAs<IMessage>();
+            var modelBindingResult = handlerContext.ModelBinding.Using(new DefaultModelBinder()).BindAs<IMessage>();
 
             if (modelBindingResult.IsValid)
             {

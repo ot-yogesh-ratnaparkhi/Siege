@@ -1,6 +1,7 @@
 ﻿using System.Web.Routing;
 using Courier_Sample.Controllers;
 using Siege.Courier;
+using Siege.Courier.WCF;
 using Siege.Courier.Web;
 using Siege.Courier.Web.Conventions;
 using Siege.Requisitions;
@@ -24,7 +25,8 @@ namespace Courier_Sample
             ServiceLocator
                 .Register(Using.Convention<AspNetMvcConvention>())
                 .Register(Using.Convention<ServiceBusConvention>())
-                .Register(Using.Convention<ControllerConvention<HomeController>>());
+                .Register(Using.Convention<ControllerConvention<HomeController>>())
+                .Register(Given<IServiceBus>.InitializeWith(bus => bus.Subscribe(new WCFSubscriber())));
 
             RouteTable.Routes.Add(ServiceLocator.GetInstance<ServiceBusRoute>());
         }
