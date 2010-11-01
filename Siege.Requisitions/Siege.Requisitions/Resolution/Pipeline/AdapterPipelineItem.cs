@@ -45,10 +45,12 @@ namespace Siege.Requisitions.Resolution.Pipeline
                 result.MappedFrom = requestedType;
                 result.MappedTo = type;
 
-                var stores = store.All<IResolutionStore>().ToList();
                 var items = new List<IResolutionArgument>();
-                stores.ForEach(x => items.AddRange(x.Items));
                 
+                foreach(var item in store.All<IResolutionStore>())
+                {
+                   if(item != null && item.Items != null && item.Items.Count > 0) items.AddRange(item.Items);
+                }
 
                 if(result.Name == null)
                 {

@@ -1,19 +1,16 @@
-﻿using System.Web.Routing;
-using Courier_Sample.Controllers;
-using Siege.Courier;
+﻿using Courier_Sample.Controllers;
+using Siege.Courier.Messages;
 using Siege.Courier.WCF;
 using Siege.Courier.Web;
-using Siege.Courier.Web.Conventions;
 using Siege.Requisitions;
 using Siege.Requisitions.Extensions.Conventions;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 using Siege.Requisitions.SiegeAdapter;
-using Siege.Requisitions.Web;
 using Siege.Requisitions.Web.Conventions;
 
 namespace Courier_Sample
 {
-    public class MvcApplication : ServiceLocatorHttpApplication
+    public class MvcApplication : CourierHttpApplication
     {
         protected override IServiceLocatorAdapter GetServiceLocatorAdapter()
         {
@@ -23,12 +20,19 @@ namespace Courier_Sample
         protected override void OnApplicationStarted()
         {
             ServiceLocator
-                .Register(Using.Convention<AspNetMvcConvention>())
-                .Register(Using.Convention<ServiceBusConvention>())
                 .Register(Using.Convention<ControllerConvention<HomeController>>())
-                .Register(Given<IServiceBus>.InitializeWith(bus => bus.Subscribe(new WCFSubscriber())));
+                .Register(Given<IConfigurationManager>.Then<ServiceBusConfigurationManager>())
+                .Register(Given<IChannelManagerFactory>.Then<WCFChannelManagerFactory>())
+                .Register(Given<IChannelManager<IWCFProtocol>>.ConstructWith(x =>
+                {
+                    var config = x.GetInstance<IConfigurationManager>();
+                    return x.GetInstance<WCFChannelManagerFactory>().Create<IWCFProtocol>(config.ServiceBusEndPoint);
+                }))
+                .Register(Given<WCFProxy<IWCFProtocol>>.Then<WCFProxy<IWCFProtocol>>());
+            
+            AddSubcriber<WCFSubscriber, IMessage>();
 
-            RouteTable.Routes.Add(ServiceLocator.GetInstance<ServiceBusRoute>());
+            base.OnApplicationStarted();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Siege.Courier.Messages
+﻿using System.Runtime.Serialization;
+
+namespace Siege.Courier.Messages
 {
     public interface IMessage
     {

@@ -6,6 +6,7 @@ namespace Siege.Courier.Processors
     {
         public interface For<TMessage> where TMessage : IMessage
         {
+            TMessage Process(TMessage message);
         }
     }
 }

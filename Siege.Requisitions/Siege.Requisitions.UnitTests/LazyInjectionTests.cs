@@ -108,6 +108,19 @@ namespace Siege.Requisitions.UnitTests
             Assert.IsInstanceOf<TestCase1>(instance.Invoke());
             Assert.IsTrue(factoryMethodInvoked);
         }
+
+        [Test]
+        public void ShouldInjectLazilyForNamedRegistrations()
+        {
+            locator
+                .Register(Given<ITestInterface>.Then<TestCase2>("2"))
+                .Register(Given<ITestInterface>.Then<TestCase1>("1"))
+                .Register(Given<TestNamedClass>.Then<TestNamedClass>());
+
+            var instance = locator.GetInstance<TestNamedClass>();
+            Assert.IsInstanceOf<TestCase1>(instance.Invoke("1"));
+            Assert.IsInstanceOf<TestCase2>(instance.Invoke("2"));
+        }
     }
 
     public class TestClass
@@ -122,6 +135,21 @@ namespace Siege.Requisitions.UnitTests
         public ITestInterface Invoke()
         {
             return test();
+        }
+    }
+
+    public class TestNamedClass
+    {
+        private readonly Func<string, ITestInterface> test;
+
+        public TestNamedClass(Func<string, ITestInterface> test)
+        {
+            this.test = test;
+        }
+
+        public ITestInterface Invoke(string key)
+        {
+            return test(key);
         }
     }
 }

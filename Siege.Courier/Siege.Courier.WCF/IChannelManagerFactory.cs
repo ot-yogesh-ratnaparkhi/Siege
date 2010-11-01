@@ -2,6 +2,6 @@
 {
     public interface IChannelManagerFactory
     {
-        IChannelManager<TService> Create<TService>(ChannelConfig config);
+        IChannelManager<TService> Create<TService>(string endPointName);
     }
 }

@@ -25,6 +25,7 @@ namespace Siege.Requisitions.InternalStorage
 
         public ThreadedResolutionStore()
         {
+            contextItems = contextItems ?? new List<IResolutionArgument>();
             contextItems.Clear();
         }
 
@@ -44,7 +45,11 @@ namespace Siege.Requisitions.InternalStorage
 
         public List<IResolutionArgument> Items
         {
-            get { return contextItems; }
+            get
+            {
+                contextItems = contextItems ?? new List<IResolutionArgument>();
+                return contextItems;
+            }
         }
 
         public void Dispose()

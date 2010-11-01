@@ -68,6 +68,7 @@ namespace Siege.Requisitions.InternalStorage
 
         private void AddRequestedType(Type type)
         {
+            RequestedTypes = RequestedTypes ?? new List<Type>();
             RequestedTypes.Add(type);
             Increment();
         }

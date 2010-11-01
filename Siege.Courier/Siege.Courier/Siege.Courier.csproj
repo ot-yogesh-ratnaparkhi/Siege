@@ -34,8 +34,11 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HttpMethodAttribute.cs" />
     <Compile Include="MessageProcessingException.cs" />
     <Compile Include="Messages\ExceptionMessage.cs" />
     <Compile Include="Messages\IMessage.cs" />

@@ -137,7 +137,6 @@ namespace Siege.Requisitions.UnityAdapter
         {
             container.RegisterType(type, new TransientLifetimeManager(), new InjectionFactory(f => func()));
             container.RegisterType(type, Guid.NewGuid().ToString(), new TransientLifetimeManager(), new InjectionFactory(f => func()));
-
         }
     }
 }

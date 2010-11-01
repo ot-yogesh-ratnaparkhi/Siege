@@ -138,5 +138,10 @@ namespace Siege.Requisitions.SiegeAdapter
         {
             resolver.RegisterWithFactoryMethod(type, func);
         }
+
+        public void RegisterFactoryMethodWithName(Type type, Func<object> func, string name)
+        {
+            resolver.RegisterWithFactoryMethod(type, func, name);
+        }
     }
 }

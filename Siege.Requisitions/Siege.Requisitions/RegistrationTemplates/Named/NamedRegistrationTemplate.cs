@@ -13,6 +13,8 @@
      limitations under the License.
 */
 
+using System;
+using System.Linq.Expressions;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.Named;
@@ -27,9 +29,25 @@ namespace Siege.Requisitions.RegistrationTemplates.Named
             var namedRegistration = (INamedRegistration) registration;
 
             var mappedToType = registration.GetMappedToType();
+            var mappedFromType = registration.GetMappedFromType();
 
             adapter.RegisterWithName(mappedToType, mappedToType, namedRegistration.Key);
-            adapter.RegisterWithName(registration.GetMappedFromType(), mappedToType, namedRegistration.Key);
+            adapter.RegisterWithName(mappedFromType, mappedToType, namedRegistration.Key);
+
+            RegisterNamedLazy(adapter, mappedFromType, namedRegistration.Key);
+            RegisterNamedLazy(adapter, mappedToType, namedRegistration.Key);
+        }
+
+        protected void RegisterNamedLazy(IServiceLocatorAdapter adapter, Type type, string key)
+        {
+            var serviceLocator = (IServiceLocator)adapter.GetInstance(typeof (IServiceLocator));
+            Type lazyLoader = typeof(Func<,>).MakeGenericType(typeof(string), type);
+
+            Expression<Func<string, object>> func = x => serviceLocator.GetInstance(type, x);
+            var parameter = Expression.Parameter(typeof (string), "param1");
+            var lambda = Expression.Lambda(lazyLoader, Expression.Convert(Expression.Invoke(func, parameter), type), parameter).Compile();
+
+            adapter.RegisterFactoryMethod(lazyLoader, () => lambda);
         }
     }
 }

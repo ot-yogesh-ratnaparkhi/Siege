@@ -20,6 +20,11 @@ namespace Siege.Courier.Web
             this.typeFinder = typeFinder;
         }
 
+        public string ResponseType
+        {
+            get { return this.httpContextBase.Request.QueryString["response"] ?? "view"; }
+        }
+
         public Type Type
         {
             get
@@ -28,7 +33,7 @@ namespace Siege.Courier.Web
 
                 typeContext = new TypeContext();
                 var method = this.httpContextBase.Request.HttpMethod;
-                var noun = this.requestContext.RouteData.GetRequiredString("noun");
+                var noun = this.RequestContext.RouteData.GetRequiredString("noun");
 
                 var type = GetTypeForName(noun);
 
@@ -38,7 +43,7 @@ namespace Siege.Courier.Web
                     return type;
                 }
 
-                var verb = this.requestContext.RouteData.GetRequiredString("verb");
+                var verb = this.RequestContext.RouteData.GetRequiredString("verb");
 
                 type = GetTypeForName(verb + noun);
 
@@ -55,6 +60,11 @@ namespace Siege.Courier.Web
         public ModelBinding ModelBinding
         {
             get { return new ModelBinding(this.Type).WithHttpContext(this.httpContextBase); }
+        }
+
+        public RequestContext RequestContext
+        {
+            get { return requestContext; }
         }
 
         private Type GetTypeForName(string type)

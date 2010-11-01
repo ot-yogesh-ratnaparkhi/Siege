@@ -10,18 +10,21 @@ namespace Siege.Courier.WCF
         private static readonly object lockObject = new object();
         private static readonly Dictionary<Type, IChannelFactory> factories = new Dictionary<Type, IChannelFactory>();
 
-        public IChannelManager<TService> Create<TService>(ChannelConfig config)
+        public IChannelManager<TService> Create<TService>(string endPointName)
         {
-            var factory = factories[typeof (ChannelFactory<TService>)] as ChannelFactory<TService>;
+            ChannelFactory<TService> factory = null;
+
+            if (factories.ContainsKey(typeof(ChannelFactory<TService>))) factory = factories[typeof(ChannelFactory<TService>)] as ChannelFactory<TService>;
 
             if (factory == null)
             {
                 lock (lockObject)
                 {
-                    factory = factories[typeof (ChannelFactory<TService>)] as ChannelFactory<TService>;
+                    if (factories.ContainsKey(typeof(ChannelFactory<TService>))) factory = factories[typeof(ChannelFactory<TService>)] as ChannelFactory<TService>;
+
                     if (factory == null)
                     {
-                        factory = new ChannelFactory<TService>(config.EndPointConfigurationName);
+                        factory = new ChannelFactory<TService>(endPointName);
                         factories.Add(typeof (ChannelFactory<TService>), factory);
                     }
                 }

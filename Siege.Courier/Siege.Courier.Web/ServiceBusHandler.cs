@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Mvc;
 using Siege.Courier.Messages;
+using Siege.Courier.Web.Responses;
 
 namespace Siege.Courier.Web
 {
@@ -9,11 +10,13 @@ namespace Siege.Courier.Web
     {
         private readonly Func<IServiceBus> serviceBus;
         private readonly HandlerContext handlerContext;
+        private readonly Func<string, Response> response;
 
-        public ServiceBusHandler(Func<IServiceBus> serviceBus, HandlerContext handlerContext)
+        public ServiceBusHandler(Func<IServiceBus> serviceBus, HandlerContext handlerContext, Func<string, Response> response)
         {
             this.serviceBus = serviceBus;
             this.handlerContext = handlerContext;
+            this.response = response;
         }
 
         public void ProcessRequest(HttpContext httpContext)
@@ -24,6 +27,8 @@ namespace Siege.Courier.Web
             {
                 serviceBus().Publish(modelBindingResult.Output);
             }
+
+            response(handlerContext.ResponseType).Execute(handlerContext.RequestContext);
         }
 
         public bool IsReusable

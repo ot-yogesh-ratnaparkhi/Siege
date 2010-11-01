@@ -16,6 +16,11 @@ namespace Siege.Courier.Web.Conventions
                        .Register(Given<HttpRequestBase>.ConstructWith(x => new HttpRequestWrapper(HttpContext.Current.Request)))
                        .Register(Given<RouteData>.ConstructWith(x => x.GetInstance<RouteCollection>().GetRouteData(x.GetInstance<HttpContextBase>())))
                        .Register(Given<RequestContext>.Then<RequestContext>())
+                       .Register(Given<RequestContext>.InitializeWith(ctx =>
+                        {
+                            ctx.RouteData.Values["controller"] = ctx.RouteData.GetRequiredString("noun");
+                            ctx.RouteData.Values["action"] = ctx.RouteData.GetRequiredString("verb");
+                        }))
                        .Register(Given<HttpContextBase>.ConstructWith(x => new HttpContextWrapper(HttpContext.Current)));
         }
     }

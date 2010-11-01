@@ -56,9 +56,10 @@ namespace Siege.Courier
 
             if (errors.Count > 0)
             {
-                throw new MessageProcessingException(
-                    "One or more errors occured during message processing.",
-                    message != null ? message.GetType() : null);
+                throw errors[0].Exception;
+                //throw new MessageProcessingException(
+                //    "One or more errors occured during message processing.",
+                //    message != null ? message.GetType() : null);
             }
         }
     }
