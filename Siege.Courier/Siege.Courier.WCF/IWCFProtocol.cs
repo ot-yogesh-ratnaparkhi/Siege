@@ -1,4 +1,5 @@
-﻿using System.ServiceModel;
+﻿using System.Collections.Generic;
+using System.ServiceModel;
 using Siege.Courier.Messages;
 
 namespace Siege.Courier.WCF
@@ -8,6 +9,6 @@ namespace Siege.Courier.WCF
     {
         [OperationContract]
         [NetDataContract]
-        IMessage Send(IMessage message);
+        List<IMessage> Send(IMessage message);
     }
 }

@@ -5,7 +5,7 @@ namespace Siege.Courier.Web.Responses
 {
     public class ViewResponse : Response
     {
-        public override void Execute(RequestContext requestContext)
+        public override void Execute(object model, RequestContext requestContext)
         {
             new ViewResult().ExecuteResult(GetControllerContext(requestContext));
         }

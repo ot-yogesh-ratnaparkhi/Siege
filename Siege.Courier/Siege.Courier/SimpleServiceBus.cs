@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Siege.Courier.Messages;
 using Siege.Courier.Subscribers;
 
@@ -7,10 +8,14 @@ namespace Siege.Courier
 {
     public class SimpleServiceBus : IServiceBus
     {
+        private readonly MessageMap messageMap;
+        private readonly IMessageBucket bucket;
         private readonly SubscriberCollection subscribers;
 
-        public SimpleServiceBus()
+        public SimpleServiceBus(MessageMap messageMap, IMessageBucket bucket)
         {
+            this.messageMap = messageMap;
+            this.bucket = bucket;
             subscribers = new SubscriberCollection();
         }
 
@@ -24,21 +29,36 @@ namespace Siege.Courier
             subscribers.Remove(subscriber);
         }
 
-        public void Publish<TMessage>(TMessage message) where TMessage : IMessage
+        public void Publish<TMessage>(TMessage message) where TMessage : class, IMessage
         {
             var errors = new List<ExceptionMessage>();
-            IEnumerable<ISubscriber> messageSubscribers;
-            
-            if(message is ExceptionMessage)
-                messageSubscribers = subscribers.For<TMessage>();
-            else
-                messageSubscribers = subscribers.All(message.GetType());
+            IEnumerable<ISubscriber> messageSubscribers = subscribers.For<TMessage>();
+        
+            if(messageSubscribers.Count() == 0)
+            {
+                if (messageMap.CanHandle(message.GetType()))
+                {
+                    var adapter = messageMap.GetAdapterFor(message.GetType());
+                    messageSubscribers = new List<ISubscriber> {adapter};
+                }
+                else
+                {
+                    bucket.Add(message);
+                }
+            }
 
             foreach (var subscriber in messageSubscribers)
             {
                 try
                 {
-                    ((Subscriber.For<TMessage>)subscriber).Receive(message);
+                    if(subscriber is Subscriber.For<TMessage>)
+                    {
+                        ((Subscriber.For<TMessage>) subscriber).Receive(message);
+                    }
+                    else
+                    {
+                        ((IProtocolAdapter)subscriber).Receive(message);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -56,10 +76,9 @@ namespace Siege.Courier
 
             if (errors.Count > 0)
             {
-                throw errors[0].Exception;
-                //throw new MessageProcessingException(
-                //    "One or more errors occured during message processing.",
-                //    message != null ? message.GetType() : null);
+                throw new MessageProcessingException(
+                    "One or more errors occured during message processing.",
+                    message != null ? message.GetType() : null);
             }
         }
     }

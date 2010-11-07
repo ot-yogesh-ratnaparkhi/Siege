@@ -11,24 +11,25 @@ namespace Siege.Courier.Web
         private readonly Func<IServiceBus> serviceBus;
         private readonly HandlerContext handlerContext;
         private readonly Func<string, Response> response;
+        private readonly IMessageBucket bucket;
 
-        public ServiceBusHandler(Func<IServiceBus> serviceBus, HandlerContext handlerContext, Func<string, Response> response)
+        public ServiceBusHandler(Func<IServiceBus> serviceBus, HandlerContext handlerContext, Func<string, Response> response, IMessageBucket bucket)
         {
             this.serviceBus = serviceBus;
             this.handlerContext = handlerContext;
             this.response = response;
+            this.bucket = bucket;
         }
 
         public void ProcessRequest(HttpContext httpContext)
         {
             var modelBindingResult = handlerContext.ModelBinding.Using(new DefaultModelBinder()).BindAs<IMessage>();
 
-            if (modelBindingResult.IsValid)
-            {
-                serviceBus().Publish(modelBindingResult.Output);
-            }
+            if (!modelBindingResult.Validate(message => serviceBus().Publish(message))) return;
 
-            response(handlerContext.ResponseType).Execute(handlerContext.RequestContext);
+            serviceBus().Publish(modelBindingResult.Output);
+
+            response(handlerContext.ResponseType).Execute(bucket.All(), handlerContext.RequestContext);
         }
 
         public bool IsReusable

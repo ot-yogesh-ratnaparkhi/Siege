@@ -7,6 +7,6 @@ namespace Siege.Courier
     {
         void Subscribe<TMessage>(Subscriber.For<TMessage> subscriber) where TMessage : IMessage;
         void Unsubscribe<TMessage>(Subscriber.For<TMessage> subscriber) where TMessage : IMessage;
-        void Publish<TMessage>(TMessage message) where TMessage : IMessage;
+        void Publish<TMessage>(TMessage message) where TMessage : class, IMessage;
     }
 }

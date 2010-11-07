@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.ServiceModel;
 using Siege.Courier.Messages;
 
@@ -9,33 +8,29 @@ namespace Siege.Courier.WCF
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, InstanceContextMode = InstanceContextMode.Single)]
     public class WCFService : IWCFProtocol
     {
-        private readonly IServiceBus serviceBus;
-        private readonly static Dictionary<Type, Delegate> delegates = new Dictionary<Type, Delegate>();
-        private readonly static object lockObject = new object();
+        private readonly Func<IServiceBus> serviceBus;
+        private readonly IMessageTracker tracker;
+        private readonly IMessageBucket messages;
+        private readonly DelegateManager manager;
 
-        public WCFService(IServiceBus serviceBus)
+        public WCFService(Func<IServiceBus> serviceBus, IMessageTracker tracker, IMessageBucket messages, DelegateManager manager)
         {
             this.serviceBus = serviceBus;
+            this.tracker = tracker;
+            this.messages = messages;
+            this.manager = manager;
         }
 
-        public IMessage Send(IMessage message)
+        public List<IMessage> Send(IMessage message)
         {
-            if(!delegates.ContainsKey(message.GetType()))
-            {
-                lock(lockObject)
-                {
-                    if(!delegates.ContainsKey(message.GetType()))
-                    {
-                        Type messageConvertor = typeof(Action<>).MakeGenericType(message.GetType());
-                        var parameter = Expression.Parameter(message.GetType(), "x");
-                        delegates.Add(message.GetType(), Expression.Lambda(messageConvertor, Expression.Call(Expression.Constant(serviceBus), typeof(IServiceBus).GetMethod("Publish").MakeGenericMethod(message.GetType()), Expression.Constant(message, message.GetType())), parameter).Compile());
-                    }
-                }
-            }
+            messages.Clear();
+            tracker.Track(message);
 
-            delegates[message.GetType()].DynamicInvoke(message);
+            manager.CreateDelegate(message, serviceBus).DynamicInvoke(message);
 
-            return null;
+            tracker.Clear();
+
+            return messages.All();
         }
     }
 }

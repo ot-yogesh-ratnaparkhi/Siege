@@ -5,16 +5,9 @@ namespace Siege.Courier.Web.Responses
 {
     public class JsonResponse : Response
     {
-        private readonly object data;
-
-        public JsonResponse(object data)
+        public override void Execute(object model, RequestContext requestContext)
         {
-            this.data = data;
-        }
-
-        public override void Execute(RequestContext requestContext)
-        {
-            var result = new JsonResult {Data = data};
+            var result = new JsonResult {Data = model};
 
             result.ExecuteResult(GetControllerContext(requestContext));
         }

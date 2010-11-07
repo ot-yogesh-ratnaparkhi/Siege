@@ -3,8 +3,13 @@ using Siege.Courier.Subscribers;
 
 namespace Siege.Courier.Messages
 {
+    public class FailureMessage : IMessage
+    {
+        
+    }
+
     [Serializable]
-    public class ExceptionMessage : IMessage
+    public class ExceptionMessage : FailureMessage
     {
         public ExceptionMessage(IMessage message, ISubscriber subscriber, Exception exception)
         {

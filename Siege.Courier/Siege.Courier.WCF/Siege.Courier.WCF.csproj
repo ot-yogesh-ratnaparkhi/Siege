@@ -51,7 +51,7 @@
     <Compile Include="WCFChannelManagerFactory.cs" />
     <Compile Include="WCFService.cs" />
     <Compile Include="WCFProxy.cs" />
-    <Compile Include="WCFSubscriber.cs" />
+    <Compile Include="WCFAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Siege.Courier\Siege.Courier.csproj">

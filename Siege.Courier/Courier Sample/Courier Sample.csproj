@@ -100,6 +100,7 @@
     <Compile Include="Messages\EditCustomer.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Subscribers\AccountSubscriber.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
@@ -143,7 +144,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Subscribers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Courier.Sample.Messages\Courier.Sample.Messages.csproj">

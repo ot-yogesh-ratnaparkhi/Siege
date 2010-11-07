@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Siege.Courier.Messages;
 
 namespace Siege.Courier.Web
 {
@@ -28,7 +29,7 @@ namespace Siege.Courier.Web
             return this;
         }
 
-        public ModelBindingResult<T> BindAs<T>()
+        public ModelBindingResult<T> BindAs<T>() where T : IMessage 
         {
             var controllerContext = GetControllerContext();
             var valueProvider = GetValueProvider(controllerContext);
@@ -63,7 +64,7 @@ namespace Siege.Courier.Web
         }
     }
 
-    public class ModelBindingResult<T>
+    public class ModelBindingResult<T> where T : IMessage
     {
         private readonly T output;
         private readonly ModelBindingContext modelBindingContext;
@@ -74,14 +75,20 @@ namespace Siege.Courier.Web
             this.modelBindingContext = modelBindingContext;
         }
 
-        public bool IsValid
-        {
-            get { return modelBindingContext.ModelState.IsValid; }
-        }
-
         public T Output
         {
             get { return output; }
+        }
+
+        public bool Validate(Action<IMessage> onFailure)
+        {
+            if(!modelBindingContext.ModelState.IsValid)
+            {
+                onFailure(new MessageValidationFailedMessage());
+                return false;
+            }
+
+            return true;
         }
     }
 }

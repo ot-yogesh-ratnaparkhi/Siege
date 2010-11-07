@@ -21,7 +21,8 @@ namespace Siege.Courier.Web.Conventions
                        .Register(Given<ServiceBusRouteHandler>.Then<ServiceBusRouteHandler>())
                        .Register<Singleton>(Given<IServiceBus>.Then<SimpleServiceBus>())
                        .Register(Given<TypeFinder>.Then<TypeFinder>())
-                       .Register(Given<HandlerContext>.Then<HandlerContext>());
+                       .Register(Given<HandlerContext>.Then<HandlerContext>())
+                       .Register(Given<NativeAdapter>.Then<NativeAdapter>());
         }
     }
 }

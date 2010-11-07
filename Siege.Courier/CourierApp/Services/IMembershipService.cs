@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.Security;
 
-namespace CourierSample.Security
+namespace CourierApp.Services
 {
     public interface IMembershipService
     {
@@ -10,6 +10,29 @@ namespace CourierSample.Security
         bool ValidateUser(string userName, string password);
         MembershipCreateStatus CreateUser(string userName, string password, string email);
         bool ChangePassword(string userName, string oldPassword, string newPassword);
+    }
+
+    public class NullMembershipService : IMembershipService
+    {
+        public int MinPasswordLength
+        {
+            get { return 5; }
+        }
+
+        public bool ValidateUser(string userName, string password)
+        {
+            return false;
+        }
+
+        public MembershipCreateStatus CreateUser(string userName, string password, string email)
+        {
+            return MembershipCreateStatus.UserRejected;
+        }
+
+        public bool ChangePassword(string userName, string oldPassword, string newPassword)
+        {
+            return false;
+        }
     }
 
     public class AccountMembershipService : IMembershipService
