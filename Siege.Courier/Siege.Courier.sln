@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourierApp", "CourierApp\Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Courier.Sample.Messages", "Courier.Sample.Messages\Courier.Sample.Messages.csproj", "{5B3DF88C-A673-4D0A-A242-80FC09F54665}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Courier.WindowsServices", "Siege.Courier.WindowsServices\Siege.Courier.WindowsServices.csproj", "{27FEC72B-9BC7-4622-9DBF-D6FB41F85DE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,16 @@ Global
 		{5B3DF88C-A673-4D0A-A242-80FC09F54665}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{5B3DF88C-A673-4D0A-A242-80FC09F54665}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{5B3DF88C-A673-4D0A-A242-80FC09F54665}.Release|x86.ActiveCfg = Release|Any CPU
+		{27FEC72B-9BC7-4622-9DBF-D6FB41F85DE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27FEC72B-9BC7-4622-9DBF-D6FB41F85DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27FEC72B-9BC7-4622-9DBF-D6FB41F85DE2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{27FEC72B-9BC7-4622-9DBF-D6FB41F85DE2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{27FEC72B-9BC7-4622-9DBF-D6FB41F85DE2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{27FEC72B-9BC7-4622-9DBF-D6FB41F85DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27FEC72B-9BC7-4622-9DBF-D6FB41F85DE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27FEC72B-9BC7-4622-9DBF-D6FB41F85DE2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{27FEC72B-9BC7-4622-9DBF-D6FB41F85DE2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{27FEC72B-9BC7-4622-9DBF-D6FB41F85DE2}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -19,7 +19,7 @@ namespace Siege.Courier.Web.Conventions
                        .Register(Given<IHttpHandler>.When<HandlerContext>(ctx => ctx.Type == null).Then<MvcControllerHandler>())
                        .Register(Given<IHttpHandler>.Then<ServiceBusHandler>())
                        .Register(Given<ServiceBusRouteHandler>.Then<ServiceBusRouteHandler>())
-                       .Register<Singleton>(Given<IServiceBus>.Then<SimpleServiceBus>())
+                       .Register<Singleton>(Given<IServiceBus>.Then<ServiceBus>())
                        .Register(Given<TypeFinder>.Then<TypeFinder>())
                        .Register(Given<HandlerContext>.Then<HandlerContext>())
                        .Register(Given<NativeAdapter>.Then<NativeAdapter>());

@@ -38,6 +38,7 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CourierService.cs" />
     <Compile Include="DelegateManager.cs" />
     <Compile Include="HttpMethodAttribute.cs" />
     <Compile Include="IMessageBucket.cs" />
@@ -50,7 +51,7 @@
     <Compile Include="Messages\MessageMap.cs" />
     <Compile Include="NativeAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleServiceBus.cs" />
+    <Compile Include="ServiceBus.cs" />
     <Compile Include="Subscribers\ISubscriberCollectionItem.cs" />
     <Compile Include="Subscribers\Subscriber.cs" />
     <Compile Include="Subscribers\SubscriberCollection.cs" />

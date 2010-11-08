@@ -6,13 +6,13 @@ using Siege.Courier.Subscribers;
 
 namespace Siege.Courier
 {
-    public class SimpleServiceBus : IServiceBus
+    public class ServiceBus : IServiceBus
     {
         private readonly MessageMap messageMap;
         private readonly IMessageBucket bucket;
         private readonly SubscriberCollection subscribers;
 
-        public SimpleServiceBus(MessageMap messageMap, IMessageBucket bucket)
+        public ServiceBus(MessageMap messageMap, IMessageBucket bucket)
         {
             this.messageMap = messageMap;
             this.bucket = bucket;
