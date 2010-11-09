@@ -21,7 +21,7 @@ namespace CourierApp.Subscribers
         {
             if (membershipService.ValidateUser(message.UserName, message.Password))
             {
-                serviceBus().Publish(new MemberAuthenticatedMessage());
+                serviceBus().Publish(new MemberAuthenticatedMessage(message));
                 return;
             }
 

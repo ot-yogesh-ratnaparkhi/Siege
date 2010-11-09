@@ -37,23 +37,20 @@ namespace Siege.Courier.Web
             Map.Map<TMessage>(ServiceLocator.GetInstance<TAdapter>());
         }
 
-        protected void AddSubcriber<TSubscriber, TMessage>()
+        protected void AddSubscriber<TSubscriber, TMessage>()
             where TSubscriber : Subscriber.For<TMessage>
             where TMessage : IMessage
         {
-            ServiceLocator
-                .Register<Singleton>(Given<TSubscriber>.Then<TSubscriber>())
-                .Register(
-                    Given<IServiceBus>.InitializeWith(bus => bus.Subscribe(ServiceLocator.GetInstance<TSubscriber>())));
+            if(!ServiceLocator.HasTypeRegistered(typeof(TSubscriber))) ServiceLocator.Register<Singleton>(Given<TSubscriber>.Then<TSubscriber>());
+            ServiceLocator.Register(Given<IServiceBus>.InitializeWith(bus => bus.Subscribe(ServiceLocator.GetInstance<TSubscriber>())));
         }
 
-        protected void AddSubcriber<TSubscriber>()
+        protected void AddSubscriber<TSubscriber>()
             where TSubscriber : Subscriber.All
         {
             ServiceLocator
                 .Register<Singleton>(Given<TSubscriber>.Then<TSubscriber>())
-                .Register(
-                    Given<IServiceBus>.InitializeWith(bus => bus.Subscribe(ServiceLocator.GetInstance<TSubscriber>())));
+                .Register(Given<IServiceBus>.InitializeWith(bus => bus.Subscribe(ServiceLocator.GetInstance<TSubscriber>())));
         }
 
         protected void AddResponse<TResponse>(string name) where TResponse : Response

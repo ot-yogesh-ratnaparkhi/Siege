@@ -1,5 +1,6 @@
 ﻿using Courier.Sample.Messages;
 using Courier_Sample.Controllers;
+using Courier_Sample.Models;
 using Courier_Sample.Subscribers;
 using Siege.Courier;
 using Siege.Courier.WCF;
@@ -35,9 +36,14 @@ namespace Courier_Sample
                 }))
                 .Register(Given<WCFProxy<IWCFProtocol>>.Then<WCFProxy<IWCFProtocol>>())
                 .Register(Given<AccountSubscriber>.Then<AccountSubscriber>())
-                .Register(Given<IMessageBucket>.Then<HttpMessageBucket>());
+                .Register(Given<IMessageBucket>.Then<HttpMessageBucket>())
+                .Register(Given<IFormsAuthenticationService>.Then<FormsAuthenticationService>());
             
             MapMessage<LogOnAccountMessage, WCFAdapter>();
+            
+            AddSubscriber<AccountSubscriber, MemberAuthenticatedMessage>();
+            AddSubscriber<AccountSubscriber, MemberFailedAuthenticationMessage>();
+            AddSubscriber<AccountSubscriber, MessageValidationFailedMessage<LogOnAccountMessage>>();
         }
     }
 }

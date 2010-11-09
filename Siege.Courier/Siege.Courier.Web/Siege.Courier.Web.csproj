@@ -65,15 +65,21 @@
     <Compile Include="HttpMessageTracker.cs" />
     <Compile Include="MessageValidationFailedMessage.cs" />
     <Compile Include="MvcControllerHandler.cs" />
+    <Compile Include="MvcSubscriber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryString.cs" />
     <Compile Include="Responses\JsonResponse.cs" />
+    <Compile Include="Responses\RedirectResponse.cs" />
+    <Compile Include="Responses\RedirectToResponse.cs" />
     <Compile Include="Responses\Response.cs" />
     <Compile Include="Responses\ViewResponse.cs" />
     <Compile Include="ServiceBusHandler.cs" />
     <Compile Include="ServiceBusRoute.cs" />
     <Compile Include="ServiceBusRouteHandler.cs" />
+    <Compile Include="TempData.cs" />
     <Compile Include="TypeFinder.cs" />
     <Compile Include="ModelBinding.cs" />
+    <Compile Include="ViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Siege.Courier.WCF\Siege.Courier.WCF.csproj">

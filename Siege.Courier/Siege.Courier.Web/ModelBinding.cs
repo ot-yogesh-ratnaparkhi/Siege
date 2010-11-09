@@ -84,7 +84,7 @@ namespace Siege.Courier.Web
         {
             if(!modelBindingContext.ModelState.IsValid)
             {
-                onFailure(new MessageValidationFailedMessage());
+                onFailure((IMessage)Activator.CreateInstance(typeof(MessageValidationFailedMessage<>).MakeGenericType(output.GetType()), output));
                 return false;
             }
 

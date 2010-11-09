@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LogOffAccountMessage.cs" />
     <Compile Include="LogOnAccountMessage.cs" />
     <Compile Include="MemberAuthenticatedMessage.cs" />
     <Compile Include="MemberFailedAuthenticationMessage.cs" />

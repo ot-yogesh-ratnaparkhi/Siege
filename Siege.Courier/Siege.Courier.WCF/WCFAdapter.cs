@@ -7,11 +7,13 @@ namespace Siege.Courier.WCF
     {
         private readonly WCFProxy<IWCFProtocol> protocol;
         private readonly Func<IServiceBus> serviceBus;
+        private readonly DelegateManager manager;
         
-        public WCFAdapter(WCFProxy<IWCFProtocol> protocol, Func<IServiceBus> serviceBus)
+        public WCFAdapter(WCFProxy<IWCFProtocol> protocol, Func<IServiceBus> serviceBus, DelegateManager manager)
         {
             this.protocol = protocol;
             this.serviceBus = serviceBus;
+            this.manager = manager;
         }
 
         public void Receive(IMessage message)
@@ -20,7 +22,7 @@ namespace Siege.Courier.WCF
 
             foreach(IMessage result in results)
             {
-                serviceBus().Publish(result);
+                manager.CreateDelegate(result, serviceBus).DynamicInvoke(result);
             }
         }
     }
