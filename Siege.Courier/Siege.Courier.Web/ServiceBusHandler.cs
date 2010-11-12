@@ -14,9 +14,9 @@ namespace Siege.Courier.Web
         private readonly Func<string, Response> response;
         private readonly IMessageBucket bucket;
         private readonly DelegateManager manager;
-        private readonly ControllerContext controllerContext;
+        private readonly Func<ControllerContext> controllerContext;
 
-        public ServiceBusHandler(Func<IServiceBus> serviceBus, HandlerContext handlerContext, Func<string, Response> response, IMessageBucket bucket, DelegateManager manager, ControllerContext controllerContext)
+        public ServiceBusHandler(Func<IServiceBus> serviceBus, HandlerContext handlerContext, Func<string, Response> response, IMessageBucket bucket, DelegateManager manager, Func<ControllerContext> controllerContext)
         {
             this.serviceBus = serviceBus;
             this.handlerContext = handlerContext;
@@ -34,7 +34,7 @@ namespace Siege.Courier.Web
 
             manager.CreateDelegate(modelBindingResult.Output, serviceBus).DynamicInvoke(modelBindingResult.Output);
 
-            response(handlerContext.ResponseType).Execute(bucket.All(), controllerContext);
+            response(handlerContext.ResponseType).Execute(bucket.All(), controllerContext());
         }
 
         public bool IsReusable

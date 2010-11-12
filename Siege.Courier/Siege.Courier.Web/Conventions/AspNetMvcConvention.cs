@@ -15,9 +15,11 @@ namespace Siege.Courier.Web.Conventions
             return serviceLocator =>
                    serviceLocator
                        .Register(Given<PerRequest>.Then<PerRequest>())
-                       .Register<PerRequest>(Given<DummyController>.Then<DummyController>())
-                       .Register<PerRequest>(Given<TempDataDictionary>.ConstructWith(x => new TempDataDictionary()))
                        .Register<PerRequest>(Given<ViewDataDictionary>.ConstructWith(x => new ViewDataDictionary()))
+                       .Register<PerRequest>(Given<TempDataDictionary>.ConstructWith(x => new TempDataDictionary()))
+                       .Register<PerRequest>(Given<DummyController>.Then<DummyController>())
+                       .Register<PerRequest>(Given<TempData>.Then<TempData>())
+                       .Register<PerRequest>(Given<ViewModel>.Then<ViewModel>())
                        .Register(Given<HttpRequestBase>.ConstructWith(x => new HttpRequestWrapper(HttpContext.Current.Request)))
                        .Register(Given<RouteData>.ConstructWith(x => x.GetInstance<RouteCollection>().GetRouteData(x.GetInstance<HttpContextBase>())))
                        .Register(Given<RequestContext>.Then<RequestContext>())
@@ -34,8 +36,8 @@ namespace Siege.Courier.Web.Conventions
                         }))
                        .Register<PerRequest>(Given<DummyController>.InitializeWith(controller =>
                         {
-                            controller.TempData = serviceLocator.GetInstance<TempDataDictionary>();
-                            controller.ViewData = serviceLocator.GetInstance<ViewDataDictionary>();
+                            controller.TempData = serviceLocator.GetInstance<TempData>().Data;
+                            controller.ViewData = serviceLocator.GetInstance<ViewModel>().ViewData;
                         }));
         }
     }

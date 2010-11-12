@@ -6,7 +6,7 @@ namespace Siege.Courier.Web.Responses
     {
         public override void Execute(object model, ControllerContext context)
         {
-            var viewResult = new ViewResult();// {TempData = this.TempData, ViewData = this.ViewData};
+            var viewResult = new ViewResult {TempData = context.Controller.TempData, ViewData = context.Controller.ViewData};
 
             viewResult.ExecuteResult(context);
         }

@@ -1,4 +1,4 @@
-﻿using System.Web;
+﻿using System.Web.Mvc;
 using Siege.Requisitions;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.RegistrationPolicies;
@@ -8,14 +8,16 @@ namespace Siege.Courier.Web
 {
     public class PerRequest : AbstractRegistrationPolicy
     {
+        private TempDataDictionary tempData = new TempDataDictionary();
+
         public override object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context, PostResolutionPipeline pipeline)
         {
-            if (!HttpContext.Current.Items.Contains(registration.GetMappedToType()))
+            if (!tempData.ContainsKey(registration.GetMappedToType().ToString()))
             {
-                HttpContext.Current.Items[registration.GetMappedToType()] = registration.ResolveWith(locator, context, pipeline);
+                tempData[registration.GetMappedToType().ToString()] = registration.ResolveWith(locator, context, pipeline);
             }
 
-            return HttpContext.Current.Items[registration.GetMappedToType()];
+            return tempData[registration.GetMappedToType().ToString()];
         }
     }
 }

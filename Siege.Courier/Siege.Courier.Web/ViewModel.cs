@@ -1,4 +1,5 @@
 ﻿using System.Dynamic;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Siege.Courier.Web
@@ -6,6 +7,8 @@ namespace Siege.Courier.Web
     public class ViewModel : DynamicObject
     {
         private readonly ViewDataDictionary viewData;
+
+        public ViewDataDictionary ViewData { get { return viewData; } }
 
         public ViewModel(ViewDataDictionary viewData)
         {
@@ -28,6 +31,7 @@ namespace Siege.Courier.Web
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
             viewData[binder.Name] = value;
+            HttpContext.Current.Items[this.GetType()] = this;
 
             return true;
         }
@@ -35,11 +39,15 @@ namespace Siege.Courier.Web
         public void AddModelError(string key, string errorMessage)
         {
             this.viewData.ModelState.AddModelError(key, errorMessage);
+
+            HttpContext.Current.Items[this.GetType()] = this;
         }
 
         public void ClearModelState()
         {
             this.viewData.ModelState.Clear();
+
+            HttpContext.Current.Items[this.GetType()] = this;
         }
     }
 }

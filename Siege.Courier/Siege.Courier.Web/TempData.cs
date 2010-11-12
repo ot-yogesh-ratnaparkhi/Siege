@@ -7,6 +7,8 @@ namespace Siege.Courier.Web
     {
         private readonly TempDataDictionary dictionary;
 
+        public TempDataDictionary Data { get { return dictionary; } }
+
         public TempData(TempDataDictionary dictionary)
         {
             this.dictionary = dictionary;
