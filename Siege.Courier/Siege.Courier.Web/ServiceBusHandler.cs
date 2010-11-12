@@ -14,14 +14,16 @@ namespace Siege.Courier.Web
         private readonly Func<string, Response> response;
         private readonly IMessageBucket bucket;
         private readonly DelegateManager manager;
+        private readonly ControllerContext controllerContext;
 
-        public ServiceBusHandler(Func<IServiceBus> serviceBus, HandlerContext handlerContext, Func<string, Response> response, IMessageBucket bucket, DelegateManager manager)
+        public ServiceBusHandler(Func<IServiceBus> serviceBus, HandlerContext handlerContext, Func<string, Response> response, IMessageBucket bucket, DelegateManager manager, ControllerContext controllerContext)
         {
             this.serviceBus = serviceBus;
             this.handlerContext = handlerContext;
             this.response = response;
             this.bucket = bucket;
             this.manager = manager;
+            this.controllerContext = controllerContext;
         }
 
         public void ProcessRequest(HttpContext httpContext)
@@ -32,13 +34,7 @@ namespace Siege.Courier.Web
 
             manager.CreateDelegate(modelBindingResult.Output, serviceBus).DynamicInvoke(modelBindingResult.Output);
 
-            response(handlerContext.ResponseType).Execute(bucket.All(), GetControllerContext(handlerContext.RequestContext));
-        }
-
-        protected ControllerContext GetControllerContext(RequestContext requestContext)
-        {
-            HttpContextBase context = new HttpContextWrapper(HttpContext.Current);
-            return new ControllerContext(context, requestContext.RouteData, new DummyController());
+            response(handlerContext.ResponseType).Execute(bucket.All(), controllerContext);
         }
 
         public bool IsReusable

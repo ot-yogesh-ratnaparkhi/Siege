@@ -13,7 +13,7 @@ namespace Siege.Courier.Web
 
             messages.Add(message);
 
-            HttpContext.Current.Items.Add("bucket", messages);
+            HttpContext.Current.Items["bucket"] = messages;
         }
 
         public List<IMessage> All()

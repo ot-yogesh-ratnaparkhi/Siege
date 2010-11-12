@@ -36,5 +36,10 @@ namespace Siege.Courier.Web
         {
             this.viewData.ModelState.AddModelError(key, errorMessage);
         }
+
+        public void ClearModelState()
+        {
+            this.viewData.ModelState.Clear();
+        }
     }
 }

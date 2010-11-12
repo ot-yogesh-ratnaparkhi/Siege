@@ -32,19 +32,17 @@ namespace Siege.Courier
         public void Publish<TMessage>(TMessage message) where TMessage : class, IMessage
         {
             var errors = new List<ExceptionMessage>();
-            IEnumerable<ISubscriber> messageSubscribers = subscribers.For<TMessage>();
+            var messageSubscribers = subscribers.For<TMessage>();
         
             if(messageSubscribers.Count() == 0)
             {
-                if (messageMap.CanHandle(message.GetType()))
-                {
-                    var adapter = messageMap.GetAdapterFor(message.GetType());
-                    messageSubscribers = new List<ISubscriber> {adapter};
-                }
-                else
-                {
-                    bucket.Add(message);
-                }
+               bucket.Add(message);
+            }
+
+            if (messageMap.CanHandle(message.GetType()))
+            {
+                var adapter = messageMap.GetAdapterFor(message.GetType());
+                messageSubscribers = new List<ISubscriber> { adapter };
             }
 
             foreach (var subscriber in messageSubscribers)
@@ -76,9 +74,10 @@ namespace Siege.Courier
 
             if (errors.Count > 0)
             {
-                throw new MessageProcessingException(
-                    "One or more errors occured during message processing.",
-                    message != null ? message.GetType() : null);
+                throw errors[0].Exception;
+                //throw new MessageProcessingException(
+                //    "One or more errors occured during message processing.",
+                //    message != null ? message.GetType() : null);
             }
         }
     }

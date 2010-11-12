@@ -8,10 +8,6 @@ namespace Siege.Courier.Subscribers
         {
             void Receive(TMessage message);
         }
-
-        public interface All : For<IMessage>
-        {
-        }
     }
 
     public interface ISubscriber

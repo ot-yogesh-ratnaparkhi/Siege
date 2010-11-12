@@ -1,5 +1,4 @@
-﻿using System;
-using System.Web.Routing;
+﻿using System.Web.Mvc;
 using Courier.Sample.Messages;
 using Courier_Sample.Controllers;
 using Courier_Sample.Models;
@@ -16,8 +15,7 @@ namespace Courier_Sample.Subscribers
     {
         private readonly IFormsAuthenticationService formsService;
 
-        public AccountSubscriber(IFormsAuthenticationService formsService, RequestContext requestContext)
-            : base(requestContext)
+        public AccountSubscriber(IFormsAuthenticationService formsService, ControllerContext controllerContext) : base(controllerContext)
         {
             this.formsService = formsService;
         }
@@ -25,7 +23,7 @@ namespace Courier_Sample.Subscribers
         public void Receive(MemberFailedAuthenticationMessage message)
         {
             AddModelError("", "The user name or password provided is incorrect.");
-            View(null);
+          //  View(null);
         }
 
         public void Receive(MemberAuthenticatedMessage message)

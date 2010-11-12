@@ -2,7 +2,7 @@
 
 namespace Siege.Courier.Web
 {
-    internal class DummyController : Controller
+    public class DummyController : Controller
     {
     }
 }

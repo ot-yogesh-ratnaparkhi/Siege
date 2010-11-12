@@ -1,34 +1,35 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Siege.Courier.Subscribers
 {
     public class SubscriberCollectionItem : ISubscriberCollectionItem
     {
-        private List<ISubscriber> subscribers;
+        private Dictionary<Type, ISubscriber> subscribers;
 
         public SubscriberCollectionItem()
         {
-            subscribers = new List<ISubscriber>();
+            subscribers = new Dictionary<Type, ISubscriber>();
         }
 
         public IEnumerable<ISubscriber> Subscribers
         {
-            get { return subscribers; }
+            get { return subscribers.Values; }
         }
 
         public void Add(ISubscriber subscriber)
         {
-            if (!subscribers.Contains(subscriber))
+            if (!subscribers.ContainsKey(subscriber.GetType()))
             {
-                subscribers.Add(subscriber);
+                subscribers.Add(subscriber.GetType(), subscriber);
             }
         }
 
         public void Remove(ISubscriber subscriber)
         {
-            if (subscribers.Contains(subscriber))
+            if (subscribers.ContainsKey(subscriber.GetType()))
             {
-                subscribers.Remove(subscriber);
+                subscribers.Remove(subscriber.GetType());
             }
         }
     }

@@ -1,9 +1,7 @@
-﻿using System.ServiceModel;
-using System.Web.Security;
+﻿using System.Web.Security;
 using Courier.Sample.Messages;
 using CourierApp.Services;
 using CourierApp.Subscribers;
-using Siege.Courier;
 using Siege.Courier.WCF;
 using Siege.Courier.WindowsServices;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
@@ -25,8 +23,8 @@ namespace CourierApp
                 .Register(Given<MembershipProvider>.Then(Membership.Provider))
                 .Register(Given<IMembershipService>.Then<NullMembershipService>())
                 .Register(Given<IWCFProtocol>.Then<WCFService>());
-                
-            MapMessage<LogOnAccountMessage, NativeAdapter>();
+
+            //MapMessage<LogOnAccountMessage, NativeAdapter>();
 
             AddSubscriber<AccountSubscriber, LogOnAccountMessage>();
 

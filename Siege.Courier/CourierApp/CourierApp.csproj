@@ -108,10 +108,10 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>net stop "WCF Service Bus"</PreBuildEvent>
+    <PreBuildEvent>net stop "WCF Service Bus"|echo.</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>net start "WCF Service Bus"</PostBuildEvent>
+    <PostBuildEvent>net start "WCF Service Bus"|echo.</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

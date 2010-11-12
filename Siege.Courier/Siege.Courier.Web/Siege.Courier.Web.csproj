@@ -66,6 +66,7 @@
     <Compile Include="MessageValidationFailedMessage.cs" />
     <Compile Include="MvcControllerHandler.cs" />
     <Compile Include="MvcSubscriber.cs" />
+    <Compile Include="PerRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryString.cs" />
     <Compile Include="Responses\JsonResponse.cs" />
