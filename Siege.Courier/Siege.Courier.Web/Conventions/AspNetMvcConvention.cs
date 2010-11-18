@@ -17,7 +17,7 @@ namespace Siege.Courier.Web.Conventions
                        .Register(Given<PerRequest>.Then<PerRequest>())
                        .Register<PerRequest>(Given<ViewDataDictionary>.ConstructWith(x => new ViewDataDictionary()))
                        .Register<PerRequest>(Given<TempDataDictionary>.ConstructWith(x => new TempDataDictionary()))
-                       .Register<PerRequest>(Given<DummyController>.Then<DummyController>())
+                       .Register(Given<DummyController>.Then<DummyController>())
                        .Register<PerRequest>(Given<TempData>.Then<TempData>())
                        .Register<PerRequest>(Given<ViewModel>.Then<ViewModel>())
                        .Register(Given<HttpRequestBase>.ConstructWith(x => new HttpRequestWrapper(HttpContext.Current.Request)))
@@ -29,12 +29,12 @@ namespace Siege.Courier.Web.Conventions
                             ctx.RouteData.Values["action"] = ctx.RouteData.GetRequiredString("verb");
                         }))
                        .Register(Given<HttpContextBase>.ConstructWith(x => new HttpContextWrapper(HttpContext.Current)))
-                       .Register<PerRequest>(Given<ControllerContext>.ConstructWith(x =>
+                       .Register(Given<ControllerContext>.ConstructWith(x =>
                         {
                              HttpContextBase context = new HttpContextWrapper(HttpContext.Current);
                              return new ControllerContext(context, x.GetInstance<RequestContext>().RouteData, x.GetInstance<DummyController>());
                         }))
-                       .Register<PerRequest>(Given<DummyController>.InitializeWith(controller =>
+                       .Register(Given<DummyController>.InitializeWith(controller =>
                         {
                             controller.TempData = serviceLocator.GetInstance<TempData>().Data;
                             controller.ViewData = serviceLocator.GetInstance<ViewModel>().ViewData;

@@ -21,7 +21,7 @@ namespace CourierApp.Services
 
         public bool ValidateUser(string userName, string password)
         {
-            return false;
+            return true;
         }
 
         public MembershipCreateStatus CreateUser(string userName, string password, string email)

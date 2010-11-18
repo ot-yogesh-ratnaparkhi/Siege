@@ -2,9 +2,8 @@
 
 namespace Courier.Sample.Messages
 {
-    public class MemberAuthenticatedMessage : IMessage
+    public class RegistrationSucceededMessage : IMessage
     {
         public string UserName { get; set; }
-        public bool RememberMe { get; set; }
     }
 }

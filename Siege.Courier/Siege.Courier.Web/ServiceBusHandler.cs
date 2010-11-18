@@ -28,13 +28,21 @@ namespace Siege.Courier.Web
 
         public void ProcessRequest(HttpContext httpContext)
         {
+            var context = controllerContext();
+
             var modelBindingResult = handlerContext.ModelBinding.Using(new DefaultModelBinder()).BindAs<IMessage>();
 
             if (!modelBindingResult.Validate(message => manager.CreateDelegate(message, serviceBus).DynamicInvoke(message))) return;
 
             manager.CreateDelegate(modelBindingResult.Output, serviceBus).DynamicInvoke(modelBindingResult.Output);
+            
+            if(!context.Controller.TempData.ContainsKey("EventHandled") || !(bool)context.Controller.TempData["EventHandled"])
+            {
+                response(handlerContext.ResponseType).Execute(bucket.All(), context);
+            }
 
-            response(handlerContext.ResponseType).Execute(bucket.All(), controllerContext());
+            context.HttpContext.Response.Flush();
+            context.HttpContext.Response.Close();
         }
 
         public bool IsReusable

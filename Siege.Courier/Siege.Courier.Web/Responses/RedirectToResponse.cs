@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -23,6 +24,7 @@ namespace Siege.Courier.Web.Responses
                                                                context.RequestContext.RouteData == null ? null : context.RequestContext.RouteData.Values,
                                                                null, true);
 
+            context.HttpContext = new HttpContextWrapper(HttpContext.Current);
             new RedirectToRouteResult(dictionary).ExecuteResult(context);
         }
 

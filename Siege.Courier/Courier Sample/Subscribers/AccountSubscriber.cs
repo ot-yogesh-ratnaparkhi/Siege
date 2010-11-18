@@ -11,7 +11,9 @@ namespace Courier_Sample.Subscribers
                                      Subscriber.For<MemberFailedAuthenticationMessage>,
                                      Subscriber.For<MemberAuthenticatedMessage>,
                                      Subscriber.For<LogOffAccountMessage>,
-                                     Subscriber.For<MessageValidationFailedMessage<LogOnAccountMessage>>
+                                     Subscriber.For<MessageValidationFailedMessage<LogOnAccountMessage>>,
+                                     Subscriber.For<RegistrationSucceededMessage>,
+                                     Subscriber.For<RegistrationFailedMessage>
     {
         private readonly IFormsAuthenticationService formsService;
 
@@ -23,12 +25,11 @@ namespace Courier_Sample.Subscribers
         public void Receive(MemberFailedAuthenticationMessage message)
         {
             AddModelError("", "The user name or password provided is incorrect.");
-          //  View(null);
         }
 
         public void Receive(MemberAuthenticatedMessage message)
         {
-            formsService.SignIn(message.Request.UserName, message.Request.RememberMe);
+            formsService.SignIn(message.UserName, message.RememberMe);
 
             if (QueryString.ReturnUrl == null)
             {
@@ -42,13 +43,22 @@ namespace Courier_Sample.Subscribers
         public void Receive(MessageValidationFailedMessage<LogOnAccountMessage> message)
         {
             AddModelError("", "The user name or password provided is incorrect.");
-            View(message.InnerMessage);
         }
 
         public void Receive(LogOffAccountMessage message)
         {
             formsService.SignOut();
             RedirectTo<HomeController>(home => home.Index());
+        }
+
+        public void Receive(RegistrationSucceededMessage message)
+        {
+            formsService.SignIn(message.UserName, false /* createPersistentCookie */);
+        }
+
+        public void Receive(RegistrationFailedMessage message)
+        {
+            AddModelError("", AccountValidation.ErrorCodeToString(message.Status));
         }
     }
 }

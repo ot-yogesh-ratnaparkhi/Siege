@@ -1,24 +1,32 @@
 ﻿using System.Collections.Generic;
 using System.Web;
+using System.Web.Mvc;
 using Siege.Courier.Messages;
 
 namespace Siege.Courier.Web
 {
     public class HttpMessageBucket : IMessageBucket
     {
+        private readonly TempDataDictionary tempData;
+
+        public HttpMessageBucket(TempDataDictionary tempData)
+        {
+            this.tempData = tempData;
+        }
+
         public void Add(IMessage message)
         {
-            var messages = (List<IMessage>) HttpContext.Current.Items["bucket"];
+            var messages = (List<IMessage>) tempData["bucket"];
             messages = messages ?? new List<IMessage>();
 
             messages.Add(message);
 
-            HttpContext.Current.Items["bucket"] = messages;
+            tempData["bucket"] = messages;
         }
 
         public List<IMessage> All()
         {
-            var messages = (List<IMessage>) HttpContext.Current.Items["bucket"];
+            var messages = (List<IMessage>) tempData["bucket"];
             messages = messages ?? new List<IMessage>();
 
             return messages;
@@ -26,7 +34,7 @@ namespace Siege.Courier.Web
 
         public void Clear()
         {
-            HttpContext.Current.Items["bucket"] = new List<IMessage>();
+            tempData["bucket"] = new List<IMessage>();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Web;
+using System.Web.Mvc;
 
 namespace Siege.Courier.Web.Responses
 {
@@ -6,8 +7,11 @@ namespace Siege.Courier.Web.Responses
     {
         public override void Execute(object model, ControllerContext context)
         {
+            context.HttpContext = new HttpContextWrapper(HttpContext.Current);
             var viewResult = new ViewResult {TempData = context.Controller.TempData, ViewData = context.Controller.ViewData};
-
+            
+            viewResult.ViewData.Model = model;
+            
             viewResult.ExecuteResult(context);
         }
     }

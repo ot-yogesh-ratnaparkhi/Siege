@@ -4,7 +4,7 @@ namespace Siege.Courier.Subscribers
 {
     public class Subscriber
     {
-        public interface For<TMessage> : ISubscriber where TMessage : IMessage
+        public interface For<in TMessage> : ISubscriber where TMessage : IMessage
         {
             void Receive(TMessage message);
         }
@@ -12,6 +12,5 @@ namespace Siege.Courier.Subscribers
 
     public interface ISubscriber
     {
-        
     }
 }

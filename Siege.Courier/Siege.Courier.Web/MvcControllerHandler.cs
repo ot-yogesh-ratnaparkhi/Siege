@@ -1,16 +1,20 @@
-﻿using System.Web;
+﻿using System;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Siege.Courier.Web.Responses;
 
 namespace Siege.Courier.Web
 {
     public class MvcControllerHandler : IHttpHandler
     {
         private readonly RequestContext requestContext;
+        private readonly ControllerContext controllerContext;
 
-        public MvcControllerHandler(RequestContext requestContext)
+        public MvcControllerHandler(RequestContext requestContext, ControllerContext controllerContext)
         {
             this.requestContext = requestContext;
+            this.controllerContext = controllerContext;
         }
 
         public void ProcessRequest(HttpContext context)
@@ -18,7 +22,18 @@ namespace Siege.Courier.Web
             requestContext.RouteData.Values["controller"] = requestContext.RouteData.GetRequiredString("noun");
             requestContext.RouteData.Values["action"] = requestContext.RouteData.GetRequiredString("verb");
 
-            ((IHttpHandler) new MvcHandler(requestContext)).ProcessRequest(context);
+            try
+            {
+                ((IHttpHandler)new MvcHandler(requestContext)).ProcessRequest(context);
+            }
+            catch (InvalidOperationException)
+            {   
+                new ViewResponse().Execute(null, controllerContext);
+            }
+            catch(HttpException)
+            {
+                new ViewResponse().Execute(null, controllerContext);
+            }
         }
 
         public bool IsReusable

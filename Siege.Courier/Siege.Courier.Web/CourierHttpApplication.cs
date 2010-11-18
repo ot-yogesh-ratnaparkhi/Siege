@@ -1,4 +1,6 @@
-﻿using System.Web.Routing;
+﻿using System;
+using System.Web;
+using System.Web.Routing;
 using Siege.Courier.Messages;
 using Siege.Courier.Subscribers;
 using Siege.Courier.Web.Conventions;
@@ -51,6 +53,14 @@ namespace Siege.Courier.Web
         protected void AddResponse<TResponse>(string name) where TResponse : Response
         {
             ServiceLocator.Register(Given<Response>.Then<TResponse>(name.ToLower()));
+        }
+
+        public void Application_BeginRequest(object sender, EventArgs e)
+        {
+            HttpContext.Current.Response.Clear();
+            HttpContext.Current.Response.ClearHeaders();
+            HttpContext.Current.Response.BufferOutput = true;
+            HttpContext.Current.Response.Buffer = true;
         }
     }
 }
