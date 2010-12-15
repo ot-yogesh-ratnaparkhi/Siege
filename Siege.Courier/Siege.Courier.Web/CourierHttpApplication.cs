@@ -26,8 +26,6 @@ namespace Siege.Courier.Web
             AddResponse<ViewResponse>("view");
             AddResponse<JsonResponse>("json");
 
-           // MapMessage<ExceptionMessage, NativeAdapter>();
-
             RouteTable.Routes.Add(ServiceLocator.GetInstance<ServiceBusRoute>());
             base.OnApplicationStarted();
         }

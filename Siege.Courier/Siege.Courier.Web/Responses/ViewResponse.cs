@@ -10,7 +10,7 @@ namespace Siege.Courier.Web.Responses
             context.HttpContext = new HttpContextWrapper(HttpContext.Current);
             var viewResult = new ViewResult {TempData = context.Controller.TempData, ViewData = context.Controller.ViewData};
             
-            viewResult.ViewData.Model = model;
+            viewResult.ViewData.Model = null;
             
             viewResult.ExecuteResult(context);
         }

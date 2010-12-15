@@ -32,9 +32,10 @@ namespace Siege.Courier.Web
 
             var modelBindingResult = handlerContext.ModelBinding.Using(new DefaultModelBinder()).BindAs<IMessage>();
 
-            if (!modelBindingResult.Validate(message => manager.CreateDelegate(message, serviceBus).DynamicInvoke(message))) return;
-
-            manager.CreateDelegate(modelBindingResult.Output, serviceBus).DynamicInvoke(modelBindingResult.Output);
+            if (modelBindingResult.Validate(message => manager.CreateDelegate(message, serviceBus).DynamicInvoke(message)))
+            {
+                manager.CreateDelegate(modelBindingResult.Output, serviceBus).DynamicInvoke(modelBindingResult.Output);
+            }
             
             if(!context.Controller.TempData.ContainsKey("EventHandled") || !(bool)context.Controller.TempData["EventHandled"])
             {
