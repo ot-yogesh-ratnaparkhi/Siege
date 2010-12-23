@@ -80,6 +80,11 @@
     <Compile Include="TempData.cs" />
     <Compile Include="TypeFinder.cs" />
     <Compile Include="ModelBinding.cs" />
+    <Compile Include="ViewEngine\ITemplateSelector.cs" />
+    <Compile Include="ViewEngine\TemplateConvention.cs" />
+    <Compile Include="ViewEngine\TemplateFamily.cs" />
+    <Compile Include="ViewEngine\TemplateSelector.cs" />
+    <Compile Include="ViewEngine\TemplateViewEngine.cs" />
     <Compile Include="ViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +97,7 @@
       <Name>Siege.Courier</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
