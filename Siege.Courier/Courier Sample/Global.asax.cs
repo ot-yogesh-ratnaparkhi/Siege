@@ -1,10 +1,13 @@
-﻿using Courier.Sample.Messages;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
+using Courier.Sample.Messages;
 using Courier_Sample.Controllers;
 using Courier_Sample.Models;
 using Courier_Sample.Subscribers;
 using Siege.Courier;
 using Siege.Courier.WCF;
 using Siege.Courier.Web;
+using Siege.Courier.Web.ViewEngine;
 using Siege.Requisitions;
 using Siege.Requisitions.Extensions.Conventions;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
@@ -25,6 +28,7 @@ namespace Courier_Sample
             base.OnApplicationStarted();
 
             ServiceLocator
+                .Register(Using.Convention<TemplateConvention>())
                 .Register(Using.Convention<ControllerConvention<HomeController>>())
                 .Register(Given<WCFAdapter>.Then<WCFAdapter>())
                 .Register(Given<IConfigurationManager>.Then<ServiceBusConfigurationManager>())
@@ -44,6 +48,13 @@ namespace Courier_Sample
             AddSubscriber<AccountSubscriber, MemberAuthenticatedMessage>();
             AddSubscriber<AccountSubscriber, MemberFailedAuthenticationMessage>();
             AddSubscriber<AccountSubscriber, MessageValidationFailedMessage<LogOnAccountMessage>>();
+
+            var engine = new TemplateViewEngine(() => new List<object>());
+
+            engine.For<HomeController>(controller => controller.Index()).Map(To.Path("~/Views/Home/LOL"));
+
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(engine);
         }
     }
 }
