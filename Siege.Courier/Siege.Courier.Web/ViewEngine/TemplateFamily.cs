@@ -14,20 +14,39 @@ namespace Siege.Courier.Web.ViewEngine
             this.templateCriteria = templateCriteria;
         }
 
-        public void Map(ITemplateSelector selector)
+        public void Map(params ITemplateSelector[] selectors)
         {
-            if(selector is IConditionalTemplateSelector)
+            if (selectors == null || selectors.Length == 0) return;
+
+            foreach (ITemplateSelector selector in selectors)
             {
-                ((IConditionalTemplateSelector)selector).WithCriteria(this.templateCriteria);
+                if (selector is IConditionalTemplateSelector)
+                {
+                    ((IConditionalTemplateSelector) selector).WithCriteria(this.templateCriteria);
+                }
+                this.selectors.Add(selector);
             }
-            this.selectors.Add(selector);
         }
 
         public string GetValidPath()
         {
-            var orderedSelectors = selectors.OrderBy(x => x is IConditionalTemplateSelector);
+            var orderedSelectors = selectors.Where(selector => !(selector is IMasterTemplateSelector)).OrderByDescending(x => x is IConditionalTemplateSelector);
 
             foreach(ITemplateSelector selector in orderedSelectors)
+            {
+                var path = selector.Path;
+
+                if (path != null) return path;
+            }
+
+            return null;
+        }
+
+        public string GetMaster()
+        {
+            var orderedSelectors = selectors.OfType<IMasterTemplateSelector>().OrderByDescending(x => x is IConditionalTemplateSelector);
+
+            foreach (IMasterTemplateSelector selector in orderedSelectors)
             {
                 var path = selector.Path;
 

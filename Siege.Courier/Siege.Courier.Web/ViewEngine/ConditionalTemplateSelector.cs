@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Siege.Courier.Web.ViewEngine
 {
-    public class ConditionalTemplateSelector<T> : ITemplateSelector, IConditionalTemplateSelector
+    public class ConditionalTemplateSelector<T> : IConditionalTemplateSelector
     {
         private readonly Func<T, bool> condition;
         private readonly string path;

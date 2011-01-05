@@ -8,5 +8,12 @@
          
             return selector;
         }
+
+        public static DefaultMasterSelector Master(string masterPath)
+        {
+            var selector = new DefaultMasterSelector(masterPath);
+
+            return selector;
+        }
     }
 }

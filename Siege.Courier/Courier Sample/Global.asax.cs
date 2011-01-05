@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Courier.Sample.Messages;
 using Courier_Sample.Controllers;
 using Courier_Sample.Models;
@@ -11,6 +10,7 @@ using Siege.Courier.Web.ViewEngine;
 using Siege.Requisitions;
 using Siege.Requisitions.Extensions.Conventions;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
+using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.SiegeAdapter;
 using Siege.Requisitions.Web.Conventions;
 
@@ -49,12 +49,33 @@ namespace Courier_Sample
             AddSubscriber<AccountSubscriber, MemberFailedAuthenticationMessage>();
             AddSubscriber<AccountSubscriber, MessageValidationFailedMessage<LogOnAccountMessage>>();
 
-            var engine = new TemplateViewEngine(() => new List<object>());
+            var engine = new TemplateViewEngine(() => ServiceLocator.Store.Get<IContextStore>().Items);
 
-            engine.For<HomeController>(controller => controller.Index()).Map(To.Path("~/Views/Home/LOL"));
+            engine
+                .For<HomeController>(controller => controller.Index())
+                .Map(
+                         To.Path("~/Views/Home/Index.aspx"),
+                         To.Path("~/views/Home/LOL.aspx").When<bool>(x => x),
+                         To.Master("~/Views/Shared/Site.master"),
+                         To.Master("~/Views/Shared/LOL.master").When<bool>(x => !x)
+                    );
+            engine
+                .ForPartial("LogOnUserControl")
+                .Map(
+                        To.Path("~/Views/Shared/LogOnUserControl.ascx"),
+                        To.Path("~/Views/Shared/LOLUserControl.ascx").When<bool>(x => x)
+                    );
 
+            engine
+                .Map(
+                        To.Master("~/Views/Shared/Site.master"),
+                        To.Master("~/Views/Shared/LOL.master").When<bool>(x => x)
+                    );
+            
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(engine);
+
+            ServiceLocator.AddContext(false);
         }
     }
 }

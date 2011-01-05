@@ -4,7 +4,7 @@ namespace Siege.Courier.Web.ViewEngine
 {
     public class DefaultTemplateSelector : ITemplateSelector
     {
-        private readonly string path;
+        protected readonly string path;
 
         public DefaultTemplateSelector(string path)
         {
@@ -16,7 +16,7 @@ namespace Siege.Courier.Web.ViewEngine
             get { return path; }
         }
 
-        public ConditionalTemplateSelector<T> When<T>(Func<T, bool> condition)
+        public IConditionalTemplateSelector When<T>(Func<T, bool> condition)
         {
             return new ConditionalTemplateSelector<T>(condition, this.path);
         }

@@ -80,8 +80,11 @@
     <Compile Include="TempData.cs" />
     <Compile Include="TypeFinder.cs" />
     <Compile Include="ModelBinding.cs" />
+    <Compile Include="ViewEngine\ConditionalMasterSelector.cs" />
     <Compile Include="ViewEngine\ConditionalTemplateSelector.cs" />
+    <Compile Include="ViewEngine\DefaultMasterSelector.cs" />
     <Compile Include="ViewEngine\IConditionalTemplateSelector.cs" />
+    <Compile Include="ViewEngine\IMasterTemplateSelector.cs" />
     <Compile Include="ViewEngine\ITemplateSelector.cs" />
     <Compile Include="ViewEngine\TemplateConvention.cs" />
     <Compile Include="ViewEngine\TemplateFamily.cs" />

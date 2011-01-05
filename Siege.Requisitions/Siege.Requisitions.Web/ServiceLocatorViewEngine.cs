@@ -61,28 +61,28 @@ namespace Siege.Requisitions.Web
             return null;
         }
 
-        public override ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
-        {
-            ViewEngineResult result = null;
+        //public override ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
+        //{
+        //    ViewEngineResult result = null;
 
-            if (controllerContext.Controller != null)
-            {
-                string name = null;
+        //    if (controllerContext.Controller != null)
+        //    {
+        //        string name = null;
                 
-                if (Regex.IsMatch(controllerContext.Controller.GetType().Name, "(.*)[Cc]ontroller.*"))
-                {
-                    name = Regex.Replace(controllerContext.Controller.GetType().Name, "(.*)[Cc]ontroller.*", "$1");
-                }
+        //        if (Regex.IsMatch(controllerContext.Controller.GetType().Name, "(.*)[Cc]ontroller.*"))
+        //        {
+        //            name = Regex.Replace(controllerContext.Controller.GetType().Name, "(.*)[Cc]ontroller.*", "$1");
+        //        }
 
-                if (!String.IsNullOrEmpty(name))
-                {
-                    result = base.FindPartialView(controllerContext, name + "/" + partialViewName, useCache);
-                }
-            }
+        //        if (!String.IsNullOrEmpty(name))
+        //        {
+        //            result = base.FindPartialView(controllerContext, name + "/" + partialViewName, useCache);
+        //        }
+        //    }
 
-            if (result == null) result = base.FindPartialView(controllerContext, partialViewName, useCache);
+        //    if (result == null) result = base.FindPartialView(controllerContext, partialViewName, useCache);
 
-            return result;
-        }
+        //    return result;
+        //}
     }
 }
