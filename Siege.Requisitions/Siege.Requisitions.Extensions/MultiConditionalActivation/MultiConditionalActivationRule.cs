@@ -20,15 +20,17 @@ using Siege.Requisitions.ResolutionRules;
 
 namespace Siege.Requisitions.Extensions.MultiConditionalActivation
 {
-    public class MultiConditionalActivationRule<TService> : ActivationRule<TService, object>
+    public class MultiConditionalActivationRule<TService> : ActivationRule<TService>
     {
         private readonly List<IConditionalActivationRule> list = new List<IConditionalActivationRule>();
 
         public void When<TContext>(Func<TContext, bool> evaluation)
         {
-            var rule = new ExtendedRegistrationSyntax.ConditionalActivationRule<TService, TContext>();
+            var rule = new ExtendedRegistrationSyntax.ConditionalActivationRule<TService>();
 
-            rule.SetEvaluation(evaluation);
+            var lambdaEvaluation = new LambdaCondition<TContext>(evaluation);
+
+            rule.SetEvaluation(lambdaEvaluation);
 
             list.Add(rule);
         }

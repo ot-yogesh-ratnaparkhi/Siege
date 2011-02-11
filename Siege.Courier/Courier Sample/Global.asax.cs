@@ -54,28 +54,29 @@ namespace Courier_Sample
             engine
                 .For<HomeController>(controller => controller.Index())
                 .Map(
-                         To.Path("~/Views/Home/Index.aspx"),
-                         To.Path("~/views/Home/LOL.aspx").When<bool>(x => x),
-                         To.Master("~/Views/Shared/Site.master"),
-                         To.Master("~/Views/Shared/LOL.master").When<bool>(x => !x)
+                         To.Path("LOL").When<bool>(x => x)//,
+                         //To.Master("~/Views/Shared/Site.master"),
+                         //To.Master("~/Views/LOL/LOL.master").When<bool>(x => !x)
                     );
             engine
                 .ForPartial("LogOnUserControl")
                 .Map(
                         To.Path("~/Views/Shared/LogOnUserControl.ascx"),
-                        To.Path("~/Views/Shared/LOLUserControl.ascx").When<bool>(x => x)
+                        To.Path("~/Views/LOL/LOLUserControl.ascx").When<bool>(x => x)
                     );
 
             engine
                 .Map(
+                        To.Path("~/Views/Home/"),
+                        To.Path("~/Views/LOL/").When<bool>(x => x),
                         To.Master("~/Views/Shared/Site.master"),
-                        To.Master("~/Views/Shared/LOL.master").When<bool>(x => x)
+                        To.Master("~/Views/LOL/LOL.master").When<bool>(x => x)
                     );
             
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(engine);
 
-            ServiceLocator.AddContext(false);
+            ServiceLocator.AddContext(true);
         }
     }
 }

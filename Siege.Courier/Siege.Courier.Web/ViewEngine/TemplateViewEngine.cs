@@ -20,11 +20,11 @@ namespace Siege.Courier.Web.ViewEngine
             this.defaultMasterFamily = new TemplateFamily(templateCriteria);
         }
 
-        public void Map(params IMasterTemplateSelector[] selectors)
+        public void Map(params ITemplateSelector[] selectors)
         {
             if (selectors == null || selectors.Length == 0) return;
 
-            foreach (IMasterTemplateSelector selector in selectors)
+            foreach (ITemplateSelector selector in selectors)
             {
                 if (selector is IConditionalTemplateSelector)
                 {
@@ -80,10 +80,17 @@ namespace Siege.Courier.Web.ViewEngine
                 return base.FindView(controllerContext, viewName, masterName, useCache);
             }
             var template = templates[controllerContext.RouteData.Values["controller"] + "." + viewName];
-            var path = template.GetValidPath();
+            var defaultPath = this.defaultMasterFamily.GetValidPath();
+            var templatePath = template.GetValidPath();
+
+            var path =  templatePath.StartsWith("~/") 
+                ? (templatePath.EndsWith("/") ? templatePath + viewName : templatePath + "/" + viewName)
+                : (defaultPath == null ? viewName : defaultPath.EndsWith("/") ? defaultPath + viewName : defaultPath + "/" + viewName);
+
             var master = template.GetMaster() ?? this.defaultMasterFamily.GetMaster() ?? masterName;
+            var result = FindExistingView(controllerContext, "", viewName, masterName, useCache);
             
-            return base.FindView(controllerContext, path, master, useCache);
+            return result ?? base.FindView(controllerContext, path, master, useCache);
         }
 
         public override ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
@@ -94,7 +101,8 @@ namespace Siege.Courier.Web.ViewEngine
             }
 
             var template = templates["Partial." + partialViewName];
-            var path = template.GetValidPath();
+            var defaultPath = this.defaultMasterFamily.GetValidPath();
+            var path = template.GetValidPath() ?? (defaultPath == null ? partialViewName : defaultPath + partialViewName);
 
             return base.FindPartialView(controllerContext, path, useCache);
         }

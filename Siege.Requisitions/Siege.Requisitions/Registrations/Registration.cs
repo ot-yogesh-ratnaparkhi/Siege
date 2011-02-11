@@ -38,9 +38,9 @@ namespace Siege.Requisitions.Registrations
             this.rule = rule;
         }
 
-        public virtual bool IsValid(IServiceLocatorStore context)
+        public virtual bool IsValid(IInstanceResolver locator, IServiceLocatorStore context)
         {
-            return rule != null && rule.GetRuleEvaluationStrategy().IsValid(rule, context);
+            return rule != null && rule.GetRuleEvaluationStrategy().IsValid(rule, locator, context);
         }
 
         public virtual object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context, PostResolutionPipeline pipeline)
@@ -53,7 +53,7 @@ namespace Siege.Requisitions.Registrations
             }
             else
             {
-                if (rule.GetRuleEvaluationStrategy().IsValid(rule, context))
+                if (rule.GetRuleEvaluationStrategy().IsValid(rule, locator, context))
                 {
                     instance = GetActivationStrategy().Resolve(locator, context);
                 }

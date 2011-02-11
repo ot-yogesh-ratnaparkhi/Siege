@@ -25,6 +25,7 @@ using Siege.Requisitions.RegistrationPolicies;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.OpenGenerics;
 using Siege.Requisitions.Resolution;
+using Siege.Requisitions.ResolutionRules;
 
 namespace Siege.Requisitions.Extensions.ExtendedRegistrationSyntax
 {
@@ -71,11 +72,13 @@ namespace Siege.Requisitions.Extensions.ExtendedRegistrationSyntax
             return registration;
         }
 
-        public new static ConditionalActivationRule<TService, TContext> When<TContext>(Func<TContext, bool> evaluation)
+        public new static ConditionalActivationRule<TService> When<TContext>(Func<TContext, bool> evaluation)
         {
-            var rule = new ConditionalActivationRule<TService, TContext>();
+            var rule = new ConditionalActivationRule<TService>();
 
-            rule.SetEvaluation(evaluation);
+            var lambdaEvaluation = new LambdaCondition<TContext>(evaluation);
+
+            rule.SetEvaluation(lambdaEvaluation);
 
             return rule;
         }

@@ -30,6 +30,6 @@ namespace Siege.Requisitions.Registrations
         IRegistrationStore GetRegistrationStore();
         IRegistrationTemplate GetRegistrationTemplate();
         object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context, PostResolutionPipeline pipeline);
-        bool IsValid(IServiceLocatorStore context);
+        bool IsValid(IInstanceResolver locator, IServiceLocatorStore context);
     }
 }

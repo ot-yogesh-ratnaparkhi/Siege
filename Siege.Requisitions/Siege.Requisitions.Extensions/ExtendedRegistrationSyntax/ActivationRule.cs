@@ -21,8 +21,7 @@ using Siege.Requisitions.Registrations;
 
 namespace Siege.Requisitions.Extensions.ExtendedRegistrationSyntax
 {
-    public abstract class ActivationRule<TBaseService, TContext> :
-        ResolutionRules.ConditionalActivationRule<TBaseService, TContext>
+    public abstract class ActivationRule<TBaseService> : ResolutionRules.ConditionalActivationRule<TBaseService>
     {
         public IRegistration ConstructWith<TService>(Func<IInstanceResolver, TService> factoryMethod)
         {

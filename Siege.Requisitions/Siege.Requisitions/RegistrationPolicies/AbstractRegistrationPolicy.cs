@@ -59,9 +59,9 @@ namespace Siege.Requisitions.RegistrationPolicies
 
         public abstract object ResolveWith(IInstanceResolver locator, IServiceLocatorStore context, PostResolutionPipeline pipeline);
 
-        public bool IsValid(IServiceLocatorStore context)
+        public bool IsValid(IInstanceResolver locator, IServiceLocatorStore context)
         {
-            return registration.IsValid(context);
+            return registration.IsValid(locator, context);
         }
 
         public void Handle(IRegistration registration)

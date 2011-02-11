@@ -184,6 +184,7 @@
     <Compile Include="TestClasses\TestContext.cs" />
     <Compile Include="TestClasses\TestDecorator.cs" />
     <Compile Include="TestClasses\TestEnum.cs" />
+    <Compile Include="TestClasses\TestEvaluation.cs" />
     <Compile Include="TestClasses\UnregisteredClass.cs" />
     <Compile Include="Adapters\UnityAdapterTests.cs" />
     <Compile Include="Adapters\WindsorAdapterTests.cs" />

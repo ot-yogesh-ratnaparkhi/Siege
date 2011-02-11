@@ -52,7 +52,7 @@ namespace Siege.Requisitions.Resolution.Pipeline
                     {
                         var actionRegistration = actions[i];
 
-                        if (actionRegistration.IsValid(store))
+                        if (actionRegistration.IsValid(serviceLocator, store))
                             result.Result = actionRegistration.ResolveWith(new ValueResolver(result.Result), store, null);
                     }
                 }

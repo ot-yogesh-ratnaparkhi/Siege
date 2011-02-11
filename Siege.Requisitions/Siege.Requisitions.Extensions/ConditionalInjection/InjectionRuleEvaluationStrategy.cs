@@ -20,13 +20,13 @@ namespace Siege.Requisitions.Extensions.ConditionalInjection
 {
     public class InjectionRuleEvaluationStrategy : IRuleEvaluationStrategy
     {
-        public bool IsValid(IActivationRule rule, IServiceLocatorStore context)
+        public bool IsValid(IActivationRule rule, IInstanceResolver resolver, IServiceLocatorStore context)
         {
             var types = context.Get<IExecutionStore>().RequestedTypes;
             for(int i = 0; i < types.Count; i++)
             {
                 var dependency = types[i];
-                if (rule.Evaluate(dependency)) return true;
+                if (rule.Evaluate(resolver, dependency)) return true;
             }
 
             return false;

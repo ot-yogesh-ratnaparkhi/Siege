@@ -23,11 +23,20 @@ namespace Siege.Requisitions.RegistrationSyntax
 {
     public class Given<TBaseService>
     {
-        public static ConditionalActivationRule<TBaseService, TContext> When<TContext>(Func<TContext, bool> evaluation)
+        public static ConditionalActivationRule<TBaseService> When<TContext>(Func<TContext, bool> evaluation)
         {
-            var rule = new ConditionalActivationRule<TBaseService, TContext>();
+            var rule = new ConditionalActivationRule<TBaseService>();
 
-            rule.SetEvaluation(evaluation);
+            var lambdaEvaluation = new LambdaCondition<TContext>(evaluation);
+
+            rule.SetEvaluation(lambdaEvaluation);
+
+            return rule;
+        }
+
+        public static ConditionBasedActivationRule<TBaseService, TCondition> When<TCondition>() where TCondition : ICondition
+        {
+            var rule = new ConditionBasedActivationRule<TBaseService, TCondition>();
 
             return rule;
         }

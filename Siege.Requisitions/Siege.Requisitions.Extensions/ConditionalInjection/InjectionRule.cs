@@ -20,7 +20,7 @@ using Siege.Requisitions.ResolutionRules;
 
 namespace Siege.Requisitions.Extensions.ConditionalInjection
 {
-    public class InjectionRule<TService> : ActivationRule<TService, object>
+    public class InjectionRule<TService> : ActivationRule<TService>
     {
         private Type basedOnType;
 
@@ -34,7 +34,7 @@ namespace Siege.Requisitions.Extensions.ConditionalInjection
             return new InjectionRuleEvaluationStrategy();
         }
 
-        public override bool Evaluate(object context)
+        public override bool Evaluate(IInstanceResolver resolver, object context)
         {
             return (Type)context == basedOnType;
         }

@@ -22,13 +22,13 @@ namespace Siege.Requisitions.ResolutionRules
 {
     public class ContextEvaluationStrategy : IRuleEvaluationStrategy
     {
-        public virtual bool IsValid(IActivationRule rule, IServiceLocatorStore context)
+        public virtual bool IsValid(IActivationRule rule, IInstanceResolver resolver, IServiceLocatorStore context)
         {
             var items = MergeContextItems(context);
             for (int i = 0; i < items.Count; i++)
             {
                 var contextItem = items[i];
-                if (rule.Evaluate(contextItem)) return true;
+                if (rule.Evaluate(resolver, contextItem)) return true;
             }
 
             return false;

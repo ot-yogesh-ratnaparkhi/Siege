@@ -104,6 +104,8 @@
     <Compile Include="RegistrationPolicies\Singleton.cs" />
     <Compile Include="Registrations\OpenGenerics\IOpenGenericRegistration.cs" />
     <Compile Include="Registrations\OpenGenerics\OpenGenericRegistration.cs" />
+    <Compile Include="ResolutionRules\ConditionBasedActivationRule.cs" />
+    <Compile Include="ResolutionRules\ICondition.cs" />
     <Compile Include="Resolution\ConstructorParameter.cs" />
     <Compile Include="Resolution\ContextArgument.cs" />
     <Compile Include="Resolution\IResolutionArgument.cs" />

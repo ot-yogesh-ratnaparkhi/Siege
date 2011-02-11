@@ -14,9 +14,9 @@
 */
 
 using NUnit.Framework;
-using Siege.Requisitions.UnitTests.TestClasses;
 using Siege.Requisitions.Exceptions;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
+using Siege.Requisitions.UnitTests.TestClasses;
 using TestContext = Siege.Requisitions.UnitTests.TestClasses.TestContext;
 
 namespace Siege.Requisitions.UnitTests
@@ -28,8 +28,8 @@ namespace Siege.Requisitions.UnitTests
         {
             locator
                 .Register(Given<ITestInterface>
-                            .When<TestContext>(context => context.TestCases == TestEnum.Case2)
-                            .Then<TestCase2>());
+                              .When<TestContext>(context => context.TestCases == TestEnum.Case2)
+                              .Then<TestCase2>());
             locator.AddContext(CreateContext(TestEnum.Case2));
 
             Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>());
@@ -40,8 +40,8 @@ namespace Siege.Requisitions.UnitTests
         {
             locator
                 .Register(Given<ITestInterface>
-                            .When<TestContext>(context => context.TestCases == TestEnum.Case2)
-                            .Then(new TestCase2()));
+                              .When<TestContext>(context => context.TestCases == TestEnum.Case2)
+                              .Then(new TestCase2()));
             locator.AddContext(CreateContext(TestEnum.Case2));
 
             Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>());
@@ -53,8 +53,8 @@ namespace Siege.Requisitions.UnitTests
             locator
                 .Register(Given<ITestInterface>.Then<TestCase1>())
                 .Register(Given<ITestInterface>
-                            .When<TestContext>(context => context.TestCases == TestEnum.Case2)
-                            .Then<TestCase2>());
+                              .When<TestContext>(context => context.TestCases == TestEnum.Case2)
+                              .Then<TestCase2>());
             locator.AddContext(CreateContext(TestEnum.Case2));
 
             Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>());
@@ -65,11 +65,11 @@ namespace Siege.Requisitions.UnitTests
         {
             locator
                 .Register(Given<ITestInterface>
-                            .When<TestContext>(context => context.TestCases == TestEnum.Case2)
-                            .Then<TestCase2>())
+                              .When<TestContext>(context => context.TestCases == TestEnum.Case2)
+                              .Then<TestCase2>())
                 .Register(Given<ITestInterface>
-                            .When<TestContext>(context => context.TestCases == TestEnum.Case1)
-                            .Then<TestCase1>());
+                              .When<TestContext>(context => context.TestCases == TestEnum.Case1)
+                              .Then<TestCase1>());
             locator.AddContext(CreateContext(TestEnum.Case1));
 
             Assert.IsInstanceOf<TestCase1>(locator.GetInstance<ITestInterface>());
@@ -81,11 +81,11 @@ namespace Siege.Requisitions.UnitTests
             locator
                 .Register(Given<ITestInterface>.Then<TestCase1>())
                 .Register(Given<ITestInterface>
-                            .When<TestContext>(context => context.TestCases == TestEnum.Case2)
-                            .Then<TestCase2>())
+                              .When<TestContext>(context => context.TestCases == TestEnum.Case2)
+                              .Then<TestCase2>())
                 .Register(Given<ITestInterface>
-                            .When<TestContext>(context => context.TestCases == TestEnum.Case1)
-                            .Then<TestCase1>());
+                              .When<TestContext>(context => context.TestCases == TestEnum.Case1)
+                              .Then<TestCase1>());
 
             Assert.IsInstanceOf<TestCase1>(locator.GetInstance<ITestInterface>());
 
@@ -98,26 +98,26 @@ namespace Siege.Requisitions.UnitTests
         public void ShouldUseCorrectRuleGivenMultipleRulesAndDefault()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>())
-                   .Register(Given<ITestInterface>
-                                .When<TestContext>(context => context.TestCases == TestEnum.Case2)
-                                .Then<TestCase2>())
-                   .Register(Given<ITestInterface>
-                                .When<TestContext>(context => context.TestCases == TestEnum.Case1)
-                                .Then<TestCase1>());
+                .Register(Given<ITestInterface>
+                              .When<TestContext>(context => context.TestCases == TestEnum.Case2)
+                              .Then<TestCase2>())
+                .Register(Given<ITestInterface>
+                              .When<TestContext>(context => context.TestCases == TestEnum.Case1)
+                              .Then<TestCase1>());
             locator.AddContext(CreateContext(TestEnum.Case1));
 
             Assert.IsInstanceOf<TestCase1>(locator.GetInstance<ITestInterface>());
         }
 
-        [Test, ExpectedException(typeof(RegistrationNotFoundException))]
+        [Test, ExpectedException(typeof (RegistrationNotFoundException))]
         public void ShouldThrowExceptionWhenTypeNoDefaultSpecifiedAndNoRulesMatch()
         {
             locator.Register(Given<ITestInterface>
-                                .When<TestContext>(context => context.TestCases == TestEnum.Case2)
-                                .Then<TestCase2>())
-                   .Register(Given<ITestInterface>
-                                .When<TestContext>(context => context.TestCases == TestEnum.Case1)
-                                .Then<TestCase1>());
+                                 .When<TestContext>(context => context.TestCases == TestEnum.Case2)
+                                 .Then<TestCase2>())
+                .Register(Given<ITestInterface>
+                              .When<TestContext>(context => context.TestCases == TestEnum.Case1)
+                              .Then<TestCase1>());
 
             Assert.IsInstanceOf<TestCase1>(locator.GetInstance<ITestInterface>());
         }
@@ -126,9 +126,9 @@ namespace Siege.Requisitions.UnitTests
         public void ShouldNotUseRuleWhenNotSatisfied()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>())
-                   .Register(Given<ITestInterface>
-                                .When<TestContext>(context => context.TestCases == TestEnum.Case2)
-                                .Then<TestCase2>());
+                .Register(Given<ITestInterface>
+                              .When<TestContext>(context => context.TestCases == TestEnum.Case2)
+                              .Then<TestCase2>());
             locator.AddContext(CreateContext(TestEnum.Case3));
 
             Assert.IsInstanceOf<TestCase1>(locator.GetInstance<ITestInterface>());
@@ -138,9 +138,9 @@ namespace Siege.Requisitions.UnitTests
         public void ShouldResolveAllFromServiceLocatorRegardlessOfContext()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>())
-                   .Register(Given<ITestInterface>
-                                .When<TestContext>(context => context.TestCases == TestEnum.Case2)
-                                .Then<TestCase2>());
+                .Register(Given<ITestInterface>
+                              .When<TestContext>(context => context.TestCases == TestEnum.Case2)
+                              .Then<TestCase2>());
 
             var instances = locator.GetAllInstances<ITestInterface>();
 
@@ -154,9 +154,9 @@ namespace Siege.Requisitions.UnitTests
         public void ShouldResolveAllFromServiceLocatorRegardlessOfContextNonGeneric()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>())
-                   .Register(Given<ITestInterface>
-                                .When<TestContext>(context => context.TestCases == TestEnum.Case2)
-                                .Then<TestCase2>());
+                .Register(Given<ITestInterface>
+                              .When<TestContext>(context => context.TestCases == TestEnum.Case2)
+                              .Then<TestCase2>());
 
             var instances = locator.GetAllInstances<ITestInterface>();
 
@@ -164,6 +164,20 @@ namespace Siege.Requisitions.UnitTests
             {
                 Assert.IsInstanceOf<ITestInterface>(item);
             }
+        }
+
+        [Test]
+        public void ShouldResolveUsingICondition()
+        {
+            locator
+                .Register(Given<TestCase4>.Then<TestCase4>())
+                .Register(Given<IConstructorArgument>.Then<ConstructorArgument>())
+                .Register(Given<ITestInterface>
+                              .When<TestEvaluation>()
+                              .Then<TestCase2>());
+            locator.AddContext(CreateContext(TestEnum.Case2));
+
+            Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>());
         }
     }
 }

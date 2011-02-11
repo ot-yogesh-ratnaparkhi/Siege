@@ -18,6 +18,6 @@ namespace Siege.Requisitions.ResolutionRules
     public interface IActivationRule
     {
         IRuleEvaluationStrategy GetRuleEvaluationStrategy();
-        bool Evaluate(object context);
+        bool Evaluate(IInstanceResolver resolver, object context);
     }
 }

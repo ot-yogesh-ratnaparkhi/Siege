@@ -15,7 +15,7 @@
 
 namespace Siege.Requisitions.Extensions.ExtendedRegistrationSyntax
 {
-    public class ConditionalActivationRule<TBaseService, TContext> : ActivationRule<TBaseService, TContext>
+    public class ConditionalActivationRule<TBaseService> : ActivationRule<TBaseService>
     {
 
     }

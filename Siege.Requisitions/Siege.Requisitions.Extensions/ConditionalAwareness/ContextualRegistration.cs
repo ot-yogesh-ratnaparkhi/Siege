@@ -31,7 +31,7 @@ namespace Siege.Requisitions.Extensions.ConditionalAwareness
             this.func = func;
         }
 
-        public override bool IsValid(IServiceLocatorStore context)
+        public override bool IsValid(IInstanceResolver locator, IServiceLocatorStore context)
         {
             return false;
         }

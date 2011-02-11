@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,48 +13,53 @@
      limitations under the License.
 */
 
+using System.Collections.Generic;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.Conditional;
+using Siege.Requisitions.RegistrationSyntax;
 
 namespace Siege.Requisitions.ResolutionRules
 {
-    public class ConditionalActivationRule<TBaseService> : IConditionalActivationRule
+    public class ConditionBasedActivationRule<TBaseService, TCondition> : IConditionalActivationRule where TCondition : ICondition
     {
-        private ICondition evaluation;
-
-        public void SetEvaluation(ICondition evaluation)
+        public IRuleEvaluationStrategy GetRuleEvaluationStrategy()
         {
-            this.evaluation = evaluation;
+            return new ContextEvaluationStrategy();
         }
 
-        public IRegistration Then<TImplementingType>() where TImplementingType : TBaseService
+        public bool Evaluate(IInstanceResolver resolver, object context)
         {
+            return resolver.GetInstance<TCondition>().Evaluate(context);
+        }
+
+        public List<IRegistration> Then<TImplementingType>() where TImplementingType : TBaseService
+        {
+            var list = new List<IRegistration>();
+
             var registration = new ConditionalRegistration<TBaseService>();
 
             registration.SetActivationRule(this);
             registration.MapsTo<TImplementingType>();
 
-            return registration;
+            list.Add(registration);
+            list.Add(Given<TCondition>.Then<TCondition>());
+
+            return list;
         }
 
-        public IRegistration Then(TBaseService implementation)
+        public List<IRegistration> Then(TBaseService implementation)
         {
+            var list = new List<IRegistration>();
+
             var registration = new ConditionalInstanceRegistration<TBaseService>();
 
             registration.SetActivationRule(this);
             registration.MapsTo(implementation);
 
-            return registration;
-        }
+            list.Add(registration);
+            list.Add(Given<TCondition>.Then<TCondition>());
 
-        public virtual bool Evaluate(IInstanceResolver resolver, object context)
-        {
-            return evaluation.Evaluate(context);
-        }
-
-        public virtual IRuleEvaluationStrategy GetRuleEvaluationStrategy()
-        {
-            return new ContextEvaluationStrategy();
+            return list;
         }
     }
 }

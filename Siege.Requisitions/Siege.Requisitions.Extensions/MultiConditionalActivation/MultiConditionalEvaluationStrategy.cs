@@ -27,7 +27,7 @@ namespace Siege.Requisitions.Extensions.MultiConditionalActivation
             this.list = list;
         }
 
-        public override bool IsValid(IActivationRule rule, InternalStorage.IServiceLocatorStore context)
+        public override bool IsValid(IActivationRule rule, IInstanceResolver resolver, InternalStorage.IServiceLocatorStore context)
         {
             var items = MergeContextItems(context);
 
@@ -37,17 +37,17 @@ namespace Siege.Requisitions.Extensions.MultiConditionalActivation
             {
                 var contextItem = items[i];
 
-                if (!EvaluateRules(contextItem)) return false;
+                if (!EvaluateRules(resolver, contextItem)) return false;
             }
 
             return true;
         }
 
-        private bool EvaluateRules(object contextItem)
+        private bool EvaluateRules(IInstanceResolver resolver, object contextItem)
         {
             for (int j = 0; j < list.Count; j++)
             {
-                if (list[j].Evaluate(contextItem)) return true;
+                if (list[j].Evaluate(resolver, contextItem)) return true;
             }
             return false;
         }

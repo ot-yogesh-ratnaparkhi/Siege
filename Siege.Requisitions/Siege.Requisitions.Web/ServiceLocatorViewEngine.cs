@@ -39,13 +39,22 @@ namespace Siege.Requisitions.Web
                 }
             }
 
-            if(result == null || result.View == null) result = base.FindView(controllerContext, viewName, masterName, useCache);
+            if (result == null || result.View == null) result = base.FindView(controllerContext, viewName, masterName, useCache);
 
             return result;
         }
 
-        private ViewEngineResult FindExistingView(ControllerContext controllerContext, string controllerName, string viewName, string masterName, bool useCache)
+        protected ViewEngineResult FindExistingView(ControllerContext controllerContext, string controllerName, string viewName, string masterName, bool useCache)
         {
+            if (FileExists(controllerContext, viewName))
+                return base.FindView(controllerContext, viewName, masterName, useCache);
+
+            if (FileExists(controllerContext, viewName + ".aspx"))
+                return base.FindView(controllerContext, viewName + ".aspx", masterName, useCache);
+
+            if (FileExists(controllerContext, viewName + ".ascx"))
+                return base.FindView(controllerContext, viewName + ".ascx", masterName, useCache);
+
             if (FileExists(controllerContext, "~/Views/" + controllerName + "/" + viewName + ".aspx")) 
                 return base.FindView(controllerContext, "~/Views/" + controllerName + "/" + viewName + ".aspx", masterName, useCache);
 

@@ -110,8 +110,8 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <Content Include="Views\Home\LOL.aspx" />
-    <Content Include="Views\Shared\LOLUserControl.ascx" />
+    <Content Include="Views\LOL\LOL.aspx" />
+    <Content Include="Views\LOL\LOLUserControl.ascx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -142,7 +142,7 @@
     <Content Include="Views\Shared\LogOnUserControl.ascx" />
     <Content Include="Views\Shared\Site.Master" />
     <Content Include="Views\Web.config" />
-    <Content Include="Views\Shared\LOL.Master" />
+    <Content Include="Views\LOL\LOL.Master" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

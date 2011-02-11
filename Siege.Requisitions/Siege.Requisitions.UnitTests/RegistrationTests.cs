@@ -102,9 +102,9 @@ namespace Siege.Requisitions.UnitTests
             return registration.ResolveWith(resolver, context, pipeline);
         }
 
-        public bool IsValid(IServiceLocatorStore context)
+        public bool IsValid(IInstanceResolver locator, IServiceLocatorStore context)
         {
-            return registration.IsValid(context);
+            return registration.IsValid(locator, context);
         }
 
         public void ChainTo(IRegistration registration)

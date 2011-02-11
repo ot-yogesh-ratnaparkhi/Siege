@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,12 +13,22 @@
      limitations under the License.
 */
 
-using Siege.Requisitions.InternalStorage;
+using Siege.Requisitions.ResolutionRules;
 
-namespace Siege.Requisitions.ResolutionRules
+namespace Siege.Requisitions.UnitTests.TestClasses
 {
-    public interface IRuleEvaluationStrategy
+    public class TestEvaluation : ICondition
     {
-        bool IsValid(IActivationRule rule, IInstanceResolver resolver, IServiceLocatorStore context);
+        private readonly TestCase4 testInterface;
+
+        public TestEvaluation(TestCase4 testInterface)
+        {
+            this.testInterface = testInterface;
+        }
+
+        public bool Evaluate(object arg)
+        {
+            return testInterface != null && testInterface.Argument != null;
+        }
     }
 }

@@ -50,7 +50,7 @@ namespace Siege.Requisitions.Resolution.Pipeline
                 {
                     var registration = conditionalCases[i];
                     
-                    if (registration.IsValid(store))
+                    if (registration.IsValid(serviceLocator, store))
                     {
                         var mappedToType = registration.GetMappedToType();
                         if (TypeRequested != null) TypeRequested(mappedToType);
