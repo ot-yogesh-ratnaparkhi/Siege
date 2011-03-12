@@ -47,19 +47,9 @@ namespace Siege.Requisitions.Registrations
         {
             object instance = null;
 
-            if (rule == null)
-            {
-                instance = GetActivationStrategy().Resolve(locator, context);
-            }
-            else
-            {
-                if (rule.GetRuleEvaluationStrategy().IsValid(rule, locator, context))
-                {
-                    instance = GetActivationStrategy().Resolve(locator, context);
-                }
-            }
+            instance = GetActivationStrategy().Resolve(locator, context);
 
-            if(pipeline !=null)
+            if(pipeline != null)
             {
                 var result = GetResult(instance);
 

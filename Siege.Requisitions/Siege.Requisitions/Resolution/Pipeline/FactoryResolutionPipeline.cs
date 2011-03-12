@@ -19,7 +19,7 @@ namespace Siege.Requisitions.Resolution.Pipeline
 {
     public class FactoryResolutionPipeline : ResolutionPipeline
     {
-        public FactoryResolutionPipeline(Foundation foundation, IServiceLocatorAdapter adapter, IServiceLocatorStore store) : base(foundation, adapter, store)
+        public FactoryResolutionPipeline(Foundation foundation, IServiceLocatorAdapter adapter, IServiceLocatorStore store)
         {
             var pipeline = new PostResolutionPipeline(foundation, adapter, store);
 

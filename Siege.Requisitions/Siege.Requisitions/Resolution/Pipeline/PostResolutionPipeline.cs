@@ -21,7 +21,7 @@ namespace Siege.Requisitions.Resolution.Pipeline
 {
     public class PostResolutionPipeline : ResolutionPipeline
     {
-        public PostResolutionPipeline(Foundation foundation, IServiceLocatorAdapter adapter, IServiceLocatorStore store) : base(foundation, adapter, store)
+        public PostResolutionPipeline(Foundation foundation, IServiceLocatorAdapter adapter, IServiceLocatorStore store)
         {
             Add(new ConditionalPostResolutionPipelineItem(foundation, adapter, store));
             Add(new DefaultPostResolutionPipelineItem(foundation, adapter, store));
@@ -29,11 +29,14 @@ namespace Siege.Requisitions.Resolution.Pipeline
 
         public PipelineResult Execute(PipelineResult result)
         {
+            var tempValue = result.Result;
             var value = result.Result;
+
+            if (value == null) return result;
 
             result = Items.Aggregate(result, (current, item) => item.Execute(value.GetType(), current));
 
-            if (value == null) throw new RegistrationNotFoundException(value.GetType());
+            if (value == null) throw new RegistrationNotFoundException(tempValue.GetType());
 
             return result;
         }

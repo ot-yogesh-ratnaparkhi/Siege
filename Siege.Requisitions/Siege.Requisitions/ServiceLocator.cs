@@ -46,7 +46,7 @@ namespace Siege.Requisitions
             factoryPipeline = new FactoryResolutionPipeline(foundation, serviceLocator, this.store);
             postResolutionPipeline = new PostResolutionPipeline(foundation, serviceLocator, store);
 
-            registrationTemplate = new DefaultMetaRegistrationTemplate(this);
+            registrationTemplate = new DefaultMetaRegistrationTemplate(serviceLocator);
 
             serviceLocator.Register(typeof(Transient), typeof(Transient));
             serviceLocator.Register(typeof(Singleton), typeof(Singleton));
@@ -154,12 +154,17 @@ namespace Siege.Requisitions
 
         public IEnumerable<object> GetAllInstances(Type serviceType)
         {
-            return serviceLocator.GetAllInstances(serviceType);
+            var list = new List<IRegistration>();
+            
+            list.AddRange(foundation.StoreFor<DefaultRegistrationStore>().GetRegistrationsForType(serviceType));
+            list.AddRange(foundation.StoreFor<ConditionalRegistrationStore>().GetRegistrationsForType(serviceType));
+
+            return list.Select(item => item.ResolveWith(serviceLocator, store, postResolutionPipeline)).ToList();
         }
 
         public IEnumerable<TService> GetAllInstances<TService>()
         {
-            return serviceLocator.GetAllInstances<TService>();
+            return GetAllInstances(typeof (TService)).Cast<TService>();
         }
 
         public bool HasTypeRegistered(Type type)

@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Siege.Requisitions.Exceptions;
-using Siege.Requisitions.InternalStorage;
 
 namespace Siege.Requisitions.Resolution.Pipeline
 {
@@ -25,10 +24,6 @@ namespace Siege.Requisitions.Resolution.Pipeline
     {
         private readonly List<IPipelineItem> items = new List<IPipelineItem>();
         private readonly List<Type> addedItems = new List<Type>();
-
-        public ResolutionPipeline(Foundation foundation, IServiceLocatorAdapter adapter, IServiceLocatorStore store)
-        {
-        }
 
         public object Execute(Type type)
         {

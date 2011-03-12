@@ -13,6 +13,7 @@
      limitations under the License.
 */
 
+using System.Linq;
 using NUnit.Framework;
 using Siege.Requisitions.Exceptions;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
@@ -138,7 +139,7 @@ namespace Siege.Requisitions.UnitTests
         public void ShouldResolveAllFromServiceLocatorRegardlessOfContext()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase1>())
-                .Register(Given<ITestInterface>
+                   .Register(Given<ITestInterface>
                               .When<TestContext>(context => context.TestCases == TestEnum.Case2)
                               .Then<TestCase2>());
 
@@ -148,6 +149,11 @@ namespace Siege.Requisitions.UnitTests
             {
                 Assert.IsInstanceOf<ITestInterface>(item);
             }
+
+            Assert.AreEqual(2, instances.ToList().Count);
+
+            Assert.AreEqual(1, instances.Where(i => i is TestCase1).Count());
+            Assert.AreEqual(1, instances.Where(i => i is TestCase2).Count());
         }
 
         [Test]

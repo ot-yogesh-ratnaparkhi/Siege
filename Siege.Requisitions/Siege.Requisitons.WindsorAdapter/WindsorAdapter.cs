@@ -45,7 +45,6 @@ namespace Siege.Requisitions.WindsorAdapter
 
         public void Dispose()
         {
-            //kernel.Dispose();
         }
 
         public IEnumerable<object> GetAllInstances(Type serviceType)
@@ -129,8 +128,6 @@ namespace Siege.Requisitions.WindsorAdapter
         public void RegisterInstance(Type type, object instance)
         {
             if(!kernel.HasComponent(type.ToString())) kernel.AddComponentInstance(type.ToString(), type, instance);
-            //if() throw new NotImplementedException();
-            //kernel.Register(Component.For(type).Instance(instance).Unless(Component.ServiceAlreadyRegistered));
         }
 
         public void RegisterWithName(Type from, Type to, string name)

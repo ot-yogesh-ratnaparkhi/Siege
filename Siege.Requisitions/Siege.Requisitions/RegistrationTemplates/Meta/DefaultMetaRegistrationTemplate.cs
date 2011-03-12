@@ -20,9 +20,9 @@ namespace Siege.Requisitions.RegistrationTemplates.Meta
 {
     public class DefaultMetaRegistrationTemplate : IMetaRegistrationTemplate
     {
-        private readonly IServiceLocator locator;
+        private readonly IServiceLocatorAdapter locator;
 
-        public DefaultMetaRegistrationTemplate(IServiceLocator locator)
+        public DefaultMetaRegistrationTemplate(IServiceLocatorAdapter locator)
         {
             this.locator = locator;
         }
