@@ -3,12 +3,11 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Siege.Requisitions;
-using Siege.Requisitions.Extensions.Conventions;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 
 namespace Siege.Courier.Web.Conventions
 {
-    public class AspNetMvcConvention : IConvention
+    public class AspNetMvcConvention : Requisitions.Extensions.Conventions.IConvention
     {
         public Action<IServiceLocator> Build()
         {

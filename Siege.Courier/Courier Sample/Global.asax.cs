@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
 using Courier.Sample.Messages;
 using Courier_Sample.Controllers;
+using Courier_Sample.Conventions;
 using Courier_Sample.Models;
 using Courier_Sample.Subscribers;
 using Siege.Courier;
@@ -51,27 +52,27 @@ namespace Courier_Sample
 
             var engine = new TemplateViewEngine(() => ServiceLocator.Store.Get<IContextStore>().Items);
 
-            engine
-                .For<HomeController>(controller => controller.Index())
-                .Map(
-                         To.Path("LOL").When<bool>(x => x)//,
-                         //To.Master("~/Views/Shared/Site.master"),
-                         //To.Master("~/Views/LOL/LOL.master").When<bool>(x => !x)
-                    );
-            engine
-                .ForPartial("LogOnUserControl")
-                .Map(
-                        To.Path("~/Views/Shared/LogOnUserControl.ascx"),
-                        To.Path("~/Views/LOL/LOLUserControl.ascx").When<bool>(x => x)
-                    );
+            engine.UseConvention(new SampleConvention());
+            
+            //engine
+            //    .For<HomeController>(controller => controller.Index())
+            //    .Map(
+            //             To.Path("LOL").When<bool>(x => x)
+            //        );
+            //engine
+            //    .ForPartial("LogOnUserControl")
+            //    .Map(
+            //            To.Path("~/Views/Shared/LogOnUserControl.ascx"),
+            //            To.Path("~/Views/LOL/LOLUserControl.ascx").When<bool>(x => x)
+            //        );
 
-            engine
-                .Map(
-                        To.Path("~/Views/Home/"),
-                        To.Path("~/Views/LOL/").When<bool>(x => x),
-                        To.Master("~/Views/Shared/Site.master"),
-                        To.Master("~/Views/LOL/LOL.master").When<bool>(x => x)
-                    );
+            //engine
+            //    .Map(
+            //            To.Path("~/Views/Home/"),
+            //            To.Path("~/Views/LOL/").When<bool>(x => x),
+            //            To.Master("~/Views/Shared/Site.master"),
+            //            To.Master("~/Views/LOL/LOL.master").When<bool>(x => x)
+            //        );
             
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(engine);

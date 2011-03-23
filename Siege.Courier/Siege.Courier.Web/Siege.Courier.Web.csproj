@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conventions\AspNetMvcConvention.cs" />
+    <Compile Include="Conventions\IConvention.cs" />
     <Compile Include="Conventions\ServiceBusConvention.cs" />
     <Compile Include="CourierHttpApplication.cs" />
     <Compile Include="DummyController.cs" />

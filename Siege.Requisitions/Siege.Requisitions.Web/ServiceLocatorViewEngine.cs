@@ -46,52 +46,66 @@ namespace Siege.Requisitions.Web
 
         protected ViewEngineResult FindExistingView(ControllerContext controllerContext, string controllerName, string viewName, string masterName, bool useCache)
         {
-            if (FileExists(controllerContext, viewName))
+            if (viewName.StartsWith("~/") && VirtualPathProvider.FileExists(viewName))
                 return base.FindView(controllerContext, viewName, masterName, useCache);
 
-            if (FileExists(controllerContext, viewName + ".aspx"))
+            if (viewName.StartsWith("~/") && VirtualPathProvider.FileExists(viewName + ".aspx"))
                 return base.FindView(controllerContext, viewName + ".aspx", masterName, useCache);
 
-            if (FileExists(controllerContext, viewName + ".ascx"))
+            if (viewName.StartsWith("~/") && VirtualPathProvider.FileExists(viewName + ".ascx"))
                 return base.FindView(controllerContext, viewName + ".ascx", masterName, useCache);
 
-            if (FileExists(controllerContext, "~/Views/" + controllerName + "/" + viewName + ".aspx")) 
+            if (VirtualPathProvider.FileExists("~/Views/" + controllerName + "/" + viewName))
+                return base.FindView(controllerContext, "~/Views/" + controllerName + "/" + viewName, masterName, useCache);
+
+            if (VirtualPathProvider.FileExists("~/Views/" + controllerName + "/" + viewName + ".aspx")) 
                 return base.FindView(controllerContext, "~/Views/" + controllerName + "/" + viewName + ".aspx", masterName, useCache);
 
-            if (FileExists(controllerContext, "~/Views/" + controllerName + "/" + viewName + ".ascx"))
+            if (VirtualPathProvider.FileExists("~/Views/" + controllerName + "/" + viewName + ".ascx"))
                 return base.FindView(controllerContext, "~/Views/" + controllerName + "/" + viewName + ".ascx", masterName, useCache);
 
-            if (FileExists(controllerContext, "~/Views/Shared/" + controllerName + "/" + viewName + ".aspx"))
+            if (VirtualPathProvider.FileExists("~/Views/Shared/" + controllerName + "/" + viewName))
+                return base.FindView(controllerContext, "~/Views/Shared/" + controllerName + "/" + viewName, masterName, useCache);
+
+            if (VirtualPathProvider.FileExists("~/Views/Shared/" + controllerName + "/" + viewName + ".aspx"))
                 return base.FindView(controllerContext, "~/Views/Shared/" + controllerName + "/" + viewName + ".aspx", masterName, useCache);
 
-            if (FileExists(controllerContext, "~/Views/Shared/" + controllerName + "/" + viewName + ".ascx"))
+            if (VirtualPathProvider.FileExists("~/Views/Shared/" + controllerName + "/" + viewName + ".ascx"))
                 return base.FindView(controllerContext, "~/Views/Shared/" + controllerName + "/" + viewName + ".ascx", masterName, useCache);
             
             return null;
         }
 
-        //public override ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
-        //{
-        //    ViewEngineResult result = null;
+        public override ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
+        {
+            if (partialViewName.StartsWith("~/") && VirtualPathProvider.FileExists(partialViewName))
+                return base.FindPartialView(controllerContext, partialViewName, useCache);
 
-        //    if (controllerContext.Controller != null)
-        //    {
-        //        string name = null;
-                
-        //        if (Regex.IsMatch(controllerContext.Controller.GetType().Name, "(.*)[Cc]ontroller.*"))
-        //        {
-        //            name = Regex.Replace(controllerContext.Controller.GetType().Name, "(.*)[Cc]ontroller.*", "$1");
-        //        }
+            if (partialViewName.StartsWith("~/") && VirtualPathProvider.FileExists(partialViewName + ".aspx"))
+                return base.FindPartialView(controllerContext, partialViewName + ".aspx", useCache);
 
-        //        if (!String.IsNullOrEmpty(name))
-        //        {
-        //            result = base.FindPartialView(controllerContext, name + "/" + partialViewName, useCache);
-        //        }
-        //    }
+            if (partialViewName.StartsWith("~/") && VirtualPathProvider.FileExists(partialViewName + ".ascx"))
+                return base.FindPartialView(controllerContext, partialViewName + ".ascx", useCache);
 
-        //    if (result == null) result = base.FindPartialView(controllerContext, partialViewName, useCache);
+            if (VirtualPathProvider.FileExists("~/Views/" + partialViewName))
+                return base.FindPartialView(controllerContext, "~/Views/" + partialViewName, useCache);
 
-        //    return result;
-        //}
+            if (VirtualPathProvider.FileExists("~/Views/" + partialViewName + ".aspx"))
+                return base.FindPartialView(controllerContext, "~/Views/" + partialViewName + ".aspx", useCache);
+
+            if (VirtualPathProvider.FileExists("~/Views/" + partialViewName + ".ascx"))
+                return base.FindPartialView(controllerContext, "~/Views/" + partialViewName + ".ascx", useCache);
+
+            if (VirtualPathProvider.FileExists("~/Views/Shared/" + partialViewName))
+                return base.FindPartialView(controllerContext, "~/Views/Shared/" + partialViewName, useCache);
+
+            if (VirtualPathProvider.FileExists("~/Views/Shared/" + partialViewName + ".aspx"))
+                return base.FindPartialView(controllerContext, "~/Views/Shared/" + partialViewName + ".aspx", useCache);
+
+            if (VirtualPathProvider.FileExists("~/Views/Shared/" + partialViewName + ".ascx"))
+                return base.FindPartialView(controllerContext, "~/Views/Shared/" + partialViewName + ".ascx", useCache);
+
+            return null;
+        }
     }
 }

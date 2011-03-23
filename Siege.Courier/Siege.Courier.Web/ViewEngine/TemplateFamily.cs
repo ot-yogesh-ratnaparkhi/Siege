@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Siege.Courier.Web.Conventions;
 
 namespace Siege.Courier.Web.ViewEngine
 {
@@ -28,32 +29,30 @@ namespace Siege.Courier.Web.ViewEngine
             }
         }
 
+        public void UseConvention(IConvention convention)
+        {
+            Map(convention.GetSelectors().ToArray());
+        }
+
         public string GetValidPath()
         {
             var orderedSelectors = selectors.Where(selector => !(selector is IMasterTemplateSelector)).OrderByDescending(x => x is IConditionalTemplateSelector);
 
-            foreach(ITemplateSelector selector in orderedSelectors)
-            {
-                var path = selector.Path;
+            return orderedSelectors.Select(selector => selector.Path).FirstOrDefault(path => path != null);
+        }
 
-                if (path != null) return path;
-            }
+        public string GetDefaultPath()
+        {
+            var orderedSelectors = selectors.Where(selector => !(selector is IMasterTemplateSelector)).OrderByDescending(x => !(x is IConditionalTemplateSelector));
 
-            return null;
+            return orderedSelectors.Select(selector => selector.Path).FirstOrDefault(path => path != null);
         }
 
         public string GetMaster()
         {
             var orderedSelectors = selectors.OfType<IMasterTemplateSelector>().OrderByDescending(x => x is IConditionalTemplateSelector);
 
-            foreach (IMasterTemplateSelector selector in orderedSelectors)
-            {
-                var path = selector.Path;
-
-                if (path != null) return path;
-            }
-
-            return null;
+            return orderedSelectors.Select(selector => selector.Path).FirstOrDefault(path => path != null);
         }
     }
 }

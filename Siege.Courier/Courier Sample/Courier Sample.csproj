@@ -86,6 +86,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Conventions\SampleConvention.cs" />
     <Compile Include="IConfigurationManager.cs" />
     <Compile Include="Service References\Siege.Courier.WCF\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -111,7 +112,7 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
     <Content Include="Views\LOL\LOL.aspx" />
-    <Content Include="Views\LOL\LOLUserControl.ascx" />
+    <Content Include="Views\LOL\LogonUserControl.ascx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

@@ -2,13 +2,12 @@
 using System.Web;
 using Siege.Requisitions;
 using Siege.Requisitions.Extensions.ConditionalAwareness;
-using Siege.Requisitions.Extensions.Conventions;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 using Siege.Requisitions.RegistrationPolicies;
 
 namespace Siege.Courier.Web.Conventions
 {
-    public class ServiceBusConvention : IConvention
+    public class ServiceBusConvention : Requisitions.Extensions.Conventions.IConvention
     {
         public Action<IServiceLocator> Build()
         {
