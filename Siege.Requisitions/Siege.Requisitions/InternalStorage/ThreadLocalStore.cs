@@ -22,19 +22,30 @@ namespace Siege.Requisitions.InternalStorage
     {
         [ThreadStatic] private static List<object> contextItems = new List<object>();
 
+        private static void Create()
+        {
+            if(contextItems == null) contextItems = new List<object>();
+        }
+
         public void Add(object contextItem)
         {
+            Create();
             contextItems.Add(contextItem);
         }
 
         public void Clear()
         {
+            Create();
             contextItems.Clear();
         }
 
         public List<object> Items
         {
-            get { return contextItems; }
+            get
+            {
+                Create(); 
+                return contextItems;
+            }
         }
 
         public void Dispose()
