@@ -24,7 +24,7 @@ namespace Siege.Provisions.NHibernate
 {
     public class NHibernateConvention<TUnitOfWorkStore, TPersistenceModule> : IConvention
         where TUnitOfWorkStore : IUnitOfWorkStore
-        where TPersistenceModule : IPersistenceModule
+        where TPersistenceModule : IDatabase
     {
         private readonly Action<IServiceLocator> registrations;
 
@@ -60,7 +60,7 @@ namespace Siege.Provisions.NHibernate
         {
             serviceLocator
                 .Register<Singleton>(Given<IUnitOfWorkFactory>.Then<NHibernateUnitOfWorkFactory>())
-                .Register<Singleton>(Given<IPersistenceModule>.Then<TPersistenceModule>())
+                .Register<Singleton>(Given<IDatabase>.Then<TPersistenceModule>())
                 .Register(
                     Given<IUnitOfWork>.ConstructWith(
                         l => l.GetInstance<IUnitOfWorkManager>().For<TPersistenceModule>()))
@@ -68,7 +68,7 @@ namespace Siege.Provisions.NHibernate
                 .Register(Given<IRepository<TPersistenceModule>>.Then<NHibernateRepository<TPersistenceModule>>());
 
             var manager = new NHibernateUnitOfWorkManager();
-            manager.Add(serviceLocator.GetInstance<IPersistenceModule>());
+            manager.Add(serviceLocator.GetInstance<IDatabase>());
             serviceLocator.Register(Given<IUnitOfWorkManager>.Then(manager));
         }
     }

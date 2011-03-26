@@ -17,7 +17,7 @@ using NHibernate;
 
 namespace Siege.Provisions.NHibernate
 {
-	public class NHibernateRepository<TPersistenceModule> : Repository<TPersistenceModule> where TPersistenceModule : IPersistenceModule
+	public class NHibernateRepository<TPersistenceModule> : Repository<TPersistenceModule> where TPersistenceModule : IDatabase
 	{
 		public NHibernateRepository(NHibernateUnitOfWorkManager unitOfWork) : base(unitOfWork)
 		{

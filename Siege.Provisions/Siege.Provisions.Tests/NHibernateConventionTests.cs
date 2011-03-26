@@ -23,23 +23,23 @@ using Siege.Requisitions.SiegeAdapter;
 
 namespace Siege.Provisions.Tests
 {
-    public class NullPersistenceModule : IPersistenceModule
+    public class NullDatabase : IDatabase
     {
         private readonly MockRepository repository = new MockRepository();
         private readonly IUnitOfWorkFactory factory;
         private readonly IUnitOfWorkStore store;
 
-        public NullPersistenceModule()
+        public NullDatabase()
         {
             factory = new NHibernateUnitOfWorkFactory(repository.DynamicMock<ISessionFactory>());
             store = new ThreadedUnitOfWorkStore();
         }
 
-        public NullPersistenceModule(IUnitOfWorkFactory factory) : this(factory, new ThreadedUnitOfWorkStore())
+        public NullDatabase(IUnitOfWorkFactory factory) : this(factory, new ThreadedUnitOfWorkStore())
         {
         }
 
-        public NullPersistenceModule(IUnitOfWorkFactory factory, IUnitOfWorkStore store)
+        public NullDatabase(IUnitOfWorkFactory factory, IUnitOfWorkStore store)
         {
             this.factory = factory;
             this.store = store;
@@ -72,7 +72,7 @@ namespace Siege.Provisions.Tests
             sessionFactory = mocks.DynamicMock<ISessionFactory>();
 
             serviceLocator.Register(
-                Using.Convention(new NHibernateConvention<ThreadedUnitOfWorkStore, NullPersistenceModule>(sessionFactory)));
+                Using.Convention(new NHibernateConvention<ThreadedUnitOfWorkStore, NullDatabase>(sessionFactory)));
         }
 
         [Test]
@@ -92,9 +92,9 @@ namespace Siege.Provisions.Tests
         [Test]
         public void ShouldRegisterRepository()
         {
-            var repository = serviceLocator.GetInstance<IRepository<NullPersistenceModule>>();
+            var repository = serviceLocator.GetInstance<IRepository<NullDatabase>>();
             Assert.IsNotNull(repository);
-            Assert.IsTrue(repository is NHibernateRepository<NullPersistenceModule>);
+            Assert.IsTrue(repository is NHibernateRepository<NullDatabase>);
         }
 
         [Test]

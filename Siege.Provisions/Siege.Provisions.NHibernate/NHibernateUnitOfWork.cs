@@ -68,7 +68,7 @@ namespace Siege.Provisions.NHibernate
                         action();
                         transaction.Commit();
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         transaction.Rollback();
                         this.session.Close();
@@ -96,7 +96,7 @@ namespace Siege.Provisions.NHibernate
 					transaction.Commit();
 					return result;
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					transaction.Rollback();
 					this.session.Close();

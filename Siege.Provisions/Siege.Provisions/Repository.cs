@@ -15,7 +15,7 @@
 
 namespace Siege.Provisions
 {
-    public class Repository<TPersistenceModule>  : IRepository<TPersistenceModule> where TPersistenceModule : IPersistenceModule
+    public class Repository<TPersistenceModule>  : IRepository<TPersistenceModule> where TPersistenceModule : IDatabase
     {
         protected readonly IUnitOfWorkManager unitOfWork;
 

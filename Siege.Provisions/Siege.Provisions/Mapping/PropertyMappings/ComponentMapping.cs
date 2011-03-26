@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Siege.Provisions.Mapping.PropertyMappings
 {
@@ -33,5 +34,15 @@ namespace Siege.Provisions.Mapping.PropertyMappings
             this.subMappings.Add(new PropertyMapping<TType, TComponentType>(expression, columnName));
             return this;
         }
+    }
+
+    public class ComponentMapping : ElementMapping, IComponentPropertyMapping
+    {
+        public ComponentMapping(PropertyInfo property) : base(property)
+        {
+            this.Name = Property.Name;
+        }
+
+        public string Name { get; protected set; }
     }
 }

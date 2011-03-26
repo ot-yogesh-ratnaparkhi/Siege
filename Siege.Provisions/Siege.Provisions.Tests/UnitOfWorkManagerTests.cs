@@ -35,7 +35,7 @@ namespace Siege.Provisions.Tests
             store = mocks.DynamicMock<IUnitOfWorkStore>();
             factory = mocks.DynamicMock<IUnitOfWorkFactory>();
             unitOfWorkManager = mocks.Stub<UnitOfWorkManager>();
-            unitOfWorkManager.Add(new NullPersistenceModule(factory, store));
+            unitOfWorkManager.Add(new NullDatabase(factory, store));
         }
 
         [Test]
@@ -43,14 +43,14 @@ namespace Siege.Provisions.Tests
         {
             using (mocks.Record())
             {
-                store.Expect(s => s.CurrentFor<NullPersistenceModule>()).Return(null).Repeat.Twice();
+                store.Expect(s => s.CurrentFor<NullDatabase>()).Return(null).Repeat.Twice();
                 factory.Expect(f => f.Create());
-                store.Expect(s => s.SetUnitOfWork<NullPersistenceModule>(null)).IgnoreArguments();
+                store.Expect(s => s.SetUnitOfWork<NullDatabase>(null)).IgnoreArguments();
             }
 
             using (mocks.Playback())
             {
-                var unitOfWork = unitOfWorkManager.For<NullPersistenceModule>();
+                var unitOfWork = unitOfWorkManager.For<NullDatabase>();
             }
         }
 
@@ -59,14 +59,14 @@ namespace Siege.Provisions.Tests
         {
             using (mocks.Record())
             {
-                store.Expect(s => s.CurrentFor<NullPersistenceModule>()).Return(instance).Repeat.Twice();
+                store.Expect(s => s.CurrentFor<NullDatabase>()).Return(instance).Repeat.Twice();
                 factory.Expect(f => f.Create()).Repeat.Never();
-                store.Expect(s => s.SetUnitOfWork<NullPersistenceModule>(null)).IgnoreArguments().Repeat.Never();
+                store.Expect(s => s.SetUnitOfWork<NullDatabase>(null)).IgnoreArguments().Repeat.Never();
             }
 
             using (mocks.Playback())
             {
-                var unitOfWork = unitOfWorkManager.For<NullPersistenceModule>();
+                var unitOfWork = unitOfWorkManager.For<NullDatabase>();
             }
         }
 
@@ -75,15 +75,15 @@ namespace Siege.Provisions.Tests
         {
             using (mocks.Record())
             {
-                store.Expect(s => s.CurrentFor<NullPersistenceModule>()).Return(instance).Repeat.Twice();
+                store.Expect(s => s.CurrentFor<NullDatabase>()).Return(instance).Repeat.Twice();
                 factory.Expect(f => f.Create()).Repeat.Never();
-                store.Expect(s => s.SetUnitOfWork<NullPersistenceModule>(null)).IgnoreArguments().Repeat.Never();
+                store.Expect(s => s.SetUnitOfWork<NullDatabase>(null)).IgnoreArguments().Repeat.Never();
             }
 
             using (mocks.Playback())
             {
-                unitOfWorkManager.Add(new NullPersistenceModule(factory, store));
-                var unitOfWork = unitOfWorkManager.For<NullPersistenceModule>();
+                unitOfWorkManager.Add(new NullDatabase(factory, store));
+                var unitOfWork = unitOfWorkManager.For<NullDatabase>();
             }
         }
     }

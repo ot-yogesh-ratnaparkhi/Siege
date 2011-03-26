@@ -40,7 +40,7 @@ namespace Siege.Provisions.Web
             }
         }
 
-        public IUnitOfWork CurrentFor<TPersistenceModule>() where TPersistenceModule : IPersistenceModule
+        public IUnitOfWork CurrentFor<TPersistenceModule>() where TPersistenceModule : IDatabase
         {
             if (SessionExists())
             {
@@ -52,7 +52,7 @@ namespace Siege.Provisions.Web
         }
 
         public void SetUnitOfWork<TPersistenceModule>(IUnitOfWork unitOfWork)
-            where TPersistenceModule : IPersistenceModule
+            where TPersistenceModule : IDatabase
         {
             if (SessionExists())
             {

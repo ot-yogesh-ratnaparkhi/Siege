@@ -23,14 +23,14 @@ namespace Siege.Provisions.Tests
     {
         private MockRepository mocks;
         private IUnitOfWorkManager unitOfWorkManager;
-        private Repository<NullPersistenceModule> repository;
+        private Repository<NullDatabase> repository;
 
         [SetUp]
         public void SetUp()
         {
             mocks = new MockRepository();
             unitOfWorkManager = mocks.DynamicMock<IUnitOfWorkManager>();
-            repository = new Repository<NullPersistenceModule>(unitOfWorkManager);
+            repository = new Repository<NullDatabase>(unitOfWorkManager);
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace Siege.Provisions.Tests
         {
             using (mocks.Record())
             {
-                unitOfWorkManager.Expect(uow => uow.For<NullPersistenceModule>()).Repeat.Any();
+                unitOfWorkManager.Expect(uow => uow.For<NullDatabase>()).Repeat.Any();
             }
 
             using (mocks.Playback())
@@ -52,7 +52,7 @@ namespace Siege.Provisions.Tests
         {
             using (mocks.Record())
             {
-                unitOfWorkManager.Expect(uow => uow.For<NullPersistenceModule>());
+                unitOfWorkManager.Expect(uow => uow.For<NullDatabase>());
             }
 
             using (mocks.Playback())
@@ -66,7 +66,7 @@ namespace Siege.Provisions.Tests
         {
             using (mocks.Record())
             {
-                unitOfWorkManager.Expect(uow => uow.For<NullPersistenceModule>());
+                unitOfWorkManager.Expect(uow => uow.For<NullDatabase>());
             }
 
             using (mocks.Playback())

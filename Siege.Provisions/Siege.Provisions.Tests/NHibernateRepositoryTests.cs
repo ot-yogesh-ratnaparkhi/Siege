@@ -29,7 +29,7 @@ namespace Siege.Provisions.Tests
         private ISessionFactory sessionFactory;
         private ISession session;
         private NHibernateUnitOfWorkManager unitOfWorkManager;
-        private NHibernateRepository<NullPersistenceModule> repository;
+        private NHibernateRepository<NullDatabase> repository;
         private ITransaction transaction;
 
         [SetUp]
@@ -42,8 +42,8 @@ namespace Siege.Provisions.Tests
             transaction = mocks.DynamicMock<ITransaction>();
             factory = mocks.Stub<NHibernateUnitOfWorkFactory>(sessionFactory);
             unitOfWorkManager = mocks.Stub<NHibernateUnitOfWorkManager>();
-            unitOfWorkManager.Add(new NullPersistenceModule(factory));
-            repository = new NHibernateRepository<NullPersistenceModule>(unitOfWorkManager);
+            unitOfWorkManager.Add(new NullDatabase(factory));
+            repository = new NHibernateRepository<NullDatabase>(unitOfWorkManager);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace Siege.Provisions.Tests
                 session.Expect(s => s.BeginTransaction()).Return(transaction).Repeat.Any();
                 transaction.Expect(t => t.IsActive).Return(false).Repeat.Any();
                 sessionFactory.Expect(f => f.OpenSession()).Return(session).Repeat.Any();
-                unitOfWorkManager.Expect(uow => uow.For<NullPersistenceModule>());
+                unitOfWorkManager.Expect(uow => uow.For<NullDatabase>());
             }
 
             using (mocks.Playback())
@@ -73,7 +73,7 @@ namespace Siege.Provisions.Tests
                 session.Expect(s => s.BeginTransaction()).Return(transaction).Repeat.Any();
                 transaction.Expect(t => t.IsActive).Return(false).Repeat.Any();
                 sessionFactory.Expect(f => f.OpenSession()).Return(session).Repeat.Any();
-                unitOfWorkManager.Expect(uow => uow.For<NullPersistenceModule>());
+                unitOfWorkManager.Expect(uow => uow.For<NullDatabase>());
             }
 
             using (mocks.Playback())
@@ -91,7 +91,7 @@ namespace Siege.Provisions.Tests
                 session.Expect(s => s.BeginTransaction()).Return(transaction).Repeat.Any();
                 transaction.Expect(t => t.IsActive).Return(false).Repeat.Any();
                 sessionFactory.Expect(f => f.OpenSession()).Return(session).Repeat.Any();
-                unitOfWorkManager.Expect(uow => uow.For<NullPersistenceModule>());
+                unitOfWorkManager.Expect(uow => uow.For<NullDatabase>());
             }
 
             using (mocks.Playback())

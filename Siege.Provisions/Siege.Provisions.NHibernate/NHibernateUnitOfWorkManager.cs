@@ -19,7 +19,7 @@ namespace Siege.Provisions.NHibernate
 {
     public class NHibernateUnitOfWorkManager : UnitOfWorkManager
     {
-        public ISession SessionFor<TPersistenceModule>() where TPersistenceModule : IPersistenceModule
+        public ISession SessionFor<TPersistenceModule>() where TPersistenceModule : IDatabase
         {
             return ((NHibernateUnitOfWork)this.For<TPersistenceModule>()).Session;
         }

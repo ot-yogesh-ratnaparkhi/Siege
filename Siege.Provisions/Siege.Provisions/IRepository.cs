@@ -15,7 +15,7 @@
 
 namespace Siege.Provisions
 {
-    public interface IRepository<TPersistenceModel> where TPersistenceModel : IPersistenceModule
+    public interface IRepository<TPersistenceModel> where TPersistenceModel : IDatabase
     {
         T Get<T>(object id) where T : class;
         void Save<T>(T item) where T : class;

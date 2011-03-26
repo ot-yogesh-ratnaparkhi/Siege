@@ -43,7 +43,7 @@ namespace Siege.Provisions
             }
         }
 
-        public IUnitOfWork CurrentFor<TPersistenceModule>() where TPersistenceModule : IPersistenceModule
+        public IUnitOfWork CurrentFor<TPersistenceModule>() where TPersistenceModule : IDatabase
         {
             Create();
             if (!currentUnitOfWork.Value.ContainsKey(typeof(TPersistenceModule))) return null;
@@ -51,7 +51,7 @@ namespace Siege.Provisions
             return currentUnitOfWork.Value[typeof(TPersistenceModule)]; 
         }
 
-        public void SetUnitOfWork<TPersistenceModule>(IUnitOfWork unitOfWork) where TPersistenceModule : IPersistenceModule
+        public void SetUnitOfWork<TPersistenceModule>(IUnitOfWork unitOfWork) where TPersistenceModule : IDatabase
         {
             Create();
             if (!currentUnitOfWork.Value.ContainsKey(typeof(TPersistenceModule))) currentUnitOfWork.Value.Add(typeof(TPersistenceModule), unitOfWork);

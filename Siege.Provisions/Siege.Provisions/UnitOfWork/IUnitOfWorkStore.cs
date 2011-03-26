@@ -19,7 +19,7 @@ namespace Siege.Provisions
 {
 	public interface IUnitOfWorkStore : IDisposable
 	{
-	    IUnitOfWork CurrentFor<TPersistenceModule>() where TPersistenceModule : IPersistenceModule;
-		void SetUnitOfWork<TPersistenceModule>(IUnitOfWork unitOfWork) where TPersistenceModule : IPersistenceModule;
+	    IUnitOfWork CurrentFor<TPersistenceModule>() where TPersistenceModule : IDatabase;
+		void SetUnitOfWork<TPersistenceModule>(IUnitOfWork unitOfWork) where TPersistenceModule : IDatabase;
 	}
 }

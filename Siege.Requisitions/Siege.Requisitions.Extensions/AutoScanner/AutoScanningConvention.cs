@@ -52,7 +52,7 @@ namespace Siege.Requisitions.Extensions.AutoScanner
                 {
                     registrations.AddRange((from baseType in baseTypes
                                             where baseType.IsAssignableFrom(type) && !type.IsInterface
-                                            select new AutoScannedRegistration(baseType, type)));
+                                            select new AutoScannedRegistration(baseType, type)).Cast<IRegistration>());
                 }
                 else
                 {

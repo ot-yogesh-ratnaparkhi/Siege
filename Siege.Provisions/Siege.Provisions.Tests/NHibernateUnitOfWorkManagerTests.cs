@@ -39,7 +39,7 @@ namespace Siege.Provisions.Tests
             store = new ThreadedUnitOfWorkStore();
             factory = mocks.Stub<NHibernateUnitOfWorkFactory>(sessionFactory);
             unitOfWorkManager = mocks.Stub<NHibernateUnitOfWorkManager>();
-            unitOfWorkManager.Add(new NullPersistenceModule(factory));
+            unitOfWorkManager.Add(new NullDatabase(factory));
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace Siege.Provisions.Tests
 
             using (mocks.Playback())
             {
-                var instance = unitOfWorkManager.SessionFor<NullPersistenceModule>();
+                var instance = unitOfWorkManager.SessionFor<NullDatabase>();
             }
         }
 

@@ -4,20 +4,21 @@ using System.Reflection;
 
 namespace Siege.Provisions.Mapping.PropertyMappings
 {
-    public class ElementMapping<TClass, TType> : IElementMapping
+    public class ElementMapping<TClass, TType> : ElementMapping
     {
-        private readonly PropertyInfo property;
-
-        public ElementMapping(Expression<Func<TClass, TType>> expression)
+        public ElementMapping(Expression<Func<TClass, TType>> expression) : base(((MemberExpression)expression.Body).Member as PropertyInfo)
         {
             if (!(expression.Body is MemberExpression)) throw new ArgumentException("Only properties can be mapped in this fashion");
-
-            property = ((MemberExpression)expression.Body).Member as PropertyInfo;
         }
+    }
 
-        public PropertyInfo Property
+    public class ElementMapping : IElementMapping
+    {
+        public ElementMapping(PropertyInfo property)
         {
-            get { return property; }
+            this.Property = property;
         }
+
+        public PropertyInfo Property { get; protected set; }
     }
 }

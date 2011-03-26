@@ -15,7 +15,7 @@
 
 namespace Siege.Provisions
 {
-    public interface IPersistenceModule
+    public interface IDatabase
     {
         IUnitOfWorkFactory Factory { get; }
         IUnitOfWorkStore Store { get; }

@@ -1,25 +1,31 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Siege.Provisions.Mapping.PropertyMappings
 {
     public class PropertyMapping<TClass, TType> : ElementMapping<TClass, TType>, IPropertyMapping
     {
-        private readonly string columnName;
-
         public PropertyMapping(Expression<Func<TClass, TType>> expression, string name) : base(expression)
         {
-            columnName = name;
+            this.ColumnName = name;
         }
 
         public PropertyMapping(Expression<Func<TClass, TType>> expression) : base(expression)
         {
-            columnName = Property.Name;
+            this.ColumnName = Property.Name;
         }
 
-        public string ColumnName
+        public string ColumnName { get; protected set; }
+    }
+
+    public class PropertyMapping : ElementMapping, IPropertyMapping
+    {
+        public PropertyMapping(PropertyInfo property) : base(property)
         {
-            get { return columnName; }
+            this.ColumnName = Property.Name;
         }
+
+        public string ColumnName { get; protected set; }
     }
 }

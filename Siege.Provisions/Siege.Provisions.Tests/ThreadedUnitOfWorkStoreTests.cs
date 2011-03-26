@@ -37,15 +37,15 @@ namespace Siege.Provisions.Tests
         [Test]
         public void UnitOfWorkShouldBeNullInitially()
         {
-            Assert.AreEqual(null, store.CurrentFor<IPersistenceModule>());
+            Assert.AreEqual(null, store.CurrentFor<IDatabase>());
         }
 
         [Test]
         public void CurrentShouldBeSameAsSetUnitOfWork()
         {
-            store.SetUnitOfWork<IPersistenceModule>(instance);
+            store.SetUnitOfWork<IDatabase>(instance);
 
-            Assert.AreEqual(instance, store.CurrentFor<IPersistenceModule>());
+            Assert.AreEqual(instance, store.CurrentFor<IDatabase>());
         }
 
         [Test]
@@ -58,11 +58,11 @@ namespace Siege.Provisions.Tests
 
             using (mocks.Playback())
             {
-                store.SetUnitOfWork<IPersistenceModule>(instance);
-                Assert.AreEqual(instance, store.CurrentFor<IPersistenceModule>());
+                store.SetUnitOfWork<IDatabase>(instance);
+                Assert.AreEqual(instance, store.CurrentFor<IDatabase>());
 
                 store.Dispose();
-                Assert.AreEqual(null, store.CurrentFor<IPersistenceModule>());
+                Assert.AreEqual(null, store.CurrentFor<IDatabase>());
             }
         }
     }

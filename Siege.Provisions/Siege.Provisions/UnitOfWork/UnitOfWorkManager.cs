@@ -20,15 +20,15 @@ namespace Siege.Provisions
 {
     public interface IUnitOfWorkManager
     {
-        IUnitOfWork For<TPersistenceModule>() where TPersistenceModule : IPersistenceModule;
-        void Add(IPersistenceModule module);
+        IUnitOfWork For<TPersistenceModule>() where TPersistenceModule : IDatabase;
+        void Add(IDatabase module);
     }
 
     public abstract class UnitOfWorkManager : IUnitOfWorkManager
     {
         protected readonly Dictionary<Type, UnitOfWorkBundle> stores = new Dictionary<Type, UnitOfWorkBundle>();
 
-        public IUnitOfWork For<TPersistenceModule>() where TPersistenceModule : IPersistenceModule
+        public IUnitOfWork For<TPersistenceModule>() where TPersistenceModule : IDatabase
 		{
             var bundle = stores[typeof(TPersistenceModule)];
 
@@ -40,7 +40,7 @@ namespace Siege.Provisions
             return bundle.Store.CurrentFor<TPersistenceModule>();
 		}
 
-        public void Add(IPersistenceModule module)
+        public void Add(IDatabase module)
         {
             if (stores.ContainsKey(module.GetType())) return;
 

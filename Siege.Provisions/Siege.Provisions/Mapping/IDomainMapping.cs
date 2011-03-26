@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Siege.Provisions.Mapping
 {
     public interface IDomainMapping
     {
-        string Table { get; }
+        Table Table { get; }
         List<IElementMapping> SubMappings { get; }
+        void Map(Action<DomainMapping> mapping);
     }
 }
