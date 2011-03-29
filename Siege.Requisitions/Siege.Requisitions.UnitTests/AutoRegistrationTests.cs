@@ -16,6 +16,7 @@
 using NUnit.Framework;
 using Siege.Requisitions.Extensions.AutoScanner;
 using Siege.Requisitions.Extensions.Conventions;
+using Siege.Requisitions.UnitTests.TestNamespace;
 
 namespace Siege.Requisitions.UnitTests
 {
@@ -28,6 +29,21 @@ namespace Siege.Requisitions.UnitTests
 
             Assert.IsInstanceOf<AutoScannedType>(locator.GetInstance<IAutoScannedInterface>());
         }
+
+		[Test]
+		public void ShouldUseNamespace()
+		{
+			locator.Register(Using.Convention<NamespaceTestConvention>());
+			Assert.IsInstanceOf<AutoScanningConventionTest>(locator.GetInstance<ITest>());
+			Assert.IsFalse(locator.HasTypeRegistered(typeof(IAutoScannedInterface)));
+		}
+
+		[Test]
+		public void ShouldUseGeneric()
+		{
+			locator.Register(Using.Convention<NamespaceTestConvention>());
+			Assert.IsInstanceOf<GenericTest>(locator.GetInstance<ITest<AutoScannedType>>());
+		}
     }
 
     public class TestConvention : AutoScanningConvention
@@ -46,4 +62,40 @@ namespace Siege.Requisitions.UnitTests
     public class AutoScannedType : IAutoScannedInterface
     {
     }
+
+	public class NamespaceTestConvention : AutoScanningConvention
+	{
+		public NamespaceTestConvention()
+		{
+			FromAssemblyContaining<AutoScannedType>();
+			FromNamespaceOf<ITest>();
+		}
+	}
+	public class GenericTestConvention : AutoScanningConvention
+	{
+		public GenericTestConvention()
+		{
+			FromAssemblyContaining<AutoScannedType>();
+			FromNamespaceOf<ITest>();
+		}
+	}
+}
+
+namespace Siege.Requisitions.UnitTests.TestNamespace
+{
+	public interface ITest
+	{
+	}
+
+	public interface ITest<T>
+	{
+	}
+
+	public class AutoScanningConventionTest : ITest
+	{
+	}
+
+	public class GenericTest : ITest<AutoScannedType>
+	{
+	}
 }

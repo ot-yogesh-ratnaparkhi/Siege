@@ -59,38 +59,35 @@ namespace Siege.Requisitions.SiegeAdapter.ConstructionStrategies
                     context.Named(Guid.NewGuid() + "Builder");
                     context.InheritFrom<SiegeActivator>();
 
-                    context.OverrideMethod<SiegeActivator>(activator => activator.Instantiate(null), method =>
+                    context.OverrideMethod<SiegeActivator>(activator => activator.Instantiate(null), method => method.WithBody(body =>
                     {
-                        method.WithBody(body =>
+                        var instance = body.CreateVariable(to);
+                        var array = body.CreateArray(typeof(object));
+                        array.AssignFromParameter(new MethodParameter(0));
+                        var items = new List<ILocalIndexer>();
+
+                        var parameters = candidate.Parameters;
+                        var parameterCount = parameters.Count;
+                        for (int i = 0; i < parameterCount; i++)
                         {
-                            var instance = body.CreateVariable(to);
-                            var array = body.CreateArray(typeof(object));
-                            array.AssignFromParameter(new MethodParameter(0));
-                            var items = new List<ILocalIndexer>();
+                            var info = parameters[i];
+                            var arg1 = array.LoadValueAtIndex(info.ParameterType, body, info.Position);
+                            items.Add(arg1);
+                        }
 
-                            var parameters = candidate.Parameters;
-                            var parameterCount = parameters.Count;
-                            for (int i = 0; i < parameterCount; i++)
-                            {
-                                var info = parameters[i];
-                                var arg1 = array.LoadValueAtIndex(info.ParameterType, body, info.Position);
-                                items.Add(arg1);
-                            }
+                        var constructorArgs = new Type[candidate.Parameters.Count];
+                        var candidateParameters = candidate.Parameters;
+                        var candidateParameterCount = candidateParameters.Count;
+                        for (int i = 0; i < candidateParameterCount; i++)
+                        {
+                            var arg = candidateParameters[i];
 
-                            var constructorArgs = new Type[candidate.Parameters.Count];
-                            var candidateParameters = candidate.Parameters;
-                            var candidateParameterCount = candidateParameters.Count;
-                            for (int i = 0; i < candidateParameterCount; i++)
-                            {
-                                var arg = candidateParameters[i];
+                            constructorArgs[arg.Position] = arg.ParameterType;
+                        }
 
-                                constructorArgs[arg.Position] = arg.ParameterType;
-                            }
-
-                            instance.AssignFrom(body.Instantiate(to, constructorArgs, items.OfType<ILocalIndexer, ILocalIndexer>()));
-                            body.Return(instance);
-                        });
-                    });
+                        instance.AssignFrom(body.Instantiate(to, constructorArgs, items.OfType<ILocalIndexer, ILocalIndexer>()));
+                        body.Return(instance);
+                    }));
                 });
 
                 var constructor = activatorType.GetConstructor(new Type[] { });

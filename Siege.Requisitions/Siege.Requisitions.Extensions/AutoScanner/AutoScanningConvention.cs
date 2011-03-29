@@ -23,44 +23,67 @@ using Siege.Requisitions.Registrations;
 namespace Siege.Requisitions.Extensions.AutoScanner
 {
     public class AutoScanningConvention : IConvention
-    {
-        private Assembly assembly;
+	{
+		private readonly List<Assembly> assemblies = new List<Assembly>();
+		private readonly List<string> namespaces = new List<string>();
         private readonly List<Type> baseTypes = new List<Type>();
-
-        public AutoScanningConvention()
-        {
-            assembly = Assembly.GetCallingAssembly();
-        }
 
         protected void FromAssemblyContaining<TType>()
         {
-            assembly = typeof (TType).Assembly;
+            this.assemblies.Add(typeof (TType).Assembly);
         }
+
+		protected void FromNamespaceOf<TType>()
+		{
+			this.namespaces.Add(typeof(TType).Namespace);
+		}
 
         protected void ForTypesImplementing<TType>()
         {
             baseTypes.Add(typeof(TType));
         }
+		
+		protected virtual List<IRegistration> CreateRegistrations()
+		{
+            var registrations = new List<IRegistration>();
+
+            foreach (var type in this.assemblies.Select(a => a.GetExportedTypes()).SelectMany(types => types))
+            {
+				if (type.IsGenericTypeDefinition || type.IsInterface) continue;
+            	if (this.baseTypes.Count > 0)
+            	{
+            		registrations.AddRange((from baseType in this.baseTypes
+            		                        where baseType.IsAssignableFrom(type)
+											&& !baseType.IsGenericTypeDefinition
+											&& (namespaces.Count == 0 || namespaces.Contains(type.Namespace))
+            		                        select new AutoScannedRegistration(baseType, type)).Cast<IRegistration>());
+            	}
+            	else
+            	{
+					if (namespaces.Count == 0 || namespaces.Contains(type.Namespace))
+					{
+						foreach (var @interface in type.GetInterfaces())
+						{
+							if (@interface.IsGenericTypeDefinition) continue;
+            				registrations.Add(new AutoScannedRegistration(@interface, type));
+						}
+
+						if (type.BaseType != typeof(object) 
+							&& !type.BaseType.IsGenericTypeDefinition 
+							&& !type.BaseType.IsAbstract)
+						{
+							registrations.Add(new AutoScannedRegistration(type.BaseType, type));
+						}
+					}
+            	}
+            }
+
+			return registrations;
+		}
 
         public Action<IServiceLocator> Build()
         {
-            var registrations = new List<IRegistration>();
-
-            foreach(Type type in assembly.GetExportedTypes())
-            {
-                if(baseTypes.Count > 0)
-                {
-                    registrations.AddRange((from baseType in baseTypes
-                                            where baseType.IsAssignableFrom(type) && !type.IsInterface
-                                            select new AutoScannedRegistration(baseType, type)).Cast<IRegistration>());
-                }
-                else
-                {
-                    registrations.Add(new AutoScannedRegistration(type.BaseType, type));
-                }
-            }
-
-            return serviceLocator => serviceLocator.Register(registrations);
+            return serviceLocator => serviceLocator.Register(CreateRegistrations());
         }
     }
 }
