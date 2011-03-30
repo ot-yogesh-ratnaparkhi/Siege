@@ -30,6 +30,9 @@ namespace Siege.Requisitions.RegistrationTemplates.Conditional
             adapter.RegisterInstance(mappedToType, registration.GetMappedTo());
             RegisterLazy(adapter, mappedFromType, pipeline);
             RegisterLazy(adapter, mappedToType, pipeline);
+
+			RegisterContextual(adapter, mappedFromType);
+			RegisterContextual(adapter, mappedToType);
         }
     }
 }

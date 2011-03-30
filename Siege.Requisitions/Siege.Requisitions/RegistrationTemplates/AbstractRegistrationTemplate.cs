@@ -17,6 +17,7 @@ using System;
 using System.Linq.Expressions;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
+using Siege.Requisitions.Resolution;
 using Siege.Requisitions.Resolution.Pipeline;
 
 namespace Siege.Requisitions.RegistrationTemplates
@@ -35,5 +36,17 @@ namespace Siege.Requisitions.RegistrationTemplates
             
             adapter.RegisterFactoryMethod(lazyLoader, () => lambda);
         }
+
+		protected void RegisterContextual(IServiceLocatorAdapter adapter, Type type)
+		{
+			var serviceLocator = (IServiceLocator)adapter.GetInstance(typeof(IServiceLocator));
+			Type lazyLoader = typeof(Func<,>).MakeGenericType(typeof(object), type);
+
+			Expression<Func<object, object>> func = x => serviceLocator.GetInstance(type, new ContextArgument(x));
+			var parameter = Expression.Parameter(typeof(object), "param1");
+			var lambda = Expression.Lambda(lazyLoader, Expression.Convert(Expression.Invoke(func, parameter), type), parameter).Compile();
+
+			adapter.RegisterFactoryMethod(lazyLoader, () => lambda);
+		}
     }
 }

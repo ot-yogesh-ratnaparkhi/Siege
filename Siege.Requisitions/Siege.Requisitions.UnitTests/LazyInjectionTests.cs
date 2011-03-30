@@ -18,6 +18,7 @@ using NUnit.Framework;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.UnitTests.TestClasses;
+using TestContext = Siege.Requisitions.UnitTests.TestClasses.TestContext;
 
 namespace Siege.Requisitions.UnitTests
 {
@@ -121,6 +122,17 @@ namespace Siege.Requisitions.UnitTests
             Assert.IsInstanceOf<TestCase1>(instance.Invoke("1"));
             Assert.IsInstanceOf<TestCase2>(instance.Invoke("2"));
         }
+
+		[Test]
+		public void ShouldInjectLazyForConditionalRegistrations()
+		{
+			locator
+				.Register(Given<ITestInterface>.When<TestContext>(context => context.TestCases == TestEnum.Case2).Then<TestCase2>())
+				.Register(Given<TestContextualClass>.Then<TestContextualClass>());
+
+			var instance = locator.GetInstance<TestContextualClass>();
+			Assert.IsInstanceOf<TestCase2>(instance.Invoke(new TestContext(TestEnum.Case2)));
+		}
     }
 
     public class TestClass
@@ -152,4 +164,19 @@ namespace Siege.Requisitions.UnitTests
             return test(key);
         }
     }
+
+	public class TestContextualClass
+	{
+		private readonly Func<object, ITestInterface> test;
+
+		public TestContextualClass(Func<object, ITestInterface> test)
+		{
+			this.test = test;
+		}
+
+		public ITestInterface Invoke(object context)
+		{
+			return test(context);
+		}
+	}
 }
