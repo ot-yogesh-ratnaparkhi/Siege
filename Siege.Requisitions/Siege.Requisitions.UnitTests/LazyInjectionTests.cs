@@ -133,6 +133,17 @@ namespace Siege.Requisitions.UnitTests
 			var instance = locator.GetInstance<TestContextualClass>();
 			Assert.IsInstanceOf<TestCase2>(instance.Invoke(new TestContext(TestEnum.Case2)));
 		}
+
+		[Test]
+		public void ShouldInjectLazyForTypeResolverRegistrations()
+		{
+			locator
+				.Register(Given<ITestInterface>.Then<TestCase2>())
+				.Register(Given<TestTypeResolverClass>.Then<TestTypeResolverClass>());
+
+			var instance = locator.GetInstance<TestTypeResolverClass>();
+			Assert.IsInstanceOf<TestCase2>(instance.Invoke(typeof(TestCase2)));
+		}
     }
 
     public class TestClass
@@ -177,6 +188,21 @@ namespace Siege.Requisitions.UnitTests
 		public ITestInterface Invoke(object context)
 		{
 			return test(context);
+		}
+	}
+
+	public class TestTypeResolverClass
+	{
+		private readonly Func<Type, ITestInterface> test;
+
+		public TestTypeResolverClass(Func<Type, ITestInterface> test)
+		{
+			this.test = test;
+		}
+
+		public ITestInterface Invoke(Type type)
+		{
+			return test(type);
 		}
 	}
 }
