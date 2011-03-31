@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Linq;
 using System.Reflection;
 
 namespace Siege.Provisions.Mapping.Conventions.Handlers
@@ -7,14 +9,12 @@ namespace Siege.Provisions.Mapping.Conventions.Handlers
     {
         public bool CanHandle(PropertyInfo property)
         {
-            return !property.PropertyType.IsClass && !new IDHandler().CanHandle(property);
+            return !property.PropertyType.IsClass && property.PropertyType.GetInterfaces().Where(i => i == typeof(IEnumerable)).Count() == 0;
         }
 
-        public void Handle(PropertyInfo property, Type type, DomainMapper mapper)
+        public void Handle(PropertyInfo property, Type type, DomainMapping mapper)
         {
-            if (property.PropertyType.IsClass) return;
-
-            mapper.For(type).Map(mapping => mapping.MapProperty(property));
+            mapper.MapProperty(property);
         }
     }
 }

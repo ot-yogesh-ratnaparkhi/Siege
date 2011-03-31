@@ -40,9 +40,19 @@ namespace Siege.Provisions.Mapping.PropertyMappings
     {
         public ComponentMapping(PropertyInfo property) : base(property)
         {
-            this.Name = Property.Name;
+            this.name = Property.Name;
         }
 
-        public string Name { get; protected set; }
+        private readonly List<IElementMapping> subMappings = new List<IElementMapping>();
+        private readonly string name;
+
+        public string Name { get { return name; } }
+        public List<IElementMapping> SubMappings { get { return subMappings; } }
+
+        public ComponentMapping MapProperty(PropertyInfo property)
+        {
+            this.subMappings.Add(new PropertyMapping(property));
+            return this;
+        }
     }
 }

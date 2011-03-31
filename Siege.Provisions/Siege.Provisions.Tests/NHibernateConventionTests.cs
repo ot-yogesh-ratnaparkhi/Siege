@@ -17,6 +17,7 @@ using NHibernate;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Siege.Provisions.NHibernate;
+using Siege.Provisions.UnitOfWork;
 using Siege.Requisitions;
 using Siege.Requisitions.Extensions.Conventions;
 using Siege.Requisitions.SiegeAdapter;

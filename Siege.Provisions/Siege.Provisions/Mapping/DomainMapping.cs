@@ -8,6 +8,10 @@ namespace Siege.Provisions.Mapping
 {
     public class DomainMapping<TClass> : DomainMapping
     {
+        public DomainMapping() : base(typeof(TClass))
+        {
+        }
+
         public DomainMapping<TClass> MapID<TType>(Expression<Func<TClass, TType>> expression)
         {
             this.subMappings.Add(new IdMapping<TClass, TType>(expression));
@@ -57,9 +61,15 @@ namespace Siege.Provisions.Mapping
 
     public class DomainMapping : IDomainMapping
     {
+        private readonly Type type;
         protected Table table = new Table();
         protected readonly List<IElementMapping> subMappings = new List<IElementMapping>();
         public Table Table { get { return table; } }
+
+        public DomainMapping(Type type)
+        {
+            this.type = type;
+        }
 
         public List<IElementMapping> SubMappings
         {
@@ -71,11 +81,21 @@ namespace Siege.Provisions.Mapping
             this.subMappings.Add(new PropertyMapping(property));
             return this;
         }
-        public DomainMapping MapComponent<TComponent>(Type type)
-        {
-            var component = new ComponentMapping(type);
 
+        public DomainMapping MapComponent(PropertyInfo propertyInfo, Action<ComponentMapping> componentMapping)
+        {
+            var component = new ComponentMapping(propertyInfo);
+            componentMapping(component);
             this.subMappings.Add(component);
+
+            return this;
+        }
+
+        public DomainMapping MapID(PropertyInfo property)
+        {
+            var id = new IdMapping(property);
+            this.subMappings.Add(id);
+
             return this;
         }
 
@@ -84,5 +104,12 @@ namespace Siege.Provisions.Mapping
             mapping(this);
         }
 
+        public DomainMapping MapForeignRelationship(PropertyInfo property, Type type)
+        {
+            var foreignRelationshipMapping = new ForeignRelationshipMapping(property, type);
+            this.subMappings.Add(foreignRelationshipMapping);
+
+            return this;
+        }
     }
 }

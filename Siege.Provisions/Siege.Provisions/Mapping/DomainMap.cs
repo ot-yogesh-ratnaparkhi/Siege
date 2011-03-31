@@ -29,7 +29,14 @@ namespace Siege.Provisions.Mapping
 
         public void Add(Type type, IDomainMapping mapping)
         {
-            this.mappings.Add(type, mapping);
+            if(!mappings.ContainsKey(type))
+            {
+                this.mappings.Add(type, mapping);
+            }
+            else
+            {
+                this.mappings[type] = mapping;
+            }
         }
 
         public int Count { get { return mappings.Count; } }

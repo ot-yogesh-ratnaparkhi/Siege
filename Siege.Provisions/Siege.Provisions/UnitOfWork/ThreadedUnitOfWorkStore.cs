@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Siege.Provisions
+namespace Siege.Provisions.UnitOfWork
 {
     public class ThreadedUnitOfWorkStore : IUnitOfWorkStore
     {

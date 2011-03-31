@@ -13,6 +13,8 @@
      limitations under the License.
 */
 
+using System;
+
 namespace Siege.Provisions
 {
     public interface IRepository<TPersistenceModel> where TPersistenceModel : IDatabase
@@ -20,5 +22,6 @@ namespace Siege.Provisions
         T Get<T>(object id) where T : class;
         void Save<T>(T item) where T : class;
         void Delete<T>(T item) where T : class;
+        void Transact(Action<IRepository<TPersistenceModel>>  transactor);
     }
 }
