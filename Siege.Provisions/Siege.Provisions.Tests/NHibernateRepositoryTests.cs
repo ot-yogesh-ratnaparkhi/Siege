@@ -17,6 +17,7 @@ using NHibernate;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Siege.Provisions.NHibernate;
+using Siege.Provisions.UnitOfWork;
 
 namespace Siege.Provisions.Tests
 {
