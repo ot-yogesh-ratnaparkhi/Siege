@@ -33,7 +33,8 @@ namespace Siege.Requisitions.RegistrationTemplates.Default
             }
 
             adapter.RegisterInstance(mappedToType, registration.GetMappedTo());
-            RegisterLazy(adapter, mappedToType, pipeline);
+			RegisterLazy(adapter, mappedToType, pipeline);
+			RegisterTypeResolver(adapter, mappedFromType);
         }
     }
 }

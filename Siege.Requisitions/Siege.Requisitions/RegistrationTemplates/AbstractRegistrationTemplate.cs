@@ -48,5 +48,19 @@ namespace Siege.Requisitions.RegistrationTemplates
 
 			adapter.RegisterFactoryMethod(lazyLoader, () => lambda);
 		}
+
+		protected void RegisterTypeResolver(IServiceLocatorAdapter adapter, Type type)
+		{
+			Type lazyLoader = typeof(Func<,>).MakeGenericType(typeof(Type), type);
+			if (adapter.HasTypeRegistered(lazyLoader)) return;
+			
+			var serviceLocator = (IServiceLocator)adapter.GetInstance(typeof(IServiceLocator));
+
+			Expression<Func<object, object>> func = x => serviceLocator.GetInstance((Type)x);
+			var parameter = Expression.Parameter(typeof(object), "param1");
+			var lambda = Expression.Lambda(lazyLoader, Expression.Convert(Expression.Invoke(func, parameter), type), parameter).Compile();
+
+			adapter.RegisterFactoryMethod(lazyLoader, () => lambda);
+		}
     }
 }

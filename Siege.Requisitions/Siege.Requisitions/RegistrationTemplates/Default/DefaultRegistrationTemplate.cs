@@ -13,6 +13,7 @@
      limitations under the License.
 */
 
+using System;
 using Siege.Requisitions.InternalStorage;
 using Siege.Requisitions.Registrations;
 using Siege.Requisitions.Registrations.Named;
@@ -46,6 +47,7 @@ namespace Siege.Requisitions.RegistrationTemplates.Default
             }
   
             RegisterLazy(adapter, mappedToType, pipeline);
+			RegisterTypeResolver(adapter, mappedFromType);
         }
     }
 }

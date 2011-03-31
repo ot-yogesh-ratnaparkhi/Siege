@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ninject;
 using Ninject.Parameters;
 using Siege.Requisitions.Exceptions;
@@ -83,7 +84,7 @@ namespace Siege.Requisitions.NinjectAdapter
 
         public bool HasTypeRegistered(Type type)
 		{
-			return kernel.TryGet(type) != null;
+			return kernel.GetBindings(type).Count(t => t.Service == type) > 0;
 		}
 
 		public object GetInstance(Type serviceType, string key, params IResolutionArgument[] parameters)
