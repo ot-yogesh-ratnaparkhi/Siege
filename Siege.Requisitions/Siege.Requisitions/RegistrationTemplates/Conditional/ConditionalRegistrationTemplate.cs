@@ -27,12 +27,15 @@ namespace Siege.Requisitions.RegistrationTemplates.Conditional
             var mappedToType = registration.GetMappedToType();
 
             adapter.RegisterFactoryMethod(mappedFromType, () => pipeline.Execute(mappedFromType));
-            RegisterLazy(adapter, mappedFromType, pipeline);
+			RegisterLazy(adapter, mappedFromType, pipeline);
+
+			RegisterContextual(adapter, mappedFromType);
 
             if (!mappedToType.IsInterface)
             {
                 adapter.Register(mappedToType, mappedToType);
                 RegisterLazy(adapter, mappedToType, pipeline);
+				RegisterContextual(adapter, mappedToType);
             }
         }
     }
