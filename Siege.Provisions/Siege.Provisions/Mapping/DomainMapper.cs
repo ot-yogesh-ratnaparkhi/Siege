@@ -23,7 +23,7 @@ namespace Siege.Provisions.Mapping
 
         public void Add(Type type, Action<DomainMapping> mapping)
         {
-            var map = new DomainMapping();
+            var map = new DomainMapping(type);
             mapping(map);
             this.Mappings.Add(type, map);
         }
@@ -36,6 +36,11 @@ namespace Siege.Provisions.Mapping
         public void Add<TClass>() where TClass : class
         {
             this.Mappings.Add<TClass>(new DomainMapping<TClass>());
+        }
+
+        public void Add(Type type)
+        {
+            this.mappings.Add(type, new DomainMapping(type));
         }
 
         public void UseConvention<TConvention>(Action<TConvention> convention) where TConvention : IConvention, new()
@@ -53,7 +58,7 @@ namespace Siege.Provisions.Mapping
             {
                 foreach(Type type in mappings.MappedTypes)
                 {
-                    convention.Map(type, this);
+                    this.For(type).Map(mapping => convention.Map(type, mapping));
                 }
             }
         }

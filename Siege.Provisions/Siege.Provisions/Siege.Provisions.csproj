@@ -51,8 +51,11 @@
     <Compile Include="IRepository.cs" />
     <Compile Include="Mapping\Conventions\ClassConvention.cs" />
     <Compile Include="Mapping\Conventions\ComponentConvention.cs" />
+    <Compile Include="Mapping\Conventions\Handlers\ComponentHandler.cs" />
+    <Compile Include="Mapping\Conventions\Handlers\EntityHandler.cs" />
     <Compile Include="Mapping\Conventions\Handlers\IDHandler.cs" />
     <Compile Include="Mapping\Conventions\Handlers\IHandler.cs" />
+    <Compile Include="Mapping\Conventions\Handlers\OneToManyHandler.cs" />
     <Compile Include="Mapping\Conventions\Handlers\PropertyHandler.cs" />
     <Compile Include="Mapping\Conventions\IConvention.cs" />
     <Compile Include="Mapping\DomainMap.cs" />
@@ -64,6 +67,7 @@
     <Compile Include="Mapping\IPropertyMapping.cs" />
     <Compile Include="Mapping\PropertyMappings\ComponentMapping.cs" />
     <Compile Include="Mapping\PropertyMappings\ElementMapping.cs" />
+    <Compile Include="Mapping\PropertyMappings\ForeignRelationshipMapping.cs" />
     <Compile Include="Mapping\PropertyMappings\IdMapping.cs" />
     <Compile Include="Mapping\PropertyMappings\ListMapping.cs" />
     <Compile Include="Mapping\PropertyMappings\PropertyMapping.cs" />

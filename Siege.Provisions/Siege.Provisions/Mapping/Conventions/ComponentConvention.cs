@@ -1,11 +1,18 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Siege.Provisions.Mapping.Conventions
 {
     public class ComponentConvention : IConvention
     {
+        private readonly PropertyInfo property;
         protected Func<Type, string, string> prefix;
         protected Func<Type, string, string> suffix;
+
+        public ComponentConvention(PropertyInfo property)
+        {
+            this.property = property;
+        }
 
         public ComponentConvention PrefixWith(Func<Type, string, string> formatter)
         {
@@ -19,9 +26,15 @@ namespace Siege.Provisions.Mapping.Conventions
             return this;
         }
 
-        public void Map(Type type, DomainMapper mapper)
+        public void Map(Type type, DomainMapping mapper)
         {
-            mapper.For(type).Map(mapping => mapping.);
+            mapper.MapComponent(this.property, subMapping =>
+            {
+                foreach (var typeProperty in this.property.PropertyType.GetProperties())
+                {
+                    subMapping.MapProperty(typeProperty);
+                }
+            });
         }
     }
 }

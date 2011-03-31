@@ -74,5 +74,19 @@ namespace Siege.Provisions.Tests
                 repository.Delete<object>(1);
             }
         }
+
+        public void ShouldCallUnitOfWorkManagerCurrentOnTransact()
+        {
+            using (mocks.Record())
+            {
+                unitOfWorkManager.Expect(uow => uow.For<NullDatabase>());
+                repository.Expect(repo => repo.Delete<object>(1));
+            }
+
+            using (mocks.Playback())
+            {
+                repository.Transact(repo => repo.Delete<object>(1));
+            }
+        }
     }
 }

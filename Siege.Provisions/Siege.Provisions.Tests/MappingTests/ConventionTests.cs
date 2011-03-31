@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using Siege.Provisions.Mapping;
 using Siege.Provisions.Mapping.Conventions;
 using Siege.Provisions.Mapping.PropertyMappings;
@@ -25,6 +26,12 @@ namespace Siege.Provisions.Tests.MappingTests
                 {
                     convention.WithSchema("test");
                     convention.WithSuffix("s");
+
+                    convention.IsEntityWhen(type => type.GetProperties().Where(p => p.Name == "ID").Count() > 0);
+                    convention.IsComponentWhen(type => type.IsClass && type.GetProperties().Where(p => p.Name == "ID").Count() == 0);
+
+                    convention.MatchIDWith(property => property.Name == "ID");
+                    
                     convention.ForComponents(component =>
                     {
                         component.PrefixWith((type, propertyName) => type.Name + "_");
@@ -32,16 +39,12 @@ namespace Siege.Provisions.Tests.MappingTests
                     });
                 });
 
-                mapper.Add<Customer>();
+               mapper.Add<Customer>();
+               mapper.Add<Order>();
             });
 
             Assert.AreEqual("Customers", map.Mappings.For<Customer>().Table.Name);
             Assert.AreEqual("test", map.Mappings.For<Customer>().Table.Schema);
-
-            foreach(IElementMapping mapping in map.Mappings.For<Customer>().SubMappings)
-            {
-                Assert.AreEqual(mapping.As<PropertyMapping>().ColumnName, mapping.As<PropertyMapping>().Property.Name);   
-            }
         }
 
         [Test]

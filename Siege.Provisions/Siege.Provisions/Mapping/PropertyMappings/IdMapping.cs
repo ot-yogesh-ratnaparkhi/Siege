@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Siege.Provisions.Mapping.PropertyMappings
 {
@@ -10,6 +11,13 @@ namespace Siege.Provisions.Mapping.PropertyMappings
         }
 
         public IdMapping(Expression<Func<TClass, TType>> expression) : base(expression)
+        {
+        }
+    }
+
+    public class IdMapping : PropertyMapping
+    {
+        public IdMapping(PropertyInfo property) : base(property)
         {
         }
     }

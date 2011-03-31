@@ -13,6 +13,8 @@
      limitations under the License.
 */
 
+using System;
+
 namespace Siege.Provisions
 {
     public class Repository<TPersistenceModule>  : IRepository<TPersistenceModule> where TPersistenceModule : IDatabase
@@ -37,6 +39,11 @@ namespace Siege.Provisions
         public void Delete<T>(T item) where T : class
         {
             unitOfWork.For<TPersistenceModule>().Transact(() => unitOfWork.For<TPersistenceModule>().Delete(item));
+        }
+
+        public void Transact(Action<IRepository<TPersistenceModule>> transactor)
+        {
+            unitOfWork.For<TPersistenceModule>().Transact(() => transactor(this));
         }
     }
 }

@@ -3,23 +3,23 @@ using System.Reflection;
 
 namespace Siege.Provisions.Mapping.Conventions.Handlers
 {
-    public class IDHandler : IHandler
+    public class EntityHandler : IHandler
     {
-        private readonly Predicate<PropertyInfo> idMatcher;
+        private readonly Predicate<Type> entityMatcher;
 
-        public IDHandler(Predicate<PropertyInfo> idMatcher)
+        public EntityHandler(Predicate<Type> entityMatcher)
         {
-            this.idMatcher = idMatcher;
+            this.entityMatcher = entityMatcher;
         }
 
         public bool CanHandle(PropertyInfo property)
         {
-            return this.idMatcher(property);
+            return entityMatcher(property.PropertyType);
         }
 
         public void Handle(PropertyInfo property, Type type, DomainMapping mapper)
         {
-            mapper.MapID(property);
+            throw new NotImplementedException();
         }
     }
 }
