@@ -2,17 +2,18 @@
 using System.Collections;
 using System.Linq;
 using System.Reflection;
+using Siege.Provisions.Mapping.Conventions.Identifiers;
 
 namespace Siege.Provisions.Mapping.Conventions.Handlers
 {
     public class ComponentHandler : IHandler
     {
-        private Predicate<Type> componentMatcher;
+        private IIdentifier<Type> componentIdentifier;
         private Action<ComponentConvention> componentConvention;
 
-        public void MatchesOn(Predicate<Type> componentMatcher)
+        public void MatchesOn(IIdentifier<Type> componentIdentifier)
         {
-            this.componentMatcher = componentMatcher;
+            this.componentIdentifier = componentIdentifier;
         }
 
         public void HandlesWith(Action<ComponentConvention> convention)
@@ -22,7 +23,7 @@ namespace Siege.Provisions.Mapping.Conventions.Handlers
 
         public bool CanHandle(PropertyInfo property)
         {
-            return property.PropertyType.GetInterfaces().Where(i => i == typeof(IEnumerable)).Count() == 0 && (this.componentMatcher != null) && this.componentMatcher(property.PropertyType);
+            return property.PropertyType.GetInterfaces().Where(i => i == typeof(IEnumerable)).Count() == 0 && (this.componentIdentifier != null) && this.componentIdentifier.Matches(property.PropertyType);
         }
 
         public void Handle(PropertyInfo property, Type type, DomainMapping mapper)

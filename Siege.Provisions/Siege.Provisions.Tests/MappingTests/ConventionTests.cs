@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Siege.Provisions.Mapping;
 using Siege.Provisions.Mapping.Conventions;
-using Siege.Provisions.Mapping.PropertyMappings;
 
 namespace Siege.Provisions.Tests.MappingTests
 {
@@ -22,25 +20,28 @@ namespace Siege.Provisions.Tests.MappingTests
         {
             map.Create(mapper =>
             {
-                mapper.UseConvention<ClassConvention>(convention =>
+                mapper.UseConvention(convention =>
                 {
                     convention.WithSchema("test");
                     convention.WithSuffix("s");
-
-                    convention.IsEntityWhen(type => type.GetProperties().Where(p => p.Name == "ID").Count() > 0);
-                    convention.IsComponentWhen(type => type.IsClass && type.GetProperties().Where(p => p.Name == "ID").Count() == 0);
-
-                    convention.MatchIDWith(property => property.Name == "ID");
+                    
+                    convention.IdentifyEntitiesWith<EntityIdentifier>();
+                    convention.IdentifyComponentsWith<ComponentIdentifier>();
+                    convention.IdentifyIDsWith<IdIdentifier>();
                     
                     convention.ForComponents(component =>
                     {
                         component.PrefixWith((type, propertyName) => type.Name + "_");
                         component.SuffixWith((type, propertyName) => "_" + type.Name);
                     });
+
+                    convention.ForForeignKeys(key => {});
                 });
 
-               mapper.Add<Customer>();
-               mapper.Add<Order>();
+                mapper.Add<Customer>();
+                mapper.Add<Order>();
+                mapper.Add<OrderItem>();
+                mapper.Add<Product>();
             });
 
             Assert.AreEqual("Customers", map.Mappings.For<Customer>().Table.Name);
@@ -52,7 +53,7 @@ namespace Siege.Provisions.Tests.MappingTests
         {
             map.Create(mapper =>
             {
-                mapper.UseConvention<ClassConvention>(convention =>
+                mapper.UseConvention(convention =>
                 {
                     convention.WithSchema("test");
                     convention.WithSuffix("s");
@@ -61,14 +62,6 @@ namespace Siege.Provisions.Tests.MappingTests
                 mapper.Add<Customer>();
 
             });
-        }
-    }
-
-    public static class ElementMappingExtensions
-    {
-        public static TType As<TType>(this IElementMapping mapping) where TType : IElementMapping
-        {
-            return (TType) mapping;
         }
     }
 }

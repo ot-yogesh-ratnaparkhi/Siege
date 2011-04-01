@@ -15,7 +15,6 @@ namespace Siege.Provisions.Mapping.Conventions.Handlers
         public void Handle(PropertyInfo property, Type type, DomainMapping mapper)
         {
             mapper.MapForeignRelationship(property, property.PropertyType.GetGenericArguments().First());
-            //mapper.MapProperty(property.PropertyType.GetGenericArguments().First());
         }
     }
 }

@@ -43,13 +43,18 @@ namespace Siege.Provisions.Mapping
             this.mappings.Add(type, new DomainMapping(type));
         }
 
-        public void UseConvention<TConvention>(Action<TConvention> convention) where TConvention : IConvention, new()
+        public void UseConvention(Action<ClassConvention> convention)
         {
-            var instance = new TConvention();
+            var instance = new ClassConvention();
 
             convention(instance);
 
             this.conventions.Add(instance);
+        }
+
+        public void UseConvention<TConvention>() where TConvention : class, IConvention, new()
+        {
+            this.conventions.Add(new TConvention());
         }
 
         public void Build()

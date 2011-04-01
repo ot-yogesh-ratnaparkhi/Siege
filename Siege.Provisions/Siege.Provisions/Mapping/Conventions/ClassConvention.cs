@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Siege.Provisions.Mapping.Conventions.Handlers;
+using Siege.Provisions.Mapping.Conventions.Identifiers;
 
 namespace Siege.Provisions.Mapping.Conventions
 {
@@ -62,19 +63,39 @@ namespace Siege.Provisions.Mapping.Conventions
             this.componentHandler.HandlesWith(convention);
         }
 
-        public void IsEntityWhen(Predicate<Type> entityMatcher)
+        public void IdentifyEntitiesWith<TIdentifier>() where TIdentifier : class, IIdentifier<Type>, new()
         {
-            this.handlers.Add(new EntityHandler(entityMatcher));
+            this.handlers.Add(new EntityHandler(new TIdentifier()));
         }
 
-        public void IsComponentWhen(Predicate<Type> componentMatcher)
+        public void IdentifyEntitiesWith(Predicate<Type> entityMatcher)
         {
-            componentHandler.MatchesOn(componentMatcher);
+            this.handlers.Add(new EntityHandler(new InlineIdentifier<Type>(entityMatcher)));
         }
 
-        public void MatchIDWith(Predicate<PropertyInfo> idMatcher)
+        public void IdentifyComponentsWith<TIdentifier>() where TIdentifier : class, IIdentifier<Type>, new()
         {
-            this.handlers.Add(new IDHandler(idMatcher));
+            componentHandler.MatchesOn(new TIdentifier());
+        }
+
+        public void IdentifyComponentsWith(Predicate<Type> componentMatcher)
+        {
+            componentHandler.MatchesOn(new InlineIdentifier<Type>(componentMatcher));
+        }
+
+        public void IdentifyIDsWith(Predicate<PropertyInfo> idMatcher)
+        {
+            this.handlers.Add(new IDHandler(new InlineIdentifier<PropertyInfo>(idMatcher)));
+        }
+
+        public void IdentifyIDsWith<TIdentifier>() where TIdentifier : class, IIdentifier<PropertyInfo>, new()
+        {
+            this.handlers.Add(new IDHandler(new TIdentifier()));
+        }
+
+        public void ForForeignKeys(Action<ForeignKeyConvention> foreignKey)
+        {
+
         }
     }
 }

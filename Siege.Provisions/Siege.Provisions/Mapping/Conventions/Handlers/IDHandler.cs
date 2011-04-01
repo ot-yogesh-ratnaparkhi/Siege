@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Reflection;
+using Siege.Provisions.Mapping.Conventions.Identifiers;
 
 namespace Siege.Provisions.Mapping.Conventions.Handlers
 {
     public class IDHandler : IHandler
     {
-        private readonly Predicate<PropertyInfo> idMatcher;
+        private readonly IIdentifier<PropertyInfo> idIdentifier;
 
-        public IDHandler(Predicate<PropertyInfo> idMatcher)
+        public IDHandler(IIdentifier<PropertyInfo> idIdentifier)
         {
-            this.idMatcher = idMatcher;
+            this.idIdentifier = idIdentifier;
         }
 
         public bool CanHandle(PropertyInfo property)
         {
-            return this.idMatcher(property);
+            return this.idIdentifier.Matches(property);
         }
 
         public void Handle(PropertyInfo property, Type type, DomainMapping mapper)

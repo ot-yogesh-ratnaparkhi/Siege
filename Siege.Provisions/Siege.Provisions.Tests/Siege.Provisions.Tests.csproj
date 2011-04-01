@@ -64,8 +64,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FinderTests.cs" />
+    <Compile Include="MappingTests\ComponentIdentifier.cs" />
     <Compile Include="MappingTests\ConventionTests.cs" />
     <Compile Include="MappingTests\DomainMapTests.cs" />
+    <Compile Include="MappingTests\ElementMappingExtensions.cs" />
+    <Compile Include="MappingTests\EntityIdentifier.cs" />
+    <Compile Include="MappingTests\IdIdentifier.cs" />
     <Compile Include="NHibernateConventionTests.cs" />
     <Compile Include="NHibernateRepositoryTests.cs" />
     <Compile Include="NHibernateUnitOfWorkManagerTests.cs" />

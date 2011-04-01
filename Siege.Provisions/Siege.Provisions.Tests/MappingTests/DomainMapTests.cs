@@ -185,11 +185,25 @@ namespace Siege.Provisions.Tests.MappingTests
     {
         public int ID { get; set; }
         public DateTime DateCreated { get; set; }
+        public List<OrderItem> Items { get; set; }
     }
 
     public class Name
     {
         public string First { get; set; }
         public string Last { get; set; }
+    }
+
+    public class OrderItem
+    {
+        public int ID { get; set; }
+        public Product Product { get; set; }
+    }
+
+    public class Product
+    {
+        public int ID { get; set; }
+        public decimal Price { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Siege.Provisions.Mapping.Conventions.Handlers
     {
         public bool CanHandle(PropertyInfo property)
         {
-            return !property.PropertyType.IsClass && property.PropertyType.GetInterfaces().Where(i => i == typeof(IEnumerable)).Count() == 0;
+            return property.PropertyType == typeof(string) || (!property.PropertyType.IsClass && property.PropertyType.GetInterfaces().Where(i => i == typeof(IEnumerable)).Count() == 0);
         }
 
         public void Handle(PropertyInfo property, Type type, DomainMapping mapper)

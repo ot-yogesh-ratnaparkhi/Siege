@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Reflection;
+using Siege.Provisions.Mapping.Conventions.Identifiers;
 
 namespace Siege.Provisions.Mapping.Conventions.Handlers
 {
     public class EntityHandler : IHandler
     {
-        private readonly Predicate<Type> entityMatcher;
+        private readonly IIdentifier<Type> entityIdentifier;
 
-        public EntityHandler(Predicate<Type> entityMatcher)
+        public EntityHandler(IIdentifier<Type> entityIdentifier)
         {
-            this.entityMatcher = entityMatcher;
+            this.entityIdentifier = entityIdentifier;
         }
 
         public bool CanHandle(PropertyInfo property)
         {
-            return entityMatcher(property.PropertyType);
+            return entityIdentifier.Matches(property.PropertyType);
         }
 
         public void Handle(PropertyInfo property, Type type, DomainMapping mapper)
         {
-            throw new NotImplementedException();
+            mapper.MapForeignRelationship(property, property.PropertyType);
         }
     }
 }
