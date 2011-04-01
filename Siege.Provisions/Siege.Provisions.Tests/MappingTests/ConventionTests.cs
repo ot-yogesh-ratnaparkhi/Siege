@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using Siege.Provisions.Mapping;
-using Siege.Provisions.Mapping.Conventions;
 
 namespace Siege.Provisions.Tests.MappingTests
 {
