@@ -14,6 +14,7 @@
 */
 
 using System;
+using Siege.Provisions.UnitOfWork;
 
 namespace Siege.Provisions
 {

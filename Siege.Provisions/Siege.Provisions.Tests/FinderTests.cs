@@ -16,6 +16,7 @@
 using System;
 using NUnit.Framework;
 using Rhino.Mocks;
+using Siege.Provisions.Finders;
 
 namespace Siege.Provisions.Tests
 {

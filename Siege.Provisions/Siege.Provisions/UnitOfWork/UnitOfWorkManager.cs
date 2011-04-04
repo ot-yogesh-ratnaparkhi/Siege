@@ -15,9 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using Siege.Provisions.UnitOfWork;
 
-namespace Siege.Provisions
+namespace Siege.Provisions.UnitOfWork
 {
     public interface IUnitOfWorkManager
     {

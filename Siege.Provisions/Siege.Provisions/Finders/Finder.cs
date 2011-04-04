@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Siege.Provisions
+namespace Siege.Provisions.Finders
 {
 	public abstract class Finder<T> : IFinder<T>
 		where T : class

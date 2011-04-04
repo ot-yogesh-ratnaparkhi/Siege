@@ -15,6 +15,7 @@
 
 using System;
 using NHibernate;
+using Siege.Provisions.UnitOfWork;
 
 namespace Siege.Provisions.NHibernate
 {

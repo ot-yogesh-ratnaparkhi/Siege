@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Criterion;
+using Siege.Provisions.Finders;
 
 namespace Siege.Provisions.NHibernate
 {

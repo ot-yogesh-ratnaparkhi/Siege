@@ -13,7 +13,7 @@
      limitations under the License.
 */
 
-namespace Siege.Provisions
+namespace Siege.Provisions.Finders
 {
 	public interface ICountQuery
 	{

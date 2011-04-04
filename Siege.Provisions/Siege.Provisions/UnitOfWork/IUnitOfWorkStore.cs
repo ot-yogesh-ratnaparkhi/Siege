@@ -15,7 +15,7 @@
 
 using System;
 
-namespace Siege.Provisions
+namespace Siege.Provisions.UnitOfWork
 {
 	public interface IUnitOfWorkStore : IDisposable
 	{

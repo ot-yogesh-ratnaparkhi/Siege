@@ -15,6 +15,7 @@
 
 using NUnit.Framework;
 using Rhino.Mocks;
+using Siege.Provisions.UnitOfWork;
 
 namespace Siege.Provisions.Tests
 {

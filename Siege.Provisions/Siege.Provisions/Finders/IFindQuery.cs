@@ -15,7 +15,7 @@
 
 using System.Collections.Generic;
 
-namespace Siege.Provisions
+namespace Siege.Provisions.Finders
 {
 	public interface IFindQuery
 	{
