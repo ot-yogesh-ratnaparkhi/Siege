@@ -26,11 +26,11 @@ namespace Siege.Provisions.Tests
     {
         private MockRepository mocks;
         private IUnitOfWorkStore store;
-        private NHibernateUnitOfWorkFactory factory;
+        private NHibernateUnitOfWorkFactory<NullDatabase> factory;
         private ISessionFactory sessionFactory;
         private ISession session;
         private NHibernateUnitOfWorkManager unitOfWorkManager;
-        private NHibernateRepository<NullDatabase> repository;
+        private Repository<NullDatabase> repository;
         private ITransaction transaction;
 
         [SetUp]
@@ -41,10 +41,10 @@ namespace Siege.Provisions.Tests
             sessionFactory = mocks.DynamicMock<ISessionFactory>();
             store = new ThreadedUnitOfWorkStore();
             transaction = mocks.DynamicMock<ITransaction>();
-            factory = mocks.Stub<NHibernateUnitOfWorkFactory>(sessionFactory);
+            factory = mocks.Stub<NHibernateUnitOfWorkFactory<NullDatabase>>(sessionFactory);
             unitOfWorkManager = mocks.Stub<NHibernateUnitOfWorkManager>();
-            unitOfWorkManager.Add(new NullDatabase(factory));
-            repository = new NHibernateRepository<NullDatabase>(unitOfWorkManager);
+            unitOfWorkManager.Add(new NullDatabase(factory, store));
+            repository = new Repository<NullDatabase>(unitOfWorkManager);
         }
 
         [Test]
@@ -100,21 +100,7 @@ namespace Siege.Provisions.Tests
                 repository.Delete<object>(1);
             }
         }
-
-        [Test]
-        public void ShouldCallSessionWhenRequested()
-        {
-            using (mocks.Record())
-            {
-                sessionFactory.Expect(f => f.OpenSession()).Return(session).Repeat.Any();
-            }
-
-            using (mocks.Playback())
-            {
-                var session = repository.Session;
-            }
-        }
-
+		
         [TearDown]
         public void TearDown()
         {

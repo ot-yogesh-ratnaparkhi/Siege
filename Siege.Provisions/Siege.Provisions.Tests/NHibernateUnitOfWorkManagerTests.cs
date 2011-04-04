@@ -26,7 +26,7 @@ namespace Siege.Provisions.Tests
     {
         private MockRepository mocks;
         private IUnitOfWorkStore store;
-        private NHibernateUnitOfWorkFactory factory;
+        private NHibernateUnitOfWorkFactory<NullDatabase> factory;
         private ISessionFactory sessionFactory;
         private ISession session;
         private NHibernateUnitOfWorkManager unitOfWorkManager;
@@ -38,9 +38,9 @@ namespace Siege.Provisions.Tests
             session = mocks.DynamicMock<ISession>();
             sessionFactory = mocks.DynamicMock<ISessionFactory>();
             store = new ThreadedUnitOfWorkStore();
-            factory = mocks.Stub<NHibernateUnitOfWorkFactory>(sessionFactory);
+            factory = mocks.Stub<NHibernateUnitOfWorkFactory<NullDatabase>>(sessionFactory);
             unitOfWorkManager = mocks.Stub<NHibernateUnitOfWorkManager>();
-            unitOfWorkManager.Add(new NullDatabase(factory));
+            unitOfWorkManager.Add(new NullDatabase(factory, store));
         }
 
         [Test]

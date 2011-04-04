@@ -15,8 +15,12 @@
 
 using System;
 
-namespace Siege.Provisions
+namespace Siege.Provisions.UnitOfWork
 {
+	public interface IUnitOfWorkFactory<TDatabase> : IUnitOfWorkFactory where TDatabase : IDatabase
+	{
+	}
+
 	public interface IUnitOfWorkFactory : IDisposable
 	{
 		IUnitOfWork Create();

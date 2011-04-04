@@ -14,10 +14,11 @@
 */
 
 using NHibernate;
+using Siege.Provisions.UnitOfWork;
 
 namespace Siege.Provisions.NHibernate
 {
-	public class NHibernateUnitOfWorkFactory : IUnitOfWorkFactory
+	public class NHibernateUnitOfWorkFactory<TDatabase> : IUnitOfWorkFactory<TDatabase> where TDatabase : IDatabase
 	{
 		private ISessionFactory sessionFactory;
 

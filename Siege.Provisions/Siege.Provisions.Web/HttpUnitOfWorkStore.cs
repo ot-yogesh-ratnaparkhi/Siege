@@ -40,23 +40,23 @@ namespace Siege.Provisions.Web
             }
         }
 
-        public IUnitOfWork CurrentFor<TPersistenceModule>() where TPersistenceModule : IDatabase
+        public IUnitOfWork CurrentFor<TDatabase>() where TDatabase : IDatabase
         {
             if (SessionExists())
             {
                 return
-                    HttpContext.Current.Session["HttpUnitOfWorkStore.CurrentUnitOfWork_" + typeof (TPersistenceModule)]
+                    HttpContext.Current.Session["HttpUnitOfWorkStore.CurrentUnitOfWork_" + typeof (TDatabase)]
                     as IUnitOfWork;
             }
             return null;
         }
 
-        public void SetUnitOfWork<TPersistenceModule>(IUnitOfWork unitOfWork)
-            where TPersistenceModule : IDatabase
+        public void SetUnitOfWork<TDatabase>(IUnitOfWork unitOfWork)
+            where TDatabase : IDatabase
         {
             if (SessionExists())
             {
-                HttpContext.Current.Session["HttpUnitOfWorkStore.CurrentUnitOfWork_" + typeof (TPersistenceModule)] =
+                HttpContext.Current.Session["HttpUnitOfWorkStore.CurrentUnitOfWork_" + typeof (TDatabase)] =
                     unitOfWork;
             }
         }

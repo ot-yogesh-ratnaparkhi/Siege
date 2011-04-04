@@ -24,37 +24,11 @@ using Siege.Requisitions.SiegeAdapter;
 
 namespace Siege.Provisions.Tests
 {
-    public class NullDatabase : IDatabase
+    public class NullDatabase : Database<NullDatabase>
     {
-        private readonly MockRepository repository = new MockRepository();
-        private readonly IUnitOfWorkFactory factory;
-        private readonly IUnitOfWorkStore store;
-
-        public NullDatabase()
-        {
-            factory = new NHibernateUnitOfWorkFactory(repository.DynamicMock<ISessionFactory>());
-            store = new ThreadedUnitOfWorkStore();
-        }
-
-        public NullDatabase(IUnitOfWorkFactory factory) : this(factory, new ThreadedUnitOfWorkStore())
-        {
-        }
-
-        public NullDatabase(IUnitOfWorkFactory factory, IUnitOfWorkStore store)
-        {
-            this.factory = factory;
-            this.store = store;
-        }
-
-        public IUnitOfWorkFactory Factory
-        {
-            get { return factory; }
-        }
-
-        public IUnitOfWorkStore Store
-        {
-            get { return store; }
-        }
+    	public NullDatabase(IUnitOfWorkFactory<NullDatabase> unitOfWorkFactory, IUnitOfWorkStore unitOfWorkStore) : base(unitOfWorkFactory, unitOfWorkStore)
+    	{
+    	}
     }
 
     [TestFixture]
@@ -75,18 +49,11 @@ namespace Siege.Provisions.Tests
             serviceLocator.Register(
                 Using.Convention(new NHibernateConvention<ThreadedUnitOfWorkStore, NullDatabase>(sessionFactory)));
         }
-
-        [Test]
-        public void ShouldRegisterSessionFactoryAsASingleton()
-        {
-            var locatedSessionFactory = serviceLocator.GetInstance<ISessionFactory>();
-            Assert.AreEqual(sessionFactory, locatedSessionFactory);
-        }
-
+		
         [Test]
         public void ShouldRegisterUnitOfWorkFactory()
         {
-            var uowFactory = serviceLocator.GetInstance<NHibernateUnitOfWorkFactory>();
+			var uowFactory = serviceLocator.GetInstance<NHibernateUnitOfWorkFactory<NullDatabase>>();
             Assert.IsNotNull(uowFactory);
         }
 
@@ -95,7 +62,7 @@ namespace Siege.Provisions.Tests
         {
             var repository = serviceLocator.GetInstance<IRepository<NullDatabase>>();
             Assert.IsNotNull(repository);
-            Assert.IsTrue(repository is NHibernateRepository<NullDatabase>);
+			Assert.IsInstanceOf<Repository<NullDatabase>>(repository);
         }
 
         [Test]

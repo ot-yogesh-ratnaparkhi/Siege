@@ -22,7 +22,7 @@ namespace Siege.Provisions.UnitOfWork
     public class ThreadedUnitOfWorkStore : IUnitOfWorkStore
     {
         private static object lockObject = new object();
-        private static ThreadLocal<Dictionary<Type, IUnitOfWork>> currentUnitOfWork = new ThreadLocal<Dictionary<Type, IUnitOfWork>>();
+        private static Dictionary<Type, IUnitOfWork> currentUnitOfWork = new Dictionary<Type, IUnitOfWork>();
 
         static ThreadedUnitOfWorkStore()
         {
@@ -31,47 +31,47 @@ namespace Siege.Provisions.UnitOfWork
 
         private static void Create()
         {
-            if (!currentUnitOfWork.IsValueCreated)
+            if (currentUnitOfWork == null)
             {
                 lock (lockObject)
                 {
-                    if (!currentUnitOfWork.IsValueCreated)
+                    if (currentUnitOfWork == null)
                     {
-                        currentUnitOfWork.Value = new Dictionary<Type, IUnitOfWork>();
+                        currentUnitOfWork= new Dictionary<Type, IUnitOfWork>();
                     }
                 }
             }
         }
 
-        public IUnitOfWork CurrentFor<TPersistenceModule>() where TPersistenceModule : IDatabase
+        public IUnitOfWork CurrentFor<TDatabase>() where TDatabase : IDatabase
         {
             Create();
-            if (!currentUnitOfWork.Value.ContainsKey(typeof(TPersistenceModule))) return null;
+            if (!currentUnitOfWork.ContainsKey(typeof(TDatabase))) return null;
 
-            return currentUnitOfWork.Value[typeof(TPersistenceModule)]; 
+            return currentUnitOfWork[typeof(TDatabase)]; 
         }
 
-        public void SetUnitOfWork<TPersistenceModule>(IUnitOfWork unitOfWork) where TPersistenceModule : IDatabase
+        public void SetUnitOfWork<TDatabase>(IUnitOfWork unitOfWork) where TDatabase : IDatabase
         {
             Create();
-            if (!currentUnitOfWork.Value.ContainsKey(typeof(TPersistenceModule))) currentUnitOfWork.Value.Add(typeof(TPersistenceModule), unitOfWork);
-            currentUnitOfWork.Value[typeof(TPersistenceModule)] = unitOfWork;
+            if (!currentUnitOfWork.ContainsKey(typeof(TDatabase))) currentUnitOfWork.Add(typeof(TDatabase), unitOfWork);
+            currentUnitOfWork[typeof(TDatabase)] = unitOfWork;
         }
 
         public void Dispose()
         {
-            if (currentUnitOfWork.Value != null)
+            if (currentUnitOfWork!= null)
             {
                 var keysToRemove = new List<Type>();
-                foreach(Type key in currentUnitOfWork.Value.Keys)
+                foreach(Type key in currentUnitOfWork.Keys)
                 {
-                    currentUnitOfWork.Value[key].Dispose();
+                    currentUnitOfWork[key].Dispose();
                     keysToRemove.Add(key);
                 }
 
                 foreach(Type key in keysToRemove)
                 {
-                    currentUnitOfWork.Value.Remove(key);
+                    currentUnitOfWork.Remove(key);
                 }
             }
         }

@@ -17,7 +17,7 @@ using System;
 
 namespace Siege.Provisions
 {
-    public class Repository<TPersistenceModule>  : IRepository<TPersistenceModule> where TPersistenceModule : IDatabase
+    public class Repository<TDatabase>  : IRepository<TDatabase> where TDatabase : IDatabase
     {
         protected readonly IUnitOfWorkManager unitOfWork;
 
@@ -28,22 +28,22 @@ namespace Siege.Provisions
 
         public T Get<T>(object id) where T : class 
         {
-            return unitOfWork.For<TPersistenceModule>().Get<T>(id);
+            return unitOfWork.For<TDatabase>().Get<T>(id);
         }
 
         public void Save<T>(T item) where T : class
         {
-            unitOfWork.For<TPersistenceModule>().Transact(() => unitOfWork.For<TPersistenceModule>().Save(item));
+            unitOfWork.For<TDatabase>().Transact(() => unitOfWork.For<TDatabase>().Save(item));
         }
 
         public void Delete<T>(T item) where T : class
         {
-            unitOfWork.For<TPersistenceModule>().Transact(() => unitOfWork.For<TPersistenceModule>().Delete(item));
+            unitOfWork.For<TDatabase>().Transact(() => unitOfWork.For<TDatabase>().Delete(item));
         }
 
-        public void Transact(Action<IRepository<TPersistenceModule>> transactor)
+        public void Transact(Action<IRepository<TDatabase>> transactor)
         {
-            unitOfWork.For<TPersistenceModule>().Transact(() => transactor(this));
+            unitOfWork.For<TDatabase>().Transact(() => transactor(this));
         }
     }
 }
