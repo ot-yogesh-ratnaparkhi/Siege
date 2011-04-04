@@ -13,6 +13,8 @@
      limitations under the License.
 */
 
+using Siege.Provisions.UnitOfWork;
+
 namespace Siege.Provisions
 {
     public interface IDatabase

@@ -34,6 +34,7 @@ namespace Siege.Requisitions.RegistrationTemplates.Default
                 adapter.RegisterFactoryMethod(mappedFromType, () => pipeline.Execute(mappedFromType));
                 RegisterLazy(adapter, mappedFromType, pipeline);
                 adapter.Register(mappedToType, mappedToType);
+				RegisterContextual(adapter, mappedToType);
             }
             else
             {
@@ -48,6 +49,7 @@ namespace Siege.Requisitions.RegistrationTemplates.Default
   
             RegisterLazy(adapter, mappedToType, pipeline);
 			RegisterTypeResolver(adapter, mappedFromType);
+			RegisterContextual(adapter, mappedFromType);
         }
     }
 }

@@ -15,6 +15,7 @@
 
 using System;
 using NHibernate;
+using Siege.Provisions.UnitOfWork;
 using Siege.Requisitions;
 using Siege.Requisitions.Extensions.Conventions;
 using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
@@ -22,54 +23,28 @@ using Siege.Requisitions.RegistrationPolicies;
 
 namespace Siege.Provisions.NHibernate
 {
-    public class NHibernateConvention<TUnitOfWorkStore, TPersistenceModule> : IConvention
-        where TUnitOfWorkStore : IUnitOfWorkStore
-        where TPersistenceModule : IDatabase
-    {
-        private readonly Action<IServiceLocator> registrations;
+	public class NHibernateConvention<TUnitOfWorkStore, TDatabase> : IConvention
+		where TUnitOfWorkStore : IUnitOfWorkStore
+		where TDatabase : IDatabase
+	{
+		private readonly ISessionFactory sessionFactory;
 
-        public NHibernateConvention(string connectionStringName, ISessionFactory sessionFactory)
-        {
-            registrations =
-                serviceLocator =>
-                    {
-                        AddCommonRegistrations(serviceLocator);
-                        serviceLocator.Register(
-                            Given<ISessionFactory>
-                                .When<SessionContext>(c => c.ConnectionStringName == connectionStringName)
-                                .Then(sessionFactory));
-                    };
-        }
+		public NHibernateConvention(ISessionFactory sessionFactory)
+		{
+			this.sessionFactory = sessionFactory;
+		}
 
-        public NHibernateConvention(ISessionFactory sessionFactory)
-        {
-            registrations =
-                serviceLocator =>
-                    {
-                        serviceLocator.Register(Given<ISessionFactory>.Then(sessionFactory));
-                        AddCommonRegistrations(serviceLocator);
-                    };
-        }
-
-        public Action<IServiceLocator> Build()
-        {
-            return registrations;
-        }
-
-        private static void AddCommonRegistrations(IServiceLocator serviceLocator)
-        {
-            serviceLocator
-                .Register<Singleton>(Given<IUnitOfWorkFactory>.Then<NHibernateUnitOfWorkFactory>())
-                .Register<Singleton>(Given<IDatabase>.Then<TPersistenceModule>())
-                .Register(
-                    Given<IUnitOfWork>.ConstructWith(
-                        l => l.GetInstance<IUnitOfWorkManager>().For<TPersistenceModule>()))
-                .Register<Singleton>(Given<IUnitOfWorkStore>.Then<TUnitOfWorkStore>())
-                .Register(Given<IRepository<TPersistenceModule>>.Then<NHibernateRepository<TPersistenceModule>>());
-
-            var manager = new NHibernateUnitOfWorkManager();
-            manager.Add(serviceLocator.GetInstance<IDatabase>());
-            serviceLocator.Register(Given<IUnitOfWorkManager>.Then(manager));
-        }
-    }
+		public Action<IServiceLocator> Build()
+		{
+			return serviceLocator => serviceLocator
+				.Register<Singleton>(Given<IUnitOfWorkFactory<TDatabase>>.Then(new NHibernateUnitOfWorkFactory<TDatabase>(sessionFactory)))
+				.Register(Given<IUnitOfWork>.ConstructWith(l => l.GetInstance<IUnitOfWorkManager>().For<TDatabase>()))
+				.Register<Singleton>(Given<IUnitOfWorkStore>.Then<TUnitOfWorkStore>())
+				.Register(Given<IRepository<TDatabase>>.Then<Repository<TDatabase>>())
+				.Register(Given<TDatabase>.Then<TDatabase>())
+				.Register<Singleton>(Given<IUnitOfWorkManager>.ConstructWith(locator => locator.GetInstance<NHibernateUnitOfWorkManager>()))
+				.Register(Given<NHibernateUnitOfWorkManager>.InitializeWith(manager => manager.Add(serviceLocator.GetInstance<TDatabase>())))
+				.Register<Singleton>(Given<NHibernateUnitOfWorkManager>.Then<NHibernateUnitOfWorkManager>());
+		}
+	}
 }

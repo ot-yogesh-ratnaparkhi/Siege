@@ -15,12 +15,13 @@
 
 using System;
 using System.Collections.Generic;
+using Siege.Provisions.UnitOfWork;
 
 namespace Siege.Provisions
 {
     public interface IUnitOfWorkManager
     {
-        IUnitOfWork For<TPersistenceModule>() where TPersistenceModule : IDatabase;
+        IUnitOfWork For<TDatabase>() where TDatabase : IDatabase;
         void Add(IDatabase module);
     }
 
@@ -28,16 +29,16 @@ namespace Siege.Provisions
     {
         protected readonly Dictionary<Type, UnitOfWorkBundle> stores = new Dictionary<Type, UnitOfWorkBundle>();
 
-        public IUnitOfWork For<TPersistenceModule>() where TPersistenceModule : IDatabase
+        public IUnitOfWork For<TDatabase>() where TDatabase : IDatabase
 		{
-            var bundle = stores[typeof(TPersistenceModule)];
+            var bundle = stores[typeof(TDatabase)];
 
-            if (bundle.Store.CurrentFor<TPersistenceModule>() == null)
+            if (bundle.Store.CurrentFor<TDatabase>() == null)
             {
-                bundle.Store.SetUnitOfWork<TPersistenceModule>(bundle.Factory.Create());
+                bundle.Store.SetUnitOfWork<TDatabase>(bundle.Factory.Create());
             }
 
-            return bundle.Store.CurrentFor<TPersistenceModule>();
+            return bundle.Store.CurrentFor<TDatabase>();
 		}
 
         public void Add(IDatabase module)

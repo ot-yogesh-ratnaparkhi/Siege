@@ -15,6 +15,7 @@
 
 using NUnit.Framework;
 using Rhino.Mocks;
+using Siege.Provisions.UnitOfWork;
 
 namespace Siege.Provisions.Tests
 {
@@ -24,7 +25,7 @@ namespace Siege.Provisions.Tests
         private MockRepository mocks;
         private UnitOfWorkManager unitOfWorkManager;
         private IUnitOfWorkStore store;
-        private IUnitOfWorkFactory factory;
+		private IUnitOfWorkFactory<NullDatabase> factory;
         private IUnitOfWork instance;
 
         [SetUp]
@@ -33,7 +34,7 @@ namespace Siege.Provisions.Tests
             mocks = new MockRepository();
             instance = mocks.DynamicMock<IUnitOfWork>();
             store = mocks.DynamicMock<IUnitOfWorkStore>();
-            factory = mocks.DynamicMock<IUnitOfWorkFactory>();
+            factory = mocks.DynamicMock<IUnitOfWorkFactory<NullDatabase>>();
             unitOfWorkManager = mocks.Stub<UnitOfWorkManager>();
             unitOfWorkManager.Add(new NullDatabase(factory, store));
         }
