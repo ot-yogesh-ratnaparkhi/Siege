@@ -14,6 +14,7 @@
 */
 
 using System;
+using System.Linq;
 
 namespace Siege.Provisions.UnitOfWork
 {
@@ -24,5 +25,6 @@ namespace Siege.Provisions.UnitOfWork
 		T Transact<T>(Func<T> action);
 		void Save<T>(T item);
         void Delete<T>(T item);
+	    IQueryable<T> Query<T>();
 	}
 }

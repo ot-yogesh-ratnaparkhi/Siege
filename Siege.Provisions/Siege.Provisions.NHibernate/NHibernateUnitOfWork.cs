@@ -14,7 +14,9 @@
 */
 
 using System;
+using System.Linq;
 using NHibernate;
+using NHibernate.Linq;
 using Siege.Provisions.UnitOfWork;
 
 namespace Siege.Provisions.NHibernate
@@ -49,7 +51,12 @@ namespace Siege.Provisions.NHibernate
             Transact(() => Session.Delete(item));
         }
 
-		public T Get<T>(object id)
+	    public IQueryable<T> Query<T>()
+	    {
+	        return Session.Query<T>();
+	    }
+
+	    public T Get<T>(object id)
 		{
 			return Transact(() => Session.Get<T>(id));
 		}

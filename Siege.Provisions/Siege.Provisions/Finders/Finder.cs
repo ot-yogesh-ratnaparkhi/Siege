@@ -18,8 +18,8 @@ using System.Collections.Generic;
 
 namespace Siege.Provisions.Finders
 {
-	public abstract class Finder<T> : IFinder<T>
-		where T : class
+    [Obsolete("Use Queryable<T> instead.")]
+	public abstract class Finder<T> : IFinder<T> where T : class
 	{
 		public virtual IList<T> Find()
 		{
