@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using Siege.Provisions.Mapping.Conventions.Formatters;
 
 namespace Siege.Provisions.Mapping.PropertyMappings
 {
@@ -17,8 +18,9 @@ namespace Siege.Provisions.Mapping.PropertyMappings
 
     public class IdMapping : PropertyMapping
     {
-        public IdMapping(PropertyInfo property) : base(property)
+        public IdMapping(PropertyInfo property, Type type, Formatter<Type> keyFormatter) : base(property)
         {
+            this.ColumnName = keyFormatter.Format(type);
         }
     }
 }

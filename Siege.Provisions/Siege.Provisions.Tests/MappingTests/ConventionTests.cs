@@ -21,7 +21,7 @@ namespace Siege.Provisions.Tests.MappingTests
             {
                 mapper.UseConvention(convention =>
                 {
-                    convention.WithSchema("test");
+                    convention.WithSchema("siege");
                     convention.WithSuffix("s");
                     
                     convention.IdentifyEntitiesWith<EntityIdentifier>();
@@ -30,11 +30,19 @@ namespace Siege.Provisions.Tests.MappingTests
                     
                     convention.ForComponents(component =>
                     {
-                        component.PrefixWith((type, propertyName) => type.Name + "_");
-                        component.SuffixWith((type, propertyName) => "_" + type.Name);
+                        component.PrefixWith((parentType, objectType, propertyName) => parentType.Name);
+                        component.SuffixWith((parentType, objectType, propertyName) => objectType.Name);
                     });
 
-                    convention.ForForeignKeys(key => {});
+                    convention.ForPrimaryKeys(key =>
+                    {
+                        key.FormatAs(type => type.Name + "ID");
+                    });
+
+                    convention.ForForeignKeys(key => 
+                    { 
+                        key.FormatAs(property => property.Name + "ID");
+                    });
                 });
 
                 mapper.Add<Customer>();
@@ -44,7 +52,7 @@ namespace Siege.Provisions.Tests.MappingTests
             });
 
             Assert.AreEqual("Customers", map.Mappings.For<Customer>().Table.Name);
-            Assert.AreEqual("test", map.Mappings.For<Customer>().Table.Schema);
+            Assert.AreEqual("siege", map.Mappings.For<Customer>().Table.Schema);
         }
 
         [Test]
@@ -54,7 +62,7 @@ namespace Siege.Provisions.Tests.MappingTests
             {
                 mapper.UseConvention(convention =>
                 {
-                    convention.WithSchema("test");
+                    convention.WithSchema("siege");
                     convention.WithSuffix("s");
                 });
 

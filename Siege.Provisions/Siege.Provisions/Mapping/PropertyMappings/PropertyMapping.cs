@@ -21,9 +21,13 @@ namespace Siege.Provisions.Mapping.PropertyMappings
 
     public class PropertyMapping : ElementMapping, IPropertyMapping
     {
-        public PropertyMapping(PropertyInfo property) : base(property)
+        public PropertyMapping(PropertyInfo property) : this(property, property.Name)
         {
-            this.ColumnName = Property.Name;
+        }
+
+        public PropertyMapping(PropertyInfo property, string name) : base(property)
+        {
+            this.ColumnName = name;
         }
 
         public string ColumnName { get; protected set; }

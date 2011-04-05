@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Siege.Provisions.Mapping.PropertyMappings
 {
-    public class ComponentMapping<TClass, TType> : ElementMapping<TClass, TType>, IComponentPropertyMapping
+    public class ComponentMapping<TClass, TType> : ElementMapping<TClass, TType>
     {
         private readonly List<IElementMapping> subMappings = new List<IElementMapping>();
         private readonly string name;
@@ -36,22 +36,18 @@ namespace Siege.Provisions.Mapping.PropertyMappings
         }
     }
 
-    public class ComponentMapping : ElementMapping, IComponentPropertyMapping
+    public class ComponentMapping : ElementMapping
     {
         public ComponentMapping(PropertyInfo property) : base(property)
         {
-            this.name = Property.Name;
         }
 
         private readonly List<IElementMapping> subMappings = new List<IElementMapping>();
-        private readonly string name;
-
-        public string Name { get { return name; } }
         public List<IElementMapping> SubMappings { get { return subMappings; } }
 
-        public ComponentMapping MapProperty(PropertyInfo property)
+        public ComponentMapping MapProperty(PropertyInfo property, string name)
         {
-            this.subMappings.Add(new PropertyMapping(property));
+            this.subMappings.Add(new PropertyMapping(property, name));
             return this;
         }
     }

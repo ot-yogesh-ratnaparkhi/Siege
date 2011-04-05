@@ -6,21 +6,21 @@ namespace Siege.Provisions.Mapping.Conventions
     public class ComponentConvention : IConvention
     {
         private readonly PropertyInfo property;
-        protected Func<Type, string, string> prefix;
-        protected Func<Type, string, string> suffix;
+        protected Func<Type, Type, string, string> prefix;
+        protected Func<Type, Type, string, string> suffix;
 
         public ComponentConvention(PropertyInfo property)
         {
             this.property = property;
         }
 
-        public ComponentConvention PrefixWith(Func<Type, string, string> formatter)
+        public ComponentConvention PrefixWith(Func<Type, Type, string, string> formatter)
         {
             this.prefix = formatter;
             return this;
         }
 
-        public ComponentConvention SuffixWith(Func<Type, string, string> suffix)
+        public ComponentConvention SuffixWith(Func<Type, Type, string, string> suffix)
         {
             this.suffix = suffix;
             return this;
@@ -32,7 +32,8 @@ namespace Siege.Provisions.Mapping.Conventions
             {
                 foreach (var typeProperty in this.property.PropertyType.GetProperties())
                 {
-                    subMapping.MapProperty(typeProperty);
+                    string propertyName = this.prefix(type, property.PropertyType, typeProperty.Name) + typeProperty.Name + this.suffix(type, property.PropertyType, typeProperty.Name);
+                    subMapping.MapProperty(typeProperty, propertyName);
                 }
             });
         }

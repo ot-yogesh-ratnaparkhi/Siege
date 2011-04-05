@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Siege.Provisions.Mapping.Conventions.Formatters;
 using Siege.Provisions.Mapping.PropertyMappings;
 
 namespace Siege.Provisions.Mapping
@@ -91,9 +92,9 @@ namespace Siege.Provisions.Mapping
             return this;
         }
 
-        public DomainMapping MapID(PropertyInfo property)
+        public DomainMapping MapID(PropertyInfo property, Type type, Formatter<Type> keyFormatter)
         {
-            var id = new IdMapping(property);
+            var id = new IdMapping(property, type, keyFormatter);
             this.subMappings.Add(id);
 
             return this;
@@ -104,9 +105,9 @@ namespace Siege.Provisions.Mapping
             mapping(this);
         }
 
-        public DomainMapping MapForeignRelationship(PropertyInfo property, Type type)
+        public DomainMapping MapForeignRelationship(PropertyInfo property, Type type, Formatter<PropertyInfo> keyFormatter)
         {
-            var foreignRelationshipMapping = new ForeignRelationshipMapping(property, type);
+            var foreignRelationshipMapping = new ForeignRelationshipMapping(property, type, keyFormatter);
             this.subMappings.Add(foreignRelationshipMapping);
 
             return this;

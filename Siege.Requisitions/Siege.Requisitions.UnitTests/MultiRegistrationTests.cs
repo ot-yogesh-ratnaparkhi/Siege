@@ -1,10 +1,5 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using NUnit.Framework;
+﻿//using NUnit.Framework;
 //using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
-//using Siege.Requisitions.UnitTests.TestClasses;
 
 //namespace Siege.Requisitions.UnitTests
 //{
@@ -14,10 +9,10 @@
 //        public void ShouldRegisterMultipleRegistrationsAtOnce()
 //        {
 //            locator.Register(Given<ISampleInterface>.Then(given =>
-//            {
-//                given.Then<SampleClass>();
-//                given.InitializeWith(test => test.SampleProperty = "lulz");
-//            }));
+//                            {
+//                                given.Then<SampleClass>();
+//                                given.InitializeWith(test => test.SampleProperty = "lulz");
+//                            }));
 
 //            var instance = locator.GetInstance<ISampleInterface>();
 

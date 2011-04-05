@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Siege.Provisions.Mapping.Conventions.Formatters;
 using Siege.Provisions.Mapping.Conventions.Handlers;
 using Siege.Provisions.Mapping.Conventions.Identifiers;
 
@@ -8,6 +9,8 @@ namespace Siege.Provisions.Mapping.Conventions
 {
     public class ClassConvention : IConvention
     {
+        private readonly Formatter<Type> primaryKeyFormatter = new Formatter<Type>();
+        private readonly Formatter<PropertyInfo> foreignKeyFormatter = new Formatter<PropertyInfo>();
         private readonly ComponentHandler componentHandler = new ComponentHandler();
         private readonly List<IHandler> handlers = new List<IHandler>();
 
@@ -40,7 +43,7 @@ namespace Siege.Provisions.Mapping.Conventions
         {
             this.handlers.Add(componentHandler);
             this.handlers.Add(new PropertyHandler());
-            this.handlers.Add(new OneToManyHandler());
+            this.handlers.Add(new OneToManyHandler(foreignKeyFormatter));
 
             foreach(var property in type.GetProperties())
             {
@@ -65,12 +68,12 @@ namespace Siege.Provisions.Mapping.Conventions
 
         public void IdentifyEntitiesWith<TIdentifier>() where TIdentifier : class, IIdentifier<Type>, new()
         {
-            this.handlers.Add(new EntityHandler(new TIdentifier()));
+            this.handlers.Add(new EntityHandler(new TIdentifier(), foreignKeyFormatter));
         }
 
         public void IdentifyEntitiesWith(Predicate<Type> entityMatcher)
         {
-            this.handlers.Add(new EntityHandler(new InlineIdentifier<Type>(entityMatcher)));
+            this.handlers.Add(new EntityHandler(new InlineIdentifier<Type>(entityMatcher), foreignKeyFormatter));
         }
 
         public void IdentifyComponentsWith<TIdentifier>() where TIdentifier : class, IIdentifier<Type>, new()
@@ -85,17 +88,22 @@ namespace Siege.Provisions.Mapping.Conventions
 
         public void IdentifyIDsWith(Predicate<PropertyInfo> idMatcher)
         {
-            this.handlers.Add(new IDHandler(new InlineIdentifier<PropertyInfo>(idMatcher)));
+            this.handlers.Add(new IDHandler(new InlineIdentifier<PropertyInfo>(idMatcher), primaryKeyFormatter));
         }
 
         public void IdentifyIDsWith<TIdentifier>() where TIdentifier : class, IIdentifier<PropertyInfo>, new()
         {
-            this.handlers.Add(new IDHandler(new TIdentifier()));
+            this.handlers.Add(new IDHandler(new TIdentifier(), primaryKeyFormatter));
         }
 
-        public void ForForeignKeys(Action<ForeignKeyConvention> foreignKey)
+        public void ForForeignKeys(Action<Formatter<PropertyInfo>> foreignKey)
         {
+            foreignKey(foreignKeyFormatter);
+        }
 
+        public void ForPrimaryKeys(Action<Formatter<Type>> primaryKey)
+        {
+            primaryKey(primaryKeyFormatter);
         }
     }
 }
