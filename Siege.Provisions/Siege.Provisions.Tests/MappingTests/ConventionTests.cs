@@ -55,7 +55,7 @@ namespace Siege.Provisions.Tests.MappingTests
             Assert.AreEqual("siege", map.Mappings.For<Customer>().Table.Schema);
         }
 
-        [Test]
+        [Test, Ignore]
         public void ShouldAllowOverriding()
         {
             map.Create(mapper =>
