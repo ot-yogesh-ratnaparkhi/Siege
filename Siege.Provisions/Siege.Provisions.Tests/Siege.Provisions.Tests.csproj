@@ -63,7 +63,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FinderTests.cs" />
     <Compile Include="MappingTests\ComponentIdentifier.cs" />
     <Compile Include="MappingTests\ConventionTests.cs" />
     <Compile Include="MappingTests\DomainMapTests.cs" />

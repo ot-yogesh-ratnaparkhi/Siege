@@ -14,6 +14,8 @@
 */
 
 using System;
+using System.Linq;
+using Siege.Provisions.Finders;
 
 namespace Siege.Provisions
 {
@@ -23,5 +25,9 @@ namespace Siege.Provisions
         void Save<T>(T item) where T : class;
         void Delete<T>(T item) where T : class;
         void Transact(Action<IRepository<TPersistenceModel>>  transactor);
+		//IQuerySpecification<T> Query<T>(Func<System.Linq.IQueryable<T>, System.Linq.IQueryable<T>> expression) where T : class;
+		IQuerySpecification<T> Query<T>(QuerySpecification<T> querySpecification) where T : class;
+		IQuerySpecification<T> Query<T>() where T : class;
+    	IQueryable<T> Where<T>(Func<T, bool> predicate);
     }
 }

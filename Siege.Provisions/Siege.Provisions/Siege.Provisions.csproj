@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NHibernate">
-      <HintPath>..\dependencies\NHibernate.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,11 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database.cs" />
-    <Compile Include="Finders\Finder.cs" />
     <Compile Include="Finders\ICountQuery.cs" />
-    <Compile Include="Finders\IFinder.cs" />
+    <Compile Include="Finders\IQuerySpecification.cs" />
     <Compile Include="Finders\IFindQuery.cs" />
-    <Compile Include="Finders\Queryable.cs" />
+    <Compile Include="Finders\QuerySpecification.cs" />
+    <Compile Include="Finders\Query.cs" />
     <Compile Include="IDatabase.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="Mapping\Conventions\ClassConvention.cs" />

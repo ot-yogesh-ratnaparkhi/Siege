@@ -1,4 +1,4 @@
-/*   Copyright 2009 - 2010 Marcus Bratton
+﻿/*   Copyright 2009 - 2010 Marcus Bratton
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,33 +13,13 @@
      limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 
 namespace Siege.Provisions.Finders
 {
-    [Obsolete("Use Queryable<T> instead.")]
-	public abstract class Finder<T> : IFinder<T> where T : class
+	public interface IQuerySpecification<T>
 	{
-		public virtual IList<T> Find()
-		{
-			IFindQuery criteria = CreateFindQuery();
-
-			return criteria.Find<T>();
-		}
-
-		public virtual long Count()
-		{
-			ICountQuery criteria = CreateCountQuery();
-
-			return criteria.Count();
-		}
-
-		protected abstract IFindQuery CreateFindQuery();
-
-		protected virtual ICountQuery CreateCountQuery()
-		{
-			throw new NotImplementedException();
-		}
+		IList<T> Find();
+		long Count();
 	}
 }
