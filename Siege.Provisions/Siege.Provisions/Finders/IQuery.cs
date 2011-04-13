@@ -13,19 +13,14 @@
      limitations under the License.
 */
 
-using System;
-using Siege.Provisions.Finders;
+using System.Collections.Generic;
 
-namespace Siege.Provisions
+namespace Siege.Provisions.Finders
 {
-    public interface IRepository<TPersistenceModel> where TPersistenceModel : IDatabase
-    {
-        T Get<T>(object id) where T : class;
-        void Save<T>(T item) where T : class;
-        void Delete<T>(T item) where T : class;
-        void Transact(Action<IRepository<TPersistenceModel>>  transactor);
-		IQuery<T> Query<T>(Func<System.Linq.IQueryable<T>, System.Linq.IQueryable<T>> expression) where T : class;
-		IQuery<T> Query<T>(QuerySpecification<T> querySpecification) where T : class;
-		IQuery<T> Query<T>() where T : class;
-    }
+	public interface IQuery<T>
+	{
+		IList<T> Find();
+		T FindFirstOrDefault();
+		long Count();
+	}
 }

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Siege.Provisions.Finders
 {
-    public class Query<T> : IQuerySpecification<T> where T : class
+    public class Query<T> : IQuery<T> where T : class
     {
         protected QuerySpecification<T> querySpecification;
 
@@ -17,10 +17,15 @@ namespace Siege.Provisions.Finders
 			this.querySpecification = new QuerySpecification<T>();
     	}
 
-    	public virtual IList<T> Find()
-        {
-            return this.querySpecification.ToIQueryable().Select(x => x).ToList();
-        }
+		public virtual IList<T> Find()
+		{
+			return this.querySpecification.ToIQueryable().Select(x => x).ToList();
+		}
+
+		public virtual T FindFirstOrDefault()
+		{
+			return this.querySpecification.ToIQueryable().FirstOrDefault();
+		}
 
         public virtual long Count()
         {

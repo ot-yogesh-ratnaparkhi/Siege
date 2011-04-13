@@ -49,16 +49,7 @@ namespace Siege.Provisions
             unitOfWork.For<TDatabase>().Transact(() => transactor(this));
         }
 
-		public IQueryable<T> Where<T>(Func<T, bool> predicate)
-		{
-			var query = new QuerySpecification<T>();
-
-			query.WithUnitOfWork(unitOfWork.For<TDatabase>());
-
-			return query.ToIQueryable().Where(predicate).AsQueryable();
-		}
-
-		/*public IQuerySpecification<T> Query<T>(Func<IQueryable<T>, IQueryable<T>> expression) where T : class
+		public IQuery<T> Query<T>(Func<IQueryable<T>, IQueryable<T>> expression) where T : class
 		{
 			var query = new QuerySpecification<T>();
 
@@ -66,15 +57,15 @@ namespace Siege.Provisions
 			query = new QuerySpecification<T>(expression(query.ToIQueryable()));
 
 			return new Query<T>(query);
-		}*/
+		}
 
-		public IQuerySpecification<T> Query<T>(QuerySpecification<T> querySpecification) where T : class
+		public IQuery<T> Query<T>(QuerySpecification<T> querySpecification) where T : class
 		{
 			querySpecification.WithUnitOfWork(unitOfWork.For<TDatabase>());
 			return new Query<T>(querySpecification);
 		}
 
-		public IQuerySpecification<T> Query<T>() where T : class
+		public IQuery<T> Query<T>() where T : class
 		{
 			return Query(new QuerySpecification<T>());
 		}
