@@ -24,10 +24,10 @@ namespace Siege.Provisions.Finders
 
 		public virtual T FindFirstOrDefault()
 		{
-			return this.querySpecification.ToIQueryable().FirstOrDefault();
+			return this.querySpecification.ToIQueryable().Select(x => x).FirstOrDefault();
 		}
 
-        public virtual long Count()
+        public virtual int Count()
         {
             return this.querySpecification.ToIQueryable().Count();
         }

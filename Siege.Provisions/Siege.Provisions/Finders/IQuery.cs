@@ -21,6 +21,6 @@ namespace Siege.Provisions.Finders
 	{
 		IList<T> Find();
 		T FindFirstOrDefault();
-		long Count();
+		int Count();
 	}
 }

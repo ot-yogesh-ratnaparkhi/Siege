@@ -19,61 +19,66 @@ using System.Threading;
 
 namespace Siege.Provisions.UnitOfWork
 {
-    public class ThreadedUnitOfWorkStore : IUnitOfWorkStore
-    {
-        private static object lockObject = new object();
-        private static Dictionary<Type, IUnitOfWork> currentUnitOfWork = new Dictionary<Type, IUnitOfWork>();
+	public class ThreadedUnitOfWorkStore : IUnitOfWorkStore
+	{
+		private static object lockObject = new object();
 
-        static ThreadedUnitOfWorkStore()
-        {
-            Create();
-        }
+		[ThreadStatic]
+		private static Dictionary<Type, IUnitOfWork> currentUnitOfWork = new Dictionary<Type, IUnitOfWork>();
 
-        private static void Create()
-        {
-            if (currentUnitOfWork == null)
-            {
-                lock (lockObject)
-                {
-                    if (currentUnitOfWork == null)
-                    {
-                        currentUnitOfWork= new Dictionary<Type, IUnitOfWork>();
-                    }
-                }
-            }
-        }
+		static ThreadedUnitOfWorkStore()
+		{
+			Create();
+		}
 
-        public IUnitOfWork CurrentFor<TDatabase>() where TDatabase : IDatabase
-        {
-            Create();
-            if (!currentUnitOfWork.ContainsKey(typeof(TDatabase))) return null;
+		private static void Create()
+		{
+			if (currentUnitOfWork == null)
+			{
+				lock (lockObject)
+				{
+					if (currentUnitOfWork == null)
+					{
+						currentUnitOfWork = new Dictionary<Type, IUnitOfWork>();
+					}
+				}
+			}
+		}
 
-            return currentUnitOfWork[typeof(TDatabase)]; 
-        }
+		public IUnitOfWork CurrentFor<TDatabase>() where TDatabase : IDatabase
+		{
+			Create();
 
-        public void SetUnitOfWork<TDatabase>(IUnitOfWork unitOfWork) where TDatabase : IDatabase
-        {
-            Create();
-            if (!currentUnitOfWork.ContainsKey(typeof(TDatabase))) currentUnitOfWork.Add(typeof(TDatabase), unitOfWork);
-            currentUnitOfWork[typeof(TDatabase)] = unitOfWork;
-        }
+			if (!currentUnitOfWork.ContainsKey(typeof(TDatabase))) return null;
 
-        public void Dispose()
-        {
-            if (currentUnitOfWork!= null)
-            {
-                var keysToRemove = new List<Type>();
-                foreach(Type key in currentUnitOfWork.Keys)
-                {
-                    currentUnitOfWork[key].Dispose();
-                    keysToRemove.Add(key);
-                }
+			return currentUnitOfWork[typeof(TDatabase)];
+		}
 
-                foreach(Type key in keysToRemove)
-                {
-                    currentUnitOfWork.Remove(key);
-                }
-            }
-        }
-    }
+		public void SetUnitOfWork<TDatabase>(IUnitOfWork unitOfWork)
+			where TDatabase : IDatabase
+		{
+			Create();
+			if (!currentUnitOfWork.ContainsKey(typeof(TDatabase)))
+				currentUnitOfWork.Add(typeof(TDatabase), unitOfWork);
+			currentUnitOfWork[typeof(TDatabase)] = unitOfWork;
+		}
+
+		public void Dispose()
+		{
+			if (currentUnitOfWork != null)
+			{
+				var keysToRemove = new List<Type>();
+				foreach (Type key in currentUnitOfWork.Keys)
+				{
+					currentUnitOfWork[key].Dispose();
+					keysToRemove.Add(key);
+				}
+
+				foreach (Type key in keysToRemove)
+				{
+					currentUnitOfWork.Remove(key);
+				}
+			}
+		}
+	}
 }

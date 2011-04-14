@@ -78,11 +78,9 @@ namespace Siege.Provisions.NHibernate
                     }
                     catch (Exception)
                     {
-                        transaction.Rollback();
-                        this.session.Close();
-                        this.session.Dispose();
-                        this.session = null;
-                        throw;
+						if (transaction != null)
+							transaction.Rollback();
+						throw;
                     }
                 }
             }
@@ -106,10 +104,8 @@ namespace Siege.Provisions.NHibernate
 				}
 				catch (Exception)
 				{
-					transaction.Rollback();
-					this.session.Close();
-					this.session.Dispose();
-					this.session = null;
+					if (transaction != null)
+						transaction.Rollback();
 					throw;
 				}
 			}
