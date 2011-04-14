@@ -22,7 +22,7 @@ namespace Siege.Provisions.UnitOfWork
     public class ThreadedUnitOfWorkStore : IUnitOfWorkStore
     {
         private static object lockObject = new object();
-        private static Dictionary<Type, IUnitOfWork> currentUnitOfWork = new Dictionary<Type, IUnitOfWork>();
+        private static ThreadLocal<Dictionary<Type, IUnitOfWork>> currentUnitOfWork = new ThreadLocal<Dictionary<Type, IUnitOfWork>>();
 
         static ThreadedUnitOfWorkStore()
         {
@@ -31,13 +31,13 @@ namespace Siege.Provisions.UnitOfWork
 
         private static void Create()
         {
-            if (currentUnitOfWork == null)
+            if (!currentUnitOfWork.IsValueCreated)
             {
                 lock (lockObject)
                 {
-                    if (currentUnitOfWork == null)
+                    if (!currentUnitOfWork.IsValueCreated)
                     {
-                        currentUnitOfWork= new Dictionary<Type, IUnitOfWork>();
+                        currentUnitOfWork.Value = new Dictionary<Type, IUnitOfWork>();
                     }
                 }
             }
@@ -46,16 +46,17 @@ namespace Siege.Provisions.UnitOfWork
         public IUnitOfWork CurrentFor<TDatabase>() where TDatabase : IDatabase
         {
             Create();
-            if (!currentUnitOfWork.ContainsKey(typeof(TDatabase))) return null;
 
-            return currentUnitOfWork[typeof(TDatabase)]; 
+            if (!currentUnitOfWork.Value.ContainsKey(typeof(TDatabase))) return null;
+
+            return currentUnitOfWork.Value[typeof(TDatabase)]; 
         }
 
         public void SetUnitOfWork<TDatabase>(IUnitOfWork unitOfWork) where TDatabase : IDatabase
         {
             Create();
-            if (!currentUnitOfWork.ContainsKey(typeof(TDatabase))) currentUnitOfWork.Add(typeof(TDatabase), unitOfWork);
-            currentUnitOfWork[typeof(TDatabase)] = unitOfWork;
+            if (!currentUnitOfWork.Value.ContainsKey(typeof(TDatabase))) currentUnitOfWork.Value.Add(typeof(TDatabase), unitOfWork);
+            currentUnitOfWork.Value[typeof(TDatabase)] = unitOfWork;
         }
 
         public void Dispose()
@@ -63,15 +64,15 @@ namespace Siege.Provisions.UnitOfWork
             if (currentUnitOfWork!= null)
             {
                 var keysToRemove = new List<Type>();
-                foreach(Type key in currentUnitOfWork.Keys)
+                foreach(Type key in currentUnitOfWork.Value.Keys)
                 {
-                    currentUnitOfWork[key].Dispose();
+                    currentUnitOfWork.Value[key].Dispose();
                     keysToRemove.Add(key);
                 }
 
                 foreach(Type key in keysToRemove)
                 {
-                    currentUnitOfWork.Remove(key);
+                    currentUnitOfWork.Value.Remove(key);
                 }
             }
         }
