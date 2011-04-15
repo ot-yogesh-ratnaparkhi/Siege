@@ -115,7 +115,6 @@ namespace Siege.Provisions.NHibernate
 		{
 			if (session != null)
 			{
-				session.Close();
 				session.Dispose();
 				session = null;
 			}
