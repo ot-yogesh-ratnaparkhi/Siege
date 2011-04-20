@@ -9,11 +9,13 @@ namespace Siege.Provisions.Mapping.Conventions.Handlers
     {
         private readonly IIdentifier<Type> entityIdentifier;
         private readonly Formatter<PropertyInfo> foreignKeyFormatter;
+        private readonly DomainMapper masterMap;
 
-        public EntityHandler(IIdentifier<Type> entityIdentifier, Formatter<PropertyInfo> foreignKeyFormatter)
+        public EntityHandler(IIdentifier<Type> entityIdentifier, Formatter<PropertyInfo> foreignKeyFormatter, DomainMapper masterMap)
         {
             this.entityIdentifier = entityIdentifier;
             this.foreignKeyFormatter = foreignKeyFormatter;
+            this.masterMap = masterMap;
         }
 
         public bool CanHandle(PropertyInfo property)
@@ -23,7 +25,7 @@ namespace Siege.Provisions.Mapping.Conventions.Handlers
 
         public void Handle(PropertyInfo property, Type type, DomainMapping mapper)
         {
-            mapper.MapForeignRelationship(property, property.PropertyType, foreignKeyFormatter);
+            mapper.MapForeignRelationship(masterMap, property, property.PropertyType, foreignKeyFormatter);
         }
     }
 }

@@ -39,6 +39,11 @@ namespace Siege.Provisions.Mapping
             }
         }
 
+        public bool Contains(Type type)
+        {
+            return this.mappings.ContainsKey(type);
+        }
+
         public int Count { get { return mappings.Count; } }
 
         public IDomainMapping For<TClass>() where TClass : class

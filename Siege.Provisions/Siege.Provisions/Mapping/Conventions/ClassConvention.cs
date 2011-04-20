@@ -9,14 +9,21 @@ namespace Siege.Provisions.Mapping.Conventions
 {
     public class ClassConvention : IConvention
     {
+        private readonly DomainMapper masterMap;
         private readonly Formatter<Type> primaryKeyFormatter = new Formatter<Type>();
         private readonly Formatter<PropertyInfo> foreignKeyFormatter = new Formatter<PropertyInfo>();
-        private readonly ComponentHandler componentHandler = new ComponentHandler();
+        private readonly ComponentHandler componentHandler;
         private readonly List<IHandler> handlers = new List<IHandler>();
 
         private string prefix = "";
         private string schema = "";
         private string suffix = "";
+
+        public ClassConvention(DomainMapper masterMap)
+        {
+            this.masterMap = masterMap;
+            this.componentHandler = new ComponentHandler();
+        }
 
         public ClassConvention WithSchema(string schema)
         {
@@ -43,7 +50,7 @@ namespace Siege.Provisions.Mapping.Conventions
         {
             this.handlers.Add(componentHandler);
             this.handlers.Add(new PropertyHandler());
-            this.handlers.Add(new OneToManyHandler(foreignKeyFormatter));
+            this.handlers.Add(new OneToManyHandler(foreignKeyFormatter, masterMap));
 
             foreach(var property in type.GetProperties())
             {
@@ -68,12 +75,12 @@ namespace Siege.Provisions.Mapping.Conventions
 
         public void IdentifyEntitiesWith<TIdentifier>() where TIdentifier : class, IIdentifier<Type>, new()
         {
-            this.handlers.Add(new EntityHandler(new TIdentifier(), foreignKeyFormatter));
+            this.handlers.Add(new EntityHandler(new TIdentifier(), foreignKeyFormatter, masterMap));
         }
 
         public void IdentifyEntitiesWith(Predicate<Type> entityMatcher)
         {
-            this.handlers.Add(new EntityHandler(new InlineIdentifier<Type>(entityMatcher), foreignKeyFormatter));
+            this.handlers.Add(new EntityHandler(new InlineIdentifier<Type>(entityMatcher), foreignKeyFormatter, masterMap));
         }
 
         public void IdentifyComponentsWith<TIdentifier>() where TIdentifier : class, IIdentifier<Type>, new()

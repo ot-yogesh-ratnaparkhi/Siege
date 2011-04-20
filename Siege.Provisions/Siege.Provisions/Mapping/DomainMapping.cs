@@ -105,12 +105,28 @@ namespace Siege.Provisions.Mapping
             mapping(this);
         }
 
-        public DomainMapping MapForeignRelationship(PropertyInfo property, Type type, Formatter<PropertyInfo> keyFormatter)
+        public DomainMapping MapForeignRelationship(DomainMapper masterMap, PropertyInfo property, Type type, Formatter<PropertyInfo> keyFormatter)
         {
-            var foreignRelationshipMapping = new ForeignRelationshipMapping(property, type, keyFormatter);
+            var foreignRelationshipMapping = new ForeignRelationshipMapping(property, type, keyFormatter, this.type);
             this.subMappings.Add(foreignRelationshipMapping);
-
+            masterMap.For(type).Map(mapping => mapping.MapParentRelationship(this.type));
             return this;
+        }
+
+        private void MapParentRelationship(Type parentType)
+        {
+            var parentMapping = new ParentRelationshipMapping(parentType);
+            this.subMappings.Add(parentMapping);
+        }
+    }
+
+    public class ParentRelationshipMapping : IElementMapping
+    {
+        private readonly Type parentType;
+
+        public ParentRelationshipMapping(Type parentType)
+        {
+            this.parentType = parentType;
         }
     }
 }

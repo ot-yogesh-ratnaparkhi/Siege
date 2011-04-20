@@ -30,6 +30,8 @@ namespace Siege.Provisions.Mapping
 
         public IDomainMapping For(Type type)
         {
+            if(!this.mappings.Contains(type)) Add(type);
+
             return this.mappings.For(type);
         }
 
@@ -45,7 +47,7 @@ namespace Siege.Provisions.Mapping
 
         public void UseConvention(Action<ClassConvention> convention)
         {
-            var instance = new ClassConvention();
+            var instance = new ClassConvention(this);
 
             convention(instance);
 

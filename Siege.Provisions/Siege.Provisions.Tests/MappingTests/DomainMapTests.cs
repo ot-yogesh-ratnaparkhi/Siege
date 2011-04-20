@@ -35,7 +35,7 @@ namespace Siege.Provisions.Tests.MappingTests
 
             Assert.IsInstanceOf<PropertyMapping<Customer, int>>(elementMapping);
             Assert.AreEqual("ID", ((PropertyMapping<Customer, int>)elementMapping).ColumnName);
-            Assert.AreEqual("ID", elementMapping.Property.Name);
+            Assert.AreEqual("ID", ((PropertyMapping<Customer, int>)elementMapping).Property.Name);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace Siege.Provisions.Tests.MappingTests
 
             Assert.IsInstanceOf<PropertyMapping<Customer, int>>(elementMapping);
             Assert.AreEqual("CustomerID", ((PropertyMapping<Customer, int>)elementMapping).ColumnName);
-            Assert.AreEqual("ID", elementMapping.Property.Name);
+            Assert.AreEqual("ID", ((PropertyMapping<Customer, int>)elementMapping).Property.Name);
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace Siege.Provisions.Tests.MappingTests
 
             Assert.IsInstanceOf<PropertyMapping<Customer, DateTime>>(elementMapping);
             Assert.AreEqual("DateCreated", ((PropertyMapping<Customer, DateTime>)elementMapping).ColumnName);
-            Assert.AreEqual("DateCreated", elementMapping.Property.Name);
+            Assert.AreEqual("DateCreated", ((PropertyMapping<Customer, DateTime>)elementMapping).Property.Name);
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace Siege.Provisions.Tests.MappingTests
 
             Assert.IsInstanceOf<PropertyMapping<Customer, DateTime>>(elementMapping);
             Assert.AreEqual("CreatedOn", ((PropertyMapping<Customer, DateTime>)elementMapping).ColumnName);
-            Assert.AreEqual("DateCreated", elementMapping.Property.Name);
+            Assert.AreEqual("DateCreated", ((PropertyMapping<Customer, DateTime>)elementMapping).Property.Name);
         }
 
         [Test]
@@ -135,22 +135,22 @@ namespace Siege.Provisions.Tests.MappingTests
 
             Assert.IsInstanceOf<ComponentMapping<Customer, Name>>(nameMapping);
             Assert.AreEqual(2, ((ComponentMapping<Customer, Name>)nameMapping).SubMappings.Count);
-            
-            Assert.AreEqual("Name", nameMapping.Property.Name);
+
+            Assert.AreEqual("Name", ((ComponentMapping<Customer, Name>)nameMapping).Property.Name);
 
             IElementMapping firstNameMapping = ((ComponentMapping<Customer,Name>)nameMapping).SubMappings[0];
 
             Assert.IsInstanceOf<PropertyMapping<Name, string>>(firstNameMapping);
             Assert.AreEqual("FirstName", ((PropertyMapping<Name, string>)firstNameMapping).ColumnName);
 
-            Assert.AreEqual("First", firstNameMapping.Property.Name);
+            Assert.AreEqual("First", ((PropertyMapping<Name, string>)firstNameMapping).Property.Name);
 
             IElementMapping lastNameMapping = ((ComponentMapping<Customer, Name>)nameMapping).SubMappings[1];
 
             Assert.IsInstanceOf<PropertyMapping<Name, string>>(lastNameMapping);
             Assert.AreEqual("LastName", ((PropertyMapping<Name, string>)lastNameMapping).ColumnName);
 
-            Assert.AreEqual("Last", lastNameMapping.Property.Name);
+            Assert.AreEqual("Last", ((PropertyMapping<Name, string>)lastNameMapping).Property.Name);
         }
 
         [Test]
