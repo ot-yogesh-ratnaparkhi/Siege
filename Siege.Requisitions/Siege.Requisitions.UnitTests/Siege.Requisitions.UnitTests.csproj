@@ -178,13 +178,18 @@
     <Compile Include="TestClasses\ITestInterface.cs" />
     <Compile Include="TestClasses\IUnregisteredInterface.cs" />
     <Compile Include="TestClasses\MultiConstructorType.cs" />
+    <Compile Include="TestClasses\SpecialTestCase.cs" />
     <Compile Include="TestClasses\TestCase1.cs" />
     <Compile Include="TestClasses\TestCase2.cs" />
     <Compile Include="TestClasses\TestCase4.cs" />
+    <Compile Include="TestClasses\TestClassWithClassDependencies.cs" />
+    <Compile Include="TestClasses\TestClassWithInterfaceDependencies.cs" />
     <Compile Include="TestClasses\TestContext.cs" />
     <Compile Include="TestClasses\TestDecorator.cs" />
     <Compile Include="TestClasses\TestEnum.cs" />
     <Compile Include="TestClasses\TestEvaluation.cs" />
+    <Compile Include="TestClasses\TestInterfaceWithMethods.cs" />
+    <Compile Include="TestClasses\TestStruct.cs" />
     <Compile Include="TestClasses\UnregisteredClass.cs" />
     <Compile Include="Adapters\UnityAdapterTests.cs" />
     <Compile Include="Adapters\WindsorAdapterTests.cs" />
@@ -206,9 +211,9 @@
       <Project>{7B5B2B4D-B5B6-4427-8DEF-B0D421A0EF96}</Project>
       <Name>Siege.Requisitions.Extensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Siege.Requisitions.RhinoMocks\Siege.Requisitions.RhinoMocks.csproj">
+    <ProjectReference Include="..\Siege.Requisitions.RhinoMocks\Siege.Requisitions.AutoMocker.csproj">
       <Project>{A9F60065-137A-40D3-A266-51E79792BAB8}</Project>
-      <Name>Siege.Requisitions.RhinoMocks</Name>
+      <Name>Siege.Requisitions.AutoMocker</Name>
     </ProjectReference>
     <ProjectReference Include="..\Siege.Requisitions.SiegeAdapter\Siege.Requisitions.SiegeAdapter.csproj">
       <Project>{95E2262B-E46C-4B10-9A28-12FC2C7127F0}</Project>

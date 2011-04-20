@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.Extensio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.NinjectAdapter", "Siege.Requisitions.NinjectAdapter\Siege.Requisitions.NinjectAdapter.csproj", "{9E38DD7C-484A-4C5E-A01F-992A50B1B672}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.RhinoMocks", "Siege.Requisitions.RhinoMocks\Siege.Requisitions.RhinoMocks.csproj", "{A9F60065-137A-40D3-A266-51E79792BAB8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.AutoMocker", "Siege.Requisitions.RhinoMocks\Siege.Requisitions.AutoMocker.csproj", "{A9F60065-137A-40D3-A266-51E79792BAB8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.SiegeAdapter", "Siege.Requisitions.SiegeAdapter\Siege.Requisitions.SiegeAdapter.csproj", "{95E2262B-E46C-4B10-9A28-12FC2C7127F0}"
 EndProject
