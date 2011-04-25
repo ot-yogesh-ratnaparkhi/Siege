@@ -59,13 +59,24 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.MicroKernel, Version=2.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\Castle.MicroKernel.dll</HintPath>
-    </Reference>
     <Reference Include="Castle.Windsor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="IronRuby, Version=1.1.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronRuby.1.1.2\Lib\IronRuby.dll</HintPath>
+    </Reference>
+    <Reference Include="IronRuby.Libraries, Version=1.1.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\IronRuby.1.1.2\Lib\IronRuby.Libraries.dll</HintPath>
+    </Reference>
+    <Reference Include="IronRuby.Libraries.Yaml, Version=1.1.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\IronRuby.1.1.2\Lib\IronRuby.Libraries.Yaml.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\IronRuby.1.1.2\Lib\Microsoft.Dynamic.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -74,6 +85,14 @@
     <Reference Include="Microsoft.Practices.Unity, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Unity\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\IronRuby.1.1.2\Lib\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.Metadata, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\IronRuby.1.1.2\Lib\Microsoft.Scripting.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=2.0.0.152, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -166,6 +185,7 @@
     <Compile Include="RegistrationExtensions\Classes\Ingredients.cs" />
     <Compile Include="RegistrationExtensions\Classes\WhippedCreamDecorator.cs" />
     <Compile Include="RegistrationTests.cs" />
+    <Compile Include="RubyPluginTests.cs" />
     <Compile Include="ServiceLocatorTests.cs" />
     <Compile Include="Adapters\StructureMapAdapterTests.cs" />
     <Compile Include="TestClasses\AlternateConstructorArgument.cs" />
@@ -195,6 +215,10 @@
     <Compile Include="Adapters\WindsorAdapterTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Siege.Requisitions.Automocker\Siege.Requisitions.AutoMocker.csproj">
+      <Project>{A9F60065-137A-40D3-A266-51E79792BAB8}</Project>
+      <Name>Siege.Requisitions.AutoMocker</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Siege.Requisitions.NinjectAdapter\Siege.Requisitions.NinjectAdapter.csproj">
       <Project>{9E38DD7C-484A-4C5E-A01F-992A50B1B672}</Project>
       <Name>Siege.Requisitions.NinjectAdapter</Name>
@@ -210,10 +234,6 @@
     <ProjectReference Include="..\Siege.Requisitions.Extensions\Siege.Requisitions.Extensions.csproj">
       <Project>{7B5B2B4D-B5B6-4427-8DEF-B0D421A0EF96}</Project>
       <Name>Siege.Requisitions.Extensions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Siege.Requisitions.RhinoMocks\Siege.Requisitions.AutoMocker.csproj">
-      <Project>{A9F60065-137A-40D3-A266-51E79792BAB8}</Project>
-      <Name>Siege.Requisitions.AutoMocker</Name>
     </ProjectReference>
     <ProjectReference Include="..\Siege.Requisitions.SiegeAdapter\Siege.Requisitions.SiegeAdapter.csproj">
       <Project>{95E2262B-E46C-4B10-9A28-12FC2C7127F0}</Project>
@@ -248,6 +268,20 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Installers\Installer.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\SiegeDSL.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\test.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.Extensio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.NinjectAdapter", "Siege.Requisitions.NinjectAdapter\Siege.Requisitions.NinjectAdapter.csproj", "{9E38DD7C-484A-4C5E-A01F-992A50B1B672}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.AutoMocker", "Siege.Requisitions.RhinoMocks\Siege.Requisitions.AutoMocker.csproj", "{A9F60065-137A-40D3-A266-51E79792BAB8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.SiegeAdapter", "Siege.Requisitions.SiegeAdapter\Siege.Requisitions.SiegeAdapter.csproj", "{95E2262B-E46C-4B10-9A28-12FC2C7127F0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.StructureMapAdapter", "Siege.Requisitions.StructureMapAdapter\Siege.Requisitions.StructureMapAdapter.csproj", "{2360AD60-0D6D-4ECC-919A-2F64E4E295D3}"
@@ -22,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.Web", "Siege.Requisitions.Web\Siege.Requisitions.Web.csproj", "{6A195833-5013-422B-B87D-70FB70A0B79C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.WindsorAdapter", "Siege.Requisitons.WindsorAdapter\Siege.Requisitions.WindsorAdapter.csproj", "{20AE3922-30F4-47C5-A86B-C27E320BDE65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.AutoMocker", "Siege.Requisitions.Automocker\Siege.Requisitions.AutoMocker.csproj", "{A9F60065-137A-40D3-A266-51E79792BAB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,10 +45,6 @@ Global
 		{9E38DD7C-484A-4C5E-A01F-992A50B1B672}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E38DD7C-484A-4C5E-A01F-992A50B1B672}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E38DD7C-484A-4C5E-A01F-992A50B1B672}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9F60065-137A-40D3-A266-51E79792BAB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9F60065-137A-40D3-A266-51E79792BAB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9F60065-137A-40D3-A266-51E79792BAB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9F60065-137A-40D3-A266-51E79792BAB8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{95E2262B-E46C-4B10-9A28-12FC2C7127F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{95E2262B-E46C-4B10-9A28-12FC2C7127F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95E2262B-E46C-4B10-9A28-12FC2C7127F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -73,6 +69,10 @@ Global
 		{20AE3922-30F4-47C5-A86B-C27E320BDE65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20AE3922-30F4-47C5-A86B-C27E320BDE65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20AE3922-30F4-47C5-A86B-C27E320BDE65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9F60065-137A-40D3-A266-51E79792BAB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9F60065-137A-40D3-A266-51E79792BAB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9F60065-137A-40D3-A266-51E79792BAB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9F60065-137A-40D3-A266-51E79792BAB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

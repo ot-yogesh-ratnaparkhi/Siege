@@ -25,25 +25,25 @@ namespace Siege.Requisitions.UnitTests
     public partial class ServiceLocatorTests
     {
         [Test]
-        public void Should_Be_Able_To_Resolve_Type_With_Mock_Interface_Dependencies()
+        public void ShouldBeAbleToResolveTypeWithMockInterfaceDependencies()
         {
             locator.Register(Mock<TestClassWithInterfaceDependencies>.Using(new RhinoMockAdapter()));
 
-            Assert.IsInstanceOfType(typeof(TestInterfaceWithMethods), locator.GetInstance<TestClassWithInterfaceDependencies>().TestInterface);
+            Assert.IsInstanceOf<TestInterfaceWithMethods>(locator.GetInstance<TestClassWithInterfaceDependencies>().TestInterface);
         }
 
         [Test]
-        public void Should_Be_Able_To_Resolve_Type_With_Class_Denpendices()
+        public void ShouldBeAbleToResolveTypeWithClassDenpendices()
         {
             locator.Register(Mock<TestClassWithClassDependencies>.Using(new RhinoMockAdapter()));
 
             var classDependencies = locator.GetInstance<TestClassWithClassDependencies>();
-            Assert.IsInstanceOfType(typeof(TestClassWithInterfaceDependencies), classDependencies.TestClassDependices);
-            Assert.IsInstanceOfType(typeof(TestInterfaceWithMethods), classDependencies.TestClassDependices.TestInterface);
+            Assert.IsInstanceOf<TestClassWithInterfaceDependencies>(classDependencies.TestClassDependices);
+            Assert.IsInstanceOf<TestInterfaceWithMethods>(classDependencies.TestClassDependices.TestInterface);
         }
 
         [Test]
-        public void Should_Be_Able_To_Set_Expecation_On_Mocked_Instance()
+        public void ShouldBeAbleToSetExpecationOnMockedInstance()
         {
             var adapter = new RhinoMockAdapter();
             locator.Register(Mock<TestClassWithInterfaceDependencies>.Using(adapter));
@@ -61,7 +61,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Be_Able_To_Stub_On_Objects()
+        public void ShouldBeAbleToStubOnObjects()
         {
             var adapter = new RhinoMockAdapter();
             locator.Register(Mock<TestClassWithClassDependencies>.Using(adapter));
@@ -76,7 +76,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Not_Mock_Same_Interface_Twice()
+        public void ShouldNotMockSameInterfaceTwice()
         {
 
             locator.Register(Mock<TestClassWithInterfaceDependencies>.Using(new RhinoMockAdapter()));
@@ -86,7 +86,7 @@ namespace Siege.Requisitions.UnitTests
 
 
         [Test]
-        public void Should_Not_Stub_Same_Class_Twice()
+        public void ShouldNotStubSameClassTwice()
         {
             locator.Register(Mock<TestClassWithClassDependencies>.Using(new RhinoMockAdapter()));
 
@@ -97,7 +97,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Be_Able_To_Mock_In_AAA_Mode()
+        public void ShouldBeAbleToMockInAAAMode()
         {
             var adapter = new RhinoMockAdapter(MockMode.AAA);
             locator.Register(Mock<TestClassWithInterfaceDependencies>.Using(adapter));
@@ -109,7 +109,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Be_Able_To_Stub_In_AAA_Mode()
+        public void ShouldBeAbleToStubInAAAMode()
         {
             var adapter = new RhinoMockAdapter(MockMode.AAA);
             locator.Register(Mock<TestClassWithClassDependencies>.Using(adapter));
@@ -121,10 +121,9 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void AAA_Mode_Can_Be_Enabled_Via_Property_Setter()
+        public void AAAModeCanBeEnabledViaPropertySetter()
         {
-            var adapter = new RhinoMockAdapter();
-            adapter.MockingMode = MockMode.AAA;
+            var adapter = new RhinoMockAdapter {MockingMode = MockMode.AAA};
             locator.Register(Mock<TestClassWithInterfaceDependencies>.Using(adapter));
             var testClass = locator.GetInstance<TestClassWithInterfaceDependencies>();
             testClass.TestInterface.Expect(i => i.GetSomeValue()).Return(1);
@@ -134,10 +133,9 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Special_Types_Test()
+        public void SpecialTypesTest()
         {
-            var adapter = new RhinoMockAdapter();
-            adapter.MockingMode = MockMode.AAA;
+            var adapter = new RhinoMockAdapter {MockingMode = MockMode.AAA};
             locator.Register(Mock<SpecialTestCase>.Using(adapter));
 
             var testClass = locator.GetInstance<SpecialTestCase>();
@@ -155,7 +153,7 @@ namespace Siege.Requisitions.UnitTests
         }
 
         [Test]
-        public void Should_Not_Mock_Types_Already_Registered_In_Service_Locator()
+        public void ShouldNotMockTypesAlreadyRegisteredInServiceLocator()
         {
             var adapter = new RhinoMockAdapter();
             locator.Register(Given<ITestInterface>.Then<TestCase1>());
