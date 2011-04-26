@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Tactics", "Siege.Tactics\Siege.Tactics.csproj", "{15D6B0F6-44E4-4FD0-9F46-961BDEB4AC3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Tactics.Tests", "Siege.Tactics.Tests\Siege.Tactics.Tests.csproj", "{862C7E2F-FE77-46E5-9CA4-4054D6CB495A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Tactics.Selenium", "Siege.Tactics.Selenium\Siege.Tactics.Selenium.csproj", "{9A734B7C-A7CC-49A2-AF1E-F08F67A20B24}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15D6B0F6-44E4-4FD0-9F46-961BDEB4AC3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15D6B0F6-44E4-4FD0-9F46-961BDEB4AC3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15D6B0F6-44E4-4FD0-9F46-961BDEB4AC3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15D6B0F6-44E4-4FD0-9F46-961BDEB4AC3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{862C7E2F-FE77-46E5-9CA4-4054D6CB495A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{862C7E2F-FE77-46E5-9CA4-4054D6CB495A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{862C7E2F-FE77-46E5-9CA4-4054D6CB495A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{862C7E2F-FE77-46E5-9CA4-4054D6CB495A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A734B7C-A7CC-49A2-AF1E-F08F67A20B24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A734B7C-A7CC-49A2-AF1E-F08F67A20B24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A734B7C-A7CC-49A2-AF1E-F08F67A20B24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A734B7C-A7CC-49A2-AF1E-F08F67A20B24}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
