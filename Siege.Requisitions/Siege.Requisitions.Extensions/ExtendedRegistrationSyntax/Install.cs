@@ -6,7 +6,7 @@ namespace Siege.Requisitions.Extensions.ExtendedRegistrationSyntax
     {
         public static Action<IServiceLocator> From(string fileName)
         {
-            return new RubyInstaller.RubyInstaller(fileName).Build();
+            return new PythonInstaller.PythonInstaller(fileName).Build();
         }
     }
 }
