@@ -1,48 +1,52 @@
-﻿//using System;
-//using System.Reflection;
-//using Microsoft.Scripting.Hosting;
-//using Siege.Requisitions.Extensions.Conventions;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using IronRuby;
+using Microsoft.Scripting.Hosting;
+using Siege.Requisitions.Extensions.Conventions;
+using Siege.Requisitions.Registrations;
 
-//namespace Siege.Requisitions.Extensions.RubyInstaller
-//{
-//    public class RubyInstaller : IConvention
-//    {
-//        private readonly string fileName;
-//        private readonly ScriptEngine engine;
-//        private readonly ScriptSource source;
+namespace Siege.Requisitions.Extensions.RubyInstaller
+{
+    public class RubyInstaller : IConvention
+    {
+        private readonly string fileName;
+        private readonly List<Assembly> assemblies;
+        private readonly ScriptEngine engine;
+        private readonly ScriptSource source;
 
-//        public RubyInstaller(string fileName)
-//        {
-//            this.fileName = fileName;
-//            this.engine = Ruby.CreateEngine();
-//            this.source = engine.CreateScriptSourceFromFile(this.fileName);
-//        }
+        public RubyInstaller(string fileName, List<Assembly> assemblies)
+        {
+            this.fileName = fileName;
+            this.assemblies = assemblies;
+            this.engine = Ruby.CreateEngine();
+            this.source = engine.CreateScriptSourceFromFile(this.fileName);
+        }
 
-//        public Action<IServiceLocator> Build()
-//        {
-//            return locator =>
-//                       {
-//                           var expression = this.source.GetCode();
-//                           var local = engine.CreateScriptSourceFromString(expression);
+        public Action<IServiceLocator> Build()
+        {
+            return locator =>
+            {
+                var scope = engine.CreateScope();
 
-//                           engine.Execute(local.GetCode());
-//                           engine.Runtime.LoadAssembly(this.GetType().Assembly);
-//                           engine.Runtime.LoadAssembly(Assembly.GetExecutingAssembly());
-//                           var @class = engine.Runtime.Globals.GetVariable("ClrInstaller");
-//                           var installer = engine.Operations.CreateInstance(@class);
+                assemblies.ForEach(a => engine.Runtime.LoadAssembly(a));
 
-//                           dynamic instance = installer.get_Current();
-//                           instance.Build(new ServiceLocatorProxy(locator));
+                engine.Execute(source.GetCode(), scope);
+                var @class = engine.Runtime.Globals.GetVariable("Installer");
+ 	
+                var installer = engine.Operations.CreateInstance(@class);
+                var registrations = installer.Install();
 
-//                           //foreach (var item in instances)
-//                           //{
-//                           //    if (item == null) continue;
-//                           //    var registration = item as IRegistration;
-//                           //    var from = item.GetMappedFromType() as Type;
-//                           //    var to = item.GetMappedToType() as Type;
-//                           //    locator.Register(new AutoScannedRegistration(from, to));
-//                           //}
-//                       };
-//        }
-//    }
-//}
+                var list = new List<IRegistration>();
+
+                foreach(var registration in registrations)
+                {
+                    if (registration == null) continue;
+                    list.Add(registration);
+                }
+
+                locator.Register(list);
+            };
+        }
+    }
+}
