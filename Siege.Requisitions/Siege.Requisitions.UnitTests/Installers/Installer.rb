@@ -27,8 +27,15 @@ class Installer
       instances = []
         
       @@instance.registrations.each do |component|
-        x = Given[component.base].method(:Then).of(component.type).call()
         
+        if(component.condition == nil)
+            x = Given[component.base].method(:Then).of(component.type).call()
+        else
+            rule = ConditionalActivationRule.of(component.base).new
+            evaluation = LambdaCondition.of(component.conditiontype).new component.condition
+            rule.set_evaluation evaluation
+            x = rule.method(:Then).of(component.type).call()
+        end
         if(component.scope != nil)
             policy = component.scope.new()
             policy.Handle x
@@ -49,6 +56,8 @@ class RubyRegistration
     attr_reader :base
     attr_reader :type
     attr_reader :scope
+    attr_reader :condition
+    attr_reader :conditiontype
 
     def initialize(base)
         @base = base
@@ -60,6 +69,15 @@ class RubyRegistration
     
     def set_scope(scope)
         @scope = scope
+    end
+    
+    def set_condition_type(conditiontype, condition)
+        @conditiontype = conditiontype 
+        @condition = condition
+    end
+    
+    def set_condition(condition)
+        @condition = condition
     end
 
 end
