@@ -222,6 +222,10 @@
       <Project>{A9F60065-137A-40D3-A266-51E79792BAB8}</Project>
       <Name>Siege.Requisitions.AutoMocker</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Siege.Requisitions.Dynamic\Siege.Requisitions.Dynamic.csproj">
+      <Project>{0E5A485C-FF7F-42BD-BE0B-C7E238BA7987}</Project>
+      <Name>Siege.Requisitions.Dynamic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Siege.Requisitions.NinjectAdapter\Siege.Requisitions.NinjectAdapter.csproj">
       <Project>{9E38DD7C-484A-4C5E-A01F-992A50B1B672}</Project>
       <Name>Siege.Requisitions.NinjectAdapter</Name>
@@ -273,12 +277,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Installers\Installer.rb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Installers\SiegeDSL.rb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Installers\test.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

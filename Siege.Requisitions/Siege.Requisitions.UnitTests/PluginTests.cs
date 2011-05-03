@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
-using Siege.Requisitions.Extensions.ExtendedRegistrationSyntax;
-using Siege.Requisitions.Extensions.RubyInstaller;
+using Siege.Requisitions.Dynamic;
+using Siege.Requisitions.Dynamic.Ruby;
 using Siege.Requisitions.Resolution;
 using Siege.Requisitions.UnitTests.TestClasses;
 using TestContext = Siege.Requisitions.UnitTests.TestClasses.TestContext;
@@ -16,15 +16,13 @@ namespace Siege.Requisitions.UnitTests
         {
             var assemblies = new List<Assembly>
             {
-                typeof (IServiceLocator).Assembly,
-                typeof (ITestInterface).Assembly,
-                typeof (RubyInstaller).Assembly
+                typeof (ITestInterface).Assembly
             };
 
             locator.Register(Install.From("Installers\\test.rb", assemblies));
 
-            var instance = locator.GetInstance(typeof (ITestInterface));
-            var instance2 = locator.GetInstance(typeof (ITestInterface));
+            var instance = locator.GetInstance<ITestInterface>();
+            var instance2 = locator.GetInstance<ITestInterface>();
 
             Assert.IsInstanceOf<TestCase1>(instance);
             Assert.AreSame(instance, instance2);
@@ -35,9 +33,7 @@ namespace Siege.Requisitions.UnitTests
         {
             var assemblies = new List<Assembly>
             {
-                typeof (IServiceLocator).Assembly,
                 typeof (ITestInterface).Assembly,
-                typeof (RubyInstaller).Assembly
             };
 
             locator.Register(Install.From("Installers\\test.rb", assemblies));

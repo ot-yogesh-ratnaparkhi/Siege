@@ -1,6 +1,4 @@
-﻿require 'Installers\Installer'
-
-def Given (base) 
+﻿def Given (base) 
     Installer.instance.add_registration base
 end
 

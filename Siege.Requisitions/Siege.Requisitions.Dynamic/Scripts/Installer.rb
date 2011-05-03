@@ -1,6 +1,5 @@
 ﻿include Siege::Requisitions::Registrations::Default
 include Siege::Requisitions::Extensions::ExtendedRegistrationSyntax
-include Siege::Requisitions::UnitTests::TestClasses
 
 class Installer
 

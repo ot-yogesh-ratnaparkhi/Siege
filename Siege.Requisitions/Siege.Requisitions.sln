@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.WindsorA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.AutoMocker", "Siege.Requisitions.Automocker\Siege.Requisitions.AutoMocker.csproj", "{A9F60065-137A-40D3-A266-51E79792BAB8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Requisitions.Dynamic", "Siege.Requisitions.Dynamic\Siege.Requisitions.Dynamic.csproj", "{0E5A485C-FF7F-42BD-BE0B-C7E238BA7987}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{A9F60065-137A-40D3-A266-51E79792BAB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9F60065-137A-40D3-A266-51E79792BAB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9F60065-137A-40D3-A266-51E79792BAB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E5A485C-FF7F-42BD-BE0B-C7E238BA7987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E5A485C-FF7F-42BD-BE0B-C7E238BA7987}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E5A485C-FF7F-42BD-BE0B-C7E238BA7987}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E5A485C-FF7F-42BD-BE0B-C7E238BA7987}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
