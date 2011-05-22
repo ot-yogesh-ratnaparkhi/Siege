@@ -10,17 +10,39 @@ namespace Siege.Requisitions.Dynamic.Ruby
 {
     public class RubyInstaller
     {
+        private static readonly object @lock = new object();
+        private static ScriptEngine engine;
+        private static ScriptScope scope;
         private readonly string fileName;
-        private readonly List<Assembly> assemblies;
-        private readonly ScriptEngine engine;
         private readonly ScriptSource source;
 
         public RubyInstaller(string fileName, List<Assembly> assemblies)
         {
             this.fileName = fileName;
-            this.assemblies = assemblies;
-            this.assemblies.AddRange(new[] { typeof(IServiceLocator).Assembly, typeof(IConvention).Assembly });
-            this.engine = IronRuby.Ruby.CreateEngine();
+            assemblies.AddRange(new[] { typeof(IServiceLocator).Assembly, typeof(IConvention).Assembly });
+            
+            if(engine == null)
+            {
+               lock(@lock)
+               {
+                   if(engine == null)
+                   {
+                       engine = IronRuby.Ruby.CreateEngine();
+                       scope = engine.CreateScope();
+
+                       assemblies.ForEach(a => engine.Runtime.LoadAssembly(a));
+                       LoadResource("Siege.Requisitions.Dynamic.Scripts.Installer.rb");
+                       LoadResource("Siege.Requisitions.Dynamic.Scripts.SiegeDSL.rb");
+                       LoadResource("Siege.Requisitions.Dynamic.Scripts.RubyRegistration.rb");
+                       LoadResource("Siege.Requisitions.Dynamic.Scripts.RegistrationHandlers.RegistrationHandlerFactory.rb");
+                       LoadResource("Siege.Requisitions.Dynamic.Scripts.RegistrationHandlers.DefaultRegistrationHandler.rb");
+                       LoadResource("Siege.Requisitions.Dynamic.Scripts.RegistrationHandlers.DefaultInstanceRegistrationHandler.rb");
+                       LoadResource("Siege.Requisitions.Dynamic.Scripts.RegistrationHandlers.ConditionalRegistrationHandler.rb");
+                       LoadResource("Siege.Requisitions.Dynamic.Scripts.RegistrationHandlers.ConditionalInstanceRegistrationHandler.rb");
+                   }
+               }
+            }
+
             this.source = engine.CreateScriptSourceFromFile(this.fileName);
         }
 
@@ -28,20 +50,6 @@ namespace Siege.Requisitions.Dynamic.Ruby
         {
             return locator =>
             {
-                var scope = engine.CreateScope();
-
-                assemblies.ForEach(a => engine.Runtime.LoadAssembly(a));
-
-                using (var reader = new StreamReader(this.GetType().Assembly.GetManifestResourceStream("Siege.Requisitions.Dynamic.Scripts.Installer.rb")))
-                {
-                    engine.Execute(engine.CreateScriptSourceFromString(reader.ReadToEnd()).GetCode(), scope);
-                }
-
-                using (var reader = new StreamReader(this.GetType().Assembly.GetManifestResourceStream("Siege.Requisitions.Dynamic.Scripts.SiegeDSL.rb")))
-                {
-                    engine.Execute(engine.CreateScriptSourceFromString(reader.ReadToEnd()).GetCode(), scope);
-                }
-
                 engine.Execute(source.GetCode(), scope);
                 var @class = engine.Runtime.Globals.GetVariable("Installer");
  	
@@ -58,6 +66,14 @@ namespace Siege.Requisitions.Dynamic.Ruby
 
                 locator.Register(list);
             };
+        }
+
+        private void LoadResource(string name)
+        {
+            using (var reader = new StreamReader(this.GetType().Assembly.GetManifestResourceStream(name)))
+            {
+                engine.Execute(engine.CreateScriptSourceFromString(reader.ReadToEnd()).GetCode(), scope);
+            }
         }
     }
 }
