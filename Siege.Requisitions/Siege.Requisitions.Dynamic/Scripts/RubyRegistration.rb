@@ -5,6 +5,7 @@
     attr_reader :scope
     attr_reader :condition
     attr_reader :conditiontype
+    attr_reader :name
 
     def initialize(base)
         @base = base
@@ -37,5 +38,9 @@
 
     def registrationType
         @default_or_conditional + @registration_type
+    end
+
+    def set_name(name)
+        @name = name
     end
 end

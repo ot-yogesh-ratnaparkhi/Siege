@@ -1,6 +1,7 @@
 ﻿include Siege::Requisitions::Registrations::Default
 include Siege::Requisitions::Extensions::ExtendedRegistrationSyntax
 include System
+include System::Collections::Generic
 
 class Installer
 
@@ -30,17 +31,27 @@ class Installer
         
         x = RegistrationHandlerFactory.Create component
 
-        if(component.scope != nil)
-            policy = component.scope.new()
-            policy.Handle x
-            instances << policy
+        if (x.is_a? IList.of(IRegistration))
+            x.each do |item|
+                instances << GetRegistration(component, item)
+            end
         else
-            instances << x
+            instances << GetRegistration(component, x)
         end
         
  	  end
  	    
       instances
+    end
+
+    def GetRegistration(component, x)
+        if(component.scope != nil)
+            policy = component.scope.new()
+            policy.Handle x
+            policy
+        else
+            x
+        end
     end
 
 end

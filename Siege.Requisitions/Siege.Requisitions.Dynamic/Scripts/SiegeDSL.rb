@@ -25,3 +25,8 @@ end
 def Condition(&condition)
     Installer.instance.last_registration.set_condition condition
 end
+
+def Named(name)
+    Installer.instance.last_registration.set_name name
+    Installer.instance.last_registration.set_default_or_conditional "Named"
+end

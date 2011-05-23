@@ -174,7 +174,19 @@
     <Compile Include="FactoryTests.cs" />
     <Compile Include="InitializationTests.cs" />
     <Compile Include="InjectorTests.cs" />
+    <Content Include="Installers\ConditionalGenericInstanceRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\ConditionalGenericRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Installers\DefaultInstanceRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\NamedInstanceRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\NamedRegistrationTest.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Installers\SingletonRegistrationTest.rb">

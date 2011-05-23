@@ -67,10 +67,8 @@ namespace Siege.Requisitions.UnitTests
             locator.Register(Install.From("Installers\\DefaultInstanceRegistrationTest.rb", assemblies));
 
             var instance = locator.GetInstance<ITestInterface>();
-            var instance2 = locator.GetInstance<ITestInterface>();
 
             Assert.IsInstanceOf<TestCase1>(instance);
-            Assert.AreSame(instance, instance2);
         }
 
         [Test]
@@ -84,10 +82,76 @@ namespace Siege.Requisitions.UnitTests
             locator.Register(Install.From("Installers\\ConditionalInstanceRegistrationTest.rb", assemblies));
 
             var instance = locator.GetInstance<ITestInterface>(new ContextArgument(new TestContext(TestEnum.Case2)));
-            var instance2 = locator.GetInstance<ITestInterface>(new ContextArgument(new TestContext(TestEnum.Case2)));
+        
+            Assert.IsInstanceOf<TestCase2>(instance);
+        }
+
+        [Test]
+        public void RubyNamedRegistration()
+        {
+            var assemblies = new List<Assembly>
+            {
+                typeof (ITestInterface).Assembly
+            };
+
+            locator.Register(Install.From("Installers\\NamedRegistrationTest.rb", assemblies));
+
+            var instance = locator.GetInstance<ITestInterface>("Test");
 
             Assert.IsInstanceOf<TestCase2>(instance);
-            Assert.AreSame(instance, instance2);
+
+            instance = locator.GetInstance<ITestInterface>("Test1");
+
+            Assert.IsInstanceOf<TestCase1>(instance);
+        }
+
+        [Test]
+        public void RubyNamedInstanceRegistration()
+        {
+            var assemblies = new List<Assembly>
+            {
+                typeof (ITestInterface).Assembly
+            };
+
+            locator.Register(Install.From("Installers\\NamedInstanceRegistrationTest.rb", assemblies));
+
+            var instance = locator.GetInstance<ITestInterface>("Test");
+
+            Assert.IsInstanceOf<TestCase2>(instance);
+
+            instance = locator.GetInstance<ITestInterface>("Test1");
+
+            Assert.IsInstanceOf<TestCase1>(instance);
+        }
+
+        [Test]
+        public void RubyIConditionRegistration()
+        {
+            var assemblies = new List<Assembly>
+            {
+                typeof (ITestInterface).Assembly
+            };
+
+            locator.Register(Install.From("Installers\\ConditionalGenericRegistrationTest.rb", assemblies));
+
+            locator.AddContext(CreateContext(TestEnum.Case2));
+
+            Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>());
+        }
+
+        [Test]
+        public void RubyIConditionInstanceRegistration()
+        {
+            var assemblies = new List<Assembly>
+            {
+                typeof (ITestInterface).Assembly
+            };
+
+            locator.Register(Install.From("Installers\\ConditionalGenericInstanceRegistrationTest.rb", assemblies));
+
+            locator.AddContext(CreateContext(TestEnum.Case2));
+
+            Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>());
         }
     }
 }

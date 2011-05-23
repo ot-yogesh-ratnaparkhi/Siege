@@ -10,6 +10,10 @@
             handler = ConditionalRegistrationHandler.new()
         elsif (rubyRegistration.registrationType == "ConditionalInstance")
             handler = ConditionalInstanceRegistrationHandler.new()
+        elsif (rubyRegistration.registrationType == "NamedType")
+            handler = NamedRegistrationHandler.new()
+        elsif (rubyRegistration.registrationType == "NamedInstance")
+            handler = NamedInstanceRegistrationHandler.new()
         end
 
         result = handler.Handle rubyRegistration

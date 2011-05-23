@@ -11,8 +11,8 @@ namespace Siege.Requisitions.Dynamic.Ruby
     public class RubyInstaller
     {
         private static readonly object @lock = new object();
-        private static ScriptEngine engine;
-        private static ScriptScope scope;
+        private ScriptEngine engine;
+        private ScriptScope scope;
         private readonly string fileName;
         private readonly ScriptSource source;
 
@@ -39,6 +39,8 @@ namespace Siege.Requisitions.Dynamic.Ruby
                        LoadResource("Siege.Requisitions.Dynamic.Scripts.RegistrationHandlers.DefaultInstanceRegistrationHandler.rb");
                        LoadResource("Siege.Requisitions.Dynamic.Scripts.RegistrationHandlers.ConditionalRegistrationHandler.rb");
                        LoadResource("Siege.Requisitions.Dynamic.Scripts.RegistrationHandlers.ConditionalInstanceRegistrationHandler.rb");
+                       LoadResource("Siege.Requisitions.Dynamic.Scripts.RegistrationHandlers.NamedRegistrationHandler.rb");
+                       LoadResource("Siege.Requisitions.Dynamic.Scripts.RegistrationHandlers.NamedInstanceRegistrationHandler.rb");
                    }
                }
             }
