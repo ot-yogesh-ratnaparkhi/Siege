@@ -63,35 +63,38 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Castle.Windsor.dll</HintPath>
     </Reference>
-    <Reference Include="IronRuby, Version=1.1.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+    <Reference Include="IronPython, Version=2.6.10920.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.2.6.1\lib\Net40\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules">
+      <HintPath>..\packages\IronPython.2.6.1\lib\Net40\IronPython.Modules.dll</HintPath>
+    </Reference>
+    <Reference Include="IronRuby">
       <HintPath>..\packages\IronRuby.1.1.2\Lib\IronRuby.dll</HintPath>
     </Reference>
-    <Reference Include="IronRuby.Libraries, Version=1.1.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="IronRuby.Libraries">
       <HintPath>..\packages\IronRuby.1.1.2\Lib\IronRuby.Libraries.dll</HintPath>
     </Reference>
-    <Reference Include="IronRuby.Libraries.Yaml, Version=1.1.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="IronRuby.Libraries.Yaml">
       <HintPath>..\packages\IronRuby.1.1.2\Lib\IronRuby.Libraries.Yaml.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Dynamic, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\IronRuby.1.1.2\Lib\Microsoft.Dynamic.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.Unity, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Practices.Unity, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\Unity\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\IronRuby.1.1.2\Lib\Microsoft.Scripting.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Scripting.Metadata, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <Private>True</Private>
+    <Reference Include="Microsoft.Scripting.Metadata">
       <HintPath>..\packages\IronRuby.1.1.2\Lib\Microsoft.Scripting.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=2.0.0.152, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
@@ -171,6 +174,27 @@
     <Compile Include="FactoryTests.cs" />
     <Compile Include="InitializationTests.cs" />
     <Compile Include="InjectorTests.cs" />
+    <Content Include="Installers\ConditionalGenericInstanceRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\ConditionalGenericRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\DefaultInstanceRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\NamedInstanceRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\NamedRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\SingletonRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\ConditionalInstanceRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Compile Include="LazyInjectionTests.cs" />
     <Compile Include="MultiConditionalActivationTests.cs" />
     <Compile Include="MultiRegistrationTests.cs" />
@@ -185,7 +209,7 @@
     <Compile Include="RegistrationExtensions\Classes\Ingredients.cs" />
     <Compile Include="RegistrationExtensions\Classes\WhippedCreamDecorator.cs" />
     <Compile Include="RegistrationTests.cs" />
-    <Compile Include="RubyPluginTests.cs" />
+    <Compile Include="PluginTests.cs" />
     <Compile Include="ServiceLocatorTests.cs" />
     <Compile Include="Adapters\StructureMapAdapterTests.cs" />
     <Compile Include="TestClasses\AlternateConstructorArgument.cs" />
@@ -218,6 +242,10 @@
     <ProjectReference Include="..\Siege.Requisitions.Automocker\Siege.Requisitions.AutoMocker.csproj">
       <Project>{A9F60065-137A-40D3-A266-51E79792BAB8}</Project>
       <Name>Siege.Requisitions.AutoMocker</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.Requisitions.Dynamic\Siege.Requisitions.Dynamic.csproj">
+      <Project>{0E5A485C-FF7F-42BD-BE0B-C7E238BA7987}</Project>
+      <Name>Siege.Requisitions.Dynamic</Name>
     </ProjectReference>
     <ProjectReference Include="..\Siege.Requisitions.NinjectAdapter\Siege.Requisitions.NinjectAdapter.csproj">
       <Project>{9E38DD7C-484A-4C5E-A01F-992A50B1B672}</Project>
@@ -270,19 +298,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Installers\Installer.rb">
+    <Content Include="Installers\ConditionalRegistrationTest.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Installers\SiegeDSL.rb">
+    <Content Include="Installers\DefaultRegistrationTest.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Installers\test.rb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
