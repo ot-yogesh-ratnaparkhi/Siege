@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{15ED8965-6655-4415-AE09-FFAEE8FC4444}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Siege.Eventing.Web</RootNamespace>
+    <AssemblyName>Siege.Eventing.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\dependencies\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.ServiceLocator">
+      <HintPath>..\dependencies\Siege.ServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.ServiceLocator.Extensions">
+      <HintPath>..\dependencies\Siege.ServiceLocator.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.ServiceLocator.Web">
+      <HintPath>..\dependencies\Siege.ServiceLocator.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Conventions\AspNetMvcConvention.cs" />
+    <Compile Include="Conventions\IConvention.cs" />
+    <Compile Include="Conventions\ServiceBusConvention.cs" />
+    <Compile Include="EventfulHttpApplication.cs" />
+    <Compile Include="DummyController.cs" />
+    <Compile Include="HandlerContext.cs" />
+    <Compile Include="HttpMessageBucket.cs" />
+    <Compile Include="HttpMessageTracker.cs" />
+    <Compile Include="MessageValidationFailedMessage.cs" />
+    <Compile Include="MvcControllerHandler.cs" />
+    <Compile Include="MvcSubscriber.cs" />
+    <Compile Include="PerRequest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryString.cs" />
+    <Compile Include="Responses\JsonResponse.cs" />
+    <Compile Include="Responses\RedirectResponse.cs" />
+    <Compile Include="Responses\RedirectToResponse.cs" />
+    <Compile Include="Responses\Response.cs" />
+    <Compile Include="Responses\ViewResponse.cs" />
+    <Compile Include="ServiceBusHandler.cs" />
+    <Compile Include="ServiceBusRoute.cs" />
+    <Compile Include="ServiceBusRouteHandler.cs" />
+    <Compile Include="TempData.cs" />
+    <Compile Include="TypeFinder.cs" />
+    <Compile Include="ModelBinding.cs" />
+    <Compile Include="ViewEngine\ConditionalMasterSelector.cs" />
+    <Compile Include="ViewEngine\ConditionalTemplateSelector.cs" />
+    <Compile Include="ViewEngine\DefaultMasterSelector.cs" />
+    <Compile Include="ViewEngine\IConditionalTemplateSelector.cs" />
+    <Compile Include="ViewEngine\IMasterTemplateSelector.cs" />
+    <Compile Include="ViewEngine\ITemplateSelector.cs" />
+    <Compile Include="ViewEngine\TemplateConvention.cs" />
+    <Compile Include="ViewEngine\TemplateFamily.cs" />
+    <Compile Include="ViewEngine\DefaultTemplateSelector.cs" />
+    <Compile Include="ViewEngine\TemplateViewEngine.cs" />
+    <Compile Include="ViewEngine\To.cs" />
+    <Compile Include="ViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Siege.Eventing\Siege.Eventing.csproj">
+      <Project>{F69A060A-DA93-439D-94C3-1B82F72C347D}</Project>
+      <Name>Siege.Eventing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.Integration.WCF\Siege.Integration.WCF.csproj">
+      <Project>{565AA9CD-6896-49DD-8472-EB128BED7064}</Project>
+      <Name>Siege.Integration.WCF</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

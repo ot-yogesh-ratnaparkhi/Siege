@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Siege.ServiceLocator.UnitTests</RootNamespace>
+    <AssemblyName>Siege.ServiceLocator.UnitTests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+    <PublishUrl>http://localhost/Siege.Requisitions.UnitTests/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Autofac, Version=1.4.4.561, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.2.5.2\lib\NET35\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Windsor.2.5.3\lib\NET40\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython, Version=2.6.10920.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.2.6.1\lib\Net40\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules">
+      <HintPath>..\packages\IronPython.2.6.1\lib\Net40\IronPython.Modules.dll</HintPath>
+    </Reference>
+    <Reference Include="IronRuby">
+      <HintPath>..\packages\IronRuby.1.1.2\Lib\IronRuby.dll</HintPath>
+    </Reference>
+    <Reference Include="IronRuby.Libraries">
+      <HintPath>..\packages\IronRuby.1.1.2\Lib\IronRuby.Libraries.dll</HintPath>
+    </Reference>
+    <Reference Include="IronRuby.Libraries.Yaml">
+      <HintPath>..\packages\IronRuby.1.1.2\Lib\IronRuby.Libraries.Yaml.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\IronRuby.1.1.2\Lib\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Unity.2.1.505.0\lib\NET35\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration">
+      <HintPath>..\packages\Unity.2.1.505.0\lib\NET35\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\IronRuby.1.1.2\Lib\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.Metadata">
+      <HintPath>..\packages\IronRuby.1.1.2\Lib\Microsoft.Scripting.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=2.0.0.152, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NUnit.2.5.10.11092\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.mocks">
+      <HintPath>..\packages\NUnit.2.5.10.11092\lib\nunit.mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="pnunit.framework">
+      <HintPath>..\packages\NUnit.2.5.10.11092\lib\pnunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.6.0.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoMocks.3.6\lib\Rhino.Mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.Proxy">
+      <HintPath>..\dependencies\Siege.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.TypeGenerator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Siege.TypeGenerator.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap, Version=2.6.2.0, Culture=neutral, PublicKeyToken=e60ad81abae3c223, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\structuremap.2.6.2\lib\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActivationRuleTests.cs" />
+    <Compile Include="Adapters\AutofacAdapterTests.cs" />
+    <Compile Include="Adapters\ILSiegeAdapterTests.cs" />
+    <Compile Include="Adapters\SiegeAdapterTests.cs" />
+    <Compile Include="AOP\Counter.cs" />
+    <Compile Include="AOP\SampleEncapsulatingAttribute.cs" />
+    <Compile Include="AOP\SamplePostProcessingAttribute.cs" />
+    <Compile Include="AOP\SamplePreProcessingAttribute.cs" />
+    <Compile Include="AOP\TestType.cs" />
+    <Compile Include="AOP\TestType2.cs" />
+    <Compile Include="AOP\TypeGeneratorTests.cs" />
+    <Compile Include="AutoMockingTests.cs" />
+    <Compile Include="AutoRegistrationTests.cs" />
+    <Compile Include="BenchmarkTests.cs" />
+    <Compile Include="ConstructorArgumentTests.cs" />
+    <Compile Include="ContextAwarenessTests.cs" />
+    <Compile Include="ContextualTests\AutofacContextTests.cs" />
+    <Compile Include="ContextualTests\BaseContextTests.cs" />
+    <Compile Include="ContextualTests\Classes\DefaultTestRepository.cs" />
+    <Compile Include="ContextualTests\Classes\DefaultTestService.cs" />
+    <Compile Include="ContextualTests\Classes\IBaseService.cs" />
+    <Compile Include="ContextualTests\Classes\IRepositoryCondition.cs" />
+    <Compile Include="ContextualTests\Classes\ITestCondition.cs" />
+    <Compile Include="ContextualTests\Classes\ITestController.cs" />
+    <Compile Include="ContextualTests\Classes\ITestRepository.cs" />
+    <Compile Include="ContextualTests\Classes\RepositoryCondition.cs" />
+    <Compile Include="ContextualTests\Classes\TestCondition.cs" />
+    <Compile Include="ContextualTests\Classes\TestController.cs" />
+    <Compile Include="ContextualTests\Classes\TestRepository1.cs" />
+    <Compile Include="ContextualTests\Classes\TestRepository2.cs" />
+    <Compile Include="ContextualTests\Classes\TestService1.cs" />
+    <Compile Include="ContextualTests\Classes\TestService2.cs" />
+    <Compile Include="ContextualTests\ILSiegeContextTests.cs" />
+    <Compile Include="ContextualTests\NinjectContextTests.cs" />
+    <Compile Include="ContextualTests\ServiceLocatorContextTests.cs" />
+    <Compile Include="ContextualTests\StructureMapContextTests.cs" />
+    <Compile Include="ContextualTests\UnityContextTests.cs" />
+    <Compile Include="ContextualTests\WindsorContextTests.cs" />
+    <Compile Include="Adapters\NinjectAdapterTests.cs" />
+    <Compile Include="DecoratorTests.cs" />
+    <Compile Include="ExecutionStoreTests.cs" />
+    <Compile Include="FactoryTests.cs" />
+    <Compile Include="InitializationTests.cs" />
+    <Compile Include="InjectorTests.cs" />
+    <Content Include="Installers\ConditionalGenericInstanceRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\ConditionalGenericRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\DefaultInstanceRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\NamedInstanceRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\NamedRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\SingletonRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\ConditionalInstanceRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="LazyInjectionTests.cs" />
+    <Compile Include="MultiConditionalActivationTests.cs" />
+    <Compile Include="MultiRegistrationTests.cs" />
+    <Compile Include="OpenGenericTests.cs" />
+    <Compile Include="PartiallyClosedGenericsTests.cs" />
+    <Compile Include="PerResolutionContextTests.cs" />
+    <Compile Include="PolicyTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationExtensions\Classes\Coffee.cs" />
+    <Compile Include="RegistrationExtensions\Classes\EspressoDecorator.cs" />
+    <Compile Include="RegistrationExtensions\Classes\IngredientDecorator.cs" />
+    <Compile Include="RegistrationExtensions\Classes\Ingredients.cs" />
+    <Compile Include="RegistrationExtensions\Classes\WhippedCreamDecorator.cs" />
+    <Compile Include="RegistrationTests.cs" />
+    <Compile Include="PluginTests.cs" />
+    <Compile Include="ServiceLocatorTests.cs" />
+    <Compile Include="Adapters\StructureMapAdapterTests.cs" />
+    <Compile Include="TestClasses\AlternateConstructorArgument.cs" />
+    <Compile Include="TestClasses\ConstructorArgument.cs" />
+    <Compile Include="TestClasses\DependsOnAlternateConstructorImplicitly.cs" />
+    <Compile Include="TestClasses\DependsOnInterface.cs" />
+    <Compile Include="TestClasses\DependsOnIServiceLocator.cs" />
+    <Compile Include="TestClasses\DependsOnMultipleInterface.cs" />
+    <Compile Include="TestClasses\IConstructorArgument.cs" />
+    <Compile Include="TestClasses\ITestInterface.cs" />
+    <Compile Include="TestClasses\IUnregisteredInterface.cs" />
+    <Compile Include="TestClasses\MultiConstructorType.cs" />
+    <Compile Include="TestClasses\SpecialTestCase.cs" />
+    <Compile Include="TestClasses\TestCase1.cs" />
+    <Compile Include="TestClasses\TestCase2.cs" />
+    <Compile Include="TestClasses\TestCase4.cs" />
+    <Compile Include="TestClasses\TestClassWithClassDependencies.cs" />
+    <Compile Include="TestClasses\TestClassWithInterfaceDependencies.cs" />
+    <Compile Include="TestClasses\TestContext.cs" />
+    <Compile Include="TestClasses\TestDecorator.cs" />
+    <Compile Include="TestClasses\TestEnum.cs" />
+    <Compile Include="TestClasses\TestEvaluation.cs" />
+    <Compile Include="TestClasses\TestInterfaceWithMethods.cs" />
+    <Compile Include="TestClasses\TestStruct.cs" />
+    <Compile Include="TestClasses\UnregisteredClass.cs" />
+    <Compile Include="Adapters\UnityAdapterTests.cs" />
+    <Compile Include="Adapters\WindsorAdapterTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Installers\ConditionalRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\DefaultRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Siege.ServiceLocator.AutofacAdapter\Siege.ServiceLocator.AutofacAdapter.csproj">
+      <Project>{12D1DCC0-8BF9-4DF4-9A18-F3AD4F1A9077}</Project>
+      <Name>Siege.ServiceLocator.AutofacAdapter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.ServiceLocator.Automocker\Siege.ServiceLocator.AutoMocker.csproj">
+      <Project>{A9F60065-137A-40D3-A266-51E79792BAB8}</Project>
+      <Name>Siege.ServiceLocator.AutoMocker</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.ServiceLocator.Dynamic\Siege.ServiceLocator.Dynamic.csproj">
+      <Project>{0E5A485C-FF7F-42BD-BE0B-C7E238BA7987}</Project>
+      <Name>Siege.ServiceLocator.Dynamic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.ServiceLocator.Extensions\Siege.ServiceLocator.Extensions.csproj">
+      <Project>{7B5B2B4D-B5B6-4427-8DEF-B0D421A0EF96}</Project>
+      <Name>Siege.ServiceLocator.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.ServiceLocator.Native\Siege.ServiceLocator.Native.csproj">
+      <Project>{95E2262B-E46C-4B10-9A28-12FC2C7127F0}</Project>
+      <Name>Siege.ServiceLocator.Native</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.ServiceLocator.NinjectAdapter\Siege.ServiceLocator.NinjectAdapter.csproj">
+      <Project>{9E38DD7C-484A-4C5E-A01F-992A50B1B672}</Project>
+      <Name>Siege.ServiceLocator.NinjectAdapter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.ServiceLocator.StructureMapAdapter\Siege.ServiceLocator.StructureMapAdapter.csproj">
+      <Project>{2360AD60-0D6D-4ECC-919A-2F64E4E295D3}</Project>
+      <Name>Siege.ServiceLocator.StructureMapAdapter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.ServiceLocator.UnityAdapter\Siege.ServiceLocator.UnityAdapter.csproj">
+      <Project>{B0FAF7F3-2EAC-40BA-995B-06E71BBADB0F}</Project>
+      <Name>Siege.ServiceLocator.UnityAdapter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.ServiceLocator.WindsorAdapter\Siege.ServiceLocator.WindsorAdapter.csproj">
+      <Project>{20AE3922-30F4-47C5-A86B-C27E320BDE65}</Project>
+      <Name>Siege.ServiceLocator.WindsorAdapter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.ServiceLocator\Siege.ServiceLocator.csproj">
+      <Project>{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}</Project>
+      <Name>Siege.ServiceLocator</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

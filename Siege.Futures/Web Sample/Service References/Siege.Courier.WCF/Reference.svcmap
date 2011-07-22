@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="572f7f80-c1ca-464b-bfd9-7229bd7a6f82" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8000/Siege.Courier/WCF" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="WCFProtocol.wsdl" MetadataType="Wsdl" ID="eec1cbb6-fa7d-4226-98f3-d7bfa8775454" SourceId="1" SourceUrl="http://localhost:8000/Siege.Courier/WCF?wsdl" />
+    <MetadataFile FileName="WCF.xsd" MetadataType="Schema" ID="60ad246c-1b07-48cf-8007-1ca78509c4ce" SourceId="1" SourceUrl="http://localhost:8000/Siege.Courier/WCF?xsd=xsd0" />
+    <MetadataFile FileName="WCF1.xsd" MetadataType="Schema" ID="e9c7e3de-1991-4485-be39-c73cedd54c5e" SourceId="1" SourceUrl="http://localhost:8000/Siege.Courier/WCF?xsd=xsd1" />
+    <MetadataFile FileName="WCF.disco" MetadataType="Disco" ID="034e788f-691c-4919-97e9-55e478c9d527" SourceId="1" SourceUrl="http://localhost:8000/Siege.Courier/WCF?disco" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

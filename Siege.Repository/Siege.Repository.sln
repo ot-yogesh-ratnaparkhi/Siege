@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Repository", "Siege.Repository\Siege.Repository.csproj", "{DFF4777E-D6A1-4EBE-BDCB-21180AC9EAB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Repository.MSSQL", "Siege.Repository.MSSQL\Siege.Repository.MSSQL.csproj", "{2C7FD68D-E2FF-4726-B7F3-0364C4B19485}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Repository.NHibernate", "Siege.Repository.NHibernate\Siege.Repository.NHibernate.csproj", "{102E9EC2-B159-453A-B5CD-B308F5FC6F98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Repository.Tests", "Siege.Repository.Tests\Siege.Repository.Tests.csproj", "{A4FC0869-C10E-4411-89CE-A8793E92C689}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Repository.Web", "Siege.Repository.Web\Siege.Repository.Web.csproj", "{B294CED0-4C95-4F70-8DD5-C11E58FE490B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DFF4777E-D6A1-4EBE-BDCB-21180AC9EAB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFF4777E-D6A1-4EBE-BDCB-21180AC9EAB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFF4777E-D6A1-4EBE-BDCB-21180AC9EAB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFF4777E-D6A1-4EBE-BDCB-21180AC9EAB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C7FD68D-E2FF-4726-B7F3-0364C4B19485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C7FD68D-E2FF-4726-B7F3-0364C4B19485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C7FD68D-E2FF-4726-B7F3-0364C4B19485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C7FD68D-E2FF-4726-B7F3-0364C4B19485}.Release|Any CPU.Build.0 = Release|Any CPU
+		{102E9EC2-B159-453A-B5CD-B308F5FC6F98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{102E9EC2-B159-453A-B5CD-B308F5FC6F98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{102E9EC2-B159-453A-B5CD-B308F5FC6F98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{102E9EC2-B159-453A-B5CD-B308F5FC6F98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4FC0869-C10E-4411-89CE-A8793E92C689}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4FC0869-C10E-4411-89CE-A8793E92C689}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4FC0869-C10E-4411-89CE-A8793E92C689}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4FC0869-C10E-4411-89CE-A8793E92C689}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B294CED0-4C95-4F70-8DD5-C11E58FE490B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B294CED0-4C95-4F70-8DD5-C11E58FE490B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B294CED0-4C95-4F70-8DD5-C11E58FE490B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B294CED0-4C95-4F70-8DD5-C11E58FE490B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

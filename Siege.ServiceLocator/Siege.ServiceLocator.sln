@@ -1,0 +1,89 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocator", "Siege.ServiceLocator\Siege.ServiceLocator.csproj", "{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocator.AutofacAdapter", "Siege.ServiceLocator.AutofacAdapter\Siege.ServiceLocator.AutofacAdapter.csproj", "{12D1DCC0-8BF9-4DF4-9A18-F3AD4F1A9077}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocator.AutoMocker", "Siege.ServiceLocator.Automocker\Siege.ServiceLocator.AutoMocker.csproj", "{A9F60065-137A-40D3-A266-51E79792BAB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocator.Dynamic", "Siege.ServiceLocator.Dynamic\Siege.ServiceLocator.Dynamic.csproj", "{0E5A485C-FF7F-42BD-BE0B-C7E238BA7987}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocator.Extensions", "Siege.ServiceLocator.Extensions\Siege.ServiceLocator.Extensions.csproj", "{7B5B2B4D-B5B6-4427-8DEF-B0D421A0EF96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocator.Native", "Siege.ServiceLocator.Native\Siege.ServiceLocator.Native.csproj", "{95E2262B-E46C-4B10-9A28-12FC2C7127F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocator.NinjectAdapter", "Siege.ServiceLocator.NinjectAdapter\Siege.ServiceLocator.NinjectAdapter.csproj", "{9E38DD7C-484A-4C5E-A01F-992A50B1B672}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocator.StructureMapAdapter", "Siege.ServiceLocator.StructureMapAdapter\Siege.ServiceLocator.StructureMapAdapter.csproj", "{2360AD60-0D6D-4ECC-919A-2F64E4E295D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocator.UnitTests", "Siege.ServiceLocator.UnitTests\Siege.ServiceLocator.UnitTests.csproj", "{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocator.UnityAdapter", "Siege.ServiceLocator.UnityAdapter\Siege.ServiceLocator.UnityAdapter.csproj", "{B0FAF7F3-2EAC-40BA-995B-06E71BBADB0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocator.Web", "Siege.ServiceLocator.Web\Siege.ServiceLocator.Web.csproj", "{6A195833-5013-422B-B87D-70FB70A0B79C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.ServiceLocator.WindsorAdapter", "Siege.ServiceLocator.WindsorAdapter\Siege.ServiceLocator.WindsorAdapter.csproj", "{20AE3922-30F4-47C5-A86B-C27E320BDE65}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A454551D-78AA-4BCA-BE97-5EBA0C2DEB56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12D1DCC0-8BF9-4DF4-9A18-F3AD4F1A9077}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12D1DCC0-8BF9-4DF4-9A18-F3AD4F1A9077}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12D1DCC0-8BF9-4DF4-9A18-F3AD4F1A9077}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12D1DCC0-8BF9-4DF4-9A18-F3AD4F1A9077}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9F60065-137A-40D3-A266-51E79792BAB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9F60065-137A-40D3-A266-51E79792BAB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9F60065-137A-40D3-A266-51E79792BAB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9F60065-137A-40D3-A266-51E79792BAB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E5A485C-FF7F-42BD-BE0B-C7E238BA7987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E5A485C-FF7F-42BD-BE0B-C7E238BA7987}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E5A485C-FF7F-42BD-BE0B-C7E238BA7987}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E5A485C-FF7F-42BD-BE0B-C7E238BA7987}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B5B2B4D-B5B6-4427-8DEF-B0D421A0EF96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B5B2B4D-B5B6-4427-8DEF-B0D421A0EF96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B5B2B4D-B5B6-4427-8DEF-B0D421A0EF96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B5B2B4D-B5B6-4427-8DEF-B0D421A0EF96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95E2262B-E46C-4B10-9A28-12FC2C7127F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95E2262B-E46C-4B10-9A28-12FC2C7127F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95E2262B-E46C-4B10-9A28-12FC2C7127F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95E2262B-E46C-4B10-9A28-12FC2C7127F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E38DD7C-484A-4C5E-A01F-992A50B1B672}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E38DD7C-484A-4C5E-A01F-992A50B1B672}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E38DD7C-484A-4C5E-A01F-992A50B1B672}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E38DD7C-484A-4C5E-A01F-992A50B1B672}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2360AD60-0D6D-4ECC-919A-2F64E4E295D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2360AD60-0D6D-4ECC-919A-2F64E4E295D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2360AD60-0D6D-4ECC-919A-2F64E4E295D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2360AD60-0D6D-4ECC-919A-2F64E4E295D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83B19B1B-88BA-4F41-8FDD-211D26DCEA8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0FAF7F3-2EAC-40BA-995B-06E71BBADB0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0FAF7F3-2EAC-40BA-995B-06E71BBADB0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0FAF7F3-2EAC-40BA-995B-06E71BBADB0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0FAF7F3-2EAC-40BA-995B-06E71BBADB0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A195833-5013-422B-B87D-70FB70A0B79C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A195833-5013-422B-B87D-70FB70A0B79C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A195833-5013-422B-B87D-70FB70A0B79C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A195833-5013-422B-B87D-70FB70A0B79C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20AE3922-30F4-47C5-A86B-C27E320BDE65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20AE3922-30F4-47C5-A86B-C27E320BDE65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20AE3922-30F4-47C5-A86B-C27E320BDE65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20AE3922-30F4-47C5-A86B-C27E320BDE65}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
+	EndGlobalSection
+EndGlobal
