@@ -51,6 +51,7 @@
     <Compile Include="HttpUnitOfWorkStore.cs" />
     <Compile Include="HttpUnitOfWorkStoreManagerModule.cs" />
     <Compile Include="HttpUnitOfWorkStoreManagerModuleException.cs" />
+    <Compile Include="ISessionRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

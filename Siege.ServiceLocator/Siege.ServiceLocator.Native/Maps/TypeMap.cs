@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Siege.ServiceLocator.Native.ConstructionStrategies;
 
@@ -139,7 +140,7 @@ namespace Siege.ServiceLocator.Native.Maps
 
         private void BuildCandidateList()
         {
-            ConstructorInfo[] constructors = To.GetConstructors();
+            var constructors = To.GetConstructors();
             int constructorCount = constructors.Length;
             for (int counter = 0; counter < constructorCount; counter++)
             {

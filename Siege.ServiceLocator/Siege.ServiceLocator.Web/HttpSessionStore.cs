@@ -22,7 +22,7 @@ namespace Siege.ServiceLocator.Web
 {
     public class HttpSessionStore : IContextStore
     {
-        public void Add(object contextItem)
+       public void Add(object contextItem)
         {
             if (this.SessionExists())
             {

@@ -20,14 +20,14 @@ namespace Siege.ServiceLocator.Registrations.Stores
 {
     public class RegistrationStore : IRegistrationStore
     {
-        private readonly Dictionary<Guid, IList<IRegistration>> registrations = new Dictionary<Guid, IList<IRegistration>>();
+        private readonly Dictionary<Type, IList<IRegistration>> registrations = new Dictionary<Type, IList<IRegistration>>();
         private readonly List<IRegistration> addedRegistrations = new List<IRegistration>();
 
         public IList<IRegistration> GetRegistrationsForType(Type type)
         {
             if (!Contains(type)) return null;
 
-            return this.registrations[type.GUID];
+            return this.registrations[type];
         }
 
         public virtual void Add(IRegistration registration)
@@ -37,10 +37,10 @@ namespace Siege.ServiceLocator.Registrations.Stores
 
         public void Add(Type type, IRegistration registration)
         {
-            if (!registrations.ContainsKey(type.GUID))
+            if (!registrations.ContainsKey(type))
             {
                 var list = new List<IRegistration>();
-                registrations.Add(type.GUID, list);
+                registrations.Add(type, list);
             }
 
             var selectedRegistration = GetRegistrationsForType(type);
@@ -48,13 +48,13 @@ namespace Siege.ServiceLocator.Registrations.Stores
 
             selectedRegistration.Add(registration);
 
-            this.registrations[type.GUID] = selectedRegistration;
+            this.registrations[type] = selectedRegistration;
             this.addedRegistrations.Add(registration);
         }
 
         public bool Contains(Type type)
         {
-            return this.registrations.ContainsKey(type.GUID);
+            return this.registrations.ContainsKey(type);
         }
 
         public bool Contains(IRegistration registration)
@@ -66,7 +66,7 @@ namespace Siege.ServiceLocator.Registrations.Stores
         {
             var allRegistrations = new List<IRegistration>();
 
-            foreach(Guid key in registrations.Keys)
+            foreach(var key in registrations.Keys)
             {
                 allRegistrations.AddRange(this.registrations[key]);
             }
