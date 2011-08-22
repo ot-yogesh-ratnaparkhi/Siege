@@ -14,35 +14,30 @@
 */
 
 using System.Linq;
+using System.Web;
 using Siege.Repository.UnitOfWork;
 
 namespace Siege.Repository.Web
 {
     public class HttpUnitOfWorkStore : IUnitOfWorkStore
     {
-        private readonly ISessionRequest request;
-
-        public HttpUnitOfWorkStore(ISessionRequest request)
-        {
-            this.request = request;
-        }
-
+    
         public void Dispose()
         {
             if (SessionExists())
             {
                 var unitsOfWork =
-                    request.Session.Keys.OfType<string>().Where(
+                    HttpContext.Current.Items.Keys.OfType<string>().Where(
                         x => x.StartsWith("HttpUnitOfWorkStore.CurrentUnitOfWork_")).ToList();
 
                 foreach (string key in unitsOfWork)
                 {
-                    var currentUnitOfWork = request.Session[key] as IUnitOfWork;
+                    var currentUnitOfWork = HttpContext.Current.Items[key] as IUnitOfWork;
 
                     if (currentUnitOfWork == null) continue;
                     currentUnitOfWork.Dispose();
 
-                    request.Session.Remove(key);
+                    HttpContext.Current.Items.Remove(key);
                 }
             }
         }
@@ -52,7 +47,7 @@ namespace Siege.Repository.Web
             if (SessionExists())
             {
                 return
-                    request.Session["HttpUnitOfWorkStore.CurrentUnitOfWork_" + typeof(TDatabase)]
+                    HttpContext.Current.Items["HttpUnitOfWorkStore.CurrentUnitOfWork_" + typeof(TDatabase)]
                     as IUnitOfWork;
             }
             return null;
@@ -63,14 +58,14 @@ namespace Siege.Repository.Web
         {
             if (SessionExists())
             {
-                request.Session["HttpUnitOfWorkStore.CurrentUnitOfWork_" + typeof(TDatabase)] =
+                HttpContext.Current.Items["HttpUnitOfWorkStore.CurrentUnitOfWork_" + typeof(TDatabase)] =
                     unitOfWork;
             }
         }
-
+        
         private bool SessionExists()
         {
-            return request.Session != null;
+            return HttpContext.Current.Items != null;
         }
     }
 }

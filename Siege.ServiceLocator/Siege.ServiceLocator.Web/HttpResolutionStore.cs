@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using Siege.ServiceLocator.InternalStorage;
 using Siege.ServiceLocator.Resolution;
@@ -35,7 +36,9 @@ namespace Siege.ServiceLocator.Web
 
         public void Clear()
         {
-            HttpContext.Current.Items.Clear();
+            var list = HttpContext.Current.Items.Keys.Cast<object>().Where(key => key.ToString().StartsWith("Resolution")).ToList();
+
+            list.ForEach(k => HttpContext.Current.Items.Remove(k));
         }
 
         public List<IResolutionArgument> Items
