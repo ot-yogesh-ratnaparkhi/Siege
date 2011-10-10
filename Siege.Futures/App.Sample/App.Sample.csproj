@@ -75,10 +75,6 @@
     <Compile Include="Subscribers\AccountSubscriber.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Courier.Sample.Messages\Courier.Sample.Messages.csproj">
-      <Project>{5B3DF88C-A673-4D0A-A242-80FC09F54665}</Project>
-      <Name>Courier.Sample.Messages</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Siege.Eventing.WindowsServices\Siege.Eventing.WindowsServices.csproj">
       <Project>{27FEC72B-9BC7-4622-9DBF-D6FB41F85DE2}</Project>
       <Name>Siege.Eventing.WindowsServices</Name>
@@ -90,6 +86,10 @@
     <ProjectReference Include="..\Siege.Integration.WCF\Siege.Integration.WCF.csproj">
       <Project>{565AA9CD-6896-49DD-8472-EB128BED7064}</Project>
       <Name>Siege.Integration.WCF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Web.Sample.Messages\Web.Sample.Messages.csproj">
+      <Project>{5B3DF88C-A673-4D0A-A242-80FC09F54665}</Project>
+      <Name>Web.Sample.Messages</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
