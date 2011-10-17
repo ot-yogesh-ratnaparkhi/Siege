@@ -29,7 +29,10 @@ namespace Siege.ServiceLocator.Web
 
         protected override IController GetControllerInstance(System.Web.Routing.RequestContext requestContext, Type controllerType)
         {
-            if (controllerType == null) return null;
+            if (controllerType == null)
+                return base.GetControllerInstance(requestContext, controllerType);
+            if (!locator.HasTypeRegistered(controllerType))
+                return base.GetControllerInstance(requestContext, controllerType);
             return locator.GetInstance<ControllerBase>(controllerType);
         }
     }
