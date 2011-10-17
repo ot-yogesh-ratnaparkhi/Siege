@@ -72,6 +72,10 @@ namespace Siege.ServiceLocator.Web
         {
             HttpContextBase context = new HttpContextWrapper(HttpContext.Current);
             var routeData = RouteTable.Routes.GetRouteData(context);
+            if (routeData == null)
+            {
+                routeData = new RouteData();
+            }
             return new ControllerContext(context, routeData, new DummyController());
         }
     }

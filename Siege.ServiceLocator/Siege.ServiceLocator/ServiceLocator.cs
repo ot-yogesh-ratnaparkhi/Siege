@@ -155,9 +155,17 @@ namespace Siege.ServiceLocator
         public IEnumerable<object> GetAllInstances(Type serviceType)
         {
             var list = new List<IRegistration>();
-            
-            list.AddRange(foundation.StoreFor<DefaultRegistrationStore>().GetRegistrationsForType(serviceType));
-            list.AddRange(foundation.StoreFor<ConditionalRegistrationStore>().GetRegistrationsForType(serviceType));
+
+            var registrations = foundation.StoreFor<DefaultRegistrationStore>().GetRegistrationsForType(serviceType);
+            if (registrations != null)
+            {
+                list.AddRange(registrations);
+            }
+            registrations = foundation.StoreFor<ConditionalRegistrationStore>().GetRegistrationsForType(serviceType);
+            if (registrations != null)
+            {
+                list.AddRange(registrations);
+            }
 
             return list.Select(item => item.ResolveWith(serviceLocator, store, postResolutionPipeline)).ToList();
         }
