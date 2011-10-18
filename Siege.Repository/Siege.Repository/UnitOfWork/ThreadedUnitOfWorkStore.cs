@@ -31,11 +31,11 @@ namespace Siege.Repository.UnitOfWork
 
         private static void Create()
         {
-            if (!currentUnitOfWork.IsValueCreated || currentUnitOfWork.Value == null)
+            if (!currentUnitOfWork.IsValueCreated)
             {
                 lock (lockObject)
                 {
-                    if (!currentUnitOfWork.IsValueCreated || currentUnitOfWork.Value == null)
+                    if (!currentUnitOfWork.IsValueCreated)
                     {
                         currentUnitOfWork.Value = new Dictionary<Type, IUnitOfWork>();
                     }
@@ -61,7 +61,7 @@ namespace Siege.Repository.UnitOfWork
 
         public void Dispose()
         {
-            if (currentUnitOfWork != null && currentUnitOfWork.Value != null)
+            if (currentUnitOfWork != null && currentUnitOfWork.IsValueCreated)
             {
                 var keysToRemove = new List<Type>();
                 foreach (Type key in currentUnitOfWork.Value.Keys)
