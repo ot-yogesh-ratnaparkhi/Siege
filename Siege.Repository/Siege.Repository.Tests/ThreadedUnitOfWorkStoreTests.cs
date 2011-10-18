@@ -13,6 +13,8 @@
      limitations under the License.
 */
 
+using System;
+using System.Threading;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Siege.Repository.UnitOfWork;
@@ -30,7 +32,7 @@ namespace Siege.Repository.Tests
         public void SetUp()
         {
             mocks = new MockRepository();
-            instance = mocks.DynamicMock<IUnitOfWork>();
+            instance = MockRepository.GenerateMock<IUnitOfWork>();
 
             store = new ThreadedUnitOfWorkStore();
         }
@@ -65,6 +67,68 @@ namespace Siege.Repository.Tests
                 store.Dispose();
                 Assert.AreEqual(null, store.CurrentFor<IDatabase>());
             }
+        }
+
+        [Test]
+        public void CurrentForShouldReturnDifferentUnitsOfWorkForDifferentThreads()
+        {
+            var unitOfWork1 = mocks.DynamicMock<IUnitOfWork>();
+            IUnitOfWork thread1UnitOfWork = null;
+            Exception threadError1 = null;
+            var thread1 = new Thread(() =>
+                                         {
+                                             try
+                                             {
+                                                 store.SetUnitOfWork<IDatabase>(unitOfWork1);
+                                                 thread1UnitOfWork = store.CurrentFor<IDatabase>();
+                                             }
+                                             catch (Exception ex)
+                                             {
+                                                 threadError1 = ex;
+                                             }
+                                         });
+
+            var unitOfWork2 = mocks.DynamicMock<IUnitOfWork>();
+            IUnitOfWork thread2UnitOfWork = null;
+            Exception threadError2 = null;
+            var thread2 = new Thread(() =>
+                                         {
+                                             try
+                                             {
+                                                 store.SetUnitOfWork<IDatabase>(unitOfWork2);
+                                                 thread2UnitOfWork = store.CurrentFor<IDatabase>();
+                                             }
+                                             catch (Exception ex)
+                                             {
+                                                 threadError2 = ex;
+                                             }
+                                         });
+
+            thread1.Start();
+            thread2.Start();
+
+            thread1.Join();
+            thread2.Join();
+
+            Assert.IsNull(threadError1);
+            Assert.IsNull(threadError2);
+
+            Assert.AreNotSame(thread1UnitOfWork, thread2UnitOfWork);
+            Assert.AreSame(unitOfWork1, thread1UnitOfWork);
+            Assert.AreSame(unitOfWork2, thread2UnitOfWork);
+        }
+
+        [Test]
+        public void DisposeShouldNotFailWhenCalledBeforeUnitOfWorkHasBeenRequested()
+        {
+            store.Dispose();
+        }
+
+        [Test]
+        public void DisposeCanBeCalledMultipleTimes()
+        {
+            store.Dispose();
+            store.Dispose();
         }
     }
 }
