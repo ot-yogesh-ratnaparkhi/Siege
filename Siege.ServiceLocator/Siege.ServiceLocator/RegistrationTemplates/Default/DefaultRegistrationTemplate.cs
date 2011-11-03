@@ -13,7 +13,6 @@
      limitations under the License.
 */
 
-using System;
 using Siege.ServiceLocator.InternalStorage;
 using Siege.ServiceLocator.Registrations;
 using Siege.ServiceLocator.Registrations.Named;

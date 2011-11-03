@@ -48,6 +48,8 @@ namespace Siege.ServiceLocator.AutoMocker
 
             public object Register(Type type, IList<IRegistration> registrations)
             {
+                if (type == typeof(IServiceLocator)) return this.serviceLocator;
+
                 if (serviceLocator != null)
                 {
                     try

@@ -46,10 +46,15 @@ namespace Siege.ServiceLocator.Registrations.Stores
             var selectedRegistration = GetRegistrationsForType(type);
             if (selectedRegistration.Contains(registration)) return;
 
-            selectedRegistration.Add(registration);
+            Add(selectedRegistration, registration);
 
             this.registrations[type] = selectedRegistration;
             this.addedRegistrations.Add(registration);
+        }
+
+        protected virtual void Add(IList<IRegistration> registrations, IRegistration registration)
+        {
+            registrations.Add(registration);
         }
 
         public bool Contains(Type type)

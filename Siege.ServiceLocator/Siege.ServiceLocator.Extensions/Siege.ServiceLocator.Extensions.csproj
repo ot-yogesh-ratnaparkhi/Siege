@@ -81,6 +81,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoLoader\IAutoloader.cs" />
+    <Compile Include="AutoLoader\Load.cs" />
     <Compile Include="AutoScanner\AutoScannedRegistration.cs" />
     <Compile Include="AutoScanner\AutoScanningConvention.cs" />
     <Compile Include="ConditionalAwareness\Awareness.cs" />

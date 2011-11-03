@@ -13,14 +13,18 @@
      limitations under the License.
 */
 
-namespace Siege.ServiceLocator.Registrations.Stores
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Siege.ServiceLocator.Extensions.AutoLoader;
+
+namespace Siege.ServiceLocator.Dynamic
 {
-    public class DefaultRegistrationStore : RegistrationStore
+    public class Autoloader : IAutoloader
     {
-        protected override void Add(System.Collections.Generic.IList<IRegistration> registrations, IRegistration registration)
+        public Action<IServiceLocator> Load(IServiceLocator locator, List<Assembly> assemblies)
         {
-            registrations.Clear();
-            base.Add(registrations, registration);
-        } 
+            return Install.From("Installers", assemblies);
+        }
     }
 }
