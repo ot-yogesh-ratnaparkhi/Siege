@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Siege.Repository.Mapping;
+using Siege.Repository.Mapping.PropertyMappings;
 
 namespace Siege.Repository.Tests.MappingTests
 {
@@ -41,18 +42,60 @@ namespace Siege.Repository.Tests.MappingTests
 
                     convention.ForForeignKeys(key => 
                     { 
-                        key.FormatAs(property => property.Name + "ID");
+                        key.FormatAs(property =>
+                                         {
+                                             return property.PropertyType.IsGenericType ? 
+                                                    property.DeclaringType.Name  + "ID" :
+                                                    property.PropertyType.Name + "ID";
+                                         });
                     });
                 });
 
-                mapper.Add<Customer>();
-                mapper.Add<Order>();
-                mapper.Add<OrderItem>();
                 mapper.Add<Product>();
+                mapper.Add<OrderItem>();
+                mapper.Add<Order>();
+                mapper.Add<Customer>();
             });
 
-            Assert.AreEqual("Customers", map.Mappings.For<Customer>().Table.Name);
-            Assert.AreEqual("siege", map.Mappings.For<Customer>().Table.Schema);
+            var customerMapping = map.Mappings.For<Customer>();
+            var orderMapping = map.Mappings.For<Order>();
+            var orderItemMapping = map.Mappings.For<OrderItem>();
+            var productMapping = map.Mappings.For<Product>();
+
+            Assert.AreEqual("Customers", customerMapping.Table.Name);
+            Assert.AreEqual("siege", customerMapping.Table.Schema);
+            Assert.AreEqual(4, customerMapping.SubMappings.Count);
+
+            Assert.AreEqual("CustomerID", customerMapping.SubMappings[0].As<IdMapping>().ColumnName);
+            Assert.AreEqual("DateCreated", customerMapping.SubMappings[1].As<PropertyMapping>().ColumnName);
+            Assert.AreEqual("CustomerFirstName", customerMapping.SubMappings[2].As<ComponentMapping>().SubMappings[0].As<PropertyMapping>().ColumnName);
+            Assert.AreEqual("CustomerLastName", customerMapping.SubMappings[2].As<ComponentMapping>().SubMappings[1].As<PropertyMapping>().ColumnName);
+            Assert.AreEqual(typeof(Order), customerMapping.SubMappings[3].As<ListMapping>().Type);
+            Assert.AreEqual("CustomerID", customerMapping.SubMappings[3].As<ListMapping>().ForeignRelationshipMapping.ColumnName);
+
+            Assert.AreEqual("Orders", orderMapping.Table.Name);
+            Assert.AreEqual("siege", orderMapping.Table.Schema);
+            Assert.AreEqual(3, orderMapping.SubMappings.Count);
+
+            Assert.AreEqual("OrderID", orderMapping.SubMappings[0].As<IdMapping>().ColumnName);
+            Assert.AreEqual("DateCreated", orderMapping.SubMappings[1].As<PropertyMapping>().ColumnName);
+            Assert.AreEqual(typeof(OrderItem), orderMapping.SubMappings[2].As<ListMapping>().Type);
+            Assert.AreEqual("OrderID", orderMapping.SubMappings[2].As<ListMapping>().ForeignRelationshipMapping.ColumnName);
+
+            Assert.AreEqual("OrderItems", orderItemMapping.Table.Name);
+            Assert.AreEqual("siege", orderItemMapping.Table.Schema);
+            Assert.AreEqual(2, orderItemMapping.SubMappings.Count);
+
+            Assert.AreEqual("OrderItemID", orderItemMapping.SubMappings[0].As<IdMapping>().ColumnName);
+            Assert.AreEqual("ProductID", orderItemMapping.SubMappings[1].As<ForeignRelationshipMapping>().ColumnName);
+
+            Assert.AreEqual("Products", productMapping.Table.Name);
+            Assert.AreEqual("siege", productMapping.Table.Schema);
+            Assert.AreEqual(3, productMapping.SubMappings.Count);
+
+            Assert.AreEqual("ProductID", productMapping.SubMappings[0].As<IdMapping>().ColumnName);
+            Assert.AreEqual("Price", productMapping.SubMappings[1].As<PropertyMapping>().ColumnName);
+            Assert.AreEqual("Name", productMapping.SubMappings[2].As<PropertyMapping>().ColumnName);
         }
 
         [Test, Ignore]
@@ -67,8 +110,9 @@ namespace Siege.Repository.Tests.MappingTests
                 });
 
                 mapper.Add<Customer>();
-
             });
+
+            map.Override<Customer>(customerMap => customerMap.MapID(customer => customer.ID, "ID"));
         }
     }
 }

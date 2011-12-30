@@ -152,25 +152,6 @@ namespace Siege.Repository.Tests.MappingTests
 
             Assert.AreEqual("Last", ((PropertyMapping<Name, string>)lastNameMapping).Property.Name);
         }
-
-        [Test]
-        public void ShouldMapList()
-        {
-            map.Create(mapper =>
-            {
-                mapper.Add<Customer>(customerMap =>
-                {
-                    customerMap.MapList(customer => customer.Orders);
-                });
-            });
-
-            Assert.AreEqual(1, map.Mappings.Count);
-            Assert.AreEqual(1, map.Mappings.For<Customer>().SubMappings.Count);
-            IElementMapping elementMapping = map.Mappings.For<Customer>().SubMappings[0];
-
-            Assert.IsInstanceOf<ListMapping<Customer, List<Order>>>(elementMapping);
-            Assert.AreEqual("Orders", ((ListMapping<Customer, List<Order>>)elementMapping).Property.Name);
-        }
     }
 
     public class Customer

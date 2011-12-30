@@ -28,6 +28,20 @@ namespace Siege.Repository.Mapping
             this.Mappings.Add(type, map);
         }
 
+        public void Override(Type type, Action<DomainMapping> mapping)
+        {
+            var map = new DomainMapping(type);
+            mapping(map);
+            this.Mappings.Add(type, map);
+        }
+
+        public void Override<TClass>(Action<DomainMapping<TClass>> mapping) where TClass : class
+        {
+            var map = new DomainMapping<TClass>();
+            mapping(map);
+            this.Mappings.Add<TClass>(map);
+        }
+
         public IDomainMapping For(Type type)
         {
             if(!this.mappings.Contains(type)) Add(type);

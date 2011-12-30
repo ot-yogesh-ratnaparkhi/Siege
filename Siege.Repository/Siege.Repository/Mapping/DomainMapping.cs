@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Siege.Repository.Mapping.Conventions.Formatters;
@@ -40,12 +41,6 @@ namespace Siege.Repository.Mapping
         public DomainMapping<TClass> MapProperty<TType>(Expression<Func<TClass, TType>> expression, string columnName)
         {
             this.subMappings.Add(new PropertyMapping<TClass, TType>(expression, columnName));
-            return this;
-        }
-
-        public DomainMapping<TClass> MapList<TType>(Expression<Func<TClass, TType>> expression)
-        {
-            this.subMappings.Add(new ListMapping<TClass, TType>(expression));
             return this;
         }
 
@@ -105,28 +100,22 @@ namespace Siege.Repository.Mapping
             mapping(this);
         }
 
-        public DomainMapping MapForeignRelationship(DomainMapper masterMap, PropertyInfo property, Type type, Formatter<PropertyInfo> keyFormatter)
+        public DomainMapping MapForeignRelationship(DomainMapper masterMap, PropertyInfo property, Formatter<PropertyInfo> keyFormatter)
         {
-            var foreignRelationshipMapping = new ForeignRelationshipMapping(property, type, keyFormatter);
-            this.subMappings.Add(foreignRelationshipMapping);
-            masterMap.For(type).Map(mapping => mapping.MapParentRelationship(this.type));
+            var mappedType = masterMap.For(property.PropertyType);
+            var foreignKey = mappedType.SubMappings.OfType<IdMapping>().First().Property;
+            var foreignMapping = new ForeignRelationshipMapping(property, foreignKey, keyFormatter);
+            this.subMappings.Add(foreignMapping);
             return this;
         }
 
-        private void MapParentRelationship(Type parentType)
+        public DomainMapping MapList(DomainMapper masterMap, PropertyInfo property, Type type, Type parentType, Formatter<PropertyInfo> keyFormatter)
         {
-            var parentMapping = new ParentRelationshipMapping(parentType);
-            this.subMappings.Add(parentMapping);
-        }
-    }
-
-    public class ParentRelationshipMapping : IElementMapping
-    {
-        private readonly Type parentType;
-
-        public ParentRelationshipMapping(Type parentType)
-        {
-            this.parentType = parentType;
+            var foreignRelationshipMapping = new ReverseForeignRelationshipMapping(property, type, parentType, keyFormatter);
+            var listMapping = new ListMapping(property, type, foreignRelationshipMapping);
+            this.subMappings.Add(listMapping);
+            //masterMap.For(type).Map(mapping => mapping.MapParentRelationship(this.type));
+            return this;
         }
     }
 }

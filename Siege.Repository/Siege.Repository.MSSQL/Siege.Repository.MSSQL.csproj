@@ -61,7 +61,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ICommand.cs" />
+    <Compile Include="InsertCommand.cs" />
+    <Compile Include="ITransaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SQLProvider.cs" />
+    <Compile Include="SQLUnitOfWork.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Siege.Repository\Siege.Repository.csproj">
+      <Project>{DFF4777E-D6A1-4EBE-BDCB-21180AC9EAB1}</Project>
+      <Name>Siege.Repository</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

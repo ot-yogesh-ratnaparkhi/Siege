@@ -25,7 +25,7 @@ namespace Siege.Repository.Mapping.Conventions.Handlers
 
         public void Handle(PropertyInfo property, Type type, DomainMapping mapper)
         {
-            mapper.MapForeignRelationship(masterMap, property, property.PropertyType, foreignKeyFormatter);
+            mapper.MapForeignRelationship(masterMap, property, foreignKeyFormatter);
         }
     }
 }

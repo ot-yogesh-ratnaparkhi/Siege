@@ -30,6 +30,6 @@ namespace Siege.Repository.Mapping.PropertyMappings
             this.ColumnName = name;
         }
 
-        public string ColumnName { get; protected set; }
+        public virtual string ColumnName { get; protected set; }
     }
 }

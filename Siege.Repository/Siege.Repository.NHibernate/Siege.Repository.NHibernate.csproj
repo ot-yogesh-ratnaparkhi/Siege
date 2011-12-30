@@ -94,13 +94,10 @@
     <Compile Include="Conventions\SubclassConvention.cs" />
     <Compile Include="NHibernateConfigurationManager.cs" />
     <Compile Include="NHibernateConvention.cs" />
-    <Compile Include="NHibernateCountQuery.cs" />
-    <Compile Include="NHibernateFindQuery.cs" />
     <Compile Include="NHibernateUnitOfWork.cs" />
     <Compile Include="NHibernateUnitOfWorkFactory.cs" />
     <Compile Include="NHibernateUnitOfWorkManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SessionContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

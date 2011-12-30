@@ -20,5 +20,10 @@ namespace Siege.Repository.Mapping.PropertyMappings
         }
 
         public PropertyInfo Property { get; protected set; }
+        
+        public virtual object GetValue(object item)
+        {
+            return this.Property.GetValue(item, new object[0]);
+        }
     }
 }

@@ -109,10 +109,11 @@
     <Compile Include="MappingTests\ElementMappingExtensions.cs" />
     <Compile Include="MappingTests\EntityIdentifier.cs" />
     <Compile Include="MappingTests\IdIdentifier.cs" />
-    <Compile Include="NHibernateConventionTests.cs" />
-    <Compile Include="NHibernateRepositoryTests.cs" />
-    <Compile Include="NHibernateUnitOfWorkManagerTests.cs" />
-    <Compile Include="NHibernateUnitOfWorkTests.cs" />
+    <Compile Include="MSSQL\InsertCommandTests.cs" />
+    <Compile Include="NHibernate\NHibernateConventionTests.cs" />
+    <Compile Include="NHibernate\NHibernateRepositoryTests.cs" />
+    <Compile Include="NHibernate\NHibernateUnitOfWorkManagerTests.cs" />
+    <Compile Include="NHibernate\NHibernateUnitOfWorkTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepositoryTests.cs" />
     <Compile Include="ThreadedUnitOfWorkStoreTests.cs" />
@@ -122,6 +123,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Siege.Repository.MSSQL\Siege.Repository.MSSQL.csproj">
+      <Project>{2C7FD68D-E2FF-4726-B7F3-0364C4B19485}</Project>
+      <Name>Siege.Repository.MSSQL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Siege.Repository.NHibernate\Siege.Repository.NHibernate.csproj">
       <Project>{102E9EC2-B159-453A-B5CD-B308F5FC6F98}</Project>
       <Name>Siege.Repository.NHibernate</Name>

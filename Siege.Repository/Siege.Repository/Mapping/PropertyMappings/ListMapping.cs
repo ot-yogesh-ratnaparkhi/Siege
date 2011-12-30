@@ -1,12 +1,27 @@
 ﻿using System;
-using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Siege.Repository.Mapping.PropertyMappings
 {
-    public class ListMapping<TClass, TType> : ElementMapping<TClass, TType>
+    public class ListMapping : ElementMapping
     {
-        public ListMapping(Expression<Func<TClass, TType>> expression) : base(expression)
+        private readonly Type type;
+        private readonly ReverseForeignRelationshipMapping foreignRelationshipMapping;
+
+        public ListMapping(PropertyInfo property, Type type, ReverseForeignRelationshipMapping foreignRelationshipMapping) : base(property)
         {
+            this.type = type;
+            this.foreignRelationshipMapping = foreignRelationshipMapping;
+        }
+
+        public ReverseForeignRelationshipMapping ForeignRelationshipMapping
+        {
+            get { return foreignRelationshipMapping; }
+        }
+
+        public Type Type
+        {
+            get { return type; }
         }
     }
 }

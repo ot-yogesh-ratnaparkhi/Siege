@@ -81,12 +81,14 @@
     <Compile Include="Mapping\DomainMap.cs" />
     <Compile Include="Mapping\DomainMapper.cs" />
     <Compile Include="Mapping\DomainMapping.cs" />
+    <Compile Include="Mapping\PropertyMappings\ForeignRelationshipMapping.cs" />
     <Compile Include="Mapping\IDomainMapping.cs" />
     <Compile Include="Mapping\IElementMapping.cs" />
     <Compile Include="Mapping\IPropertyMapping.cs" />
+    <Compile Include="Mapping\Mappings.cs" />
     <Compile Include="Mapping\PropertyMappings\ComponentMapping.cs" />
     <Compile Include="Mapping\PropertyMappings\ElementMapping.cs" />
-    <Compile Include="Mapping\PropertyMappings\ForeignRelationshipMapping.cs" />
+    <Compile Include="Mapping\PropertyMappings\ReverseForeignRelationshipMapping.cs" />
     <Compile Include="Mapping\PropertyMappings\IdMapping.cs" />
     <Compile Include="Mapping\PropertyMappings\ListMapping.cs" />
     <Compile Include="Mapping\PropertyMappings\PropertyMapping.cs" />

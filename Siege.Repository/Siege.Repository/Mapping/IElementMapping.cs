@@ -2,5 +2,6 @@
 {
     public interface IElementMapping
     {
+        object GetValue(object item);
     }
 }
