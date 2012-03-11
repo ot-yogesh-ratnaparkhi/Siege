@@ -1,19 +1,18 @@
 <?xml version='1.0'?>
   <package xmlns='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd'>
     <metadata>
-      <id>Siege.ServiceLocator</id>
+      <id>Siege.Repository</id>
       <version>1.0.0</version>
-      <title>Siege.ServiceLocator</title>
+      <title>Siege.Repository</title>
       <authors>Marcus Bratton</authors>
       <description>Inversion of Control framework</description>
       <licenseUrl>https://github.com/MarcusTheBold/Siege/blob/master/LICENSE</licenseUrl>
-      <projectUrl>https://github.com/MarcusTheBold/Siege/tree/master/Siege.ServiceLocator</projectUrl>
+      <projectUrl>https://github.com/MarcusTheBold/Siege/tree/master/Siege.Repository/</projectUrl>
       <copyright>Copyright (c) 2009 2010, 2011, 2012, Marcus Bratton.  All Rights Reserved</copyright>
       <owners>Marcus Bratton</owners>
       <requireLicenseAcceptance>false</requireLicenseAcceptance>
     </metadata>
     <files>
-      <file src='packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll' target='lib\net40\Microsoft.Practices.ServiceLocation.dll'/>
-      <file src='Siege.ServiceLocator\bin\Debug\Siege.ServiceLocator.dll' target='lib\net40\Siege.ServiceLocator.dll'/>
+      <file src='Siege.Repository\bin\Debug\Siege.Repository.dll' target='lib\net40\Siege.Repository.dll'/>
     </files>
   </package>

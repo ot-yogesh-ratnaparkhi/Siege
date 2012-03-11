@@ -15,7 +15,6 @@
     <files>
       <file src='packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll' target='lib\net40\Microsoft.Practices.ServiceLocation.dll'/>
       <file src='Siege.ServiceLocator\bin\Debug\Siege.ServiceLocator.dll' target='lib\net40\Siege.ServiceLocator.dll'/>
-      <file src='Siege.ServiceLocator.Extensions\bin\Debug\Siege.ServiceLocator.Extensions.dll' target='lib\net40\Siege.ServiceLocator.Extensions.dll'/>
       <file src='Siege.ServiceLocator.Native\bin\Debug\Siege.ServiceLocator.Native.dll' target='lib\net40\Siege.ServiceLocator.Native.dll'/>
       <file src='packages\Castle.Core.2.5.2\lib\NET35\Castle.Core.dll' target='lib\net40\Castle.Core.dll'/>
       <file src='dependencies\Siege.TypeGenerator.dll' target='lib\net40\Siege.TypeGenerator.dll'/>
