@@ -1,0 +1,9 @@
+..\.nuget\NuGet.exe pack Siege.ServiceLocator.AutoFacAdapter.nuspec
+..\.nuget\NuGet.exe pack Siege.ServiceLocator.Dynamic.nuspec
+..\.nuget\NuGet.exe pack Siege.ServiceLocator.Native.nuspec
+..\.nuget\NuGet.exe pack Siege.ServiceLocator.NinjectAdapter.nuspec
+..\.nuget\NuGet.exe pack Siege.ServiceLocator.nuspec
+..\.nuget\NuGet.exe pack Siege.ServiceLocator.StructureMapAdapter.nuspec
+..\.nuget\NuGet.exe pack Siege.ServiceLocator.UnityAdapter.nuspec
+..\.nuget\NuGet.exe pack Siege.ServiceLocator.Web.nuspec
+..\.nuget\NuGet.exe pack Siege.ServiceLocator.WindsorAdapter.nuspec

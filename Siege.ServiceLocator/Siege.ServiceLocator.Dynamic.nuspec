@@ -16,7 +16,6 @@
       <file src='packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll' target='lib\net40\Microsoft.Practices.ServiceLocation.dll'/>
       <file src='Siege.ServiceLocator\bin\Debug\Siege.ServiceLocator.dll' target='lib\net40\Siege.ServiceLocator.dll'/>
       <file src='Siege.ServiceLocator.Dynamic\bin\Debug\Siege.ServiceLocator.Dynamic.dll' target='lib\net40\Siege.ServiceLocator.Dynamic.dll'/>
-      <file src='Siege.ServiceLocator.Extensions\bin\Debug\Siege.ServiceLocator.Extensions.dll' target='lib\net40\Siege.ServiceLocator.Extensions.dll'/>
       <file src='packages\IronRuby.1.1.2\Lib\IronRuby.dll' target='lib\net40\IronRuby.dll'/>
       <file src='packages\IronRuby.1.1.2\Lib\IronRuby.Libraries.dll' target='lib\net40\IronRuby.Libraries.dll'/>
       <file src='packages\IronRuby.1.1.2\Lib\IronRuby.Libraries.Yaml.dll' target='lib\net40\IronRuby.Libraries.Yaml.dll'/>

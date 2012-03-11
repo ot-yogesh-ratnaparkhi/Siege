@@ -16,7 +16,6 @@
       <file src='packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll' target='lib\net40\Microsoft.Practices.ServiceLocation.dll'/>
       <file src='Siege.ServiceLocator\bin\Debug\Siege.ServiceLocator.dll' target='lib\net40\Siege.ServiceLocator.dll'/>
       <file src='Siege.ServiceLocator.StructureMapAdapter\bin\Debug\Siege.ServiceLocator.StructureMapAdapter.dll' target='lib\net40\Siege.ServiceLocator.StructureMapAdapter.dll'/>
-      <file src='Siege.ServiceLocator.Extensions\bin\Debug\Siege.ServiceLocator.Extensions.dll' target='lib\net40\Siege.ServiceLocator.Extensions.dll'/>
       <file src='packages\structuremap.2.6.2\lib\StructureMap.dll' target='lib\net40\StructureMap.dll'/>
     </files>
   </package>

@@ -16,7 +16,6 @@
       <file src='packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll' target='lib\net40\Microsoft.Practices.ServiceLocation.dll'/>
       <file src='Siege.ServiceLocator\bin\Debug\Siege.ServiceLocator.dll' target='lib\net40\Siege.ServiceLocator.dll'/>
       <file src='Siege.ServiceLocator.UnityAdapter\bin\Debug\Siege.ServiceLocator.UnityAdapter.dll' target='lib\net40\Siege.ServiceLocator.UnityAdapter.dll'/>
-      <file src='Siege.ServiceLocator.Extensions\bin\Debug\Siege.ServiceLocator.Extensions.dll' target='lib\net40\Siege.ServiceLocator.Extensions.dll'/>
       <file src='packages\Unity.2.1.505.0\lib\NET35\Microsoft.Practices.Unity.dll' target='lib\net40\Microsoft.Practices.Unity.dll'/>
       <file src='packages\Unity.2.1.505.0\lib\NET35\Microsoft.Practices.Unity.Configuration.dll' target='lib\net40\Microsoft.Practices.Unity.Configuration.dll'/>
     </files>
