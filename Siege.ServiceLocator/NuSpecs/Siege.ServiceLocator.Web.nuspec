@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>1.0.0</version>
+    <authors>Marcus Bratton</authors>
+    <owners>Marcus Bratton</owners>
+    <licenseUrl>https://github.com/MarcusTheBold/Siege/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/MarcusTheBold/Siege/tree/master/Siege.ServiceLocator</projectUrl>
+    <dependencies>
+      <dependency id="Siege.ServiceLocator" version="1.0.1" />
+    </dependencies>
+    <id>Siege.ServiceLocator.Web</id>
+    <title>Siege.ServiceLocator.Web</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Integrates Siege.ServiceLocator with ASP.NET and ASP.NET MVC Applications</description>
+    <copyright>Copyright (c) 2009, 2010, 2011, 2012, Marcus Bratton.  All Rights Reserved</copyright>
+  </metadata>
+  <files>
+    <file src="..\Siege.ServiceLocator.Web\bin\Debug\Siege.ServiceLocator.Web.dll" target="lib\net40\Siege.ServiceLocator.Web.dll" />
+  </files>
+</package>

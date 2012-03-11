@@ -25,7 +25,9 @@ namespace Siege.ServiceLocator.UnitTests
     {
         protected IServiceLocator locator;
         protected abstract IServiceLocatorAdapter GetAdapter();
-		protected abstract void RegisterWithoutSiege<TFrom, TTo>() where TTo : TFrom;
+        protected abstract void RegisterWithoutSiege<TFrom, TTo>()
+            where TTo : TFrom
+            where TFrom : class;
 		protected abstract void ResolveWithoutSiege<T>();
 
         [SetUp]
