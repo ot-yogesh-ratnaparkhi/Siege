@@ -16,6 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Siege.ServiceLocator.Registrations.ConditionalAwareness;
+using Siege.ServiceLocator.Registrations.InjectionOverrides;
 
 namespace Siege.ServiceLocator.InternalStorage
 {
@@ -33,8 +35,9 @@ namespace Siege.ServiceLocator.InternalStorage
             AddStore<IContextStore>(store);
             AddStore<IResolutionStore>(new ThreadedResolutionStore());
             AddStore<IExecutionStore>(ThreadedExecutionStore.New(this));
+            AddStore<IAwarenessStore>(new AwarenessStore());
+            AddStore<IInjectionOverrideStore>(new InjectionOverrideStore());
         }
-
 
         public void SetStore<TStoreType>(IStore store) where TStoreType : IStore
         {

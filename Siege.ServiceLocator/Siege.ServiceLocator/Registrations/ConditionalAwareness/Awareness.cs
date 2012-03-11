@@ -14,8 +14,6 @@
 */
 
 using System;
-using Siege.ServiceLocator.RegistrationPolicies;
-using Siege.ServiceLocator.RegistrationSyntax;
 
 namespace Siege.ServiceLocator.Registrations.ConditionalAwareness
 {
@@ -23,13 +21,7 @@ namespace Siege.ServiceLocator.Registrations.ConditionalAwareness
     {
         public static Action<IServiceLocator> Of<T>(Func<T> func)
         {
-            return serviceLocator =>
-            {
-                serviceLocator.Store.AddStore<IAwarenessStore>(new AwarenessStore());
-                if (!serviceLocator.HasTypeRegistered(typeof(ContextualRegistrationStore))) serviceLocator.Register<Singleton>(Given<ContextualRegistrationStore>.Then<ContextualRegistrationStore>());
-
-                serviceLocator.Register(new ContextualRegistration<T>(func));
-            };
+            return serviceLocator => serviceLocator.Register(new ContextualRegistration<T>(func));
         }
     }
 }

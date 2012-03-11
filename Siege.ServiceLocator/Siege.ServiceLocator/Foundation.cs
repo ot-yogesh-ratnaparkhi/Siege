@@ -16,6 +16,8 @@
 using System;
 using System.Collections.Generic;
 using Siege.ServiceLocator.Registrations;
+using Siege.ServiceLocator.Registrations.ConditionalAwareness;
+using Siege.ServiceLocator.Registrations.InjectionOverrides;
 using Siege.ServiceLocator.Registrations.Stores;
 
 namespace Siege.ServiceLocator
@@ -33,6 +35,8 @@ namespace Siege.ServiceLocator
             AddRegistrationStore<NamedRegistrationStore>();
             AddRegistrationStore<DefaultPostResolutionStore>();
             AddRegistrationStore<ConditionalPostResolutionStore>();
+            AddRegistrationStore<InjectionOverrideRegistrationStore>();
+            AddRegistrationStore<ContextualRegistrationStore>();
         }
 
         private void AddRegistrationStore<TRegistrationStore>() where TRegistrationStore : IRegistrationStore, new()

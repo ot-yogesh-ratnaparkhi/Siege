@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Siege.ServiceLocator.InternalStorage;
+using Siege.ServiceLocator.Registrations.ConditionalAwareness;
+using Siege.ServiceLocator.Registrations.InjectionOverrides;
 
 namespace Siege.ServiceLocator.Web
 {
@@ -34,6 +36,8 @@ namespace Siege.ServiceLocator.Web
             AddStore<IContextStore>(store);
             AddStore<IResolutionStore>(new HttpResolutionStore());
             AddStore<IExecutionStore>(HttpContextExecutionStore.New(this));
+            AddStore<IAwarenessStore>(new AwarenessStore());
+            AddStore<IInjectionOverrideStore>(new InjectionOverrideStore());
         }
 
 

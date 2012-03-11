@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using Siege.ServiceLocator.RegistrationPolicies;
 using Siege.ServiceLocator.Registrations;
 using Siege.ServiceLocator.Registrations.ConditionalInjection;
 using Siege.ServiceLocator.Registrations.Decorator;
@@ -109,14 +108,7 @@ namespace Siege.ServiceLocator.RegistrationSyntax
         {
             var registration = new ConstructorRegistration { Arguments = arguments };
 
-            return serviceLocator =>
-            {
-                serviceLocator.Store.AddStore<IInjectionOverrideStore>(new InjectionOverrideStore());
-
-                if (!serviceLocator.HasTypeRegistered(typeof(InjectionOverrideRegistrationStore))) serviceLocator.Register<Singleton>(Given<InjectionOverrideRegistrationStore>.Then<InjectionOverrideRegistrationStore>());
-
-                serviceLocator.Register(registration);
-            };
+            return serviceLocator => serviceLocator.Register(registration);
         }
 
         public static InjectionRule<TService> WhenInjectingInto<TResolvedType>()
