@@ -1,0 +1,23 @@
+<?xml version='1.0'?>
+  <package xmlns='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd'>
+    <metadata>
+      <id>Siege.ServiceLocator.WindsorAdapter</id>
+      <version>1.0.0</version>
+      <title>Siege.ServiceLocator.WindsorAdapter</title>
+      <authors>Marcus Bratton</authors>
+      <description>Inversion of Control framework</description>
+      <licenseUrl>https://github.com/MarcusTheBold/Siege/blob/master/LICENSE</licenseUrl>
+      <projectUrl>https://github.com/MarcusTheBold/Siege/tree/master/Siege.ServiceLocator</projectUrl>
+      <copyright>Copyright (c) 2009 2010, 2011, 2012, Marcus Bratton.  All Rights Reserved</copyright>
+      <owners>Marcus Bratton</owners>
+      <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    </metadata>
+    <files>
+      <file src='packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll' target='lib\net40\Microsoft.Practices.ServiceLocation.dll'/>
+      <file src='Siege.ServiceLocator\bin\Debug\Siege.ServiceLocator.dll' target='lib\net40\Siege.ServiceLocator.dll'/>
+      <file src='Siege.ServiceLocator.WindsorAdapter\bin\Debug\Siege.ServiceLocator.WindsorAdapter.dll' target='lib\net40\Siege.ServiceLocator.WindsorAdapter.dll'/>
+      <file src='Siege.ServiceLocator.Extensions\bin\Debug\Siege.ServiceLocator.Extensions.dll' target='lib\net40\Siege.ServiceLocator.Extensions.dll'/>
+      <file src='packages\Castle.Core.2.5.2\lib\NET35\Castle.Core.dll' target='lib\net40\Castle.Core.dll'/>
+      <file src='packages\Castle.Windsor.2.5.3\lib\NET40\Castle.Windsor.dll' target='lib\net40\Castle.Windsor.dll'/>
+    </files>
+  </package>
