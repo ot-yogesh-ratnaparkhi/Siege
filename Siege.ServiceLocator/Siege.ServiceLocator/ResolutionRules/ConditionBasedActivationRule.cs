@@ -13,10 +13,14 @@
      limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using Siege.ServiceLocator.Registrations;
 using Siege.ServiceLocator.Registrations.Conditional;
 using Siege.ServiceLocator.RegistrationSyntax;
+using Siege.ServiceLocator.Registrations.Decorator;
+using Siege.ServiceLocator.Registrations.FactorySupport;
+using Siege.ServiceLocator.Registrations.Initialization;
 
 namespace Siege.ServiceLocator.ResolutionRules
 {
@@ -60,6 +64,47 @@ namespace Siege.ServiceLocator.ResolutionRules
             list.Add(Given<TCondition>.Then<TCondition>());
 
             return list;
+        }
+
+        public IRegistration ConstructWith<TService>(Func<IInstanceResolver, TService> factoryMethod)
+        {
+            var registration = new ConditionalFactoryRegistration<TService>();
+
+            registration.MapsTo<TService>();
+            registration.SetActivationRule(this);
+            registration.ConstructWith(factoryMethod);
+
+            return registration;
+        }
+
+        public IRegistration InitializeWith(Action<TBaseService> action)
+        {
+            var registration = new ConditionalInitializationRegistration<TBaseService>();
+
+            registration.MapsTo<TBaseService>();
+            registration.SetActivationRule(this);
+
+            Func<TBaseService, TBaseService> func = service =>
+            {
+                action(service);
+                return service;
+            };
+
+            registration.Associate(func);
+
+            return registration;
+        }
+
+        public IRegistration DecorateWith(Func<TBaseService, TBaseService> func)
+        {
+            var registration = new ConditionalDecoratorRegistration<TBaseService>();
+
+            registration.MapsTo<TBaseService>();
+            registration.SetActivationRule(this);
+
+            registration.Associate(func);
+
+            return registration;
         }
     }
 }

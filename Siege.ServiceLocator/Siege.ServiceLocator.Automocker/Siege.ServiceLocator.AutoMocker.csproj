@@ -108,10 +108,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Siege.ServiceLocator.Extensions\Siege.ServiceLocator.Extensions.csproj">
-      <Project>{7B5B2B4D-B5B6-4427-8DEF-B0D421A0EF96}</Project>
-      <Name>Siege.ServiceLocator.Extensions</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Siege.ServiceLocator.Native\Siege.ServiceLocator.Native.csproj">
       <Project>{95E2262B-E46C-4B10-9A28-12FC2C7127F0}</Project>
       <Name>Siege.ServiceLocator.Native</Name>

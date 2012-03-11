@@ -14,10 +14,9 @@
 */
 
 using NUnit.Framework;
-using Siege.ServiceLocator.Extensions.ExtendedRegistrationSyntax;
+using Siege.ServiceLocator.RegistrationSyntax;
 using Siege.ServiceLocator.Resolution;
 using Siege.ServiceLocator.UnitTests.TestClasses;
-using TestContext = Siege.ServiceLocator.UnitTests.TestClasses.TestContext;
 
 namespace Siege.ServiceLocator.UnitTests
 {

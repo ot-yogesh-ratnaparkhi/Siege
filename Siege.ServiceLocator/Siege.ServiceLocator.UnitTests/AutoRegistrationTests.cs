@@ -14,8 +14,8 @@
 */
 
 using NUnit.Framework;
-using Siege.ServiceLocator.Extensions.AutoScanner;
-using Siege.ServiceLocator.Extensions.Conventions;
+using Siege.ServiceLocator.Registrations.AutoScanner;
+using Siege.ServiceLocator.Registrations.Conventions;
 using Siege.ServiceLocator.UnitTests.TestNamespace;
 
 namespace Siege.ServiceLocator.UnitTests

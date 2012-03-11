@@ -14,7 +14,7 @@
 */
 
 using NUnit.Framework;
-using Siege.ServiceLocator.Extensions.ExtendedRegistrationSyntax;
+using Siege.ServiceLocator.RegistrationSyntax;
 
 namespace Siege.ServiceLocator.UnitTests
 {
@@ -25,8 +25,7 @@ namespace Siege.ServiceLocator.UnitTests
         {
             var genericType = typeof (IHandler<>).MakeGenericType(typeof (GenericType<>));
             locator
-                .Register(Given
-                            .OpenType(genericType)
+                .Register(Given.OpenType(genericType)
                             .Then(typeof (PartiallyClosedGenericHandler<>)));
 
             var instance = locator.GetInstance<IHandler<GenericType<string>>>();

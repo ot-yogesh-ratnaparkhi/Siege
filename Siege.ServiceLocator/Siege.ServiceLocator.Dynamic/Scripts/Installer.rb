@@ -1,7 +1,7 @@
 ﻿include Siege::ServiceLocator::Registrations::Default
-include Siege::ServiceLocator::Extensions::ExtendedRegistrationSyntax
 include System
 include System::Collections::Generic
+include Siege::ServiceLocator::RegistrationSyntax
 
 class Installer
 

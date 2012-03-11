@@ -14,7 +14,7 @@
 */
 
 using System.Web.Mvc;
-using Siege.ServiceLocator.Extensions.AutoScanner;
+using Siege.ServiceLocator.Registrations.AutoScanner;
 
 namespace Siege.ServiceLocator.Web.Conventions
 {

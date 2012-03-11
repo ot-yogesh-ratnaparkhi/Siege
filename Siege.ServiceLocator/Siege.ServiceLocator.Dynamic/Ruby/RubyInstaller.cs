@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Microsoft.Scripting.Hosting;
-using Siege.ServiceLocator.Extensions.Conventions;
 using Siege.ServiceLocator.Registrations;
+using Siege.ServiceLocator.Registrations.Conventions;
 
 namespace Siege.ServiceLocator.Dynamic.Ruby
 {

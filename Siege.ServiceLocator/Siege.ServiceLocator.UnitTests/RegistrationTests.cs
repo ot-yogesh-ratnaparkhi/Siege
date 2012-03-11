@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Siege.Proxy;
-using Siege.ServiceLocator.Extensions.Conventions;
-using Siege.ServiceLocator.Extensions.ExtendedRegistrationSyntax;
 using Siege.ServiceLocator.InternalStorage;
+using Siege.ServiceLocator.RegistrationSyntax;
 using Siege.ServiceLocator.Registrations;
+using Siege.ServiceLocator.Registrations.Conventions;
 using Siege.ServiceLocator.Registrations.Meta;
 using Siege.ServiceLocator.Registrations.Named;
 using Siege.ServiceLocator.Registrations.Stores;

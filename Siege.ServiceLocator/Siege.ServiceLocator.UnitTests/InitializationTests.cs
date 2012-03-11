@@ -14,7 +14,7 @@
 */
 
 using NUnit.Framework;
-using Siege.ServiceLocator.Extensions.ExtendedRegistrationSyntax;
+using Siege.ServiceLocator.RegistrationSyntax;
 using Siege.ServiceLocator.UnitTests.TestClasses;
 
 namespace Siege.ServiceLocator.UnitTests

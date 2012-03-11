@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Siege.ServiceLocator.Extensions.AutoLoader;
+using Siege.ServiceLocator.Registrations.AutoLoader;
 
 namespace Siege.ServiceLocator.Dynamic
 {

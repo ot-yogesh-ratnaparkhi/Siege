@@ -15,8 +15,8 @@
 
 using System;
 using NUnit.Framework;
-using Siege.ServiceLocator.Extensions.ExtendedRegistrationSyntax;
 using Siege.ServiceLocator.InternalStorage;
+using Siege.ServiceLocator.RegistrationSyntax;
 using Siege.ServiceLocator.UnitTests.ContextualTests.Classes;
 
 namespace Siege.ServiceLocator.UnitTests

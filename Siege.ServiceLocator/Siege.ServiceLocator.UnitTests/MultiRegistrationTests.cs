@@ -1,5 +1,4 @@
 ﻿//using NUnit.Framework;
-//using Siege.ServiceLocator.Extensions.ExtendedRegistrationSyntax;
 
 //namespace Siege.ServiceLocator.UnitTests
 //{
