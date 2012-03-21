@@ -19,8 +19,8 @@ using Rhino.Mocks;
 using Siege.Repository.NHibernate;
 using Siege.Repository.UnitOfWork;
 using Siege.ServiceLocator;
-using Siege.ServiceLocator.Extensions.Conventions;
 using Siege.ServiceLocator.Native;
+using Siege.ServiceLocator.Registrations.Conventions;
 
 namespace Siege.Repository.Tests
 {

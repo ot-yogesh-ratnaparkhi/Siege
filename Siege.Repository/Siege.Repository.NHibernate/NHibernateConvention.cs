@@ -17,9 +17,9 @@ using System;
 using NHibernate;
 using Siege.Repository.UnitOfWork;
 using Siege.ServiceLocator;
-using Siege.ServiceLocator.Extensions.Conventions;
-using Siege.ServiceLocator.Extensions.ExtendedRegistrationSyntax;
 using Siege.ServiceLocator.RegistrationPolicies;
+using Siege.ServiceLocator.RegistrationSyntax;
+using Siege.ServiceLocator.Registrations.Conventions;
 
 namespace Siege.Repository.NHibernate
 {

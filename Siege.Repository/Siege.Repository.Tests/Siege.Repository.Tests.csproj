@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -82,17 +83,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\RhinoMocks.3.6\lib\Rhino.Mocks.dll</HintPath>
     </Reference>
-    <Reference Include="Siege.ServiceLocator">
-      <HintPath>..\dependencies\Siege.ServiceLocator.dll</HintPath>
+    <Reference Include="Siege.ServiceLocator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Siege.ServiceLocator.1.0.1\lib\net40\Siege.ServiceLocator.dll</HintPath>
     </Reference>
-    <Reference Include="Siege.ServiceLocator.Extensions">
-      <HintPath>..\dependencies\Siege.ServiceLocator.Extensions.dll</HintPath>
+    <Reference Include="Siege.ServiceLocator.Native, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Siege.ServiceLocator.Native.1.0.0\lib\net40\Siege.ServiceLocator.Native.dll</HintPath>
     </Reference>
-    <Reference Include="Siege.ServiceLocator.Native">
-      <HintPath>..\dependencies\Siege.ServiceLocator.Native.dll</HintPath>
-    </Reference>
-    <Reference Include="Siege.TypeGenerator">
-      <HintPath>..\dependencies\Siege.TypeGenerator.dll</HintPath>
+    <Reference Include="Siege.TypeGenerator, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\Siege.TypeGenerator.1.0.0\lib\net40\Siege.TypeGenerator.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

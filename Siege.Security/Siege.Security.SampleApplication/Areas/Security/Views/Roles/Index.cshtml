@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "~/Areas/Security/Views/Shared/SecurityLayout.cshtml";
+    ViewBag.Title = "Security Administration - Groups";
+}
+
+<div id="roles_section">
+    
+    <div id="roles_list">
+        <span id="header">Roles</span>
+        (<a href="/Security/Roles/New/">New</a>)
+        <br/>
+        <br/>
+        <table id="roles_grid"></table>
+        <table id="roles_grid_pager"></table>
+    </div>
+</div>
+
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $("#roles_grid").jqGrid({
+            url: '/Security/Roles/List/',
+            datatype: 'json',
+            mtype: 'GET',
+            colNames: ['Role Name', 'Permissions', 'Active?', 'Actions', 'ID'],
+            colModel: [
+                { name: 'RoleName', index: 'RoleName', width: 40, align: 'center' },
+                { name: 'Permissions', index: 'Permissions', width: 40, align: 'center' },
+                { name: 'Active', index: 'Active', width: 40, align: 'center' },
+                { name: 'Actions', width: 100, align: 'center', formatter: formatter },
+                { name: 'ID', index: 'ID', width: 40, align: 'center', hidden: true}],
+            pager: jQuery('#roles_grid_pager'),
+            rowNum: 10,
+            rowList: [5, 10, 20, 50],
+            sortname: 'Id',
+            sortorder: "desc",
+            viewrecords: true,
+            width: 1000,
+            height: 200
+        });
+    });
+
+    function formatter(cellvalue, options, rowObject) {
+        return '<a href=\'/Security/Roles/Edit/' + rowObject[3] + '\'>Edit</a>';
+    }
+</script>

@@ -1,0 +1,49 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+        $("#permissions_grid").jqGrid({
+            url: '/Security/Permissions/For@(ViewBag.Type)/@(ViewBag.ID != null ? ViewBag.ID.ToString() : "")',
+            datatype: 'json',
+            mtype: 'GET',
+            width: '400',
+            rownumbers: false,
+            caption: 'Manage Permissions',
+            colNames: ['Record Id', 'Grant', 'Permission'],
+            colModel: [
+                    { name: 'recordId', index: 'recordId', hidden: true },
+                    { name: 'isSelected', index: 'isSelected', sortable: false, formatter: "checkbox", formatoptions: { disabled: false }, editable: true, edittype: "checkbox" },
+                    { name: 'Name', index: 'Name', hidden: false, sortable: true }],
+            rowNum: 25,
+            rowList: [25, 50, 100],
+            pager: '#permissions_grid_pager',
+            emptyrecords: 'No data',
+            sortname: 'Name',
+            sortorder: 'asc',
+            altRows: true,
+            altclass: 'zebra',
+            gridComplete: function () {
+            }
+        });
+        $("#roles_grid").jqGrid('navGrid', '#presize', { edit: false, add: false, del: false });
+    });
+
+    function SetSelectedPermissions() {
+        var selectedPermissions = new Array();
+
+        var gridRows = $("#permissions_grid").getRowData();
+        for (var i = 0; i < gridRows.length; i++) {
+            if (gridRows[i].isSelected == 'Yes') {
+                selectedPermissions[selectedPermissions.length] = gridRows[i].recordId;
+            }
+        }
+        $("#selectedPermissions").val(selectedPermissions);
+    }
+</script>
+
+<div id="permissions_list">
+    <table id="permissions_grid">
+    </table>
+    <div id="permissions_grid_pager">
+    </div>
+</div>
+
+<input type="hidden" name="SelectedPermissions" id="selectedPermissions" value="" />

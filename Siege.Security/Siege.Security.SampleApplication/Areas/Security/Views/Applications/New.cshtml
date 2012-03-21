@@ -1,0 +1,72 @@
+﻿@model Siege.Security.Application
+
+@{
+    Layout = "~/Areas/Security/Views/Shared/SecurityLayout.cshtml";
+    ViewBag.Title = "Security Administration - Applications - New Application";
+    var modelID = Model != null ? Model.ID.ToString() : "";
+}
+<form id="form">
+    <h2>New Application</h2>
+    <div id = "security_details" >
+        <div id="row">
+            <div id="cell">@Html.LabelFor(model => model.Name):</div>
+            <div id="cell">@Html.TextBoxFor(model => model.Name)<em>*</em></div>
+        </div>
+        <div id="row">
+            <div id="cell">@Html.LabelFor(model => model.Description):</div>
+            <div id="cell">@Html.TextAreaFor(model => model.Description)<em>*</em></div>
+        </div>
+        <div id="row">
+            <div id="cell">Is Active?:</div>
+            <div id="cell">@Html.CheckBoxFor(model => model.IsActive)</div>
+        </div>
+    </div>
+    <div id="notifications" style="padding-left: 30px; padding-top: 5px; vertical-align:top; font-weight:bolder;"></div>
+    <div id="security_actions">
+        <a href="#" onclick="javascript:saveApplication();">Save</a>
+        <a href="#" onclick="javascript:window.location='/Security/Consumers/Index/';">Cancel</a>
+    </div>
+</form>
+<script type="text/javascript">
+    function saveApplication() {
+        $("#notifications").html("");
+
+        if ($("#Name")) {
+            var applicationName = $("#Name").val();
+            if (applicationName == "") {
+                $("#notifications").addClass("error");
+                $("#notifications").html("Consumer name is required");
+                return;
+            }
+        }
+
+        $("#actions").css('display', 'none');
+
+        $.ajax({
+            type: 'POST',
+            url: '/Security/Applications/Save/@(modelID)',
+            cache: false,
+            data: $("form").serialize(),
+            success: function (data) {
+                backToApplications();
+            },
+            error: function (xmlHttpRequest, textStatus, errorThrown) {
+                $("#notifications").addClass("error");
+                $.fn.statusmessageQ({
+                    'message': 'Error: ' + xmlHttpRequest.responseText,
+                    'type': 'error',
+                    'timeout': 4000,
+                    'show': 'animation',
+                    'target': '#notifications',
+                    'hide': 'fadeout'
+                });
+                $("#security_actions").css('display', '');
+            },
+            async: false
+        });
+    }
+
+    function backToApplications() {
+        $(location).attr('href', '/Security/Applications/Index/');
+    }
+</script>

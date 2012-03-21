@@ -1,0 +1,51 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+        $("#roles_grid").jqGrid({
+            url: '/Security/Roles/For@(ViewBag.Type)/@(ViewBag.ID != null ? ViewBag.ID.ToString() : "")',
+            datatype: 'json',
+            mtype: 'GET',
+            width: '400',
+            rownumbers: false,
+            caption: 'Manage Roles',
+            colNames: ['Record Id', 'Grant', 'Role', 'Permissions'],
+            colModel: [
+                    { name: 'recordId', index: 'recordId', hidden: true },
+                    { name: 'isSelected', index: 'isSelected', sortable: false, formatter: "checkbox", formatoptions: { disabled: false }, editable: true, edittype: "checkbox" },
+                    { name: 'Name', index: 'Name', hidden: false, sortable: true },
+                    { name: 'permissions', index: 'permissions', hidden: false, sortable: false }
+                        ],
+            rowNum: 25,
+            rowList: [25, 50, 100],
+            pager: '#roles_grid_pager',
+            emptyrecords: 'No data',
+            sortname: 'Name',
+            sortorder: 'asc',
+            altRows: true,
+            altclass: 'zebra',
+            gridComplete: function () {
+            }
+        });
+        $("#roles_grid").jqGrid('navGrid', '#presize', { edit: false, add: false, del: false });
+    });
+
+    function SetSelectedRoles() {
+        var selectedRoles = new Array();
+
+        var gridRows = $("#roles_grid").getRowData();
+        for (var i = 0; i < gridRows.length; i++) {
+            if (gridRows[i].isSelected == 'Yes') {
+                selectedRoles[selectedRoles.length] = gridRows[i].recordId;
+            }
+        }
+        $("#selectedRoles").val(selectedRoles);
+    }
+</script>
+
+<div id="roles_list">
+    <table id="roles_grid">
+    </table>
+    <div id="roles_grid_pager">
+    </div>
+</div>
+
+<input type="hidden" name="SelectedRoles" id="selectedRoles" value="" />
