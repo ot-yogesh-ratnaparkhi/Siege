@@ -18,7 +18,6 @@
     <copyright>Copyright (c) 2009, 2010, 2011, 2012, Marcus Bratton.  All Rights Reserved</copyright>
   </metadata>
   <files>
-    <file src="..\packages\FluentNHibernate.1.2.0.712\lib\FluentNHibernate.dll" target="lib\net40\FluentNHibernate.dll" />
     <file src="..\Siege.Repository.NHibernate\bin\Debug\Siege.Repository.NHibernate.dll" target="lib\net40\Siege.Repository.NHibernate.dll" />
   </files>
 </package>
