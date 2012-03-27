@@ -68,7 +68,7 @@ namespace Siege.Security.Admin.Security.Controllers
             return View(model);
         }
 
-        public ActionResult GetForConsumer(int id, IConsumerProvider consumerProvider)
+        public ActionResult GetForConsumer(int? id, IConsumerProvider consumerProvider)
         {
             var applications = consumerProvider.Find(id).Applications;
          
@@ -83,6 +83,26 @@ namespace Siege.Security.Admin.Security.Controllers
             };
 
             return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Get(int id, IConsumerProvider consumerProvider)
+        {
+            var application = provider.Find(id);
+
+            var jsonData = new
+            {
+                total = 1,
+                rows = new[]
+                {
+                    new 
+                    {
+                        id = application.ID,
+                        Name = application.Name,
+                    }
+                }
+            };
+
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
     }
 }

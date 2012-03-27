@@ -10,10 +10,29 @@ namespace Siege.Security.Admin.Security.Controllers
         {
         }
 
-        public ActionResult Get(IUserProvider userProvider)
+        public ActionResult Get(int? id, IUserProvider userProvider)
         {
-            var principal = authenticationProvider.GetAuthenticatedUser();
 
+            if(id != null)
+            {
+                var consumer = provider.Find(id);
+
+                var jsonData = new
+                {
+                    total = 1,
+                    rows = new[]
+                    {
+                        new {
+                            id = consumer.ID,
+                            Name = consumer.Name,
+                        }
+                    }
+                };
+
+                return Json(jsonData, JsonRequestBehavior.AllowGet);
+            }
+
+            var principal = authenticationProvider.GetAuthenticatedUser();
             var user = userProvider.FindByUserName(principal.Identity.Name);
 
             if (!user.Can("CanAdministerAllSecurity"))
@@ -21,10 +40,12 @@ namespace Siege.Security.Admin.Security.Controllers
                 var jsonData = new
                 {
                     total = 1,
-                    rows = new
+                    rows = new[]
                     {
-                        id = user.Consumer.ID,
-                        Name = user.Consumer.Name,
+                        new {
+                            id = user.Consumer.ID,
+                            Name = user.Consumer.Name
+                        }
                     }
                 };
 
