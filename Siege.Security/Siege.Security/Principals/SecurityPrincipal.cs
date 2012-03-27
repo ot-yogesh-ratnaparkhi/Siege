@@ -2,7 +2,7 @@
 
 namespace Siege.Security.Principals
 {
-    public class SecurityPrincipal : ISecurityPrincipal
+    public class SecurityPrincipal : ISecurityPrincipal, IIdentity
     {
         private readonly User user;
 
@@ -18,12 +18,27 @@ namespace Siege.Security.Principals
 
         public IIdentity Identity
         {
-            get { return user; }
+            get { return this; }
         }
 
         public bool Can(string permission)
         {
             return user.Can(permission);
+        }
+
+        public string Name
+        {
+            get { return user.Name; }
+        }
+
+        public string AuthenticationType
+        {
+            get { return "Siege"; }
+        }
+
+        public bool IsAuthenticated
+        {
+            get { return user.IsAuthenticated; }
         }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Configuration;
-using System.Linq;
 using System.Threading;
 using System.Web;
+using Siege.Security.Principals;
 using Siege.Security.Providers;
 using Siege.ServiceLocator;
 
@@ -35,8 +34,11 @@ namespace Siege.Security.Web
             var serviceLocator = ((IServiceLocatorAccessor)application).ServiceLocator;
             var userProvider = serviceLocator.GetInstance<IUserProvider>();
             var user = userProvider.FindByUserName(context.User.Identity.Name);
+
+            if (user == null) return;
+
             user.IsAuthenticated = context.User.Identity.IsAuthenticated;
-            context.User = user;
+            context.User = new SecurityPrincipal(user);
             Thread.CurrentPrincipal = context.User;
         }
 

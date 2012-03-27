@@ -20,11 +20,11 @@ namespace Siege.Repository.UnitOfWork
 {
 	public interface IUnitOfWork : IDisposable
 	{
-		T Get<T>(object id);
+        T Get<T>(object id) where T : class;
 		void Transact(Action action);
-		T Transact<T>(Func<T> action);
-		void Save<T>(T item);
-        void Delete<T>(T item);
-	    IQueryable<T> Query<T>();
+        T Transact<T>(Func<T> action) where T : class;
+        void Save<T>(T item) where T : class;
+        void Delete<T>(T item) where T : class;
+        IQueryable<T> Query<T>() where T : class;
 	}
 }

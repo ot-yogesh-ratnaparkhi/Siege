@@ -6,7 +6,7 @@ using Siege.Repository.UnitOfWork;
 
 namespace Siege.Repository.Finders
 {
-	public class QuerySpecification<T>
+	public class QuerySpecification<T> where T : class
 	{
 		protected IQueryable<T> linqQuery;
 		private readonly List<Action> conditions = new List<Action>();

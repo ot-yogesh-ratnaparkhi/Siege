@@ -3,8 +3,8 @@ using Siege.Security.Entities;
 
 namespace Siege.Security.Providers
 {
-    public interface ISecurityProvider<T, TID> : IProvider<T, TID> where T : ApplicationBasedSecurityEntity<TID>
+    public interface ISecurityProvider<T> : IProvider<T> where T : ConsumerBasedSecurityEntity
     {
-        IList<T> GetForApplication(Application application);
+        IList<T> GetForApplicationAndConsumer(Application application, Consumer consumer, bool includeHiddenPermissions);
     }
 }

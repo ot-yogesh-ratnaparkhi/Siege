@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AspNet.SuppressFormsRedirect">
+      <HintPath>..\packages\aspnet.suppressformsredirect.0.0.1.4\lib\40\AspNet.SuppressFormsRedirect.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -49,10 +52,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\HandleAjaxErrorsAttribute.cs" />
+    <Compile Include="Attributes\RequiresOneOfThePermissionsAttribute.cs" />
+    <Compile Include="Attributes\RequiresPermissionAttribute.cs" />
     <Compile Include="JqGridConfiguration.cs" />
     <Compile Include="JqGridConfigurationModelBinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityModule.cs" />
+    <Compile Include="WebAuthenticationProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

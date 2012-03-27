@@ -1,7 +1,7 @@
 namespace Siege.Security.Entities
 {
-    public abstract class ApplicationBasedSecurityEntity<TID> : SecurityEntity<TID>
+    public abstract class ConsumerBasedSecurityEntity : SecurityEntity
     {
-        public virtual Application Application { get; set; }
+        public virtual Consumer Consumer { get; set; }
     }
 }

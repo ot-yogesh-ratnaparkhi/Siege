@@ -84,7 +84,7 @@
       <HintPath>..\packages\RhinoMocks.3.6\lib\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="Siege.ServiceLocator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Siege.ServiceLocator.1.0.1\lib\net40\Siege.ServiceLocator.dll</HintPath>
+      <HintPath>..\packages\Siege.ServiceLocator.1.0.3\lib\net40\Siege.ServiceLocator.dll</HintPath>
     </Reference>
     <Reference Include="Siege.ServiceLocator.Native, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Siege.ServiceLocator.Native.1.0.0\lib\net40\Siege.ServiceLocator.Native.dll</HintPath>

@@ -2,10 +2,10 @@
 
 namespace Siege.Security.Providers
 {
-    public interface IProvider<T, TID> where T : SecurityEntity<TID>
+    public interface IProvider<T> where T : SecurityEntity
     {
         void Delete(T item);
         T Save(T item);
-        T Find(TID id);
+        T Find(int? id);
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace Siege.Security.Entities
 {
-    public abstract class SecurityEntity<TID>
+    public abstract class SecurityEntity
     {
-        public virtual TID ID { get; set; }
+        public virtual int? ID { get; set; }
     }
 }

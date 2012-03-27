@@ -77,8 +77,17 @@ namespace Siege.Security.SampleApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                identityProvider.Create(model.UserName, model.Password, model.Email, passwordQuestion: null,
-                                        passwordAnswer: null, isApproved: true, providerUserKey: null);
+                var user = new User
+                {
+                    Name = model.UserName, 
+                    Password = model.Password,
+                    Email = model.Email,
+                    SecretQuestion = "What is the meaning of life?",
+                    SecretAnswer = "43",
+                    IsActive = true
+                };
+                
+                identityProvider.Create(user);
 
                 return
                     JsonLogin(
@@ -94,11 +103,19 @@ namespace Siege.Security.SampleApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                identityProvider.Create(model.UserName, model.Password, model.Email, passwordQuestion: null,
-                                        passwordAnswer: null, isApproved: true, providerUserKey: null);
+                var user = new User
+                {
+                    Name = model.UserName,
+                    Password = model.Password,
+                    Email = model.Email,
+                    SecretQuestion = "What is the meaning of life?",
+                    SecretAnswer = "43",
+                    IsActive = true
+                };
 
-                return Login(new LoginModel {Password = model.Password, RememberMe = false, UserName = model.UserName},
-                             "");
+                identityProvider.Create(user);
+
+                return Login(new LoginModel {Password = model.Password, RememberMe = false, UserName = model.UserName}, "");
             }
 
             ModelState.AddModelError("", "The user name or password provided is incorrect.");

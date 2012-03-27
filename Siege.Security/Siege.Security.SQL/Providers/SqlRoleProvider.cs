@@ -6,15 +6,34 @@ using Siege.Security.SQL.Repository;
 
 namespace Siege.Security.SQL.Providers
 {
-    public class SqlRoleProvider : SqlProvider<Role, int?>, IRoleProvider
+    public class SqlRoleProvider : SqlProvider<Role>, IRoleProvider
     {
         public SqlRoleProvider(IRepository<SecurityDatabase> repository) : base(repository)
         {
         }
-        
-        public virtual IList<Role> GetForApplication(Application application)
+
+        public Role Find(int? id, bool includeHiddenPermissions)
         {
-            return repository.Query<Role>(query => query.Where(p => p.Application == application)).Find();
+            var role = repository.Get<Role>(id);
+
+            if (!includeHiddenPermissions && role.Permissions.Any(p => p.ExcludeFromAssignment)) return null;
+
+            return role;
+        }
+        
+        public virtual IList<Role> GetForApplicationAndConsumer(Application application, Consumer consumer, bool includeHiddenPermissions)
+        {
+            var list = repository.Query<Role>(query => query.Where(p => p.Consumer.Applications.Contains(application))).Find();
+
+            if (!includeHiddenPermissions && list.Any(r => r.Permissions.Any(p => p.ExcludeFromAssignment)))
+            {
+                var newList = new List<Role>();
+                newList.AddRange(list.Where(r => r.Permissions.Any(p => !p.ExcludeFromAssignment)).ToList());
+
+                return newList;
+            }
+
+            return list;
         }
     }
 }

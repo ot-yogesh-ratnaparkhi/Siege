@@ -22,7 +22,7 @@ using Siege.ServiceLocator.RegistrationSyntax;
 
 namespace Siege.ServiceLocator.Web
 {
-    public abstract class ServiceLocatorHttpApplication : HttpApplication
+    public abstract class ServiceLocatorHttpApplication : HttpApplication, IServiceLocatorAccessor
     {
         protected static IServiceLocator locator;
 

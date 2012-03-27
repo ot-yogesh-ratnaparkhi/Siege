@@ -32,7 +32,7 @@ namespace Siege.Security.SQL.Providers
             repository.Delete(item);
         }
 
-        public Application Find(Guid? id)
+        public Application Find(int? id)
         {
             return repository.Get<Application>(id);
         }

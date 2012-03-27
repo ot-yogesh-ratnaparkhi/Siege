@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="Consumer.cs" />
     <Compile Include="Entities\ApplicationBasedSecurityEntity.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="Permission.cs" />
@@ -49,6 +50,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\IApplicationProvider.cs" />
     <Compile Include="Providers\IAuthenticationProvider.cs" />
+    <Compile Include="Providers\IConsumerProvider.cs" />
     <Compile Include="Providers\IGroupProvider.cs" />
     <Compile Include="Providers\IIdentityProvider.cs" />
     <Compile Include="Providers\IPermissionProvider.cs" />

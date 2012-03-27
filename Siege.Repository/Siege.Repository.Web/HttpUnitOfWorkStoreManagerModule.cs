@@ -5,11 +5,6 @@ using Siege.ServiceLocator;
 
 namespace Siege.Repository.Web
 {
-	public interface IServiceLocatorAccessor
-	{
-		IServiceLocator ServiceLocator { get; }
-	}
-
 	public class HttpUnitOfWorkStoreManagerModule : IHttpModule
 	{
 		private IServiceLocator serviceLocator;

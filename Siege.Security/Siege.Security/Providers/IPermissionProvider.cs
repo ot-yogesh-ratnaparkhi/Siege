@@ -2,7 +2,7 @@
 
 namespace Siege.Security.Providers
 {
-    public interface IPermissionProvider : IProvider<Permission, int?>
+    public interface IPermissionProvider : IProvider<Permission>
     {
         IList<Permission> All(bool includeHiddenPermissions);
     }

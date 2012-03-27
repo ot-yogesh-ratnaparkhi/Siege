@@ -31,36 +31,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.2.5.2\lib\NET35\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FluentNHibernate">
-      <HintPath>..\packages\Siege.Repository.NHibernate.1.0.1\lib\net40\FluentNHibernate.dll</HintPath>
-    </Reference>
-    <Reference Include="Iesi.Collections">
-      <HintPath>..\packages\Iesi.Collections.3.1.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
+    <Reference Include="EntityFramework, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.4.3.1\lib\net40\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
-    </Reference>
-    <Reference Include="NHibernate">
-      <HintPath>..\packages\NHibernate.3.1.0.4000\lib\Net35\NHibernate.dll</HintPath>
-    </Reference>
-    <Reference Include="NHibernate.ByteCode.Castle">
-      <HintPath>..\packages\NHibernate.Castle.3.1.0.4000\lib\Net35\NHibernate.ByteCode.Castle.dll</HintPath>
-    </Reference>
-    <Reference Include="Siege.Repository">
-      <HintPath>..\packages\Siege.Repository.1.0.0\lib\net40\Siege.Repository.dll</HintPath>
-    </Reference>
-    <Reference Include="Siege.Repository.NHibernate">
-      <HintPath>..\packages\Siege.Repository.NHibernate.1.0.1\lib\net40\Siege.Repository.NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="Siege.ServiceLocator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Siege.ServiceLocator.1.0.2\lib\net40\Siege.ServiceLocator.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -69,17 +54,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AspNetUser.cs" />
-    <Compile Include="Conventions\ForeignKeyConvention.cs" />
-    <Compile Include="Conventions\SecurityClassConvention.cs" />
+    <Compile Include="Mappings\GroupMapper.cs" />
+    <Compile Include="Mappings\PermissionsMapper.cs" />
+    <Compile Include="Mappings\RolesMapper.cs" />
+    <Compile Include="Mappings\UserMapper.cs" />
+    <Compile Include="NHibernate\ForeignKeyConvention.cs" />
+    <Compile Include="NHibernate\SecurityClassConvention.cs" />
     <Compile Include="Conventions\SqlSecurityConvention.cs" />
-    <Compile Include="Mappings\ApplicationMap.cs" />
-    <Compile Include="Mappings\AspNetMembershipMap.cs" />
-    <Compile Include="Mappings\GroupMap.cs" />
-    <Compile Include="Mappings\PermissionMap.cs" />
-    <Compile Include="Mappings\RoleMap.cs" />
-    <Compile Include="Mappings\UserMap.cs" />
+    <Compile Include="NHibernate\ApplicationMap.cs" />
+    <Compile Include="Mappings\ApplicationMapper.cs" />
+    <Compile Include="Mappings\ConsumerMapper.cs" />
+    <Compile Include="Mappings\DbContextMapper.cs" />
+    <Compile Include="NHibernate\GroupMap.cs" />
+    <Compile Include="NHibernate\PermissionMap.cs" />
+    <Compile Include="NHibernate\RoleMap.cs" />
+    <Compile Include="Mappings\SecurityContext.cs" />
+    <Compile Include="NHibernate\UserMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\SqlConsumerProvider.cs" />
+    <Compile Include="Providers\SqlIdentityProvider.cs" />
     <Compile Include="Providers\SqlApplicationProvider.cs" />
     <Compile Include="Providers\SqlGroupProvider.cs" />
     <Compile Include="Providers\SqlProvider.cs" />
@@ -90,12 +83,21 @@
     <Compile Include="Providers\SqlPermissionProvider.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Siege.Repository\Siege.Repository.EntityFramework\Siege.Repository.EntityFramework.csproj">
+      <Project>{7BA2681D-C6F0-4EA3-980C-18F1F7DAE2A1}</Project>
+      <Name>Siege.Repository.EntityFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Siege.Repository\Siege.Repository\Siege.Repository.csproj">
+      <Project>{DFF4777E-D6A1-4EBE-BDCB-21180AC9EAB1}</Project>
+      <Name>Siege.Repository</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Siege.Security\Siege.Security.csproj">
       <Project>{7BB960B0-578E-476E-BDD2-3081C54C42AA}</Project>
       <Name>Siege.Security</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

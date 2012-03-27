@@ -11,7 +11,7 @@ namespace Siege.Repository.MSSQL
             throw new NotImplementedException();
         }
 
-        public T Get<T>(object id)
+        public T Get<T>(object id) where T : class
         {
             throw new NotImplementedException();
         }
@@ -21,22 +21,22 @@ namespace Siege.Repository.MSSQL
             throw new NotImplementedException();
         }
 
-        public T Transact<T>(Func<T> action)
+        public T Transact<T>(Func<T> action) where T : class
         {
             throw new NotImplementedException();
         }
 
-        public void Save<T>(T item)
+        public void Save<T>(T item) where T : class
         {
             throw new NotImplementedException();
         }
 
-        public void Delete<T>(T item)
+        public void Delete<T>(T item) where T : class
         {
             throw new NotImplementedException();
         }
 
-        public IQueryable<T> Query<T>()
+        public IQueryable<T> Query<T>() where T : class
         {
             throw new NotImplementedException();
         }

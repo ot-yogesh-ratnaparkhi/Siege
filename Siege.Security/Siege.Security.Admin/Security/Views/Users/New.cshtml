@@ -1,0 +1,108 @@
+﻿@model Siege.Security.Admin.Security.Models.UserModel
+
+@{
+    Layout = "~/Areas/Security/Views/Shared/SecurityLayout.cshtml";
+    ViewBag.Title = "Security Administration - New User";
+    ViewBag.Type = "User";
+    var modelID = Model != null ? Model.UserID.ToString() : "";
+}
+
+<span id="title"><h2>New User</h2></span>
+<form id="form">
+    <div id="security_details">
+        <div id="row">
+            <div id="cell">@Html.LabelFor(model => model.Name):</div>
+            <div id="cell">@Html.TextBoxFor(model => model.Name)<em>*</em></div>
+        </div>
+        <div id="row">
+            <div id="cell">@Html.LabelFor(model => model.Password):</div>
+            <div id="cell">@Html.PasswordFor(model => model.Password)<em>*</em></div>
+        </div>
+        <div id="row">
+            <div id="cell">Confirm Password:</div>
+            <div id="cell"><input type="password" id="ConfirmPassword"/><em>*</em></div>
+        </div>
+        <div id="row">
+            <div id="cell">Is Active?:</div>
+            <div id="cell">@Html.CheckBoxFor(model => model.IsActive)</div>
+        </div>
+    </div>
+    <div id="notifications" style="padding-left: 30px; padding-top: 5px; vertical-align:top; font-weight:bolder;"></div>
+    <div id="security_groups_roles">
+        <div id="cell">@Html.Partial("EditGroups")</div>
+        <div id="cell">@Html.Partial("EditRoles")</div>
+    </div>
+    <div id="security_actions">
+        <a href="#" onclick="saveUser()">Save</a>
+        <a href="#" onclick="javascript:window.location='/Security/Users/Index/';">Cancel</a>
+    </div>
+</form>
+
+<script type="text/javascript">
+    function saveUser() {
+        $("#notifications").html("");
+        SetSelectedRoles();
+        SetSelectedGroups();
+
+        if ($("#Name")) {
+            var userName = $("#Name").val();
+            if (userName == "") {
+                $("#notifications").addClass("error");
+                $("#notifications").html("User name is required");
+                return;
+            }
+        }
+
+        if ($("#Password")) {
+            var password = $("#Password").val();
+            var confirmPassword = $("#ConfirmPassword").val();
+
+            if (password == "") {
+                $("#notifications").addClass("error");
+                $("#notifications").html("Password is required");
+                return;
+            }
+
+            if (confirmPassword == "") {
+                $("#notifications").addClass("error");
+                $("#notifications").html("Confirmed password is required");
+                return;
+            }
+
+            if (password != confirmPassword) {
+                $("#notifications").addClass("error");
+                $("#notifications").html("Passwords have to match");
+                return;
+            }
+        }
+
+        $("#security_actions").css('display', 'none');
+
+        $.ajax({
+            type: 'POST',
+            url: '/Security/Users/Save/@(modelID)',
+            cache: false,
+            data: $("form").serialize(),
+            success: function (data) {
+                backToUsers();
+            },
+            error: function (xmlHttpRequest, textStatus, errorThrown) {
+                $("#notifications").addClass("error");
+                $.fn.statusmessageQ({
+                    'message': 'Error: ' + xmlHttpRequest.responseText,
+                    'type': 'error',
+                    'timeout': 4000,
+                    'show': 'animation',
+                    'target': '#notifications',
+                    'hide': 'fadeout'
+                });
+                $("#security_actions").css('display', '');
+            },
+            async: false
+        });
+    }
+
+    function backToUsers() {
+        $(location).attr('href', '/Security/Users/Index/');
+    }
+</script>

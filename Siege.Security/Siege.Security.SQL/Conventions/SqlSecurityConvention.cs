@@ -12,6 +12,8 @@ namespace Siege.Security.SQL.Conventions
         public Action<IServiceLocator> Build()
         {
             return serviceLocator => serviceLocator
+                .Register(Given<IIdentityProvider>.Then<SqlIdentityProvider>())
+                .Register(Given<IConsumerProvider>.Then<SqlConsumerProvider>())
                 .Register(Given<IPermissionProvider>.Then<SqlPermissionProvider>())
                 .Register(Given<IRoleProvider>.Then<SqlRoleProvider>())
                 .Register(Given<IGroupProvider>.Then<SqlGroupProvider>())

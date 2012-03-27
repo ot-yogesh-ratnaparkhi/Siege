@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "~/Areas/Security/Views/Shared/SecurityLayout.cshtml";
+    ViewBag.Title = "Security Administration - Applications";
+}
+
+<div id="applications_section">
+    
+    <div id="application_list">
+        <span id="header">Applications</span>
+        (<a href="/Security/Applications/New/">New</a>)
+        <br/>
+        <br/>
+        <table id="applications_grid"></table>
+        <table id="applications_grid_pager"></table>
+    </div>
+</div>
+
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $("#applications_grid").jqGrid({
+            url: '/Security/Applications/List/',
+            datatype: 'json',
+            mtype: 'GET',
+            colNames: ['Application Name', 'Description', 'Is Active?', 'Actions', 'ID'],
+            colModel: [
+            { name: 'ApplicationName', index: 'ApplicationName', width: 40, align: 'center' },
+            { name: 'Description', index: 'Description', width: 40, align: 'center' },
+            { name: 'Active', index: 'Active', width: 40, align: 'center' },
+            { name: 'Actions', width: 100, align: 'center', formatter: formatter },
+            { name: 'ID', index: 'ID', width: 40, align: 'center', hidden: true}],
+            pager: jQuery('#applications_grid_pager'),
+            rowNum: 10,
+            rowList: [5, 10, 20, 50],
+            sortname: 'Id',
+            sortorder: "desc",
+            viewrecords: true,
+            width: 780,
+            height: 200
+        });
+    });
+    
+    function formatter(cellvalue, options, rowObject) {
+        return '<a href=\'/Security/Applications/Edit/' + rowObject[3] + '\'>Edit</a>';
+    }
+</script>

@@ -41,22 +41,22 @@ namespace Siege.Repository.NHibernate
 			}
 		}
 
-		public void Save<T>(T item)
+		public void Save<T>(T item) where T : class
 		{
 		    Transact(() => Session.SaveOrUpdate(item));
 		}
 
-	    public void Delete<T>(T item)
+        public void Delete<T>(T item) where T : class
 	    {
             Transact(() => Session.Delete(item));
         }
 
-	    public IQueryable<T> Query<T>()
+        public IQueryable<T> Query<T>() where T : class
 	    {
 	        return Session.Query<T>();
 	    }
 
-	    public T Get<T>(object id)
+        public T Get<T>(object id) where T : class
 		{
 			return Transact(() => Session.Get<T>(id));
 		}
@@ -86,7 +86,7 @@ namespace Siege.Repository.NHibernate
             }
         }
 
-	    public T Transact<T>(Func<T> action)
+        public T Transact<T>(Func<T> action) where T : class
 		{
             if (Session.Transaction.IsActive)
             {

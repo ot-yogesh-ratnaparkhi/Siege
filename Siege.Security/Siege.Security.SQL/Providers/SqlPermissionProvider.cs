@@ -6,7 +6,7 @@ using Siege.Security.SQL.Repository;
 
 namespace Siege.Security.SQL.Providers
 {
-    public class SqlPermissionProvider : SqlProvider<Permission, int?>, IPermissionProvider
+    public class SqlPermissionProvider : SqlProvider<Permission>, IPermissionProvider
     {
         public SqlPermissionProvider(IRepository<SecurityDatabase> repository) : base(repository)
         {

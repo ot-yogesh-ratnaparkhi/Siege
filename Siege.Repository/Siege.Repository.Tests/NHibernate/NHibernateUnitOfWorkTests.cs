@@ -86,7 +86,7 @@ namespace Siege.Repository.Tests
 
             using (mocks.Playback())
             {
-                unitOfWork.Save(1);
+                unitOfWork.Save(new object());
             }
         }
 
@@ -103,7 +103,7 @@ namespace Siege.Repository.Tests
 
             using (mocks.Playback())
             {
-                unitOfWork.Save(1);
+                unitOfWork.Save(new object());
             }
         }
 
@@ -126,7 +126,7 @@ namespace Siege.Repository.Tests
 
             using (mocks.Playback())
             {
-                unitOfWork.Save(1);
+                unitOfWork.Save(new object());
             }
         }
 

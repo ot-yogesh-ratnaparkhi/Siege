@@ -5,7 +5,7 @@ using Siege.Security.SQL.Repository;
 
 namespace Siege.Security.SQL.Providers
 {
-    public abstract class SqlProvider<T, TID> : IProvider<T, TID> where T : SecurityEntity<TID>
+    public abstract class SqlProvider<T> : IProvider<T> where T : SecurityEntity
     {
         protected readonly IRepository<SecurityDatabase> repository;
 
@@ -13,8 +13,6 @@ namespace Siege.Security.SQL.Providers
         {
             this.repository = repository;
         }
-
-        #region IProvider<T,TID> Members
 
         public virtual T Save(T item)
         {
@@ -28,11 +26,9 @@ namespace Siege.Security.SQL.Providers
             repository.Delete(item);
         }
 
-        public virtual T Find(TID id)
+        public virtual T Find(int? id)
         {
             return repository.Get<T>(id);
         }
-
-        #endregion
     }
 }

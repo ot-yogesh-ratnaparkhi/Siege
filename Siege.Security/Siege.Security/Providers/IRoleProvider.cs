@@ -1,6 +1,6 @@
 ﻿namespace Siege.Security.Providers
 {
-    public interface IRoleProvider : ISecurityProvider<Role, int?>
+    public interface IRoleProvider : ISecurityProvider<Role>
     {
     }
 }
