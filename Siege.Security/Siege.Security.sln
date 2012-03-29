@@ -15,7 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siege.Security.Admin", "Sie
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{733C2C98-DD05-4E53-9C4A-B59F8D678D69}"
 	ProjectSection(SolutionItems) = preProject
-		GrantAdministratorRole.sql = GrantAdministratorRole.sql
 		InitialData.sql = InitialData.sql
 		Schema.sql = Schema.sql
 	EndProjectSection
