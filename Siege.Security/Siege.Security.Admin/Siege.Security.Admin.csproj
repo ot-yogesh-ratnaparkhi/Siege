@@ -31,7 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="EntityFramework, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.4.3.1\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -41,23 +43,25 @@
     <Reference Include="MvcContrib">
       <HintPath>..\packages\MvcContrib.2.0.95.0\lib\MvcContrib.dll</HintPath>
     </Reference>
-    <Reference Include="Siege.Repository">
-      <HintPath>..\dependencies\Siege.Repository.dll</HintPath>
+    <Reference Include="Siege.Repository, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Siege.Repository.1.0.1\lib\net40\Siege.Repository.dll</HintPath>
     </Reference>
-    <Reference Include="Siege.Repository.EntityFramework">
-      <HintPath>..\dependencies\Siege.Repository.EntityFramework.dll</HintPath>
+    <Reference Include="Siege.Repository.EntityFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Siege.Repository.EntityFramework.1.0.1\lib\net40\Siege.Repository.EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Siege.Repository.Web">
       <HintPath>..\packages\Siege.Repository.Web.1.0.1\lib\net40\Siege.Repository.Web.dll</HintPath>
     </Reference>
-    <Reference Include="Siege.ServiceLocator">
-      <HintPath>..\packages\Siege.ServiceLocator.1.0.2\lib\net40\Siege.ServiceLocator.dll</HintPath>
+    <Reference Include="Siege.ServiceLocator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Siege.ServiceLocator.1.0.3\lib\net40\Siege.ServiceLocator.dll</HintPath>
     </Reference>
     <Reference Include="Siege.ServiceLocator.Web">
       <HintPath>..\packages\Siege.ServiceLocator.Web.1.0.0\lib\net40\Siege.ServiceLocator.Web.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
@@ -170,6 +174,7 @@
     <Folder Include="Security\Content\Images\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
     <EmbeddedResource Include="Security\Views\Consumers\Index.cshtml" />
     <EmbeddedResource Include="Security\Views\Consumers\New.cshtml" />

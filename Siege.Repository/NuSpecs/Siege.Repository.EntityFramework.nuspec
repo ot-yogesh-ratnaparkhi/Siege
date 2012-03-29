@@ -6,13 +6,18 @@
     <owners>Marcus Bratton</owners>
     <licenseUrl>https://github.com/MarcusTheBold/Siege/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/MarcusTheBold/Siege/tree/master/Siege.Repository/</projectUrl>
-    <id>Siege.Repository</id>
-    <title>Siege.Repository</title>
+    <dependencies>
+      <dependency id="Siege.Repository" version="1.0.0" />
+      <dependency id="Siege.ServiceLocator" version="1.0.1" />
+      <dependency id="EntityFramework" version="4.3.1" />
+    </dependencies>
+    <id>Siege.Repository.EntityFramework</id>
+    <title>Siege.Repository.EntityFramework</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Repository Pattern Framework for integrating with multiple data sources</description>
+    <description>Integrates Siege.Repository with Entity Framework</description>
     <copyright>Copyright (c) 2009, 2010, 2011, 2012, Marcus Bratton.  All Rights Reserved</copyright>
   </metadata>
   <files>
-    <file src="..\Siege.Repository\bin\Debug\Siege.Repository.dll" target="lib\net40\Siege.Repository.dll" />
+    <file src="..\Siege.Repository.EntityFramework\bin\Debug\Siege.Repository.EntityFramework.dll" target="lib\net40\Siege.Repository.EntityFramework.dll" />
   </files>
 </package>
