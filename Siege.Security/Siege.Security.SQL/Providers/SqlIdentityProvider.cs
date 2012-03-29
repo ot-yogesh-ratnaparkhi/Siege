@@ -31,10 +31,10 @@ namespace Siege.Security.SQL.Providers
                 status = MembershipCreateStatus.InvalidUserName;
             }
 
-            if(string.IsNullOrEmpty(user.Email))
-            {
-                status = MembershipCreateStatus.InvalidEmail;
-            }
+            //if(string.IsNullOrEmpty(user.Email))
+            //{
+            //    status = MembershipCreateStatus.InvalidEmail;
+            //}
 
             if(repository.Query<User>(query => query.Where(u => u.Name == user.Name)).FindFirstOrDefault() != null)
             {
@@ -55,7 +55,6 @@ namespace Siege.Security.SQL.Providers
 
             user.Password = hashedPassword.Value;
             user.Salt = hashedPassword.Salt;
-            user.Consumer = repository.Query<Consumer>(query => query.Where(c => c.Name == "Test")).FindFirstOrDefault();
             
             repository.Save(user);
         }

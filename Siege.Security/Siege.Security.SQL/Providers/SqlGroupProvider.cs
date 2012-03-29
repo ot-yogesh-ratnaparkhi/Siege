@@ -21,9 +21,24 @@ namespace Siege.Security.SQL.Providers
             return group;
         }
 
+        public virtual IList<Group> GetForConsumer(Consumer consumer, bool includeHiddenPermissions)
+        {
+            var list = consumer.Groups;
+
+            if (!includeHiddenPermissions && list.Any(r => r.Permissions.Any(p => p.ExcludeFromAssignment)))
+            {
+                var newList = new List<Group>();
+                newList.AddRange(list.Where(r => r.Permissions.Any(p => !p.ExcludeFromAssignment)).ToList());
+
+                return newList;
+            }
+
+            return list;
+        }
+
         public virtual IList<Group> GetForApplicationAndConsumer(Application application, Consumer consumer, bool includeHiddenPermissions)
         {
-            var list = repository.Query<Group>(query => query.Where(p => p.Consumer.Applications.Contains(application))).Find();
+            var list = consumer.Groups.Where(g => g.Permissions.Any(p => p.Application.ID == application.ID)).ToList();
 
             if (!includeHiddenPermissions && list.Any(r => r.Permissions.Any(p => p.ExcludeFromAssignment)))
             {

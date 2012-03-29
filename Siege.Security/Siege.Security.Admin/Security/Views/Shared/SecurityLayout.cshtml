@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Siege.Security.Principals
+@model Siege.Security.Admin.Security.Models.SecurityModel
+@{
+    var user = (SecurityPrincipal) HttpContext.Current.User;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -16,26 +19,45 @@
 <div id="security_section">
     <div id="security_menu">
         <div id="security_menu_header">Security
-            <div id="security_menu_row"> - <a id="applications_link" href="/Security/Applications/Index/">Applications</a></div>
-            <div id="security_menu_row"> - <a id="consumers_link" href="/Security/Consumers/Index/">Consumers</a></div>
+            @if(user.Can("CanAdministerAllSecurity"))
+            {
+                <div id="security_menu_row"> - <a id="applications_link" href="/Security/Applications/Index/">Applications</a></div>
+                <div id="security_menu_row"> - <a id="consumers_link" href="/Security/Consumers/Index/">Consumers</a></div>
+            }
             <div id="security_menu_row"> - <a id="users_link" href="/Security/Users/Index/">Users</a></div>
             <div id="security_menu_row"> - <a id="groups_link" href="/Security/Groups/Index/">Groups</a></div>
             <div id="security_menu_row"> - <a id="roles_link" href="/Security/Roles/Index/">Roles</a></div>
         </div>
     </div>    
     <div id="security_body">
-        <div>
-            <div id="consumerList">Select A Consumer:
-                <select id="consumers" onchange="GetApplicationFor(0);"></select>
+        <div id="security_header">
+            <div class="row">
+                <div id="consumerList">
+                    <div class="cell">Select A Consumer:&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                    <div class="cell">
+                        <select id="consumers" onchange="GetApplicationFor(0);"></select>
+                    </div>
+                    @if (user.Can("CanAdministerAllSecurity"))
+                    {
+                        <div class="cell">
+                            (<a href="/Security/Consumers/New/">New</a>|<a id="consumer_edit_link" href="/Security/Consumers/Edit/">Edit</a>)
+                        </div>
+                    }
+                </div>
             </div>
-            <div id="consumerSingle">
-                <h3>Consumer: <span id="consumer"></span></h3>
-            </div>
-            <div id="applicationList">Select An Application:
-                <select id="applications" onchange="Update();"></select>
-            </div>
-            <div id="applicationSingle">
-                <h3>Application: <span id="application"></span></h3>
+            <div class="row">
+                <div id="applicationList">
+                    <div class="cell">Select An Application:</div>
+                    <div class="cell">
+                        <select id="applications" onchange="Update();"></select>
+                    </div>
+                    @if (user.Can("CanAdministerAllSecurity"))
+                    {
+                        <div class="cell">
+                            (<a href="/Security/Applications/New/">New</a>|<a id="application_edit_link" href="/Security/Applications/Edit/">Edit</a>)
+                        </div>
+                    }
+                </div>
             </div>
         </div>
         <input type="hidden" id="consumerID" />
@@ -67,78 +89,94 @@
 
     $(document).ready(function () {
 
-        var consumerID = $.getUrlVar("consumerID");
-
         $("#consumerList").hide();
-        $("#consumerSingle").hide();
         $("#applicationList").hide();
-        $("#applicationSingle").hide();
 
         var consumerGetUrl = "/Security/Consumers/Get/";
 
-        if (consumerID != null) {
-            consumerGetUrl += consumerID;
-        }
-        
         $.getJSON(consumerGetUrl, function (result) {
             var options = $("#consumers");
-            if (result.total > 1) {
-                $.each(result.rows, function () {
-                    options.append($("<option />").val(this.id).text(this.Name));
-                });
 
-                $("#consumerList").show();
-                $("#consumerID").val($("#consumers").val());
-                GetApplicationFor(0);
-            } else {
-                $("#consumerID").val(result.rows[0].id);
-                GetApplicationFor(result.rows[0].id);
+            $.each(result.rows, function () {
+                options.append($("<option />").val(this.id).text(this.Name));
+            });
+
+            @if(user.Can("CanAdministerAllSecurity"))
+            {
+                <text>
+                    $("#consumerList").show();
+                </text>
             }
+                
+            $("#consumerID").val($("#consumers").val());
+
+            if ($.getUrlVar("ConsumerID") != null) {
+                $("#consumers").val($.getUrlVar("ConsumerID"));
+            }
+
+            GetApplicationFor(0);
+
         });
     });
 
     function GetApplicationFor(id) {
 
+        $("#consumerID").val($("#consumers").val());
+        
         if (id == 0 || id == null)
-            id = $("#consumers").val();
+            id = $("#consumerID").val();
 
         var applicationGetUrl = "/Security/Applications/GetForConsumer/" + id;
-        var applicationID = $.getUrlVar("applicationID");
 
-        if (applicationID != null) {
-            applicationGetUrl = "/Security/Applications/Get/" + applicationID;
-        }
-        
         $.getJSON(applicationGetUrl, function (result) {
             var options = $("#applications");
-            if (result.total > 1) {
-                $.each(result.rows, function() {
-                    options.append($("<option />").val(this.id).text(this.Name));
-                });
+            $("#applications").empty();
 
-                $("#applicationList").show();
-                $("#applicationID").val($("#applications").val());
-            } else {
-            
-                $("#application").text(result.rows[0].Name);
-                $("#applicationID").val(result.rows[0].id);
-                $("#applicationSingle").show();
+            if (result.total == 0) {
+                $("#applicationList").hide();
+                $("#applicationID").val(0);
+                Update();
+                return;
             }
+
+            $.each(result.rows, function () {
+                options.append($("<option />").val(this.id).text(this.Name));
+            });
+
+            $("#applicationList").show();
+            $("#applicationID").val($("#applications").val());
+
+            if ($.getUrlVar("ApplicationID") != null) {
+                $("#applications").val($.getUrlVar("ApplicationID"));
+            }
+
             Update();
         });
 
-        //Show();
     }
 
     function Update() {
 
+        $("#applicationID").val($("#applications").val());
+        
         var applicationID = $("#applicationID").val();
         var consumerID = $("#consumerID").val();
 
-        $("#applications_link").attr("href", "/Security/Applications/Index/?applicationID=" + applicationID + "&consumerID=" + consumerID);
-        $("#consumers_link").attr("href", "/Security/Consumers/Index/?applicationID=" + applicationID + "&consumerID=" + consumerID);
-        $("#groups_link").attr("href", "/Security/Groups/Index/?applicationID=" + applicationID + "&consumerID=" + consumerID);
-        $("#roles_link").attr("href", "/Security/Roles/Index/?applicationID=" + applicationID + "&consumerID=" + consumerID);
-        $("#users_link").attr("href", "/Security/Users/Index/?applicationID=" + applicationID + "&consumerID=" + consumerID);
+        $("#application_edit_link").attr("href", "/Security/Applications/Edit/" + applicationID);
+        $("#consumer_edit_link").attr("href", "/Security/Consumers/Edit/" + consumerID);
+
+        $("#applications_link").attr("href", "/Security/Applications/Index/?ApplicationID=" + applicationID + "&ConsumerID=" + consumerID);
+        $("#consumers_link").attr("href", "/Security/Consumers/Index/?ApplicationID=" + applicationID + "&ConsumerID=" + consumerID);
+        $("#groups_link").attr("href", "/Security/Groups/Index/?ApplicationID=" + applicationID + "&ConsumerID=" + consumerID);
+        $("#roles_link").attr("href", "/Security/Roles/Index/?ApplicationID=" + applicationID + "&ConsumerID=" + consumerID);
+        $("#users_link").attr("href", "/Security/Users/Index/?ApplicationID=" + applicationID + "&ConsumerID=" + consumerID);
+
+        if (applicationID == 0) {
+            $("#groups_link").removeAttr("href");
+            $("#roles_link").removeAttr("href");
+            $("#users_link").removeAttr("href");
+        }
+
+        Show();
     }
 </script>

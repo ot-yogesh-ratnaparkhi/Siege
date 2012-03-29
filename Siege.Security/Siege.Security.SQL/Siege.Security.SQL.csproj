@@ -38,6 +38,14 @@
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
+    <Reference Include="Siege.Repository, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Siege.Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.Repository.EntityFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Siege.Repository.EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="Siege.ServiceLocator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Siege.ServiceLocator.1.0.2\lib\net40\Siege.ServiceLocator.dll</HintPath>
     </Reference>
@@ -83,14 +91,6 @@
     <Compile Include="Providers\SqlPermissionProvider.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Siege.Repository\Siege.Repository.EntityFramework\Siege.Repository.EntityFramework.csproj">
-      <Project>{7BA2681D-C6F0-4EA3-980C-18F1F7DAE2A1}</Project>
-      <Name>Siege.Repository.EntityFramework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Siege.Repository\Siege.Repository\Siege.Repository.csproj">
-      <Project>{DFF4777E-D6A1-4EBE-BDCB-21180AC9EAB1}</Project>
-      <Name>Siege.Repository</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Siege.Security\Siege.Security.csproj">
       <Project>{7BB960B0-578E-476E-BDD2-3081C54C42AA}</Project>
       <Name>Siege.Security</Name>

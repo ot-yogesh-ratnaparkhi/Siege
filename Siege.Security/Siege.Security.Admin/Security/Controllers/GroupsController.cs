@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using Siege.Security.Admin.Security.Models;
+using Siege.Security.Principals;
 using Siege.Security.Providers;
 using Siege.Security.Web;
 
@@ -13,16 +14,16 @@ namespace Siege.Security.Admin.Security.Controllers
         {
         }
 
-        public JsonResult List(JqGridConfiguration configuration, IApplicationProvider applicationProvider)
+        public JsonResult List(Application application, Consumer consumer, JqGridConfiguration configuration)
         {
-            return ForConsumerAndApplication(GetApplication(), GetConsumer(), configuration, applicationProvider);
+            return ForConsumerAndApplication(application, consumer, configuration);
         }
 
-        public JsonResult ForConsumerAndApplication(Application application, Consumer consumer, JqGridConfiguration configuration, IApplicationProvider applicationProvider)
+        public JsonResult ForConsumerAndApplication(Application application, Consumer consumer, JqGridConfiguration configuration)
         {
-            var loggedInUser = (User)HttpContext.User;
+            var loggedInUser = (SecurityPrincipal)HttpContext.User;
 
-            var groups = provider.GetForApplicationAndConsumer(application, consumer, loggedInUser.Can("CanAdministerAllSecurity"));
+            var groups = provider.GetForConsumer(consumer, loggedInUser.Can("CanAdministerAllSecurity"));
 
             var jsonData = new
             {
@@ -46,20 +47,21 @@ namespace Siege.Security.Admin.Security.Controllers
         }
 
         
-        public JsonResult ForUser(int? id, JqGridConfiguration configuration, IUserProvider userProvider)
+        public JsonResult ForUser(User user, Consumer consumer, Application application, JqGridConfiguration configuration, IUserProvider userProvider, IApplicationProvider applicationProvider)
         {
-            var loggedInUser = (User)HttpContext.User;
+            var loggedInUser = (SecurityPrincipal)HttpContext.User;
+
             IList<Group> groups;
             IList<Group> userGroups = new List<Group>();
-            if (id != null)
+            
+            if (user != null)
             {
-                var user = userProvider.Find(id);
-                groups = provider.GetForApplicationAndConsumer(GetApplication(), GetConsumer(), loggedInUser.Can("CanAdministerAllSecurity"));
+                groups = provider.GetForApplicationAndConsumer(application, consumer, loggedInUser.Can("CanAdministerAllSecurity"));
                 userGroups = user.Groups;
             }
             else
             {
-                groups = provider.GetForApplicationAndConsumer(GetApplication(), GetConsumer(), loggedInUser.Can("CanAdministerAllSecurity"));
+                groups = provider.GetForApplicationAndConsumer(application, consumer, loggedInUser.Can("CanAdministerAllSecurity"));
             }
 
             var jsonData = new
@@ -83,7 +85,7 @@ namespace Siege.Security.Admin.Security.Controllers
             return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Save(GroupModel model, List<Role> selectedRoles)
+        public ActionResult Save(Consumer consumer, GroupModel model, List<Role> selectedRoles)
         {
             var group = model.IsNew ? new Group() : this.provider.Find(model.GroupID);
 
@@ -96,8 +98,7 @@ namespace Siege.Security.Admin.Security.Controllers
 
             if (model.IsNew)
             {
-                var localUser = (User)HttpContext.User;
-                group.Consumer = localUser.Consumer;
+                group.Consumer = consumer;
             }
 
             this.provider.Save(group);
@@ -105,10 +106,8 @@ namespace Siege.Security.Admin.Security.Controllers
             return Json(new { result = true });
         }
 
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(Group group)
         {
-            var group = this.provider.Find(id);
-
             var model = new GroupModel
             {
                 GroupID = group.ID,

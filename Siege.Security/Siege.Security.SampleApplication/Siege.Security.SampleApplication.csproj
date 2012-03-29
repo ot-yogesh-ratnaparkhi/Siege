@@ -245,14 +245,6 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Siege.Repository\Siege.Repository.EntityFramework\Siege.Repository.EntityFramework.csproj">
-      <Project>{7BA2681D-C6F0-4EA3-980C-18F1F7DAE2A1}</Project>
-      <Name>Siege.Repository.EntityFramework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Siege.Repository\Siege.Repository\Siege.Repository.csproj">
-      <Project>{DFF4777E-D6A1-4EBE-BDCB-21180AC9EAB1}</Project>
-      <Name>Siege.Repository</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Siege.Security.Admin\Siege.Security.Admin.csproj">
       <Project>{6BD4FBF8-C141-42B5-8CDA-33E5E9593C26}</Project>
       <Name>Siege.Security.Admin</Name>

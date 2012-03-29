@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using Siege.Security.Admin.Security.Models;
+using Siege.Security.Principals;
 using Siege.Security.Providers;
 using Siege.Security.Web;
 
@@ -13,12 +14,11 @@ namespace Siege.Security.Admin.Security.Controllers
         {
         }
 
-        public JsonResult ForApplicationAndConsumer(Application application, Consumer consumer, JqGridConfiguration configuration, IApplicationProvider applicationProvider)
+        public JsonResult ForConsumerAndApplication(Consumer consumer, JqGridConfiguration configuration)
         {
-            var loggedInUser = (User) HttpContext.User;
-            
+            var loggedInUser = (SecurityPrincipal)HttpContext.User;
 
-            var roles = provider.GetForApplicationAndConsumer(application, consumer, loggedInUser.Can("CanAdministerAllSecurity"));
+            var roles = provider.GetForConsumer(consumer, loggedInUser.Can("CanAdministerAllSecurity"));
 
             var jsonData = new
             {
@@ -42,20 +42,20 @@ namespace Siege.Security.Admin.Security.Controllers
         }
 
 
-        public JsonResult ForUser(int? id, JqGridConfiguration configuration, IUserProvider userProvider)
+        public JsonResult ForUser(User user, Application application, Consumer consumer, JqGridConfiguration configuration)
         {
-            var loggedInUser = (User)HttpContext.User;
+            var loggedInUser = (SecurityPrincipal)HttpContext.User;
             IList<Role> roles;
             IList<Role> userRoles = new List<Role>();
-            if (id != null)
+            
+            if (user != null)
             {
-                var user = userProvider.Find(id);
-                roles = provider.GetForApplicationAndConsumer(GetApplication(), GetConsumer(), loggedInUser.Can("CanAdministerAllSecurity"));
+                roles = provider.GetForConsumer(consumer, loggedInUser.Can("CanAdministerAllSecurity"));
                 userRoles = user.Roles;
             }
             else
             {
-                roles = provider.GetForApplicationAndConsumer(GetApplication(), GetConsumer(), loggedInUser.Can("CanAdministerAllSecurity"));
+                roles = provider.GetForApplicationAndConsumer(application, consumer, loggedInUser.Can("CanAdministerAllSecurity"));
             }
 
             var jsonData = new
@@ -79,20 +79,20 @@ namespace Siege.Security.Admin.Security.Controllers
             return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult ForGroup(int? id, JqGridConfiguration configuration, IGroupProvider groupProvider)
+        public JsonResult ForGroup(Group group, Application application, Consumer consumer, JqGridConfiguration configuration)
         {
-            var loggedInUser = (User)HttpContext.User;
+            var loggedInUser = (SecurityPrincipal)HttpContext.User;
             IList<Role> roles;
             IList<Role> groupRoles = new List<Role>();
-            if (id != null)
+            
+            if (group != null)
             {
-                var group = groupProvider.Find(id);
-                roles = provider.GetForApplicationAndConsumer(GetApplication(), GetConsumer(), loggedInUser.Can("CanAdministerAllSecurity"));
+                roles = provider.GetForApplicationAndConsumer(application, consumer, loggedInUser.Can("CanAdministerAllSecurity"));
                 groupRoles = group.Roles;
             }
             else
             {
-                roles = provider.GetForApplicationAndConsumer(GetApplication(), GetConsumer(), loggedInUser.Can("CanAdministerAllSecurity"));
+                roles = provider.GetForApplicationAndConsumer(application, consumer, loggedInUser.Can("CanAdministerAllSecurity"));
             }
 
             var jsonData = new
@@ -116,7 +116,7 @@ namespace Siege.Security.Admin.Security.Controllers
             return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Save(RoleModel model, List<Permission> selectedPermissions)
+        public ActionResult Save(Consumer consumer, RoleModel model, List<Permission> selectedPermissions)
         {
             var role = model.IsNew ? new Role() : this.provider.Find(model.RoleID);
 
@@ -129,8 +129,7 @@ namespace Siege.Security.Admin.Security.Controllers
 
             if (model.IsNew)
             {
-                var localUser = (User)HttpContext.User;
-                role.Consumer = localUser.Consumer;
+                role.Consumer = consumer;
             }
 
             this.provider.Save(role);
@@ -138,26 +137,23 @@ namespace Siege.Security.Admin.Security.Controllers
             return Json(new { result = true });
         }
 
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(Role role)
         {
-            var role = this.provider.Find(id);
-
             var model = new RoleModel
             {
                 RoleID = role.ID,
                 IsActive = role.IsActive,
                 Name = role.Name,
-                ApplicationID = GetApplication().ID,
+                ConsumerID = role.Consumer.ID,
                 Description = role.Description
             };
 
             return View(model);
         }
 
-        public JsonResult List(JqGridConfiguration configuration, IApplicationProvider applicationProvider)
+        public JsonResult List(Consumer consumer, JqGridConfiguration configuration)
         {
-            var user = (User)HttpContext.User.Identity;
-            return ForApplicationAndConsumer(GetApplication(), GetConsumer(), configuration, applicationProvider);
+            return ForConsumerAndApplication(consumer, configuration);
         }
     }
 }

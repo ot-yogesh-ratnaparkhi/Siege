@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Siege.Repository;
 using Siege.Security.Providers;
 using Siege.Security.SQL.Repository;

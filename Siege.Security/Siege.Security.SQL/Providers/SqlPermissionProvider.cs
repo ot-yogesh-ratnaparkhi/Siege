@@ -18,5 +18,12 @@ namespace Siege.Security.SQL.Providers
 
             return repository.Query<Permission>(query => query.Where(p => p.IsActive)).Find();
         }
+
+        public IList<Permission> ForApplication(Application application, bool includeHiddenPermissions)
+        {
+            if (!includeHiddenPermissions) return repository.Query<Permission>(query => query.Where(p => p.IsActive && !p.ExcludeFromAssignment && p.Application.ID == application.ID)).Find();
+
+            return repository.Query<Permission>(query => query.Where(p => p.IsActive && p.Application.ID == application.ID)).Find();
+        }
     }
 }

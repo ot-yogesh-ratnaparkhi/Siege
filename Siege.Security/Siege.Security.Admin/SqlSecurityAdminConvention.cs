@@ -25,13 +25,18 @@ namespace Siege.Security.Admin
                 locator
                     .Register(Using.Convention<ControllerConvention<HomeController>>())
                     .Register(Using.Convention<EntityFrameworkConvention<HttpUnitOfWorkStore, SecurityDatabase, SecurityContext>>())
-                    //.Register(Using.Convention(new NHibernateConvention<HttpUnitOfWorkStore, SecurityDatabase>(SecurityConfiguration.SessionFactoryFor(this.connectionKey))))
                     .Register(Using.Convention<SqlSecurityConvention>());
 
                 RegisterModelBinder<JqGridConfiguration, JqGridConfigurationModelBinder>(locator);
                 RegisterModelBinder<List<Role>, RolesBinder>(locator);
                 RegisterModelBinder<List<Group>, GroupsBinder>(locator);
+                RegisterModelBinder<List<Application>, ApplicationsBinder>(locator);
                 RegisterModelBinder<List<Permission>, PermissionsBinder>(locator);
+                RegisterModelBinder<User, UserBinder>(locator);
+                RegisterModelBinder<Application, ApplicationBinder>(locator);
+                RegisterModelBinder<Group, GroupBinder>(locator);
+                RegisterModelBinder<Consumer, ConsumerBinder>(locator);
+                RegisterModelBinder<Role, RoleBinder>(locator);
             };
         }
 

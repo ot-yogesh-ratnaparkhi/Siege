@@ -36,6 +36,26 @@
 </form>
 
 <script type="text/javascript">
+    function Show() {
+        $("#consumerList").hide();
+
+        if ($("#consumers").is(":visible")) {
+            $("#consumerID").val($("#consumers").val());
+        } else {
+            $("#consumerID").val($.getUrlVar("ConsumerID"));
+        }
+
+        if ($("#applications").is(":visible")) {
+            $("#applicationID").val($("#applications").val());
+        } else {
+            $("#applicationID").val($.getUrlVar("ApplicationID"));
+        }
+
+        var applicationID = $("#applicationID").val();
+        var consumerID = $("#consumerID").val();
+        ShowPermissions('/Security/Permissions/ForRole/?RoleID=@(Model.RoleID)&ApplicationID=' + applicationID + '&ConsumerID=' + consumerID);
+    }
+
     function saveRole() {
         $("#notifications").html("");
         SetSelectedPermissions();

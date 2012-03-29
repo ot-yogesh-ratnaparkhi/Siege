@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Siege.Security.Principals;
 using Siege.Security.Providers;
 using Siege.Security.Web;
 
@@ -15,7 +16,7 @@ namespace Siege.Security.Admin.Security.Controllers
         public JsonResult List(JqGridConfiguration configuration)
         {
             var user = (User) HttpContext.User;
-            var permissions = provider.All(user.Can("CanAdministerAllSecurity"));
+            var permissions = provider.All(false);
 
             var jsonData = new
             {
@@ -37,16 +38,14 @@ namespace Siege.Security.Admin.Security.Controllers
             return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult ForRole(int? id, JqGridConfiguration configuration, IRoleProvider roleProvider)
+        public JsonResult ForRole(Role role, Application application, JqGridConfiguration configuration)
         {
-
-            var user = (User)HttpContext.User;
-            var permissions = provider.All(user.Can("CanAdministerAllSecurity"));
+            var user = (SecurityPrincipal)HttpContext.User;
+            var permissions = provider.ForApplication(application, false);
             IList<Permission> rolePermissions = new List<Permission>();
 
-            if (id != null)
+            if (role != null)
             {
-                var role = roleProvider.Find(id);
                 rolePermissions = role.Permissions;
             }
 
@@ -56,14 +55,14 @@ namespace Siege.Security.Admin.Security.Controllers
                 total = 1,
                 page = configuration.PageIndex,
                 records = permissions.Count,
-                rows = permissions.Select(role => new
+                rows = permissions.Select(r => new
                 {
-                    id = role.ID,
+                    id = r.ID,
                     cell = new object[]
                     {
-                           role.ID,
-                           rolePermissions.Any(r => r.ID == role.ID) ? "true" : "false",
-                           role.Name,
+                           r.ID,
+                           rolePermissions.Any(p => p.ID == r.ID) ? "true" : "false",
+                           r.Name,
                     }
                 })
             };

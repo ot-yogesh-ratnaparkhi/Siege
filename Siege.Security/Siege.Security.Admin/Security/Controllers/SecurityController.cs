@@ -1,4 +1,3 @@
-using System;
 using System.Web.Mvc;
 using Siege.Security.Entities;
 using Siege.Security.Providers;
@@ -28,16 +27,6 @@ namespace Siege.Security.Admin.Security.Controllers
         public ActionResult New()
         {
             return View();
-        }
-
-        protected Application GetApplication()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected Consumer GetConsumer()
-        {
-            throw new NotImplementedException();
         }
     }
 }

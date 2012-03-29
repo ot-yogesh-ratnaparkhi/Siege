@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Siege.Security.Admin.Security.Models;
+using Siege.Security.Principals;
 using Siege.Security.Providers;
 using Siege.Security.Web;
 
@@ -14,9 +14,9 @@ namespace Siege.Security.Admin.Security.Controllers
         {
         }
 
-        public JsonResult List(JqGridConfiguration configuration)
+        public JsonResult List(int consumerID, JqGridConfiguration configuration, IConsumerProvider consumerProvider)
         {
-            IList<Application> applications = provider.GetAllApplications();
+            var applications = consumerProvider.Find(consumerID).Applications;
 
             var jsonData = new
             {
@@ -100,6 +100,77 @@ namespace Siege.Security.Admin.Security.Controllers
                         Name = application.Name,
                     }
                 }
+            };
+
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult ForConsumer(int? id, JqGridConfiguration configuration, IConsumerProvider consumerProvider)
+        {
+            IList<Application> applications;
+            IList<Application> consumerApplications = new List<Application>();
+           
+            if (id != null)
+            {
+                var consumer = consumerProvider.Find(id);
+                applications = provider.GetAllApplications();
+                consumerApplications = consumer.Applications;
+            }
+            else
+            {
+                applications = provider.GetAllApplications();
+            }
+
+            var jsonData = new
+            {
+                total = 1,
+                page = configuration.PageIndex,
+                records = applications.Count,
+                rows = applications.Select(application => new
+                {
+                    id = application.ID,
+                    cell = new object[]
+                    {
+                           application.ID,
+                           consumerApplications.Any(g => g.ID == application.ID) ? "true" : "false",
+                           application.Name
+                    }
+                })
+            };
+
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult ForUser(User user, Consumer consumer, JqGridConfiguration configuration)
+        {
+            IList<Application> applications;
+            IList<Application> userApplications = new List<Application>();
+
+            if (user != null)
+            {
+                applications = user.Consumer.Applications;
+                userApplications = user.Applications;
+            }
+            else
+            {
+                applications = consumer.Applications;
+            }
+
+            var jsonData = new
+            {
+                total = 1,
+                page = configuration.PageIndex,
+                records = applications.Count,
+                rows = applications.Select(application => new
+                {
+                    id = application.ID,
+                    cell = new object[]
+                    {
+                           application.ID,
+                           userApplications.Any(g => g.ID == application.ID) ? "true" : "false",
+                           application.Name
+                    }
+                })
             };
 
             return Json(jsonData, JsonRequestBehavior.AllowGet);

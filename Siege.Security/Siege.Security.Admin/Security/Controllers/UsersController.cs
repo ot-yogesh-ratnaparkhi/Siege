@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using Siege.Security.Admin.Security.Models;
+using Siege.Security.Principals;
 using Siege.Security.Providers;
 using Siege.Security.Web;
 
@@ -13,11 +14,11 @@ namespace Siege.Security.Admin.Security.Controllers
         {
         }
 
-        public JsonResult ForApplicationAndConsumer(Application application, Consumer consumer, JqGridConfiguration configuration, IApplicationProvider applicationProvider)
+        public JsonResult ForConsumerAndApplication(Consumer consumer, Application application, JqGridConfiguration configuration)
         {
-            var loggedInUser = (User)HttpContext.User;
+            var loggedInUser = (SecurityPrincipal)HttpContext.User;
 
-            var users = provider.GetForApplicationAndConsumer(GetApplication(), GetConsumer(), loggedInUser.Can("CanAdministerAllSecurity"));
+            var users = provider.GetForApplicationAndConsumer(application, consumer, loggedInUser.Can("CanAdministerAllSecurity"));
             
             var jsonData = new
             {
@@ -41,13 +42,12 @@ namespace Siege.Security.Admin.Security.Controllers
             return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
 
-        //public JsonResult List(JqGridConfiguration configuration, IApplicationProvider applicationProvider)
-        //{
-        //    var user = (User) HttpContext.User.Identity;
-        //    return ForApplicationAndConsumer(GetApplication(), GetConsumer(), configuration, applicationProvider);
-        //}
+        public JsonResult List(Application application, Consumer consumer, JqGridConfiguration configuration)
+        {
+            return ForConsumerAndApplication(consumer, application, configuration);
+        }
 
-        public ActionResult Save(UserModel model, List<Role> selectedRoles, List<Group> selectedGroups)
+        public ActionResult Save(UserModel model, Consumer consumer, List<Role> selectedRoles, List<Group> selectedGroups, List<Application> selectedApplications)
         {
             var user = model.IsNew ? new User() : this.provider.Find(model.UserID);
 
@@ -56,15 +56,16 @@ namespace Siege.Security.Admin.Security.Controllers
 
             user.Roles.Clear();
             user.Groups.Clear();
+            user.Applications.Clear();
 
             selectedRoles.ForEach(r => user.Roles.Add(r));
             selectedGroups.ForEach(g => user.Groups.Add(g));
+            selectedApplications.ForEach(a => user.Applications.Add(a));
 
             if (model.IsNew)
             {
-                var localUser = (User) HttpContext.User;
-                //user.Application = localUser.Application;
                 user.Password = model.Password;
+                user.Consumer = consumer;
             }
 
             this.provider.Save(user);
@@ -72,16 +73,13 @@ namespace Siege.Security.Admin.Security.Controllers
             return Json(new {result = true});
         }
 
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(User user)
         {
-            var user = this.provider.Find(id);
-
             var model = new UserModel
             {
                 UserID = user.ID,
                 IsActive = user.IsActive,
-                Name = user.Name,
-                //ApplicationID = user.Application.ID
+                Name = user.Name
             };
 
             return View(model);

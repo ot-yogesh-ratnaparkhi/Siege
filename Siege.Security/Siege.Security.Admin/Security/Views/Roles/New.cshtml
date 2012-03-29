@@ -35,8 +35,29 @@
 </form>
 
 <script type="text/javascript">
+    function Show() {
+        $("#consumerList").hide();
+        
+        if ($("#consumers").is(":visible")) {
+            $("#consumerID").val($("#consumers").val());
+        } else {
+            $("#consumerID").val($.getUrlVar("ConsumerID"));
+        }
+
+        if ($("#applications").is(":visible")) {
+            $("#applicationID").val($("#applications").val());
+        } else {
+            $("#applicationID").val($.getUrlVar("ApplicationID"));
+        }
+
+        var applicationID = $("#applicationID").val();
+        var consumerID = $("#consumerID").val();
+        ShowPermissions('/Security/Permissions/ForRole/?RoleID=@(modelID)&ApplicationID=' + applicationID + '&ConsumerID=' + consumerID);
+    }
+    
     function saveRole() {
         $("#notifications").html("");
+        var consumerID = $("#consumerID").val();
         SetSelectedPermissions();
 
         if ($("#Name")) {
@@ -52,7 +73,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/Security/Roles/Save/@(modelID)',
+            url: '/Security/Roles/Save/?ConsumerID='+ consumerID + "@(modelID != "" ? "&RoleID=" + modelID : "")" ,
             cache: false,
             data: $("form").serialize(),
             success: function (data) {

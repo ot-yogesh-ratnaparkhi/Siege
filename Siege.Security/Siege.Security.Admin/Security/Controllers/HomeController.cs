@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Web.Mvc;
 using Siege.Security.Admin.Security.Models;
 using Siege.Security.Principals;
@@ -7,7 +7,7 @@ using Siege.Security.Web.Attributes;
 
 namespace Siege.Security.Admin.Security.Controllers
 {
-    [RequiresOneOfThePermissionsAttribute("CanAdministerSecurity", "CanAdministerAllSecurity")]
+    [RequiresOneOfThePermissions("CanAdministerSecurity", "CanAdministerAllSecurity")]
     public class HomeController : Controller
     {
         private readonly IUserProvider userProvider;
@@ -19,13 +19,13 @@ namespace Siege.Security.Admin.Security.Controllers
 
         public ActionResult Index()
         {
-            var principal = (SecurityPrincipal)HttpContext.User;
+            var principal = (SecurityPrincipal) HttpContext.User;
             var user = userProvider.FindByUserName(principal.Name);
             var model = new SecurityModel
             {
                 UserID = user.ID,
-                Applications = user.Consumer.Applications,
-                Consumers = new List<Consumer> { user.Consumer }
+                ApplicationID = user.Consumer.Applications.First().ID,
+                ConsumerID = user.Consumer.ID
             };
 
             return View(model);

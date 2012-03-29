@@ -32,6 +32,9 @@
         <div id="cell">@Html.Partial("EditGroups")</div>
         <div id="cell">@Html.Partial("EditRoles")</div>
     </div>
+    <div id="security_groups_roles">
+        <div id="cell">@Html.Partial("EditApplications")</div>
+    </div>
     <div id="security_actions">
         <a href="#" onclick="saveUser()">Save</a>
         <a href="#" onclick="javascript:window.location='/Security/Users/Index/';">Cancel</a>
@@ -39,10 +42,35 @@
 </form>
 
 <script type="text/javascript">
+    function Show() {
+        $("#consumerList").hide();
+
+        if ($("#consumers").is(":visible")) {
+            $("#consumerID").val($("#consumers").val());
+        } else {
+            $("#consumerID").val($.getUrlVar("ConsumerID"));
+        }
+
+        if ($("#applications").is(":visible")) {
+            $("#applicationID").val($("#applications").val());
+        } else {
+            $("#applicationID").val($.getUrlVar("ApplicationID"));
+        }
+
+        var applicationID = $("#applicationID").val();
+        var consumerID = $("#consumerID").val();
+
+        ShowGroups('/Security/Groups/For@(ViewBag.Type)/?UserID=@(ViewBag.ID != null ? ViewBag.ID.ToString() : "")' + '&ConsumerID=' + consumerID + '&ApplicationID=' + applicationID);
+        ShowRoles('/Security/Roles/For@(ViewBag.Type)/?UserID=@(ViewBag.ID != null ? ViewBag.ID.ToString() : "")' + '&ConsumerID=' + consumerID + '&ApplicationID=' + applicationID);
+        ShowApplications("/Security/Applications/ForUser/?UserID=@ViewBag.ID" + '&ConsumerID=' + consumerID + '&ApplicationID=' + applicationID);
+    }
+
     function saveUser() {
+        
         $("#notifications").html("");
         SetSelectedRoles();
         SetSelectedGroups();
+        SetSelectedApplications();
 
         if ($("#Name")) {
             var userName = $("#Name").val();
@@ -78,9 +106,11 @@
 
         $("#security_actions").css('display', 'none');
 
+        var consumerID = $("#consumerID").val();
+        
         $.ajax({
             type: 'POST',
-            url: '/Security/Users/Save/@(modelID)',
+            url: '/Security/Users/Save/?UserID=@(modelID)&ConsumerID=' + consumerID,
             cache: false,
             data: $("form").serialize(),
             success: function (data) {

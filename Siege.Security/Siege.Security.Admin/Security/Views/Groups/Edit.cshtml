@@ -35,6 +35,28 @@
 </form>
 
 <script type="text/javascript">
+
+    function Show() {
+        $("#consumerList").hide();
+
+        if ($("#consumers").is(":visible")) {
+            $("#consumerID").val($("#consumers").val());
+        } else {
+            $("#consumerID").val($.getUrlVar("ConsumerID"));
+        }
+
+        if ($("#applications").is(":visible")) {
+            $("#applicationID").val($("#applications").val());
+        } else {
+            $("#applicationID").val($.getUrlVar("ApplicationID"));
+        }
+
+        var applicationID = $("#applicationID").val();
+        var consumerID = $("#consumerID").val();
+        
+        ShowRoles('/Security/Roles/ForGroup/?GroupID=@(Model.GroupID)&ApplicationID='+applicationID+'&ConsumerID='+consumerID);
+    }
+
     function saveGroup() {
         $("#notifications").html("");
         SetSelectedRoles();

@@ -31,16 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.2.5.2\lib\NET35\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
-    <Reference Include="FluentNHibernate">
-      <HintPath>..\packages\Siege.Repository.NHibernate.1.0.1\lib\net40\FluentNHibernate.dll</HintPath>
-    </Reference>
-    <Reference Include="Iesi.Collections">
-      <HintPath>..\packages\Iesi.Collections.3.1.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -50,20 +41,11 @@
     <Reference Include="MvcContrib">
       <HintPath>..\packages\MvcContrib.2.0.95.0\lib\MvcContrib.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate">
-      <HintPath>..\packages\NHibernate.3.1.0.4000\lib\Net35\NHibernate.dll</HintPath>
-    </Reference>
-    <Reference Include="NHibernate.ByteCode.Castle">
-      <HintPath>..\packages\NHibernate.Castle.3.1.0.4000\lib\Net35\NHibernate.ByteCode.Castle.dll</HintPath>
-    </Reference>
     <Reference Include="Siege.Repository">
-      <HintPath>..\packages\Siege.Repository.1.0.0\lib\net40\Siege.Repository.dll</HintPath>
+      <HintPath>..\dependencies\Siege.Repository.dll</HintPath>
     </Reference>
     <Reference Include="Siege.Repository.EntityFramework">
       <HintPath>..\dependencies\Siege.Repository.EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="Siege.Repository.NHibernate">
-      <HintPath>..\packages\Siege.Repository.NHibernate.1.0.1\lib\net40\Siege.Repository.NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="Siege.Repository.Web">
       <HintPath>..\packages\Siege.Repository.Web.1.0.1\lib\net40\Siege.Repository.Web.dll</HintPath>
@@ -88,7 +70,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Controllers\ConsumerController.cs" />
     <Compile Include="Security\Controllers\HomeController.cs" />
+    <Compile Include="Security\ModelBinders\ApplicationBinder.cs" />
+    <Compile Include="Security\ModelBinders\ApplicationsBinder.cs" />
+    <Compile Include="Security\ModelBinders\ConsumerBinder.cs" />
+    <Compile Include="Security\ModelBinders\GroupBinder.cs" />
+    <Compile Include="Security\ModelBinders\RoleBinder.cs" />
+    <Compile Include="Security\ModelBinders\UserBinder.cs" />
     <Compile Include="Security\Models\ApplicationModel.cs" />
+    <Compile Include="Security\Models\ConsumerModel.cs" />
     <Compile Include="Security\Models\GroupModel.cs" />
     <Compile Include="Security\Models\RoleModel.cs" />
     <Compile Include="Security\Models\SecurityModel.cs" />
@@ -182,6 +171,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Security\Views\Consumers\Index.cshtml" />
+    <EmbeddedResource Include="Security\Views\Consumers\New.cshtml" />
+    <EmbeddedResource Include="Security\Views\Consumers\Edit.cshtml" />
+    <EmbeddedResource Include="Security\Views\Shared\EditApplications.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Security\Content\Styles\SecurityAdmin.css" />

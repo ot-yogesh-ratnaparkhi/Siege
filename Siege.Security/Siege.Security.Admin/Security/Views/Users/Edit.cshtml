@@ -5,6 +5,7 @@
     ViewBag.Title = "Security Administration - Edit User";
     ViewBag.Type = "User";
     ViewBag.ID = Model.UserID;
+    ViewBag.ConsumerID = Model.ConsumerID;
 }
 
 <span id="title"><h2>Edit User</h2></span>
@@ -25,6 +26,9 @@
         <div id="cell">@Html.Partial("EditGroups")</div>
         <div id="cell">@Html.Partial("EditRoles")</div>
     </div>
+    <div id="security_groups_roles">
+        <div id="cell">@Html.Partial("EditApplications")</div>
+    </div>
     <div id="security_actions">
         <a href="#" onclick="saveUser()">Save</a>
         <a href="#" onclick="javascript:window.location='/Security/Users/Index/';">Cancel</a>
@@ -32,10 +36,32 @@
 </form>
 
 <script type="text/javascript">
+    function Show() {
+        $("#consumerList").hide();
+        
+        if ($("#consumers").is(":visible")) {
+            $("#consumerID").val($("#consumers").val());
+        } else {
+            $("#consumerID").val($.getUrlVar("ConsumerID"));
+        }
+
+        if ($("#applications").is(":visible")) {
+            $("#applicationID").val($("#applications").val());
+        } else {
+            $("#applicationID").val($.getUrlVar("ApplicationID"));
+        }
+        
+        var applicationID = $("#applicationID").val();
+        ShowGroups();
+        ShowRoles('/Security/Roles/For@(ViewBag.Type)/?UserID=@(ViewBag.ID != null ? ViewBag.ID.ToString() : "")' + '&ApplicationID=' + applicationID);
+        ShowApplications("/Security/Applications/ForUser/?UserID=@ViewBag.ID");
+    }
+
     function saveUser() {
         $("#notifications").html("");
         SetSelectedRoles();
         SetSelectedGroups();
+        SetSelectedApplications();
 
         if ($("#Name")) {
             var userName = $("#Name").val();

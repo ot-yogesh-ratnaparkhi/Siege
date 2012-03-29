@@ -1,15 +1,15 @@
-﻿@model Siege.Security.Admin.Security.Models.GroupModel
+﻿@model Siege.Security.Admin.Security.Models.ConsumerModel
 
 @{
     Layout = "~/Areas/Security/Views/Shared/SecurityLayout.cshtml";
-    ViewBag.Title = "Security Administration - New Group";
-    ViewBag.Type = "Group";
-    var modelID = Model != null ? Model.GroupID.ToString() : "";
+    ViewBag.Title = "Security Administration - Consumers - New Consumer";
+    var modelID = Model != null ? Model.ConsumerID.ToString() : "";
+    ViewBag.Type = "Consumer";
+    ViewBag.ID = modelID;
 }
-
-<span id="title"><h2>New Group</h2></span>
 <form id="form">
-    <div id="security_details">
+    <h2>New Consumer</h2>
+    <div id = "security_details" >
         <div id="row">
             <div id="cell">@Html.LabelFor(model => model.Name):</div>
             <div id="cell">@Html.TextBoxFor(model => model.Name)<em>*</em></div>
@@ -25,59 +25,43 @@
     </div>
     <div id="notifications" style="padding-left: 30px; padding-top: 5px; vertical-align:top; font-weight:bolder;"></div>
     <div id="security_groups_roles">
-        <div id="cell">@Html.Partial("EditRoles")</div>
+        <div id="cell">@Html.Partial("EditApplications")</div>
     </div>
     <div id="security_actions">
-        <a href="#" onclick="javascript:saveGroup();">Save</a>
-        <a href="#" onclick="javascript:window.location='/Security/Groups/Index/';">Cancel</a>
+        <a href="#" onclick="javascript:saveConsumer();">Save</a>
+        <a href="#" onclick="javascript:window.location='/Security/Consumers/Index/';">Cancel</a>
     </div>
 </form>
-
 <script type="text/javascript">
 
     function Show() {
-        $("#consumerList").hide();
-
-        if ($("#consumers").is(":visible")) {
-            $("#consumerID").val($("#consumers").val());
-        } else {
-            $("#consumerID").val($.getUrlVar("ConsumerID"));
-        }
-
-        if ($("#applications").is(":visible")) {
-            $("#applicationID").val($("#applications").val());
-        } else {
-            $("#applicationID").val($.getUrlVar("ApplicationID"));
-        }
-
-        var applicationID = $("#applicationID").val();
-        var consumerID = $("#consumerID").val();
-        ShowRoles('/Security/Roles/ForGroup/?GroupID=@(modelID)&ApplicationID=' + applicationID + '&ConsumerID=' + consumerID);
+        $("#security_header").hide();
+        ShowApplications('/Security/Applications/For@(ViewBag.Type)/@(ViewBag.ID != null ? ViewBag.ID.ToString() : "")');
     }
-    
-    function saveGroup() {
+
+
+    function saveConsumer() {
         $("#notifications").html("");
-        var consumerID = $("#consumerID").val();
-        SetSelectedRoles();
+        SetSelectedApplications();
 
         if ($("#Name")) {
-            var groupName = $("#Name").val();
-            if (groupName == "") {
+            var applicationName = $("#Name").val();
+            if (applicationName == "") {
                 $("#notifications").addClass("error");
-                $("#notifications").html("Group name is required");
+                $("#notifications").html("Consumer name is required");
                 return;
             }
         }
 
-        $("#security_actions").css('display', 'none');
+        $("#actions").css('display', 'none');
 
         $.ajax({
             type: 'POST',
-            url: '/Security/Groups/Save/?ConsumerID='+ consumerID + "@(modelID != "" ? "&RoleID=" + modelID : "")",
+            url: '/Security/Consumers/Save/@(modelID)',
             cache: false,
             data: $("form").serialize(),
             success: function (data) {
-                backToGroups();
+                backToConsumers();
             },
             error: function (xmlHttpRequest, textStatus, errorThrown) {
                 $("#notifications").addClass("error");
@@ -95,7 +79,7 @@
         });
     }
 
-    function backToGroups() {
-        $(location).attr('href', '/Security/Groups/Index/');
+    function backToConsumers() {
+        $(location).attr('href', '/Security/Consumers/Index/');
     }
 </script>

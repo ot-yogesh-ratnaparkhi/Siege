@@ -1,8 +1,7 @@
 ﻿namespace Siege.Security.Admin.Security.Models
 {
-    public class GroupModel
+    public class GroupModel : SecurityModel
     {
-        public int? ConsumerID { get; set; }
         public int? GroupID { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

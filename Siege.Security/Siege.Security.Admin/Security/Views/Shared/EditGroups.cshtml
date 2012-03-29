@@ -1,32 +1,39 @@
 ﻿<script type="text/javascript">
-    $(document).ready(function () {
-        $("#groups_grid").jqGrid({
-            url: '/Security/Groups/For@(ViewBag.Type)/@(ViewBag.ID != null ? ViewBag.ID.ToString() : "")',
-            datatype: 'json',
-            mtype: 'GET',
-            width: '400',
-            rownumbers: false,
-            caption: 'Manage Groups',
-            colNames: ['Record Id', 'Add/Remove', 'Group', 'Permissions'],
-            colModel: [
+    
+    function ShowGroups(gridUrl) {
+        $(document).ready(function() {
+            var consumerID = $("#consumerID").val();
+            var applicationID = $("#applicationID").val();
+
+            $("#groups_grid").jqGrid({
+                url: gridUrl,
+                datatype: 'json',
+                mtype: 'GET',
+                width: '400',
+                rownumbers: false,
+                caption: 'Manage Groups',
+                colNames: ['Record Id', 'Add/Remove', 'Group', 'Permissions'],
+                colModel: [
                     { name: 'recordId', index: 'recordId', hidden: true },
                     { name: 'isSelected', index: 'isSelected', sortable: false, formatter: "checkbox", formatoptions: { disabled: false }, editable: true, edittype: "checkbox" },
                     { name: 'Name', index: 'Name', hidden: false, sortable: true },
                     { name: 'permissions', index: 'permissions', hidden: false, sortable: false }
-                        ],
-            rowNum: 25,
-            rowList: [25, 50, 100],
-            pager: '#groups_grid_pager',
-            emptyrecords: 'No data',
-            sortname: 'Name',
-            sortorder: 'asc',
-            altRows: true,
-            altclass: 'zebra',
-            gridComplete: function () {
-            }
+                ],
+                rowNum: 25,
+                rowList: [25, 50, 100],
+                pager: '#groups_grid_pager',
+                emptyrecords: 'No data',
+                sortname: 'Name',
+                sortorder: 'asc',
+                altRows: true,
+                altclass: 'zebra',
+                gridComplete: function() {
+                }
+            });
+            $("#groups_grid").jqGrid('navGrid', '#presize', { edit: false, add: false, del: false });
+            $("#groups_grid").jqGrid().setGridParam({ url: gridUrl }).trigger("reloadGrid");
         });
-        $("#groups_grid").jqGrid('navGrid', '#presize', { edit: false, add: false, del: false });
-    });
+    }
 
     function SetSelectedGroups() {
         var selectedGroups = new Array();
