@@ -15,8 +15,8 @@ namespace Siege.Security.Admin.Security.Controllers
 
         public JsonResult List(JqGridConfiguration configuration)
         {
-            var user = (User) HttpContext.User;
-            var permissions = provider.All(false);
+            var user = (ISecurityPrincipal) HttpContext.User;
+            var permissions = provider.All(user.Can("CanAdministerAllSecurity"));
 
             var jsonData = new
             {
@@ -40,8 +40,8 @@ namespace Siege.Security.Admin.Security.Controllers
 
         public JsonResult ForRole(Role role, Application application, JqGridConfiguration configuration)
         {
-            var user = (SecurityPrincipal)HttpContext.User;
-            var permissions = provider.ForApplication(application, false);
+            var user = (ISecurityPrincipal)HttpContext.User;
+            var permissions = provider.ForApplication(application, user.Can("CanAdministerAllSecurity"));
             IList<Permission> rolePermissions = new List<Permission>();
 
             if (role != null)

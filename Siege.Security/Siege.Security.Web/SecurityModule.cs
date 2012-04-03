@@ -39,7 +39,7 @@ namespace Siege.Security.Web
 
             user.IsAuthenticated = context.User.Identity.IsAuthenticated;
             context.User = new SecurityPrincipal(user);
-            Thread.CurrentPrincipal = context.User;
+            HttpContext.Current.User = context.User;
         }
 
         public void Dispose()

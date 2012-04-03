@@ -91,6 +91,7 @@
     <Compile Include="Conventions\SubclassConvention.cs" />
     <Compile Include="NHibernateConfigurationManager.cs" />
     <Compile Include="NHibernateConvention.cs" />
+    <Compile Include="NHibernateRepository.cs" />
     <Compile Include="NHibernateUnitOfWork.cs" />
     <Compile Include="NHibernateUnitOfWorkFactory.cs" />
     <Compile Include="NHibernateUnitOfWorkManager.cs" />

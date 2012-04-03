@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Siege.Security.Providers
+﻿namespace Siege.Security.Providers
 {
     public interface IUserProvider : ISecurityProvider<User>
     {

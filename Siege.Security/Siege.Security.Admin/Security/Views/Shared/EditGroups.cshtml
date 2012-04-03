@@ -15,9 +15,9 @@
                 colNames: ['Record Id', 'Add/Remove', 'Group', 'Permissions'],
                 colModel: [
                     { name: 'recordId', index: 'recordId', hidden: true },
-                    { name: 'isSelected', index: 'isSelected', sortable: false, formatter: "checkbox", formatoptions: { disabled: false }, editable: true, edittype: "checkbox" },
-                    { name: 'Name', index: 'Name', hidden: false, sortable: true },
-                    { name: 'permissions', index: 'permissions', hidden: false, sortable: false }
+                    { name: 'isSelected', index: 'isSelected', sortable: false, formatter: "checkbox", formatoptions: { disabled: false }, editable: true, edittype: "checkbox", align: 'center' },
+                    { name: 'Name', index: 'Name', hidden: false, sortable: false },
+                    { name: 'permissions', index: 'permissions', hidden: false, sortable: false, formatter: permissionsFormatter }
                 ],
                 rowNum: 25,
                 rowList: [25, 50, 100],
@@ -45,6 +45,16 @@
             }
         }
         $("#selectedGroups").val(selectedGroups);
+    }
+
+    function permissionsFormatter(cellvalue, options, rowObject) {
+        var text = cellvalue + "";
+        array = text.split(',');
+        text = "";
+        for (var str in array) {
+            text += array[str] + "<br/>";
+        }
+        return text;
     }
 </script>
 

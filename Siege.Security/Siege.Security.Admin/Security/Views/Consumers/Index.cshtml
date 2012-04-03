@@ -29,19 +29,19 @@
                 mtype: 'GET',
                 colNames: ['Consumer Name', 'Description', 'Is Active?', 'Actions', 'ID'],
                 colModel: [
-                { name: 'ConsumerName', index: 'ConsumerName', width: 40, align: 'center' },
-                { name: 'Description', index: 'Description', width: 40, align: 'center' },
-                { name: 'Active', index: 'Active', width: 40, align: 'center' },
-                { name: 'Actions', width: 100, align: 'center', formatter: formatter },
-                { name: 'ID', index: 'ID', width: 40, align: 'center', hidden: true}],
+                { name: 'ConsumerName', index: 'ConsumerName', align: 'center', sortable: false },
+                { name: 'Description', index: 'Description', align: 'center', sortable: false },
+                { name: 'Active', index: 'Active', align: 'center', sortable: false },
+                { name: 'Actions', align: 'center', formatter: formatter, sortable: false },
+                { name: 'ID', index: 'ID', align: 'center', hidden: true}],
                 pager: $('#consumers_grid_pager'),
                 rowNum: 10,
                 rowList: [5, 10, 20, 50],
                 sortname: 'Id',
                 sortorder: "desc",
                 viewrecords: true,
-                width: 780,
-                height: 200
+                height: 200,
+                autowidth: true
             });
 
             $("#consumers_grid").jqGrid().setGridParam({ url: newUrl }).trigger("reloadGrid");

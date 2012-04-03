@@ -40,7 +40,7 @@ namespace Siege.Repository.NHibernate
 				.Register<Singleton>(Given<IUnitOfWorkFactory<TDatabase>>.Then(new NHibernateUnitOfWorkFactory<TDatabase>(sessionFactory)))
 				.Register(Given<IUnitOfWork>.ConstructWith(l => l.GetInstance<IUnitOfWorkManager>().For<TDatabase>()))
 				.Register<Singleton>(Given<IUnitOfWorkStore>.Then<TUnitOfWorkStore>())
-				.Register(Given<IRepository<TDatabase>>.Then<Repository<TDatabase>>())
+				.Register(Given<IRepository<TDatabase>>.Then<NHibernateRepository<TDatabase>>())
 				.Register(Given<TDatabase>.Then<TDatabase>())
 				.Register<Singleton>(Given<IUnitOfWorkManager>.ConstructWith(locator => locator.GetInstance<NHibernateUnitOfWorkManager>()))
 				.Register(Given<NHibernateUnitOfWorkManager>.InitializeWith(manager => manager.Add(serviceLocator.GetInstance<TDatabase>())))

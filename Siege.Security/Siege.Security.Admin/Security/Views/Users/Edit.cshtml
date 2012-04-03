@@ -50,10 +50,11 @@
         } else {
             $("#applicationID").val($.getUrlVar("ApplicationID"));
         }
-        
+
         var applicationID = $("#applicationID").val();
+        var consumerID = $("#consumerID").val();
         ShowGroups();
-        ShowRoles('/Security/Roles/For@(ViewBag.Type)/?UserID=@(ViewBag.ID != null ? ViewBag.ID.ToString() : "")' + '&ApplicationID=' + applicationID);
+        ShowRoles('/Security/Roles/For@(ViewBag.Type)/?UserID=@(ViewBag.ID != null ? ViewBag.ID.ToString() : "")' + '&ApplicationID=' + applicationID + '&ConsumerID=' + consumerID);
         ShowApplications("/Security/Applications/ForUser/?UserID=@ViewBag.ID");
     }
 

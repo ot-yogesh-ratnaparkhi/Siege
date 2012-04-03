@@ -34,7 +34,7 @@ namespace Siege.Repository.EntityFramework
                 .Register<Singleton>(Given<IUnitOfWorkFactory<TDatabase>>.Then(new EntityFrameworkUnitOfWorkFactory<TDbContext, TDatabase>()))
 				.Register(Given<IUnitOfWork>.ConstructWith(l => l.GetInstance<IUnitOfWorkManager>().For<TDatabase>()))
 				.Register<Singleton>(Given<IUnitOfWorkStore>.Then<TUnitOfWorkStore>())
-				.Register(Given<IRepository<TDatabase>>.Then<Repository<TDatabase>>())
+				.Register(Given<IRepository<TDatabase>>.Then<EntityFrameworkRepository<TDatabase>>())
 				.Register(Given<TDatabase>.Then<TDatabase>())
                 .Register<Singleton>(Given<IUnitOfWorkManager>.ConstructWith(locator => locator.GetInstance<EntityFrameworkUnitOfWorkManager>()))
                 .Register(Given<EntityFrameworkUnitOfWorkManager>.InitializeWith(manager => manager.Add(serviceLocator.GetInstance<TDatabase>())))

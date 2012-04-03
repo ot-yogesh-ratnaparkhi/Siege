@@ -22,17 +22,17 @@
             mtype: 'GET',
             colNames: ['Permission Name', 'Description', 'ID'],
             colModel: [
-                { name: 'PermissionName', index: 'RoleName', width: 40, align: 'center' },
-                { name: 'Description', index: 'Permissions', width: 40, align: 'center' },
-                { name: 'ID', index: 'ID', width: 40, align: 'center', hidden: true}],
+                { name: 'PermissionName', index: 'RoleName', align: 'center', sortable: false },
+                { name: 'Description', index: 'Permissions', align: 'center', sortable: false },
+                { name: 'ID', index: 'ID', align: 'center', hidden: true}],
             pager: jQuery('#permissions_grid_pager'),
             rowNum: 10,
             rowList: [5, 10, 20, 50],
             sortname: 'Id',
             sortorder: "desc",
             viewrecords: true,
-            width: 1000,
-            height: 200
+            height: 200,
+            autowidth: true
         });
     });
 </script>

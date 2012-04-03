@@ -7,8 +7,8 @@
 
 @section head
 {
-    <link rel="stylesheet" type="text/css" media="screen" href="@Url.Content("/Security/styles/ui.jqgrid.css")" />
     <link rel="stylesheet" type="text/css" media="screen" href="@Url.Content("/Security/styles/SecurityAdmin.css")" />
+    <link rel="stylesheet" type="text/css" media="screen" href="@Url.Content("/Security/styles/ui.jqgrid.css")" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script src="@Url.Content("/Security/scripts/grid.locale-en.js")" type="text/javascript"></script>
@@ -17,18 +17,7 @@
 }
 
 <div id="security_section">
-    <div id="security_menu">
-        <div id="security_menu_header">Security
-            @if(user.Can("CanAdministerAllSecurity"))
-            {
-                <div id="security_menu_row"> - <a id="applications_link" href="/Security/Applications/Index/">Applications</a></div>
-                <div id="security_menu_row"> - <a id="consumers_link" href="/Security/Consumers/Index/">Consumers</a></div>
-            }
-            <div id="security_menu_row"> - <a id="users_link" href="/Security/Users/Index/">Users</a></div>
-            <div id="security_menu_row"> - <a id="groups_link" href="/Security/Groups/Index/">Groups</a></div>
-            <div id="security_menu_row"> - <a id="roles_link" href="/Security/Roles/Index/">Roles</a></div>
-        </div>
-    </div>    
+    @Html.Partial("menu")
     <div id="security_body">
         <div id="security_header">
             <div class="row">
