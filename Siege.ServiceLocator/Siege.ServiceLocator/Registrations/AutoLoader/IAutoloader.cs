@@ -21,6 +21,6 @@ namespace Siege.ServiceLocator.Registrations.AutoLoader
 {
     public interface IAutoloader
     {
-        Action<IServiceLocator> Load(IServiceLocator locator, List<Assembly> assemblies);
+        Action<IServiceLocator> Load(List<string> files, List<Assembly> assemblies);
     }
 }

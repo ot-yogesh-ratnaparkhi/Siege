@@ -22,9 +22,15 @@ namespace Siege.ServiceLocator.Dynamic
 {
     public class Autoloader : IAutoloader
     {
-        public Action<IServiceLocator> Load(IServiceLocator locator, List<Assembly> assemblies)
+        public Action<IServiceLocator> Load(List<string> files, List<Assembly> assemblies)
         {
-            return Install.From("Installers", assemblies);
+            return locator =>
+            {
+                foreach (var file in files)
+                {
+                    Install.From(file, assemblies);
+                }
+            };
         }
     }
 }

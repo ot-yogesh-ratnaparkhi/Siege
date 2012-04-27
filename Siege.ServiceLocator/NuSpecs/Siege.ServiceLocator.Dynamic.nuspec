@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <authors>Marcus Bratton</authors>
     <owners>Marcus Bratton</owners>
     <licenseUrl>https://github.com/MarcusTheBold/Siege/blob/master/LICENSE</licenseUrl>
@@ -13,8 +13,8 @@
     <id>Siege.ServiceLocator.Dynamic</id>
     <title>Siege.ServiceLocator.Dynamic</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Inversion of Control framework</description>
-    <copyright>Copyright (c) 2009 2010, 2011, 2012, Marcus Bratton.  All Rights Reserved</copyright>
+    <description>IronRuby plugin integration for Siege.ServiceLocator</description>
+    <copyright>Copyright (c) 2009, 2010, 2011, 2012, Marcus Bratton.  All Rights Reserved</copyright>
   </metadata>
   <files>
     <file src="..\Siege.ServiceLocator.Dynamic\bin\Debug\Siege.ServiceLocator.Dynamic.dll" target="lib\net40\Siege.ServiceLocator.Dynamic.dll" />
