@@ -23,26 +23,35 @@ namespace Siege.ServiceLocator.Registrations.AutoLoader
 {
     public class Load
     {
-        public static Action<IServiceLocator> FromAssembliesIn(string folder, string fileExtension, List<Assembly> registeredTypeAssemblies)
+        public static Action<IServiceLocator> FromAssembliesIn(string binFolder, string scriptFolder, string fileExtension)
         {
             return locator =>
             {
                 var scripts = new List<string>();
-                var files = Directory.GetFiles(folder).ToList();
+                var files = Directory.GetFiles(scriptFolder).ToList();
+                var binFiles = Directory.GetFiles(binFolder).ToList();
+                var binaries = new List<Assembly>();
                 
+                binFiles.ForEach(file =>
+                {
+                    var binary = Assembly.LoadFrom(file);
+                    binaries.Add(binary);                 
+                });
+
                 files.ForEach(file =>
                 {
                     if(file.EndsWith(fileExtension)) scripts.Add(file);
                     if(!file.EndsWith(".dll")) return;
 
                     var types = Assembly.LoadFrom(file).GetTypes().ToList();
+
                     types.ForEach(type =>
                     {
                         if(type.GetInterfaces().Contains(typeof(IAutoloader)))
                         {
                             var instance = (IAutoloader)type.GetConstructor(new Type[] {}).Invoke(new object[] {});
-                            
-                            locator.Register(instance.Load(scripts, registeredTypeAssemblies));
+
+                            locator.Register(instance.Load(scripts, binaries));
                         }
                     });
                 });

@@ -52,6 +52,11 @@ namespace Siege.ServiceLocator.Dynamic.Ruby
         {
             return locator =>
             {
+                engine.Execute("include Siege::ServiceLocator::Registrations", scope);
+                engine.Execute("include Siege::ServiceLocator::RegistrationPolicies", scope);
+                engine.Execute("include Siege::ServiceLocator::ResolutionRules", scope);
+                engine.Execute("include Siege::ServiceLocator::Registrations::Conventions", scope);
+
                 engine.Execute(source.GetCode(), scope);
                 var @class = engine.Runtime.Globals.GetVariable("Installer");
  	
