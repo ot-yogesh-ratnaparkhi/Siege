@@ -14,6 +14,10 @@
             handler = NamedRegistrationHandler.new()
         elsif (rubyRegistration.registrationType == "NamedInstance")
             handler = NamedInstanceRegistrationHandler.new()
+		elsif (rubyRegistration.registrationType == "Convention")
+			handler = ConventionRegistrationHandler.new()
+		elsif (rubyRegistration.registrationType == "ConventionInstance")
+			handler = ConventionInstanceRegistrationHandler.new()
         end
 
         result = handler.Handle rubyRegistration

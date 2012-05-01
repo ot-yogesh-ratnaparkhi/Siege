@@ -4,7 +4,6 @@ using NUnit.Framework;
 using Siege.ServiceLocator.Dynamic;
 using Siege.ServiceLocator.Resolution;
 using Siege.ServiceLocator.UnitTests.TestClasses;
-using TestContext = Siege.ServiceLocator.UnitTests.TestClasses.TestContext;
 
 namespace Siege.ServiceLocator.UnitTests
 {
@@ -152,6 +151,32 @@ namespace Siege.ServiceLocator.UnitTests
             locator.AddContext(CreateContext(TestEnum.Case2));
 
             Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>());
+        }
+
+        [Test]
+        public void RubyConventionRegistration()
+        {
+            var assemblies = new List<Assembly>
+            {
+                typeof (ITestInterface).Assembly
+            };
+
+            locator.Register(Install.From("Installers\\ConventionRegistrationTest.rb", assemblies));
+
+            Assert.IsInstanceOf<AutoScannedType>(locator.GetInstance<IAutoScannedInterface>());
+        }
+
+        [Test]
+        public void RubyConventionInstanceRegistration()
+        {
+            var assemblies = new List<Assembly>
+            {
+                typeof (ITestInterface).Assembly
+            };
+
+            locator.Register(Install.From("Installers\\ConventionInstanceRegistrationTest.rb", assemblies));
+
+            Assert.IsInstanceOf<AutoScannedType>(locator.GetInstance<IAutoScannedInterface>());
         }
     }
 }

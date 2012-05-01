@@ -41,6 +41,8 @@ namespace Siege.ServiceLocator.Dynamic.Ruby
                        LoadResource("Siege.ServiceLocator.Dynamic.Scripts.RegistrationHandlers.ConditionalInstanceRegistrationHandler.rb");
                        LoadResource("Siege.ServiceLocator.Dynamic.Scripts.RegistrationHandlers.NamedRegistrationHandler.rb");
                        LoadResource("Siege.ServiceLocator.Dynamic.Scripts.RegistrationHandlers.NamedInstanceRegistrationHandler.rb");
+                       LoadResource("Siege.ServiceLocator.Dynamic.Scripts.RegistrationHandlers.ConventionRegistrationHandler.rb");
+                       LoadResource("Siege.ServiceLocator.Dynamic.Scripts.RegistrationHandlers.ConventionInstanceRegistrationHandler.rb");
                    }
                }
             }
@@ -68,6 +70,11 @@ namespace Siege.ServiceLocator.Dynamic.Ruby
                 foreach(var registration in registrations)
                 {
                     if (registration == null) continue;
+                    if (registration is Action<IServiceLocator>)
+                    {
+                        locator.Register(registration);
+                        continue;
+                    }
                     list.Add(registration);
                 }
 

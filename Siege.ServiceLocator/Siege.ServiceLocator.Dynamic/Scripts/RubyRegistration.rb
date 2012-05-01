@@ -1,4 +1,5 @@
 ﻿class RubyRegistration
+	include Siege::ServiceLocator::Registrations::Conventions::IConvention
 
     attr_reader :base
     attr_reader :type
@@ -43,4 +44,5 @@
     def set_name(name)
         @name = name
     end
+
 end

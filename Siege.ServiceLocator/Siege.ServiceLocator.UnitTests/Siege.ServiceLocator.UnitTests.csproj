@@ -288,6 +288,12 @@
     <Content Include="Installers\DefaultRegistrationTest.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Installers\ConventionRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installers\ConventionInstanceRegistrationTest.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
