@@ -151,17 +151,7 @@ namespace Siege.ServiceLocator.UnitTests
             Assert.IsTrue(resolution is DependsOnInterface);
             Assert.AreSame(arg, ((DependsOnInterface) resolution).Argument);
         }
-
-        [Test]
-        public void ShouldOverrideDefaultRegistration()
-        {
-            locator
-                .Register(Given<ITestInterface>.Then<TestCase1>())
-                .Register(Given<ITestInterface>.Then<TestCase2>());
-
-            Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>());
-        }
-
+        
         private static TestClasses.TestContext CreateContext(TestEnum types)
         {
             return new TestClasses.TestContext(types);

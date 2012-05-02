@@ -19,7 +19,7 @@ namespace Siege.ServiceLocator.Dynamic.Ruby
         public RubyInstaller(string fileName)
         {
             this.fileName = fileName;
-            var binFiles = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).ToList();
+            var binFiles =  Assembly.GetEntryAssembly() != null ? Directory.GetFiles(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).ToList() : new List<string>();
             
             var assemblies = new List<Assembly>();
             var appDomain = new List<Assembly>();
