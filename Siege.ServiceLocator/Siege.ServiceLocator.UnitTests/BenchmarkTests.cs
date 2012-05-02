@@ -21,6 +21,7 @@ using Siege.ServiceLocator.UnitTests.ContextualTests.Classes;
 
 namespace Siege.ServiceLocator.UnitTests
 {
+    [TestFixture]
 	public abstract partial class ServiceLocatorTests
 	{
 		const double iterations = 1;

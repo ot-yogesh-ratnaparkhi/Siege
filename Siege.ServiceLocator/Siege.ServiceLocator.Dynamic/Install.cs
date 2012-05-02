@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Siege.ServiceLocator.Dynamic.Ruby;
 
 namespace Siege.ServiceLocator.Dynamic
 {
     public class Install
     {
-        public static Action<IServiceLocator> From(string fileName, List<Assembly> assemblies)
+        public static Action<IServiceLocator> From(string fileName)
         {
-            return new RubyInstaller(fileName, assemblies).Build();
+            return new RubyInstaller(fileName).Build();
         }
     }
 }

@@ -19,6 +19,7 @@ using Siege.ServiceLocator.UnitTests.RegistrationExtensions.Classes;
 
 namespace Siege.ServiceLocator.UnitTests
 {
+    [TestFixture]
     public abstract partial class ServiceLocatorTests
     {
         [Test]

@@ -23,25 +23,23 @@ namespace Siege.ServiceLocator.Registrations.AutoLoader
 {
     public class Load
     {
-        public static Action<IServiceLocator> FromAssembliesIn(string binFolder, string scriptFolder, string fileExtension)
+        public static Action<IServiceLocator> FromAssembliesIn(string scriptFolder, string fileExtension)
         {
             return locator =>
             {
                 var scripts = new List<string>();
-                var files = Directory.GetFiles(scriptFolder).ToList();
-                var binFiles = Directory.GetFiles(binFolder).ToList();
-                var binaries = new List<Assembly>();
-                
-                binFiles.ForEach(file =>
+                var files = Directory.Exists(scriptFolder) ? Directory.GetFiles(scriptFolder).ToList() : new List<string>();
+               
+                if (files.Count == 0) return;
+
+                files.ForEach(file =>
                 {
-                    var binary = Assembly.LoadFrom(file);
-                    binaries.Add(binary);                 
+                    if (file.EndsWith(fileExtension)) scripts.Add(file);
                 });
 
                 files.ForEach(file =>
                 {
-                    if(file.EndsWith(fileExtension)) scripts.Add(file);
-                    if(!file.EndsWith(".dll")) return;
+                    if (!file.EndsWith(".dll") && !file.EndsWith(".exe")) return;
 
                     var types = Assembly.LoadFrom(file).GetTypes().ToList();
 
@@ -51,7 +49,7 @@ namespace Siege.ServiceLocator.Registrations.AutoLoader
                         {
                             var instance = (IAutoloader)type.GetConstructor(new Type[] {}).Invoke(new object[] {});
 
-                            locator.Register(instance.Load(scripts, binaries));
+                            locator.Register(instance.Load(scripts));
                         }
                     });
                 });

@@ -18,6 +18,7 @@ using Siege.ServiceLocator.RegistrationSyntax;
 
 namespace Siege.ServiceLocator.UnitTests
 {
+    [TestFixture]
     public abstract partial class ServiceLocatorTests
     {
         [Test, Ignore]

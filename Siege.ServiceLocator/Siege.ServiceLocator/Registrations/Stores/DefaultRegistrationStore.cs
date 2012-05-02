@@ -17,10 +17,5 @@ namespace Siege.ServiceLocator.Registrations.Stores
 {
     public class DefaultRegistrationStore : RegistrationStore
     {
-        protected override void Add(System.Collections.Generic.IList<IRegistration> registrations, IRegistration registration)
-        {
-            registrations.Clear();
-            base.Add(registrations, registration);
-        } 
     }
 }

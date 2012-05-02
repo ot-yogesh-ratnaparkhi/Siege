@@ -15,11 +15,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Siege.ServiceLocator.ExtensionMethods;
 using Siege.ServiceLocator.InternalStorage;
 using Siege.ServiceLocator.RegistrationPolicies;
 using Siege.ServiceLocator.Registrations;
+using Siege.ServiceLocator.Registrations.AutoLoader;
 using Siege.ServiceLocator.Registrations.Stores;
 using Siege.ServiceLocator.RegistrationTemplates.Meta;
 using Siege.ServiceLocator.Resolution;
@@ -58,6 +61,8 @@ namespace Siege.ServiceLocator
             serviceLocator.RegisterInstance(typeof(IContextStore), this.store.Get<IContextStore>());
             serviceLocator.RegisterInstance(typeof(IExecutionStore), this.store.Get<IExecutionStore>());
             serviceLocator.RegisterInstance(typeof(IResolutionStore), this.store.Get<IResolutionStore>());
+
+            Register(Load.FromAssembliesIn(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Plugins\", ".plugin"));
         }
 
         public object GetInstance(Type type, params IResolutionArgument[] arguments)

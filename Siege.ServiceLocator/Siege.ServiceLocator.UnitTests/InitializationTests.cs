@@ -29,6 +29,7 @@ namespace Siege.ServiceLocator.UnitTests
         public string Property { get; set; }
     }
 
+    [TestFixture]
     public abstract partial class ServiceLocatorTests
     {
         [Test]

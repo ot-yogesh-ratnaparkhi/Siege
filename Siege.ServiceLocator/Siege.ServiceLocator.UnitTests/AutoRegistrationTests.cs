@@ -20,6 +20,7 @@ using Siege.ServiceLocator.UnitTests.TestNamespace;
 
 namespace Siege.ServiceLocator.UnitTests
 {
+    [TestFixture]
     public partial class ServiceLocatorTests
     {
         [Test]

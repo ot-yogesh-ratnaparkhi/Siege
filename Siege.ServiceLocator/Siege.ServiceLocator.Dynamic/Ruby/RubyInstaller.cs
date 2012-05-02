@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Microsoft.Scripting.Hosting;
 using Siege.ServiceLocator.Registrations;
-using Siege.ServiceLocator.Registrations.Conventions;
 
 namespace Siege.ServiceLocator.Dynamic.Ruby
 {
@@ -16,11 +16,34 @@ namespace Siege.ServiceLocator.Dynamic.Ruby
         private readonly string fileName;
         private readonly ScriptSource source;
 
-        public RubyInstaller(string fileName, List<Assembly> assemblies)
+        public RubyInstaller(string fileName)
         {
             this.fileName = fileName;
-            assemblies.AddRange(new[] { typeof(IServiceLocator).Assembly, typeof(IConvention).Assembly });
+            var binFiles = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).ToList();
             
+            var assemblies = new List<Assembly>();
+            var appDomain = new List<Assembly>();
+            appDomain.AddRange(AppDomain.CurrentDomain.GetAssemblies());
+            
+            foreach(var file in binFiles)
+            {
+                foreach (var assembly in appDomain)
+                {
+                    try
+                    {
+                        if (assembly.Location == file || (!file.EndsWith(".dll") && !file.EndsWith(".exe"))) continue;
+
+                        assemblies.Add(Assembly.LoadFile(file));
+                    }
+                    catch (Exception)
+                    {
+                        //don't load the assembly
+                    }
+                }
+            }
+
+            assemblies.AddRange(appDomain);
+
             if(engine == null)
             {
                lock(@lock)
@@ -28,6 +51,11 @@ namespace Siege.ServiceLocator.Dynamic.Ruby
                    if(engine == null)
                    {
                        engine = IronRuby.Ruby.CreateEngine();
+                       
+                       var paths = engine.GetSearchPaths().ToList();
+                       paths.Add(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+                       engine.SetSearchPaths(paths);
+                       
                        scope = engine.CreateScope();
 
                        assemblies.ForEach(a => engine.Runtime.LoadAssembly(a));
@@ -59,6 +87,7 @@ namespace Siege.ServiceLocator.Dynamic.Ruby
                 engine.Execute("include Siege::ServiceLocator::ResolutionRules", scope);
                 engine.Execute("include Siege::ServiceLocator::Registrations::Conventions", scope);
 
+                
                 engine.Execute(source.GetCode(), scope);
                 var @class = engine.Runtime.Globals.GetVariable("Installer");
  	

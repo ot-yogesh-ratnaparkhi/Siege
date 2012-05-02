@@ -15,20 +15,19 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Siege.ServiceLocator.Registrations.AutoLoader;
 
 namespace Siege.ServiceLocator.Dynamic
 {
     public class Autoloader : IAutoloader
     {
-        public Action<IServiceLocator> Load(List<string> files, List<Assembly> assemblies)
+        public Action<IServiceLocator> Load(List<string> files)
         {
             return locator =>
             {
                 foreach (var file in files)
                 {
-                    Install.From(file, assemblies);
+                    locator.Register(Install.From(file));
                 }
             };
         }

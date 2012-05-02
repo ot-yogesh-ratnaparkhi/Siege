@@ -2,6 +2,7 @@
 
 //namespace Siege.ServiceLocator.UnitTests
 //{
+//    [TestFixture]
 //    public abstract partial class ServiceLocatorTests
 //    {
 //        [Test]

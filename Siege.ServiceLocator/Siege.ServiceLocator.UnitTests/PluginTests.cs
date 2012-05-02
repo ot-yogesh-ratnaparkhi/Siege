@@ -1,23 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Siege.ServiceLocator.Dynamic;
 using Siege.ServiceLocator.Resolution;
 using Siege.ServiceLocator.UnitTests.TestClasses;
 
 namespace Siege.ServiceLocator.UnitTests
 {
+    [TestFixture]
     public partial class ServiceLocatorTests
     {
         [Test]
         public void RubyDefaultRegistration()
         {
-            var assemblies = new List<Assembly>
-            {
-                typeof (ITestInterface).Assembly
-            };
-
-            locator.Register(Install.From("Installers\\DefaultRegistrationTest.rb", assemblies));
+            locator.Register(Install.From("Installers\\DefaultRegistrationTest.rb"));
 
             var instance = locator.GetInstance<ITestInterface>();
 
@@ -27,12 +21,7 @@ namespace Siege.ServiceLocator.UnitTests
         [Test]
         public void RubyConditionalRegistration()
         {
-            var assemblies = new List<Assembly>
-            {
-                typeof (ITestInterface).Assembly,
-            };
-
-            locator.Register(Install.From("Installers\\ConditionalRegistrationTest.rb", assemblies));
+            locator.Register(Install.From("Installers\\ConditionalRegistrationTest.rb"));
 
 
             Assert.IsInstanceOf<TestCase2>(locator.GetInstance<ITestInterface>(new ContextArgument(new TestClasses.TestContext(TestEnum.Case2))));
@@ -41,12 +30,7 @@ namespace Siege.ServiceLocator.UnitTests
         [Test]
         public void RubySingletonRegistration()
         {
-            var assemblies = new List<Assembly>
-            {
-                typeof (ITestInterface).Assembly
-            };
-
-            locator.Register(Install.From("Installers\\SingletonRegistrationTest.rb", assemblies));
+            locator.Register(Install.From("Installers\\SingletonRegistrationTest.rb"));
 
             var instance = locator.GetInstance<ITestInterface>();
             var instance2 = locator.GetInstance<ITestInterface>();
@@ -58,12 +42,7 @@ namespace Siege.ServiceLocator.UnitTests
         [Test]
         public void RubyDefaultInstanceRegistration()
         {
-            var assemblies = new List<Assembly>
-            {
-                typeof (ITestInterface).Assembly
-            };
-
-            locator.Register(Install.From("Installers\\DefaultInstanceRegistrationTest.rb", assemblies));
+            locator.Register(Install.From("Installers\\DefaultInstanceRegistrationTest.rb"));
 
             var instance = locator.GetInstance<ITestInterface>();
 
@@ -73,12 +52,7 @@ namespace Siege.ServiceLocator.UnitTests
         [Test]
         public void RubyConditionalInstanceRegistration()
         {
-            var assemblies = new List<Assembly>
-            {
-                typeof (ITestInterface).Assembly,
-            };
-
-            locator.Register(Install.From("Installers\\ConditionalInstanceRegistrationTest.rb", assemblies));
+            locator.Register(Install.From("Installers\\ConditionalInstanceRegistrationTest.rb"));
 
             var instance = locator.GetInstance<ITestInterface>(new ContextArgument(new TestClasses.TestContext(TestEnum.Case2)));
         
@@ -88,12 +62,7 @@ namespace Siege.ServiceLocator.UnitTests
         [Test]
         public void RubyNamedRegistration()
         {
-            var assemblies = new List<Assembly>
-            {
-                typeof (ITestInterface).Assembly
-            };
-
-            locator.Register(Install.From("Installers\\NamedRegistrationTest.rb", assemblies));
+            locator.Register(Install.From("Installers\\NamedRegistrationTest.rb"));
 
             var instance = locator.GetInstance<ITestInterface>("Test");
 
@@ -107,12 +76,7 @@ namespace Siege.ServiceLocator.UnitTests
         [Test]
         public void RubyNamedInstanceRegistration()
         {
-            var assemblies = new List<Assembly>
-            {
-                typeof (ITestInterface).Assembly
-            };
-
-            locator.Register(Install.From("Installers\\NamedInstanceRegistrationTest.rb", assemblies));
+            locator.Register(Install.From("Installers\\NamedInstanceRegistrationTest.rb"));
 
             var instance = locator.GetInstance<ITestInterface>("Test");
 
@@ -126,12 +90,7 @@ namespace Siege.ServiceLocator.UnitTests
         [Test]
         public void RubyIConditionRegistration()
         {
-            var assemblies = new List<Assembly>
-            {
-                typeof (ITestInterface).Assembly
-            };
-
-            locator.Register(Install.From("Installers\\ConditionalGenericRegistrationTest.rb", assemblies));
+            locator.Register(Install.From("Installers\\ConditionalGenericRegistrationTest.rb"));
 
             locator.AddContext(CreateContext(TestEnum.Case2));
 
@@ -141,12 +100,7 @@ namespace Siege.ServiceLocator.UnitTests
         [Test]
         public void RubyIConditionInstanceRegistration()
         {
-            var assemblies = new List<Assembly>
-            {
-                typeof (ITestInterface).Assembly
-            };
-
-            locator.Register(Install.From("Installers\\ConditionalGenericInstanceRegistrationTest.rb", assemblies));
+            locator.Register(Install.From("Installers\\ConditionalGenericInstanceRegistrationTest.rb"));
 
             locator.AddContext(CreateContext(TestEnum.Case2));
 
@@ -156,12 +110,7 @@ namespace Siege.ServiceLocator.UnitTests
         [Test]
         public void RubyConventionRegistration()
         {
-            var assemblies = new List<Assembly>
-            {
-                typeof (ITestInterface).Assembly
-            };
-
-            locator.Register(Install.From("Installers\\ConventionRegistrationTest.rb", assemblies));
+            locator.Register(Install.From("Installers\\ConventionRegistrationTest.rb"));
 
             Assert.IsInstanceOf<AutoScannedType>(locator.GetInstance<IAutoScannedInterface>());
         }
@@ -169,12 +118,7 @@ namespace Siege.ServiceLocator.UnitTests
         [Test]
         public void RubyConventionInstanceRegistration()
         {
-            var assemblies = new List<Assembly>
-            {
-                typeof (ITestInterface).Assembly
-            };
-
-            locator.Register(Install.From("Installers\\ConventionInstanceRegistrationTest.rb", assemblies));
+            locator.Register(Install.From("Installers\\ConventionInstanceRegistrationTest.rb"));
 
             Assert.IsInstanceOf<AutoScannedType>(locator.GetInstance<IAutoScannedInterface>());
         }

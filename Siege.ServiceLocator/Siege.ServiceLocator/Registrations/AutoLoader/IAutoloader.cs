@@ -15,12 +15,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace Siege.ServiceLocator.Registrations.AutoLoader
 {
     public interface IAutoloader
     {
-        Action<IServiceLocator> Load(List<string> files, List<Assembly> assemblies);
+        Action<IServiceLocator> Load(List<string> files);
     }
 }
