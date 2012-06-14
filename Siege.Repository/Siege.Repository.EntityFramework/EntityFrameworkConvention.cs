@@ -26,16 +26,17 @@ namespace Siege.Repository.EntityFramework
 	public class EntityFrameworkConvention<TUnitOfWorkStore, TDatabase, TDbContext> : IConvention
 		where TUnitOfWorkStore : IUnitOfWorkStore
 		where TDatabase : IDatabase
-        where TDbContext : DbContext, new()
+        where TDbContext : DbContext
 	{
 		public Action<IServiceLocator> Build()
 		{
 			return serviceLocator => serviceLocator
-                .Register<Singleton>(Given<IUnitOfWorkFactory<TDatabase>>.Then(new EntityFrameworkUnitOfWorkFactory<TDbContext, TDatabase>()))
+                .Register<Singleton>(Given<IUnitOfWorkFactory<TDatabase>>.Then<EntityFrameworkUnitOfWorkFactory<TDbContext, TDatabase>>())
 				.Register(Given<IUnitOfWork>.ConstructWith(l => l.GetInstance<IUnitOfWorkManager>().For<TDatabase>()))
 				.Register<Singleton>(Given<IUnitOfWorkStore>.Then<TUnitOfWorkStore>())
 				.Register(Given<IRepository<TDatabase>>.Then<EntityFrameworkRepository<TDatabase>>())
 				.Register(Given<TDatabase>.Then<TDatabase>())
+                .Register(Given<TDbContext>.Then<TDbContext>())
                 .Register<Singleton>(Given<IUnitOfWorkManager>.ConstructWith(locator => locator.GetInstance<EntityFrameworkUnitOfWorkManager>()))
                 .Register(Given<EntityFrameworkUnitOfWorkManager>.InitializeWith(manager => manager.Add(serviceLocator.GetInstance<TDatabase>())))
                 .Register<Singleton>(Given<EntityFrameworkUnitOfWorkManager>.Then<EntityFrameworkUnitOfWorkManager>());
