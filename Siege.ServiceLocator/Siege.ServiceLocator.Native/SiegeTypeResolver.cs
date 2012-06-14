@@ -79,7 +79,7 @@ namespace Siege.ServiceLocator.Native
 
 			var mappedType = resolutionMap.TypeMap.GetMappedType(type, key);
 
-			if (mappedType == null) return null;
+			if (mappedType == null) throw new MissingRegistrationException(type);
 
 			var candidate = SelectConstructor(mappedType, resolutionMap, parameters);
 

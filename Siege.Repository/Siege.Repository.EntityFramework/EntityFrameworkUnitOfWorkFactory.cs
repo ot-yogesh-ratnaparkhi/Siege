@@ -18,11 +18,11 @@ using Siege.Repository.UnitOfWork;
 
 namespace Siege.Repository.EntityFramework
 {
-	public class EntityFrameworkUnitOfWorkFactory<TDatabase> : IUnitOfWorkFactory<TDatabase> where TDatabase : IDatabase
+	public class EntityFrameworkUnitOfWorkFactory<TDbContext, TDatabase> : IUnitOfWorkFactory<TDatabase> where TDatabase : IDatabase where TDbContext : DbContext
 	{
-	    private readonly DbContext context;
+        private readonly TDbContext context;
 
-	    public EntityFrameworkUnitOfWorkFactory(DbContext context)
+        public EntityFrameworkUnitOfWorkFactory(TDbContext context)
         {
             this.context = context;
         }
