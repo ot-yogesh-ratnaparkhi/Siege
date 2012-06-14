@@ -51,11 +51,16 @@ namespace Siege.ServiceLocator.Native
 
         public object GetInstance(Type type, params IResolutionArgument[] parameters)
         {
-            object value = resolver.Get(type, GetConstructorParameters(parameters));
+            try
+            {
+                object value = resolver.Get(type, GetConstructorParameters(parameters));
+                return value;
+            }
+            catch (MissingRegistrationException)
+            {
+                throw new RegistrationNotFoundException(type);
+            }
 
-            if (value == null) throw new RegistrationNotFoundException(type);
-
-            return value;
         }
 
         public TService GetInstance<TService>(Type type, params IResolutionArgument[] arguments)

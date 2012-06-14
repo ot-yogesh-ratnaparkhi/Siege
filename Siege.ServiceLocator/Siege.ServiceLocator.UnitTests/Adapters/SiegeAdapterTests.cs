@@ -14,9 +14,11 @@
 */
 
 using NUnit.Framework;
+using Siege.ServiceLocator.RegistrationSyntax;
 using Siege.ServiceLocator.Resolution;
 using Siege.ServiceLocator.Native;
 using Siege.ServiceLocator.Native.ConstructionStrategies;
+using Siege.ServiceLocator.UnitTests.TestClasses;
 
 namespace Siege.ServiceLocator.UnitTests.Adapters
 {
@@ -51,5 +53,14 @@ namespace Siege.ServiceLocator.UnitTests.Adapters
 		{
 			base.ShouldResolveIfExistsInIoCButNotRegisteredInContainer();
 		}
+
+        [Test]
+        [ExpectedException(typeof(MissingRegistrationException), ExpectedMessage = "Registration not found for type: Siege.ServiceLocator.UnitTests.TestClasses.IConstructorArgument")]
+        public void ShouldThrowMeaningfulExceptionForMissingRegistrations()
+        {
+            locator.Register(Given<ITestInterface>.Then<TestCase4>());
+
+            locator.GetInstance<ITestInterface>();
+        }
 	}
 }

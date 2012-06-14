@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IServiceLocatorAccessor.cs" />
+    <Compile Include="MissingRegistrationException.cs" />
     <Compile Include="RegistrationPolicies\Transient.cs" />
     <Compile Include="Registrations\AutoLoader\IAutoloader.cs" />
     <Compile Include="Registrations\AutoLoader\Load.cs" />
