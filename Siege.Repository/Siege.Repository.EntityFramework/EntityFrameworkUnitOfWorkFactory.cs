@@ -13,6 +13,7 @@
      limitations under the License.
 */
 
+using System;
 using System.Data.Entity;
 using Siege.Repository.UnitOfWork;
 
@@ -20,16 +21,16 @@ namespace Siege.Repository.EntityFramework
 {
 	public class EntityFrameworkUnitOfWorkFactory<TDbContext, TDatabase> : IUnitOfWorkFactory<TDatabase> where TDatabase : IDatabase where TDbContext : DbContext
 	{
-        private readonly TDbContext context;
+        private readonly Func<TDbContext> context;
 
-        public EntityFrameworkUnitOfWorkFactory(TDbContext context)
+        public EntityFrameworkUnitOfWorkFactory(Func<TDbContext> context)
         {
             this.context = context;
         }
 
 	    public IUnitOfWork Create()
 		{
-            return new EntityFrameworkUnitOfWork(context);
+            return new EntityFrameworkUnitOfWork(context.Invoke());
 		}
 
 		public void Dispose()
