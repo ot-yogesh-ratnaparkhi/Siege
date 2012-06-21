@@ -67,7 +67,8 @@ Global
 		{7BA2681D-C6F0-4EA3-980C-18F1F7DAE2A1}.Debug|x86.Build.0 = Debug|x86
 		{7BA2681D-C6F0-4EA3-980C-18F1F7DAE2A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BA2681D-C6F0-4EA3-980C-18F1F7DAE2A1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7BA2681D-C6F0-4EA3-980C-18F1F7DAE2A1}.Release|x86.ActiveCfg = Release|Any CPU
+		{7BA2681D-C6F0-4EA3-980C-18F1F7DAE2A1}.Release|x86.ActiveCfg = Release|x86
+		{7BA2681D-C6F0-4EA3-980C-18F1F7DAE2A1}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
