@@ -54,6 +54,9 @@
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.2.5.2\lib\NET35\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.4.3.1\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="FluentNHibernate, Version=1.2.0.712, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentNHibernate.1.2.0.712\lib\FluentNHibernate.dll</HintPath>
     </Reference>
@@ -93,7 +96,9 @@
       <HintPath>..\packages\Siege.TypeGenerator.1.0.0\lib\net40\Siege.TypeGenerator.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -101,6 +106,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityFramework\EntityFrameworkConventionTests.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MappingTests\ComponentIdentifier.cs" />
     <Compile Include="MappingTests\ConventionTests.cs" />
     <Compile Include="MappingTests\DomainMapTests.cs" />
@@ -121,6 +129,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Siege.Repository.EntityFramework\Siege.Repository.EntityFramework.csproj">
+      <Project>{7BA2681D-C6F0-4EA3-980C-18F1F7DAE2A1}</Project>
+      <Name>Siege.Repository.EntityFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Siege.Repository.MSSQL\Siege.Repository.MSSQL.csproj">
       <Project>{2C7FD68D-E2FF-4726-B7F3-0364C4B19485}</Project>
       <Name>Siege.Repository.MSSQL</Name>
