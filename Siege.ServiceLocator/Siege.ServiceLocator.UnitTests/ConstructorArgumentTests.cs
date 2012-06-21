@@ -13,6 +13,7 @@
      limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Siege.ServiceLocator.RegistrationSyntax;
@@ -93,6 +94,27 @@ namespace Siege.ServiceLocator.UnitTests
 
             Assert.AreSame(argument, ((DependsOnMultipleInterface)instance).Argument);
             Assert.AreSame(argument2, ((DependsOnMultipleInterface)instance).Argument2);
+        }
+
+        [Test]
+        public void ShouldBeAbleToSpecifyArgumentsUsedDuringLazyResolution()
+        {
+            var argument = new ConstructorArgument();
+            var argument2 = new ConstructorArgument();
+
+            var arguments = new List<IResolutionArgument>
+                                {
+                                    new ConstructorParameter {Name = "argument1", Value = argument},
+                                    new ConstructorParameter {Name = "argument2", Value = argument2}
+                                };
+
+            locator.Register(Given<ITestInterface>.Then<DependsOnMultipleInterface>());
+            locator.Register(Given<DependsOnMultipleInterface>.ConstructWith(arguments));
+
+            var instance = locator.GetInstance<Func<ITestInterface>>();
+
+            Assert.AreSame(argument, ((DependsOnMultipleInterface)instance()).Argument);
+            Assert.AreSame(argument2, ((DependsOnMultipleInterface)instance()).Argument2);
         }
 	}
 }

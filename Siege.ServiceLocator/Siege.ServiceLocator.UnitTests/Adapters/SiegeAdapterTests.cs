@@ -63,5 +63,7 @@ namespace Siege.ServiceLocator.UnitTests.Adapters
 
             locator.GetInstance<ITestInterface>();
         }
+
+
 	}
 }
