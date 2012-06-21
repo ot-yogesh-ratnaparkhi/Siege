@@ -31,6 +31,7 @@ namespace Siege.ServiceLocator.Resolution.Pipeline
             value = items.Aggregate(value, (current, item) => item.Execute(type, current));
 
             if (value == null) throw new RegistrationNotFoundException(type);
+            if (value.Result == null) throw new RegistrationNotFoundException(type);
 
             return value.Result;
         }
