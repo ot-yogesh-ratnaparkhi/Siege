@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Siege.ServiceLocator.Exceptions;
 using Siege.ServiceLocator.Native.ConstructionStrategies;
 using Siege.ServiceLocator.Native.Maps;
 using Siege.ServiceLocator.Resolution;
@@ -79,7 +80,7 @@ namespace Siege.ServiceLocator.Native
 
 			var mappedType = resolutionMap.TypeMap.GetMappedType(type, key);
 
-			if (mappedType == null) throw new MissingRegistrationException(type);
+            if (mappedType == null) return null;
 
 			var candidate = SelectConstructor(mappedType, resolutionMap, parameters);
 
@@ -98,6 +99,8 @@ namespace Siege.ServiceLocator.Native
 				}
 				else
 				{
+                    if (parameters.Length == 0) throw new RegistrationNotFoundException(type);
+
 					for (int j = 0; j < parameters.Length; j++)
 					{
 					    var parameter = parameters[j];

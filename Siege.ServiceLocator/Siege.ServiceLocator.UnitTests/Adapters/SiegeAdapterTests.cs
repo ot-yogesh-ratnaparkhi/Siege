@@ -14,6 +14,7 @@
 */
 
 using NUnit.Framework;
+using Siege.ServiceLocator.Exceptions;
 using Siege.ServiceLocator.RegistrationSyntax;
 using Siege.ServiceLocator.Resolution;
 using Siege.ServiceLocator.Native;
@@ -55,7 +56,7 @@ namespace Siege.ServiceLocator.UnitTests.Adapters
 		}
 
         [Test]
-        [ExpectedException(typeof(MissingRegistrationException), ExpectedMessage = "Registration not found for type: Siege.ServiceLocator.UnitTests.TestClasses.IConstructorArgument")]
+        [ExpectedException(typeof(RegistrationNotFoundException))]
         public void ShouldThrowMeaningfulExceptionForMissingRegistrations()
         {
             locator.Register(Given<ITestInterface>.Then<TestCase4>());
