@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DFF4777E-D6A1-4EBE-BDCB-21180AC9EAB1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Siege.Repository</RootNamespace>
+    <AssemblyName>Siege.Repository</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Database.cs" />
+    <Compile Include="Finders\ICountQuery.cs" />
+    <Compile Include="Finders\IQuery.cs" />
+    <Compile Include="Finders\IFindQuery.cs" />
+    <Compile Include="Finders\QuerySpecification.cs" />
+    <Compile Include="Finders\Query.cs" />
+    <Compile Include="IDatabase.cs" />
+    <Compile Include="IRepository.cs" />
+    <Compile Include="Mapping\Conventions\ClassConvention.cs" />
+    <Compile Include="Mapping\Conventions\ComponentConvention.cs" />
+    <Compile Include="Mapping\Conventions\Formatters\KeyFormatter.cs" />
+    <Compile Include="Mapping\Conventions\Handlers\ComponentHandler.cs" />
+    <Compile Include="Mapping\Conventions\Handlers\EntityHandler.cs" />
+    <Compile Include="Mapping\Conventions\Handlers\IDHandler.cs" />
+    <Compile Include="Mapping\Conventions\Handlers\IHandler.cs" />
+    <Compile Include="Mapping\Conventions\Handlers\OneToManyHandler.cs" />
+    <Compile Include="Mapping\Conventions\Handlers\PropertyHandler.cs" />
+    <Compile Include="Mapping\Conventions\IConvention.cs" />
+    <Compile Include="Mapping\Conventions\Identifiers\GenericListIdentifier.cs" />
+    <Compile Include="Mapping\Conventions\Identifiers\InlineIdentifier.cs" />
+    <Compile Include="Mapping\Conventions\Identifiers\IIdentifier.cs" />
+    <Compile Include="Mapping\DomainMap.cs" />
+    <Compile Include="Mapping\DomainMapper.cs" />
+    <Compile Include="Mapping\DomainMapping.cs" />
+    <Compile Include="Mapping\PropertyMappings\ForeignRelationshipMapping.cs" />
+    <Compile Include="Mapping\IDomainMapping.cs" />
+    <Compile Include="Mapping\IElementMapping.cs" />
+    <Compile Include="Mapping\IPropertyMapping.cs" />
+    <Compile Include="Mapping\Mappings.cs" />
+    <Compile Include="Mapping\PropertyMappings\ComponentMapping.cs" />
+    <Compile Include="Mapping\PropertyMappings\ElementMapping.cs" />
+    <Compile Include="Mapping\PropertyMappings\ReverseForeignRelationshipMapping.cs" />
+    <Compile Include="Mapping\PropertyMappings\IdMapping.cs" />
+    <Compile Include="Mapping\PropertyMappings\ListMapping.cs" />
+    <Compile Include="Mapping\PropertyMappings\PropertyMapping.cs" />
+    <Compile Include="Mapping\Table.cs" />
+    <Compile Include="UnitOfWork\IUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\IUnitOfWorkFactory.cs" />
+    <Compile Include="UnitOfWork\IUnitOfWorkStore.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository.cs" />
+    <Compile Include="UnitOfWork\ThreadedUnitOfWorkStore.cs" />
+    <Compile Include="UnitOfWork\UnitOfWorkManager.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

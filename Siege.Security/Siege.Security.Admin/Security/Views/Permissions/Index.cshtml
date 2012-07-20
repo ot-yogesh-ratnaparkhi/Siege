@@ -1,0 +1,38 @@
+﻿@{
+    Layout = "~/Areas/Security/Views/Shared/SecurityLayout.cshtml";
+    ViewBag.Title = "Security Administration - Permissions";
+}
+
+<div id="permissions_section">
+    
+    <div id="permissions_list">
+        <span id="header">Permissions</span>
+        <br/>
+        <br/>
+        <table id="permissions_grid"></table>
+        <table id="permissions_grid_pager"></table>
+    </div>
+</div>
+
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $("#permissions_grid").jqGrid({
+            url: '/Security/Permissions/List/',
+            datatype: 'json',
+            mtype: 'GET',
+            colNames: ['Permission Name', 'Description', 'ID'],
+            colModel: [
+                { name: 'PermissionName', index: 'RoleName', align: 'center', sortable: false },
+                { name: 'Description', index: 'Permissions', align: 'center', sortable: false },
+                { name: 'ID', index: 'ID', align: 'center', hidden: true}],
+            pager: jQuery('#permissions_grid_pager'),
+            rowNum: 10,
+            rowList: [5, 10, 20, 50],
+            sortname: 'Id',
+            sortorder: "desc",
+            viewrecords: true,
+            height: 200,
+            autowidth: true
+        });
+    });
+</script>

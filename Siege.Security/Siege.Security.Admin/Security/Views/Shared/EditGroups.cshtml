@@ -1,0 +1,68 @@
+﻿<script type="text/javascript">
+    
+    function ShowGroups(gridUrl) {
+        $(document).ready(function() {
+            var consumerID = $("#consumerID").val();
+            var applicationID = $("#applicationID").val();
+
+            $("#groups_grid").jqGrid({
+                url: gridUrl,
+                datatype: 'json',
+                mtype: 'GET',
+                width: '400',
+                rownumbers: false,
+                caption: 'Manage Groups',
+                colNames: ['Record Id', 'Add/Remove', 'Group', 'Permissions'],
+                colModel: [
+                    { name: 'recordId', index: 'recordId', hidden: true },
+                    { name: 'isSelected', index: 'isSelected', sortable: false, formatter: "checkbox", formatoptions: { disabled: false }, editable: true, edittype: "checkbox", align: 'center' },
+                    { name: 'Name', index: 'Name', hidden: false, sortable: false },
+                    { name: 'permissions', index: 'permissions', hidden: false, sortable: false, formatter: permissionsFormatter }
+                ],
+                rowNum: 25,
+                rowList: [25, 50, 100],
+                pager: '#groups_grid_pager',
+                emptyrecords: 'No data',
+                sortname: 'Name',
+                sortorder: 'asc',
+                altRows: true,
+                altclass: 'zebra',
+                gridComplete: function() {
+                }
+            });
+            $("#groups_grid").jqGrid('navGrid', '#presize', { edit: false, add: false, del: false });
+            $("#groups_grid").jqGrid().setGridParam({ url: gridUrl }).trigger("reloadGrid");
+        });
+    }
+
+    function SetSelectedGroups() {
+        var selectedGroups = new Array();
+
+        var gridRows = $("#groups_grid").getRowData();
+        for (var i = 0; i < gridRows.length; i++) {
+            if (gridRows[i].isSelected == 'Yes') {
+                selectedGroups[selectedGroups.length] = gridRows[i].recordId;
+            }
+        }
+        $("#selectedGroups").val(selectedGroups);
+    }
+
+    function permissionsFormatter(cellvalue, options, rowObject) {
+        var text = cellvalue + "";
+        array = text.split(',');
+        text = "";
+        for (var str in array) {
+            text += array[str] + "<br/>";
+        }
+        return text;
+    }
+</script>
+
+<div id="group_list">
+    <table id="groups_grid">
+    </table>
+    <div id="groups_grid_pager">
+    </div>
+</div>
+
+<input type="hidden" name="SelectedGroups" id="selectedGroups" value="" />

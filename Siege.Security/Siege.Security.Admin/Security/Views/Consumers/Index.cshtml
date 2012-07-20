@@ -1,0 +1,54 @@
+﻿@{
+    Layout = "~/Areas/Security/Views/Shared/SecurityLayout.cshtml";
+    ViewBag.Title = "Security Administration - Consumers";
+}
+
+<div id="consumers_section">
+    
+    <div id="consumers_list">
+        <span id="header">Consumers</span>
+        (<a href="/Security/Consumers/New/">New</a>)
+        <br/>
+        <br/>
+        <table id="consumers_grid"></table>
+        <table id="consumers_grid_pager"></table>
+    </div>
+</div>
+
+<script type="text/javascript" language="javascript">
+    function Show() {
+        $(document).ready(function () {
+            $("#security_header").hide();
+            $("#consumers_grid").clearGridData(false);
+
+            var newUrl = '/Security/Consumers/List/';
+
+            $("#consumers_grid").jqGrid({
+                url: newUrl,
+                datatype: 'json',
+                mtype: 'GET',
+                colNames: ['Consumer Name', 'Description', 'Is Active?', 'Actions', 'ID'],
+                colModel: [
+                { name: 'ConsumerName', index: 'ConsumerName', align: 'center', sortable: false },
+                { name: 'Description', index: 'Description', align: 'center', sortable: false },
+                { name: 'Active', index: 'Active', align: 'center', sortable: false },
+                { name: 'Actions', align: 'center', formatter: formatter, sortable: false },
+                { name: 'ID', index: 'ID', align: 'center', hidden: true}],
+                pager: $('#consumers_grid_pager'),
+                rowNum: 10,
+                rowList: [5, 10, 20, 50],
+                sortname: 'Id',
+                sortorder: "desc",
+                viewrecords: true,
+                height: 200,
+                autowidth: true
+            });
+
+            $("#consumers_grid").jqGrid().setGridParam({ url: newUrl }).trigger("reloadGrid");
+        });
+    }
+    
+    function formatter(cellvalue, options, rowObject) {
+        return '<a href=\'/Security/Consumers/Edit/' + rowObject[3] + '\'>Edit</a>';
+    }
+</script>

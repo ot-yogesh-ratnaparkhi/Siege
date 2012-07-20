@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>1.0.0</version>
+    <authors>Marcus Bratton</authors>
+    <owners>Marcus Bratton</owners>
+    <licenseUrl>https://github.com/MarcusTheBold/Siege/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/MarcusTheBold/Siege/tree/master/Siege.ServiceLocator</projectUrl>
+    <dependencies>
+      <dependency id="Siege.ServiceLocator" version="1.0.1" />
+      <dependency id="Unity" version="2.1.505.0" />
+    </dependencies>
+    <id>Siege.ServiceLocator.UnityAdapter</id>
+    <title>Siege.ServiceLocator.UnityAdapter</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Integrates Unity IoC Framework with Siege</description>
+    <copyright>Copyright (c) 2009, 2010, 2011, 2012, Marcus Bratton.  All Rights Reserved</copyright>
+  </metadata>
+  <files>
+    <file src="..\Siege.ServiceLocator.UnityAdapter\bin\Debug\Siege.ServiceLocator.UnityAdapter.dll" target="lib\net40\Siege.ServiceLocator.UnityAdapter.dll" />
+  </files>
+</package>

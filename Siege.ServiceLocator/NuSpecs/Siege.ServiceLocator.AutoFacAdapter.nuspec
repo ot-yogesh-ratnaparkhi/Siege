@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>1.0.0</version>
+    <authors>Marcus Bratton</authors>
+    <owners>Marcus Bratton</owners>
+    <licenseUrl>https://github.com/MarcusTheBold/Siege/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/MarcusTheBold/Siege/tree/master/Siege.ServiceLocator</projectUrl>
+    <dependencies>
+      <dependency id="Siege.ServiceLocator" version="1.0.1" />
+    </dependencies>
+    <id>Siege.ServiceLocator.AutoFacAdapter</id>
+    <title>Siege.ServiceLocator.AutoFacAdapter</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Integrates Autofac with Siege.ServiceLocator</description>
+    <copyright>Copyright (c) 2009, 2010, 2011, 2012, Marcus Bratton.  All Rights Reserved</copyright>
+  </metadata>
+  <files>
+    <file src="..\dependencies\Autofac.dll" target="lib\net40\Autofac.dll" />
+    <file src="..\Siege.ServiceLocator.AutoFacAdapter\bin\Debug\Siege.ServiceLocator.AutofacAdapter.dll" target="lib\net40\Siege.ServiceLocator.AutoFacAdapter.dll" />
+  </files>
+</package>

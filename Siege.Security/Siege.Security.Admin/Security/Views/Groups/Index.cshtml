@@ -1,0 +1,80 @@
+﻿@{
+    Layout = "~/Areas/Security/Views/Shared/SecurityLayout.cshtml";
+    ViewBag.Title = "Security Administration - Groups";
+}
+
+<div id="groups_section">
+    
+    <div id="groups_list">
+        <span id="header">Groups</span>
+        (<a id="newGroup" href="/Security/Groups/New/">New</a>)
+        <br/>
+        <br/>
+        <table id="groups_grid"></table>
+        <table id="groups_grid_pager"></table>
+    </div>
+</div>
+
+<script type="text/javascript" language="javascript">
+
+    function Show() {
+        $(document).ready(function () {
+            var consumerID = $("#consumerID").val();
+            var applicationID = $("#applicationID").val();
+
+            $("#applicationList").hide();
+            
+            if (!$("#consumerList").is(":visible") && !$("#applicationList").is(":visible")) {
+                $("#security_header").hide();
+            }
+
+            $("#newGroup").attr("href", "/Security/Groups/New/?ConsumerID=" + consumerID + "&ApplicationID=" + applicationID);
+
+            $("#groups_grid").clearGridData(false);
+            if (applicationID == 0) {
+                return;
+            }
+
+            var newUrl = '/Security/Groups/List/?ApplicationID=' + applicationID + "&ConsumerID=" + consumerID;
+
+            $("#groups_grid").jqGrid({
+                url: newUrl,
+                datatype: 'json',
+                mtype: 'GET',
+                colNames: ['Group Name', 'Permissions', 'Active?', 'Actions', 'ID'],
+                colModel: [
+                    { name: 'GroupName', index: 'GroupName', align: 'center', sortable: false },
+                    { name: 'Permissions', index: 'Permissions', align: 'center', formatter: permissionsFormatter, sortable: false },
+                    { name: 'Active', index: 'Active', align: 'center', sortable: false },
+                    { name: 'Actions', align: 'center', formatter: formatter, sortable: false },
+                    { name: 'ID', index: 'ID', align: 'center', hidden: true}],
+                pager: $('#groups_grid_pager'),
+                rowNum: 10,
+                rowList: [5, 10, 20, 50],
+                sortname: 'Id',
+                sortorder: "desc",
+                viewrecords: true,
+                height: 200,
+                autowidth: true
+            });
+
+            $("#groups_grid").jqGrid().setGridParam({ url: newUrl }).trigger("reloadGrid");
+        });
+    }
+
+    function formatter(cellvalue, options, rowObject) {
+        var consumerID = $("#consumerID").val();
+        var applicationID = $("#applicationID").val();
+        return '<a href=\'/Security/Groups/Edit/?GroupID=' + rowObject[3] + '&ConsumerID=' + consumerID + '&ApplicationID=' + applicationID + '\'>Edit</a>';
+    }
+
+    function permissionsFormatter(cellvalue, options, rowObject) {
+        var text = cellvalue + "";
+        array = text.split(',');
+        text = "";
+        for (var str in array) {
+            text += array[str] + "<br/>";
+        }
+        return text;
+    }
+</script>

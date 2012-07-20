@@ -1,0 +1,76 @@
+﻿@{
+    Layout = "~/Areas/Security/Views/Shared/SecurityLayout.cshtml";
+    ViewBag.Title = "Security Administration - Users";
+}
+
+<div id="users_section">
+    
+    <div id="users_list">
+        <span id="header">Users</span>
+        (<a id="newUser" href="/Security/Users/New/">New</a>)
+        <br/>
+        <br/>
+        <table id="users_grid"></table>
+        <table id="users_grid_pager"></table>
+    </div>
+</div>
+
+<script type="text/javascript" language="javascript">
+
+    function Show() {
+        $(document).ready(function () {
+            
+            var consumerID = $("#consumerID").val();
+            var applicationID = $("#applicationID").val();
+
+            $("#newUser").attr("href", "/Security/Users/New/?ConsumerID=" + consumerID + "&ApplicationID=" + applicationID);
+
+            $("#users_grid").clearGridData(false);
+            if (applicationID == 0) {
+                return;
+            }
+
+            var newUrl = '/Security/Users/List/?ApplicationID=' + applicationID + "&ConsumerID=" + consumerID;
+
+            $("#users_grid").jqGrid({
+                url: newUrl,
+                datatype: 'json',
+                mtype: 'GET',
+                colNames: ['User', 'Permissions', 'Active?', 'LockedOut?', 'Actions', 'ID'],
+                colModel: [
+                { name: 'UserName', index: 'UserName', align: 'center', sortable: false },
+                { name: 'Permissions', index: 'Permissions', align: 'center', formatter: permissionsFormatter, sortable: false },
+                { name: 'Active', index: 'Active', align: 'center', sortable: false },
+                { name: 'LockedOut', index: 'LockedOut', align: 'center', sortable: false },
+                { name: 'Actions', align: 'center', formatter: userFormatter, sortable: false },
+                { name: 'ID', index: 'ID', align: 'center', hidden: true}],
+                pager: $('#users_grid_pager'),
+                rowNum: 10,
+                rowList: [5, 10, 20, 50],
+                sortname: 'Id',
+                sortorder: "desc",
+                viewrecords: true,
+                height: 200,
+                autowidth: true
+            });
+
+            $("#users_grid").jqGrid().setGridParam({ url: newUrl }).trigger("reloadGrid");
+        });
+    }
+
+    function userFormatter(cellvalue, options, rowObject) {
+        var consumerID = $("#consumerID").val();
+        var applicationID = $("#applicationID").val();
+        return '<a href=\'/Security/Users/Edit/?UserID=' + rowObject[4] + '&ConsumerID=' + consumerID + '&ApplicationID=' + applicationID + '\'>Edit</a>';
+    }
+
+    function permissionsFormatter(cellvalue, options, rowObject) {
+        var text = cellvalue + "";
+        array = text.split(',');
+        text = "";
+        for (var str in array) {
+            text += array[str] + "<br/>";
+        }
+        return text;
+    }
+</script>

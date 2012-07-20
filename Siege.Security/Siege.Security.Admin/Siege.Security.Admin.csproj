@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6BD4FBF8-C141-42B5-8CDA-33E5E9593C26}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Siege.Security.Admin</RootNamespace>
+    <AssemblyName>Siege.Security.Admin</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.4.3.1\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Mvc">
+      <HintPath>..\packages\Mvc2Futures.2.0.50217.0\lib\Microsoft.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="MvcContrib">
+      <HintPath>..\packages\MvcContrib.2.0.95.0\lib\MvcContrib.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.Repository, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Siege.Repository.1.0.1\lib\net40\Siege.Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.Repository.EntityFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Siege.Repository.EntityFramework.1.0.1\lib\net40\Siege.Repository.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.Repository.Web">
+      <HintPath>..\packages\Siege.Repository.Web.1.0.1\lib\net40\Siege.Repository.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.ServiceLocator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Siege.ServiceLocator.1.0.3\lib\net40\Siege.ServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="Siege.ServiceLocator.Web">
+      <HintPath>..\packages\Siege.ServiceLocator.Web.1.0.0\lib\net40\Siege.ServiceLocator.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Json, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\System.Json.4.0.20126.16343\lib\net40\System.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\System.Net.Http.2.0.20126.16343\lib\net40\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\System.Net.Http.Formatting.4.0.20126.16343\lib\net40\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\System.Net.Http.2.0.20126.16343\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\AspNetWebApi.Core.4.0.20126.16343\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\System.Web.Http.Common.4.0.20126.16343\lib\net40\System.Web.Http.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\AspNetWebApi.4.0.20126.16343\lib\net40\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\Controllers\ConsumerController.cs" />
+    <Compile Include="Security\Controllers\HomeController.cs" />
+    <Compile Include="Security\ModelBinders\ApplicationBinder.cs" />
+    <Compile Include="Security\ModelBinders\ApplicationsBinder.cs" />
+    <Compile Include="Security\ModelBinders\ConsumerBinder.cs" />
+    <Compile Include="Security\ModelBinders\GroupBinder.cs" />
+    <Compile Include="Security\ModelBinders\RoleBinder.cs" />
+    <Compile Include="Security\ModelBinders\UserBinder.cs" />
+    <Compile Include="Security\Models\ApplicationModel.cs" />
+    <Compile Include="Security\Models\ConsumerModel.cs" />
+    <Compile Include="Security\Models\GroupModel.cs" />
+    <Compile Include="Security\Models\RoleModel.cs" />
+    <Compile Include="Security\Models\SecurityModel.cs" />
+    <Compile Include="Security\Models\UserModel.cs" />
+    <EmbeddedResource Include="Security\Views\Shared\Menu.cshtml" />
+    <Compile Include="SqlSecurityAdminConvention.cs" />
+    <Compile Include="Security\Controllers\ApplicationsController.cs" />
+    <Compile Include="Security\Controllers\GroupsController.cs" />
+    <Compile Include="Security\Controllers\PermissionsController.cs" />
+    <Compile Include="Security\Controllers\RolesController.cs" />
+    <Compile Include="Security\Controllers\SecurityController.cs" />
+    <Compile Include="Security\Controllers\UsersController.cs" />
+    <Compile Include="Security\ModelBinders\AutoMappingBinder.cs" />
+    <Compile Include="Security\ModelBinders\GroupsModelBinder.cs" />
+    <Compile Include="Security\ModelBinders\PermissionsBinder.cs" />
+    <Compile Include="Security\ModelBinders\RolesModelBinder.cs" />
+    <Compile Include="Security\SecurityAreaRegistration.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Applications\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Applications\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Applications\New.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Users\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Users\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Users\New.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Groups\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Groups\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Groups\New.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Home\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Permissions\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Roles\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Roles\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Roles\New.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Shared\EditGroups.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Shared\EditPermissions.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Shared\EditRoles.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Shared\SecurityLayout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Views\Shared\UserActions.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Siege.Security.SQL\Siege.Security.SQL.csproj">
+      <Project>{9B01CB43-99E0-41B6-A4E3-23682A5686D8}</Project>
+      <Name>Siege.Security.SQL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.Security.Web\Siege.Security.Web.csproj">
+      <Project>{BC135A7C-D91D-4FD2-8E3C-D8AB4E9E4B64}</Project>
+      <Name>Siege.Security.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siege.Security\Siege.Security.csproj">
+      <Project>{7BB960B0-578E-476E-BDD2-3081C54C42AA}</Project>
+      <Name>Siege.Security</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Security\Content\Images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+    <EmbeddedResource Include="Security\Views\Consumers\Index.cshtml" />
+    <EmbeddedResource Include="Security\Views\Consumers\New.cshtml" />
+    <EmbeddedResource Include="Security\Views\Consumers\Edit.cshtml" />
+    <EmbeddedResource Include="Security\Views\Shared\EditApplications.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Content\Styles\SecurityAdmin.css" />
+    <EmbeddedResource Include="Security\Content\Styles\ui.jqgrid.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Content\Scripts\grid.locale-en.js" />
+    <EmbeddedResource Include="Security\Content\Scripts\jquery.jqGrid.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Content\Scripts\jquery.statusMessageQ.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

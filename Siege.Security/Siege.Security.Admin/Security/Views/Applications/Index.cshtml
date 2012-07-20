@@ -1,0 +1,55 @@
+﻿@{
+    Layout = "~/Areas/Security/Views/Shared/SecurityLayout.cshtml";
+    ViewBag.Title = "Security Administration - Applications";
+}
+
+<div id="applications_section">
+    
+    <div id="application_list">
+        <span id="header">Applications</span>(<a href="/Security/Applications/New/">New</a>)
+        <br/>
+        <br/>
+        <table id="applications_grid"></table>
+        <table id="applications_grid_pager"></table>
+    </div>
+</div>
+
+<script type="text/javascript" language="javascript">
+    function Show() {
+        $(document).ready(function () {
+            var consumerID = $("#consumerID").val();
+            $("#applicationList").hide();
+
+            $("#applications_grid").clearGridData(false);
+
+            var newUrl = '/Security/Applications/List/?consumerID=' + consumerID;
+
+            $("#applications_grid").jqGrid({
+                url: newUrl,
+                datatype: 'json',
+                mtype: 'GET',
+                colNames: ['Application Name', 'Description', 'Is Active?', 'Actions', 'ID'],
+                colModel: [
+                { name: 'ApplicationName', index: 'ApplicationName', align: 'center', sortable: false },
+                { name: 'Description', index: 'Description', align: 'center', sortable: false },
+                { name: 'Active', index: 'Active', align: 'center', sortable: false },
+                { name: 'Actions', align: 'center', formatter: formatter, sortable: false },
+                { name: 'ID', index: 'ID', align: 'center', hidden: true}],
+                pager: $('#applications_grid_pager'),
+                rowNum: 10,
+                rowList: [5, 10, 20, 50],
+                sortname: 'Id',
+                sortorder: "desc",
+                viewrecords: true,
+                height: 200,
+                autowidth: true
+            });
+
+            $("#applications_grid").jqGrid().setGridParam({ url: newUrl }).trigger("reloadGrid");
+        });
+    }
+    
+    function formatter(cellvalue, options, rowObject) {
+        return '<a href=\'/Security/Applications/Edit/' + rowObject[3] + '\'>Edit</a>';
+    }
+</script>

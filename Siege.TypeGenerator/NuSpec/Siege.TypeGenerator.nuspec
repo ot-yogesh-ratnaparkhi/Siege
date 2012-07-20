@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>1.0.1</version>
+    <authors>Marcus Bratton</authors>
+    <owners>Marcus Bratton</owners>
+    <licenseUrl>https://github.com/MarcusTheBold/Siege/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/MarcusTheBold/Siege/tree/master/Siege.TypeGenerator</projectUrl>
+    <id>Siege.TypeGenerator</id>
+    <title>Siege.TypeGenerator</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Type Generation Library</description>
+    <copyright>Copyright (c) 2009 2010, 2011, 2012, Marcus Bratton.  All Rights Reserved</copyright>
+  </metadata>
+  <files>
+    <file src="..\Siege.TypeGenerator\bin\Debug\Siege.TypeGenerator.dll" target="lib\net40\Siege.TypeGenerator.dll" />
+  </files>
+</package>

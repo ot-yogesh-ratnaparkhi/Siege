@@ -1,0 +1,81 @@
+﻿@{
+    Layout = "~/Areas/Security/Views/Shared/SecurityLayout.cshtml";
+    ViewBag.Title = "Security Administration - Roles";
+}
+
+<div id="roles_section">
+    
+    <div id="roles_list">
+        <span id="header">Roles</span>
+        (<a id="newRole" href="/Security/Roles/New/">New</a>)
+        <br/>
+        <br/>
+        <table id="roles_grid"></table>
+        <table id="roles_grid_pager"></table>
+    </div>
+</div>
+
+<script type="text/javascript" language="javascript">
+
+    function Show() {
+        $(document).ready(function () {
+
+            $("#applicationList").hide();
+            
+            if (!$("#consumerList").is(":visible") && !$("#applicationList").is(":visible")) {
+                $("#security_header").hide();
+            }
+
+            var consumerID = $("#consumerID").val();
+            var applicationID = $("#applicationID").val();
+
+            $("#newRole").attr("href", "/Security/Roles/New/?ConsumerID=" + consumerID + "&ApplicationID=" + applicationID);
+
+            $("#roles_grid").clearGridData(false);
+            if (applicationID == 0) {
+                return;
+            }
+
+            var newUrl = '/Security/Roles/List/?ApplicationID=' + applicationID + "&ConsumerID=" + consumerID;
+
+            $("#roles_grid").jqGrid({
+                url: newUrl,
+                datatype: 'json',
+                mtype: 'GET',
+                colNames: ['Role Name', 'Permissions', 'Active?', 'Actions', 'ID'],
+                colModel: [
+                { name: 'RoleName', index: 'RoleName', align: 'center', sortable: false },
+                { name: 'Permissions', index: 'Permissions', align: 'center', formatter: permissionsFormatter, sortable: false },
+                { name: 'Active', index: 'Active', align: 'center', sortable: false },
+                { name: 'Actions', align: 'center', formatter: formatter, sortable: false },
+                { name: 'ID', index: 'ID', align: 'center', hidden: true}],
+                pager: $('#roles_grid_pager'),
+                rowNum: 10,
+                rowList: [5, 10, 20, 50],
+                sortname: 'Id',
+                sortorder: "desc",
+                viewrecords: true,
+                height: 200,
+                autowidth: true
+            });
+
+            $("#roles_grid").jqGrid().setGridParam({ url: newUrl }).trigger("reloadGrid");
+        });
+    }
+
+    function formatter(cellvalue, options, rowObject) {
+        var consumerID = $("#consumerID").val();
+        var applicationID = $("#applicationID").val();
+        return '<a href=\'/Security/Roles/Edit/?RoleID=' + rowObject[3] + '&ConsumerID=' + consumerID + '&ApplicationID=' + applicationID + '\'>Edit</a>';
+    }
+
+    function permissionsFormatter(cellvalue, options, rowObject) {
+        var text = cellvalue + "";
+        array = text.split(',');
+        text = "";
+        for (var str in array) {
+            text += array[str] + "<br/>";
+        }
+        return text;
+    }
+</script>

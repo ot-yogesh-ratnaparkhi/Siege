@@ -1,0 +1,17 @@
+﻿@using Siege.Security.Principals
+@{
+    var user = HttpContext.Current.User as SecurityPrincipal;
+}
+
+<div id="security_menu">
+    <div id="security_menu_header">Security
+        @if (user.Can("CanAdministerAllSecurity"))
+        {
+            <div id="security_menu_row"> - <a id="applications_link" href="/Security/Applications/Index/">Applications</a></div>
+            <div id="security_menu_row"> - <a id="consumers_link" href="/Security/Consumers/Index/">Consumers</a></div>
+        }
+        <div id="security_menu_row"> - <a id="users_link" href="/Security/Users/Index/">Users</a></div>
+        <div id="security_menu_row"> - <a id="groups_link" href="/Security/Groups/Index/">Groups</a></div>
+        <div id="security_menu_row"> - <a id="roles_link" href="/Security/Roles/Index/">Roles</a></div>
+    </div>
+</div>

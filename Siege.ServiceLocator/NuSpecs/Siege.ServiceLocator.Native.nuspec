@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>1.0.0</version>
+    <authors>Marcus Bratton</authors>
+    <owners>Marcus Bratton</owners>
+    <licenseUrl>https://github.com/MarcusTheBold/Siege/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/MarcusTheBold/Siege/tree/master/Siege.ServiceLocator</projectUrl>
+    <dependencies>
+      <dependency id="Siege.ServiceLocator" version="1.0.1" />
+      <dependency id="Siege.TypeGenerator" version="1.0.0" />
+    </dependencies>
+    <id>Siege.ServiceLocator.Native</id>
+    <title>Siege.ServiceLocator.Native</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Native Adapter for Siege.ServiceLocator</description>
+    <copyright>Copyright (c) 2009, 2010, 2011, 2012, Marcus Bratton.  All Rights Reserved</copyright>
+  </metadata>
+  <files>
+    <file src="..\Siege.ServiceLocator.Native\bin\Debug\Siege.ServiceLocator.Native.dll" target="lib\net40\Siege.ServiceLocator.Native.dll" />
+  </files>
+</package>

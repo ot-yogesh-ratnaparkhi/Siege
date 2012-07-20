@@ -1,0 +1,52 @@
+﻿<script type="text/javascript">
+    function ShowApplications(gridUrl) {
+        
+        $(document).ready(function() {
+            $("#applications_grid").jqGrid({
+                url: gridUrl,
+                datatype: 'json',
+                mtype: 'GET',
+                width: '825',
+                rownumbers: false,
+                caption: 'Manage Applications',
+                colNames: ['Record Id', 'Add/Remove', 'Application'],
+                colModel: [
+                    { name: 'recordId', index: 'recordId', hidden: true },
+                    { name: 'isSelected', index: 'isSelected', sortable: false, formatter: "checkbox", formatoptions: { disabled: false }, editable: true, edittype: "checkbox", align: 'center' },
+                    { name: 'Name', index: 'Name', hidden: false, sortable: false}],
+                rowNum: 25,
+                rowList: [25, 50, 100],
+                pager: '#applications_grid_pager',
+                emptyrecords: 'No data',
+                sortname: 'Name',
+                sortorder: 'asc',
+                altRows: true,
+                altclass: 'zebra',
+                gridComplete: function() {
+                }
+            });
+            $("#applications_grid").jqGrid('navGrid', '#presize', { edit: false, add: false, del: false });
+        });
+    }
+
+    function SetSelectedApplications() {
+        var selectedApplications = new Array();
+
+        var gridRows = $("#applications_grid").getRowData();
+        for (var i = 0; i < gridRows.length; i++) {
+            if (gridRows[i].isSelected == 'Yes') {
+                selectedApplications[selectedApplications.length] = gridRows[i].recordId;
+            }
+        }
+        $("#SelectedApplications").val(selectedApplications);
+    }
+</script>
+
+<div id="applications_list">
+    <table id="applications_grid">
+    </table>
+    <div id="applications_grid_pager">
+    </div>
+</div>
+
+<input type="hidden" name="SelectedApplications" id="SelectedApplications" value="" />

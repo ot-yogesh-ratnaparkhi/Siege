@@ -1,0 +1,171 @@
+﻿@using Siege.Security.Principals
+@model Siege.Security.Admin.Security.Models.SecurityModel
+@{
+    var user = (SecurityPrincipal) HttpContext.Current.User;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section head
+{
+    <link rel="stylesheet" type="text/css" media="screen" href="@Url.Content("/Security/styles/SecurityAdmin.css")" />
+    <link rel="stylesheet" type="text/css" media="screen" href="@Url.Content("/Security/styles/ui.jqgrid.css")" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <script src="@Url.Content("/Security/scripts/grid.locale-en.js")" type="text/javascript"></script>
+    <script src="@Url.Content("/Security/scripts/jquery.jqGrid.min.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("/Security/scripts/jquery.statusMessageQ.js")" type="text/javascript"> </script>
+}
+
+<div id="security_section">
+    @Html.Partial("menu")
+    <div id="security_body">
+        <div id="security_header">
+            <div class="row">
+                <div id="consumerList">
+                    <div class="cell">Select A Consumer:&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                    <div class="cell">
+                        <select id="consumers" onchange="GetApplicationFor(0);"></select>
+                    </div>
+                    @if (user.Can("CanAdministerAllSecurity"))
+                    {
+                        <div class="cell">
+                            (<a href="/Security/Consumers/New/">New</a>|<a id="consumer_edit_link" href="/Security/Consumers/Edit/">Edit</a>)
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div id="applicationList">
+                    <div class="cell">Select An Application:</div>
+                    <div class="cell">
+                        <select id="applications" onchange="Update();"></select>
+                    </div>
+                    @if (user.Can("CanAdministerAllSecurity"))
+                    {
+                        <div class="cell">
+                            (<a href="/Security/Applications/New/">New</a>|<a id="application_edit_link" href="/Security/Applications/Edit/">Edit</a>)
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="consumerID" />
+        <input type="hidden" id="applicationID" />
+        <br/>
+        <hr/>
+        
+        @RenderBody()
+    </div>
+</div>
+
+<script language="javascript" type="text/javascript">
+
+    $.extend({
+        getUrlVars: function () {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        },
+        getUrlVar: function (name) {
+            return $.getUrlVars()[name];
+        }
+    });
+
+    $(document).ready(function () {
+
+        $("#consumerList").hide();
+        $("#applicationList").hide();
+
+        var consumerGetUrl = "/Security/Consumers/Get/";
+
+        $.getJSON(consumerGetUrl, function (result) {
+            var options = $("#consumers");
+
+            $.each(result.rows, function () {
+                options.append($("<option />").val(this.id).text(this.Name));
+            });
+
+            @if(user.Can("CanAdministerAllSecurity"))
+            {
+                <text>
+                    $("#consumerList").show();
+                </text>
+            }
+                
+            $("#consumerID").val($("#consumers").val());
+
+            if ($.getUrlVar("ConsumerID") != null) {
+                $("#consumers").val($.getUrlVar("ConsumerID"));
+            }
+
+            GetApplicationFor(0);
+
+        });
+    });
+
+    function GetApplicationFor(id) {
+
+        $("#consumerID").val($("#consumers").val());
+        
+        if (id == 0 || id == null)
+            id = $("#consumerID").val();
+
+        var applicationGetUrl = "/Security/Applications/GetForConsumer/" + id;
+
+        $.getJSON(applicationGetUrl, function (result) {
+            var options = $("#applications");
+            $("#applications").empty();
+
+            if (result.total == 0) {
+                $("#applicationList").hide();
+                $("#applicationID").val(0);
+                Update();
+                return;
+            }
+
+            $.each(result.rows, function () {
+                options.append($("<option />").val(this.id).text(this.Name));
+            });
+
+            $("#applicationList").show();
+            $("#applicationID").val($("#applications").val());
+
+            if ($.getUrlVar("ApplicationID") != null) {
+                $("#applications").val($.getUrlVar("ApplicationID"));
+            }
+
+            Update();
+        });
+
+    }
+
+    function Update() {
+
+        $("#applicationID").val($("#applications").val());
+        
+        var applicationID = $("#applicationID").val();
+        var consumerID = $("#consumerID").val();
+
+        $("#application_edit_link").attr("href", "/Security/Applications/Edit/" + applicationID);
+        $("#consumer_edit_link").attr("href", "/Security/Consumers/Edit/" + consumerID);
+
+        $("#applications_link").attr("href", "/Security/Applications/Index/?ApplicationID=" + applicationID + "&ConsumerID=" + consumerID);
+        $("#consumers_link").attr("href", "/Security/Consumers/Index/?ApplicationID=" + applicationID + "&ConsumerID=" + consumerID);
+        $("#groups_link").attr("href", "/Security/Groups/Index/?ApplicationID=" + applicationID + "&ConsumerID=" + consumerID);
+        $("#roles_link").attr("href", "/Security/Roles/Index/?ApplicationID=" + applicationID + "&ConsumerID=" + consumerID);
+        $("#users_link").attr("href", "/Security/Users/Index/?ApplicationID=" + applicationID + "&ConsumerID=" + consumerID);
+
+        if (applicationID == 0) {
+            $("#groups_link").removeAttr("href");
+            $("#roles_link").removeAttr("href");
+            $("#users_link").removeAttr("href");
+        }
+
+        Show();
+    }
+</script>
